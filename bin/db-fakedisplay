@@ -122,6 +122,11 @@ None.
 
 Unknown
 
+=head1 SEE ALSO
+
+There is some example output available at
+L<http://finalrewind.org/projects/db-fakedisplay/>.
+
 =head1 AUTHOR
 
 Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>
