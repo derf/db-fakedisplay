@@ -34,7 +34,7 @@ my $status = Travel::Status::DE::DeutscheBahn->new(
 my @params;
 
 for my $platform (@platforms) {
-	my $info = first { $_->platform eq $platform } $status->results;
+	my $info = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x } $status->results;
 
 	if (not defined $info) {
 		push(@params, {
@@ -48,7 +48,7 @@ for my $platform (@platforms) {
 		train => $info->train,
 		via => [ map { { stop => $_ } } $info->route_interesting(3) ],
 		destination => $info->destination,
-		platform => $info->platform,
+		platform => (split(/ /, $info->platform))[0],
 		info => $info->info,
 	});
 }
