@@ -1,0 +1,22 @@
+db-fakedisplay - Show train departures, as seen on the displays on most main stations
+-------------------------------------------------------------------------------------
+
+* <http://finalrewind.org/projects/db-fakedisplay/>
+
+Dependencies
+------------
+
+ * perl >= 5.10
+ * File::ShareDir
+ * Module::Build >= 0.36
+ * HTML::Template
+ * Travel::Status::DE::DeutscheBahn >= 0.04
+
+Installation
+------------
+
+$ perl Build.PL
+$ perl Build
+$ sudo perl Build install
+
+You can then run 'man db-fakedisplay' for more information
