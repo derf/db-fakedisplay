@@ -38,18 +38,13 @@ if (not defined $info) {
 	exit 1;
 }
 
-my @via = $info->route;
-my $extra = $info->info;
-
-$extra =~ s{ (?: ^ | , ) (?: p.nktlich | k [.] A [.] ) }{}x;
-
 $template->param(
 	time => $info->time,
 	train => $info->train,
-	via => [ map { { stop => $_ } } splice(@via, 0, 3) ],
+	via => [ map { { stop => $_ } } $info->route_interesting(3) ],
 	destination => $info->destination,
 	platform => $info->platform,
-	info => $extra,
+	info => $info->info,
 );
 
 say $template->output;

@@ -17,7 +17,7 @@ Module::Build->new(
 		'File::ShareDir' => 0,
 		'HTML::Template' => 0,
 		'List::Util' => 0,
-		'Travel::Status::DE::DeutscheBahn' => 0,
+		'Travel::Status::DE::DeutscheBahn' => '0.04',
 	},
 	share_dir => 'share',
 	sign => 1,
