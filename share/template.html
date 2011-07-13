@@ -11,9 +11,10 @@
 		color: white;
 		font-family: Sans-Serif;
 		font-weight: bold;
-		position: absolute;
-		left: 1em;
-		top: 1em;
+		position: relative;
+		margin-left: 1em;
+		margin-top: 1em;
+		float: left;
 		width: 28em;
 		height: 4.5em;
 		border: 0.7em solid #000066;
@@ -22,6 +23,12 @@
 	div.display div {
 		overflow: hidden;
 		position: absolute;
+	}
+
+	div.no-data {
+		top: 0.5em;
+		left: 1em;
+		font-size: 2em;
 	}
 
 	div.time {
@@ -40,6 +47,10 @@
 		left: 5.8em;
 		width: 17em;
 		height: 1em;
+	}
+
+	div.via span {
+		margin-right: 0.4em;
 	}
 
 	div.destination {
@@ -66,7 +77,15 @@
 	</style>
 </head>
 <body>
+
+<TMPL_LOOP platform>
+
 <div class="display">
+<div class="platform">
+<TMPL_VAR platform>
+</div>
+
+<TMPL_IF train>
 <div class="time">
 <TMPL_VAR time>
 </div>
@@ -81,14 +100,20 @@
 <div class="destination">
 <TMPL_VAR destination>
 </div>
-<div class="platform">
-<TMPL_VAR platform>
-</div>
 <TMPL_IF info>
 <div class="info">
 <TMPL_VAR info>
 </div>
 </TMPL_IF>
+<TMPL_ELSE>
+<div class="no-data">
+Bitte Ansage beachten
 </div>
+</TMPL_IF>
+
+</div> <!-- display -->
+
+</TMPL_LOOP>
+
 </body>
 </html>

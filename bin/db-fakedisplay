@@ -14,16 +14,16 @@ our $VERSION = '0.00';
 sub show_help {
 	my ($exit_status) = @_;
 
-	say 'Usage: db-fakedisplay <station> <platform>';
+	say 'Usage: db-fakedisplay <station> <platforms ...>';
 
 	exit $exit_status;
 }
 
-if (@ARGV != 2) {
+if (@ARGV < 2) {
 	show_help(1);
 }
 
-my ($station, $platform) = @ARGV;
+my ($station, @platforms) = @ARGV;
 my $template_file        = dist_file('db-fakedisplay', 'template.html');
 my $template = HTML::Template->new( filename => $template_file);
 
@@ -31,20 +31,30 @@ my $status = Travel::Status::DE::DeutscheBahn->new(
 	station => $station
 );
 
-my $info = first { $_->platform eq $platform } $status->results;
+my @params;
 
-if (not defined $info) {
-	say STDERR 'Got no departures for that platform';
-	exit 1;
+for my $platform (@platforms) {
+	my $info = first { $_->platform eq $platform } $status->results;
+
+	if (not defined $info) {
+		push(@params, {
+			platform => $platform
+		});
+		next;
+	}
+
+	push(@params, {
+		time => $info->time,
+		train => $info->train,
+		via => [ map { { stop => $_ } } $info->route_interesting(3) ],
+		destination => $info->destination,
+		platform => $info->platform,
+		info => $info->info,
+	});
 }
 
 $template->param(
-	time => $info->time,
-	train => $info->train,
-	via => [ map { { stop => $_ } } $info->route_interesting(3) ],
-	destination => $info->destination,
-	platform => $info->platform,
-	info => $info->info,
+	platform => \@params,
 );
 
 say $template->output;
