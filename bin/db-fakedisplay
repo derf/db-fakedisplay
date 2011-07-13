@@ -5,6 +5,7 @@ use warnings;
 use 5.010;
 
 use File::ShareDir qw(dist_file);
+use Getopt::Long qw(:config no_ignore_case);
 use HTML::Template;
 use List::Util qw(first);
 use Travel::Status::DE::DeutscheBahn;
@@ -15,9 +16,17 @@ sub show_help {
 	my ($exit_status) = @_;
 
 	say 'Usage: db-fakedisplay <station> <platforms ...>';
+	say 'See also: man db-fakedisplay';
 
 	exit $exit_status;
 }
+
+GetOptions(
+
+	'h|help'    => sub { show_help(0) },
+	'V|version' => sub { say "db-fakedisplay version ${VERSION}"; exit 0 },
+
+) or show_help(1);
 
 if (@ARGV < 2) {
 	show_help(1);
@@ -63,19 +72,35 @@ __END__
 
 =head1 NAME
 
+db-fakedisplay - Show train departures, as seen on the displays on most main stations
+
 =head1 SYNOPSIS
+
+B<db-fakedisplay> I<station> I<platforms ...>
 
 =head1 VERSION
 
+version 0.00
+
 =head1 DESCRIPTION
+
+B<db-fakedisplay> outputs HTML showing the next departure for every
+I<platform> on I<station> on stdout.  The HTML is styled to look like the LCDs
+installed on most (major) stations.
 
 =head1 OPTIONS
 
 =over
 
+=item B<-V>, B<--version>
+
+Show version information
+
 =back
 
 =head1 EXIT STATUS
+
+Zero.
 
 =head1 CONFIGURATION
 
@@ -85,9 +110,17 @@ None.
 
 =over
 
+=item * File::ShareDir(3pm)
+
+=item * HTML::Template(3pm)
+
+=item * Travel::Status::DE::DeutscheBahn(3pm)
+
 =back
 
 =head1 BUGS AND LIMITATIONS
+
+Unknown
 
 =head1 AUTHOR
 
