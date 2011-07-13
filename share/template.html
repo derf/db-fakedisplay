@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+	<style type="text/css">
+
+	div.display {
+		background-color: #0000ff;
+		color: white;
+		font-family: Sans-Serif;
+		font-weight: bold;
+		position: absolute;
+		left: 1em;
+		top: 1em;
+		width: 28em;
+		height: 4.5em;
+		border: 0.7em solid #000066;
+	}
+
+	div.display div {
+		overflow: hidden;
+		position: absolute;
+	}
+
+	div.time {
+		top: 0em;
+		left: 0em;
+		font-size: 1.7em;
+	}
+
+	div.train {
+		left: 0em;
+		top: 1.8em;
+	}
+
+	div.via {
+		top: 1.5em;
+		left: 5.8em;
+		width: 17em;
+		height: 1em;
+	}
+
+	div.destination {
+		top: 1.2em;
+		left: 2.9em;
+		width: 17em;
+		font-size: 2em;
+	}
+
+	div.platform {
+		top: 0em;
+		right: 0em;
+		font-size: 3em;
+	}
+
+	div.info {
+		top: 0em;
+		left: 5.8em;
+		width: 16.5em;
+		background-color: white;
+		color: #0000ff;
+	}
+
+	</style>
+</head>
+<body>
+<div class="display">
+<div class="time">
+<TMPL_VAR time>
+</div>
+<div class="train">
+<TMPL_VAR train>
+</div>
+<div class="via">
+<TMPL_LOOP via>
+<span><TMPL_VAR stop></span>
+</TMPL_LOOP>
+</div>
+<div class="destination">
+<TMPL_VAR destination>
+</div>
+<div class="platform">
+<TMPL_VAR platform>
+</div>
+<TMPL_IF info>
+<div class="info">
+<TMPL_VAR info>
+</div>
+</TMPL_IF>
+</div>
+</body>
+</html>

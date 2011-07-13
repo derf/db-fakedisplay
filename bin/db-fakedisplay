@@ -1,0 +1,93 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use 5.010;
+
+use File::ShareDir qw(dist_file);
+use HTML::Template;
+use List::Util qw(first);
+use Travel::Status::DE::DeutscheBahn;
+
+our $VERSION = '0.00';
+
+sub show_help {
+	my ($exit_status) = @_;
+
+	say 'Usage: db-fakedisplay <station> <platform>';
+
+	exit $exit_status;
+}
+
+if (@ARGV != 2) {
+	show_help(1);
+}
+
+my ($station, $platform) = @ARGV;
+my $template_file        = dist_file('db-fakedisplay', 'template.html');
+my $template = HTML::Template->new( filename => $template_file);
+
+my $status = Travel::Status::DE::DeutscheBahn->new(
+	station => $station
+);
+
+my $info = first { $_->platform eq $platform } $status->results;
+
+if (not defined $info) {
+	say STDERR 'Got no departures for that platform';
+	exit 1;
+}
+
+my @via = $info->route;
+my $extra = $info->info;
+
+$extra =~ s{ (?: ^ | , ) (?: p.nktlich | k [.] A [.] ) }{}x;
+
+$template->param(
+	time => $info->time,
+	train => $info->train,
+	via => [ map { { stop => $_ } } splice(@via, 0, 3) ],
+	destination => $info->destination,
+	platform => $info->platform,
+	info => $extra,
+);
+
+say $template->output;
+
+__END__
+
+=head1 NAME
+
+=head1 SYNOPSIS
+
+=head1 VERSION
+
+=head1 DESCRIPTION
+
+=head1 OPTIONS
+
+=over
+
+=back
+
+=head1 EXIT STATUS
+
+=head1 CONFIGURATION
+
+None.
+
+=head1 DEPENDENCIES
+
+=over
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>
+
+=head1 LICENSE
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
