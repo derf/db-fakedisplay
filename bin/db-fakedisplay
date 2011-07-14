@@ -12,18 +12,14 @@ use Travel::Status::DE::DeutscheBahn;
 
 our $VERSION = '0.00';
 
-sub show_help {
-	my ($exit_status) = @_;
-
-	say 'Usage: db-fakedisplay <station> <platforms ...>';
-	say 'See also: man db-fakedisplay';
-
-	exit $exit_status;
-}
+my ($station, @platforms);
+my $template_file;
+my $template;
 
 GetOptions(
 
 	'h|help'    => sub { show_help(0) },
+	't|template=s' => \&handle_template,
 	'V|version' => sub { say "db-fakedisplay version ${VERSION}"; exit 0 },
 
 ) or show_help(1);
@@ -32,15 +28,38 @@ if (@ARGV < 2) {
 	show_help(1);
 }
 
-my ($station, @platforms) = @ARGV;
-my $template_file        = dist_file('db-fakedisplay', 'template.html');
-my $template = HTML::Template->new( filename => $template_file);
+($station, @platforms) = @ARGV;
+$template_file        //= dist_file('db-fakedisplay', 'single-lcd.html');
+$template = HTML::Template->new( filename => $template_file);
 
 my $status = Travel::Status::DE::DeutscheBahn->new(
 	station => $station
 );
 
 my @params;
+
+sub handle_template {
+	my (undef, $template_name) = @_;
+
+	if (-e $template_name) {
+		$template_file = $template_name;
+	}
+	else {
+		$template_file = dist_file('db-fakedisplay',
+		$template_name);
+	}
+
+	return;
+}
+
+sub show_help {
+	my ($exit_status) = @_;
+
+	say 'Usage: db-fakedisplay [-t template] <station> <platforms ...>';
+	say 'See also: man db-fakedisplay';
+
+	exit $exit_status;
+}
 
 for my $platform (@platforms) {
 	my $info = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x } $status->results;
@@ -92,9 +111,15 @@ installed on most (major) stations.
 
 =over
 
+=item B<-t>, B<--template> B<single-lcd.html>|I<filename>
+
+Select template.  Specify either a I<filename> or one of the templates shipped
+with B<db-fakedisplay> (right now only B<single-lcd.html> is available, which
+is also the default).
+
 =item B<-V>, B<--version>
 
-Show version information
+Show version information.
 
 =back
 
