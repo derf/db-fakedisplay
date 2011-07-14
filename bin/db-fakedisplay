@@ -12,41 +12,37 @@ use Travel::Status::DE::DeutscheBahn;
 
 our $VERSION = '0.00';
 
-my ($station, @platforms);
+my @params;
+my ( $station, @platforms );
 my $template_file;
 my $template;
 
 GetOptions(
 
-	'h|help'    => sub { show_help(0) },
+	'h|help'       => sub { show_help(0) },
 	't|template=s' => \&handle_template,
 	'V|version' => sub { say "db-fakedisplay version ${VERSION}"; exit 0 },
 
 ) or show_help(1);
 
-if (@ARGV < 2) {
+( $station, @platforms ) = @ARGV;
+$template_file //= dist_file( 'db-fakedisplay', 'single-lcd.html' );
+$template = HTML::Template->new( filename => $template_file );
+
+if ( not defined $station ) {
 	show_help(1);
 }
 
-($station, @platforms) = @ARGV;
-$template_file        //= dist_file('db-fakedisplay', 'single-lcd.html');
-$template = HTML::Template->new( filename => $template_file);
-
-my $status = Travel::Status::DE::DeutscheBahn->new(
-	station => $station
-);
-
-my @params;
+my $status = Travel::Status::DE::DeutscheBahn->new( station => $station );
 
 sub handle_template {
-	my (undef, $template_name) = @_;
+	my ( undef, $template_name ) = @_;
 
-	if (-e $template_name) {
+	if ( -e $template_name ) {
 		$template_file = $template_name;
 	}
 	else {
-		$template_file = dist_file('db-fakedisplay',
-		$template_name);
+		$template_file = dist_file( 'db-fakedisplay', $template_name );
 	}
 
 	return;
@@ -55,35 +51,45 @@ sub handle_template {
 sub show_help {
 	my ($exit_status) = @_;
 
-	say 'Usage: db-fakedisplay [-t template] <station> <platforms ...>';
+	say 'Usage: db-fakedisplay [-t template] <station> [platforms ...]';
 	say 'See also: man db-fakedisplay';
 
 	exit $exit_status;
 }
 
-for my $platform (@platforms) {
-	my $info = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x } $status->results;
+if ( not @platforms ) {
+	for my $result ( $status->results ) {
+		if ( $result->platform ~~ \@platforms ) {
+			next;
+		}
+		push( @platforms, $result->platform );
+	}
+	@platforms = sort { $a <=> $b } @platforms;
+}
 
-	if (not defined $info) {
-		push(@params, {
-			platform => $platform
-		});
+for my $platform (@platforms) {
+	my $result = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x }
+	$status->results;
+
+	if ( not defined $result ) {
+		push( @params, { platform => $platform } );
 		next;
 	}
 
-	push(@params, {
-		time => $info->time,
-		train => $info->train,
-		via => [ map { { stop => $_ } } $info->route_interesting(3) ],
-		destination => $info->destination,
-		platform => (split(/ /, $info->platform))[0],
-		info => $info->info,
-	});
+	push(
+		@params,
+		{
+			time  => $result->time,
+			train => $result->train,
+			via   => [ map { { stop => $_ } } $result->route_interesting(3) ],
+			destination => $result->destination,
+			platform    => ( split( / /, $result->platform ) )[0],
+			info        => $result->info,
+		}
+	);
 }
 
-$template->param(
-	platform => \@params,
-);
+$template->param( platform => \@params, );
 
 say $template->output;
 
@@ -95,7 +101,7 @@ db-fakedisplay - Show train departures, as seen on the displays on most main sta
 
 =head1 SYNOPSIS
 
-B<db-fakedisplay> I<station> I<platforms ...>
+B<db-fakedisplay> [-t I<template>] I<station> [I<platforms ...>]
 
 =head1 VERSION
 
@@ -106,6 +112,9 @@ version 0.00
 B<db-fakedisplay> outputs HTML showing the next departure for every
 I<platform> on I<station> on stdout.  The HTML is styled to look like the LCDs
 installed on most (major) stations.
+
+If no I<platforms> were specified, B<db-fakedisplay> shows all platforms for
+which departures are reported.
 
 =head1 OPTIONS
 
