@@ -132,6 +132,55 @@ Show version information.
 
 =back
 
+=head1 TEMPLATES
+
+B<db-fakedisplay> uses HTML::Template(3pm) to create the display.  In case you
+want to create a custom template, the following variables are available:
+
+=head2 platform
+
+This is a loop variable, use it with C<< <TMPL_LOOP platform> foo <TMPL_VAR
+bar> ... </TMPL_LOOP> >>.
+
+This loop runs once for each requested platform. Inside it, you can use the
+following variables:
+
+=over
+
+=item platform
+
+The platform from which the train departs
+
+=item time
+
+The departure time (I<HH>:I<MM>)
+
+=item train
+
+The train / line name, something like "RE 10111" or "S 1"
+
+=item via
+
+A loop variable. For each run, the B<stop> variable contains one of the
+interesting stops the train will pass on its route.
+
+By default, it runs three times.
+
+=item destination
+
+The train's destination
+
+=item info
+
+Additional information about the train, such as delays. Unset if no
+information is available (use C<< <TMPL_IF info> ... </TMPL_IF> >>).
+
+=item no-data
+
+Set if no departures were available for the requested platform.
+
+=back
+
 =head1 EXIT STATUS
 
 Zero.
