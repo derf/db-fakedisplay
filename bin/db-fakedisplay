@@ -14,19 +14,25 @@ our $VERSION = '0.00';
 
 my @params;
 my ( $station, @platforms );
+my $mode = 'single';
 my $template_file;
 my $template;
 
 GetOptions(
 
 	'h|help'       => sub { show_help(0) },
+	'm|mode=s'     => \$mode,
 	't|template=s' => \&handle_template,
 	'V|version' => sub { say "db-fakedisplay version ${VERSION}"; exit 0 },
 
 ) or show_help(1);
 
+if ( $mode eq 'single' and not $template_file ) {
+	$template_file = dist_file( 'db-fakedisplay', 'single-lcd.html' );
+}
+
 ( $station, @platforms ) = @ARGV;
-$template_file //= dist_file( 'db-fakedisplay', 'single-lcd.html' );
+$template_file //= dist_file( 'db-fakedisplay', 'multi-lcd.html' );
 $template = HTML::Template->new( filename => $template_file );
 
 if ( not defined $station ) {
@@ -57,24 +63,8 @@ sub show_help {
 	exit $exit_status;
 }
 
-if ( not @platforms ) {
-	for my $result ( $status->results ) {
-		if ( $result->platform ~~ \@platforms ) {
-			next;
-		}
-		push( @platforms, $result->platform );
-	}
-	@platforms = sort { $a <=> $b } @platforms;
-}
-
-for my $platform (@platforms) {
-	my $result = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x }
-	$status->results;
-
-	if ( not defined $result ) {
-		push( @params, { platform => $platform } );
-		next;
-	}
+sub add_result {
+	my ($result) = @_;
 
 	push(
 		@params,
@@ -87,9 +77,40 @@ for my $platform (@platforms) {
 			info        => $result->info,
 		}
 	);
+
+	return;
 }
 
-$template->param( platform => \@params, );
+if ( $mode eq 'single' ) {
+	if ( not @platforms ) {
+		for my $result ( $status->results ) {
+			if ( $result->platform ~~ \@platforms ) {
+				next;
+			}
+			push( @platforms, $result->platform );
+		}
+		@platforms = sort { $a <=> $b } @platforms;
+	}
+
+	for my $platform (@platforms) {
+		my $result = first { $_->platform =~ m{ ^ $platform (?: \s | $ )}x }
+		$status->results;
+
+		if ( not defined $result ) {
+			push( @params, { platform => $platform } );
+		}
+		else {
+			add_result($result);
+		}
+	}
+}
+else {
+	for my $result ( $status->results ) {
+		add_result($result);
+	}
+}
+
+$template->param( departures => \@params, );
 
 say $template->output;
 
@@ -137,9 +158,9 @@ Show version information.
 B<db-fakedisplay> uses HTML::Template(3pm) to create the display.  In case you
 want to create a custom template, the following variables are available:
 
-=head2 platform
+=head2 departures
 
-This is a loop variable, use it with C<< <TMPL_LOOP platform> foo <TMPL_VAR
+This is a loop variable, use it with C<< <TMPL_LOOP departures> foo <TMPL_VAR
 bar> ... </TMPL_LOOP> >>.
 
 This loop runs once for each requested platform. Inside it, you can use the
