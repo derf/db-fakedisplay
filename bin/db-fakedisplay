@@ -33,7 +33,10 @@ if ( $mode eq 'single' and not $template_file ) {
 
 ( $station, @platforms ) = @ARGV;
 $template_file //= dist_file( 'db-fakedisplay', 'multi-lcd.html' );
-$template = HTML::Template->new( filename => $template_file );
+$template = HTML::Template->new(
+	filename          => $template_file,
+	loop_context_vars => 1
+);
 
 if ( not defined $station ) {
 	show_help(1);
