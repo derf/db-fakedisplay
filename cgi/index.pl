@@ -20,7 +20,7 @@ get '/multi/:station' => sub {
 	my @params;
 	my $status = Travel::Status::DE::DeutscheBahn->new( station => $station );
 	my $template = HTML::Template->new(
-		filename => dist_file( 'db-fakedisplay', 'multi-lcd.html' ),
+		filename          => dist_file( 'db-fakedisplay', 'multi-lcd.html' ),
 		loop_context_vars => 1,
 	);
 
