@@ -1,8 +1,29 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+use Cache::File;
 use File::ShareDir qw(dist_file);
 use HTML::Template;
 use Travel::Status::DE::DeutscheBahn;
+
+sub get_results_for {
+	my ($station) = @_;
+
+	my $cache = Cache::File->new(
+		cache_root => '/tmp/db-fake',
+		default_expires => '900 sec'
+	);
+
+	my $results = $cache->thaw($station);
+
+	if (not $results) {
+		my $status = Travel::Status::DE::DeutscheBahn->new( station => $station
+		);
+		$results = [$status->results];
+		$cache->freeze($station, $results);
+	}
+
+	return @{ $results };
+}
 
 get '/' => sub {
 	my $self    = shift;
@@ -18,13 +39,12 @@ get '/multi/:station' => sub {
 	my $station = $self->stash('station');
 
 	my @params;
-	my $status = Travel::Status::DE::DeutscheBahn->new( station => $station );
 	my $template = HTML::Template->new(
 		filename          => dist_file( 'db-fakedisplay', 'multi-lcd.html' ),
 		loop_context_vars => 1,
 	);
 
-	for my $result ( $status->results ) {
+	for my $result ( get_results_for($station) ) {
 		push(
 			@params,
 			{
