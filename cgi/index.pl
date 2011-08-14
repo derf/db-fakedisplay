@@ -73,12 +73,29 @@ app->start();
 __DATA__
 
 @@ index.html.ep
-% title 'DB Fakedisplay';
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>DB Fakedisplay</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</head>
+<body>
+<div>
+<p>
+DB-Fakedisplay displays the next departures at a DB station, just like the big
+LC display in the station itself.
+</p>
+
 <% if (my $error = stash 'error') { %>
   Error: <%= $error %><br/>
 <% } %>
 <%= form_for index => begin %>
-  Stop:<br/>
+  Station name:<br/>
   <%= text_field 'station' %><br/>
   <%= submit_button 'Display' %>
 <% end %>
+
+</div>
+</body>
+</html>
