@@ -33,10 +33,10 @@ get '/' => sub {
 	if ( not $station ) {
 		return $self->render;
 	}
-	$self->redirect_to("/multi/${station}");
+	$self->redirect_to("/${station}");
 } => 'index';
 
-get '/multi/:station' => sub {
+get '/:station' => sub {
 	my $self    = shift;
 	my $station = $self->stash('station');
 
@@ -71,6 +71,12 @@ get '/multi/:station' => sub {
 	);
 
 	$self->render( text => $template->output );
+};
+
+get '/multi/:station' => sub {
+	my $self = shift;
+	my $station = $self->stash('station');
+	$self->redirect_to("/${station}");
 };
 
 app->start();
