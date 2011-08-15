@@ -30,6 +30,9 @@ sub get_results_for {
 get '/' => sub {
 	my $self    = shift;
 	my $station = $self->param('station');
+
+	$self->stash( 'version', $VERSION );
+
 	if ( not $station ) {
 		return $self->render;
 	}
@@ -46,6 +49,8 @@ get '/:station' => sub {
 		loop_context_vars => 1,
 	);
 	my @results = get_results_for($station);
+
+	$self->stash( 'version', $VERSION );
 
 	if ( not @results ) {
 		$self->render( 'index', error => "Got no results for '$station'", );
@@ -74,7 +79,7 @@ get '/:station' => sub {
 };
 
 get '/multi/:station' => sub {
-	my $self = shift;
+	my $self    = shift;
 	my $station = $self->stash('station');
 	$self->redirect_to("/${station}");
 };
@@ -90,6 +95,22 @@ __DATA__
 <head>
 	<title>DB Fakedisplay</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<style type="text/css">
+
+body {
+	font-family: Sans-Serif;
+}
+
+p.about {
+	color: #666666;
+}
+
+p.about a {
+	color: #000066;
+	text-decoration: none;
+}
+
+	</style>
 </head>
 <body>
 <div>
@@ -102,10 +123,22 @@ LC display in the station itself.
   Error: <%= $error %><br/>
 <% } %>
 <%= form_for index => begin %>
+<p>
   Station name:<br/>
   <%= text_field 'station' %><br/>
   <%= submit_button 'Display' %>
+</p>
 <% end %>
+
+<p>
+(For example: "Koeln Hbf" or "Essen West")
+</p>
+
+<p class="about">
+This is <a
+href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+v<%= $version %>
+</p>
 
 </div>
 </body>
