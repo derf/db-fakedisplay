@@ -5,6 +5,8 @@ use File::ShareDir qw(dist_file);
 use HTML::Template;
 use Travel::Status::DE::DeutscheBahn;
 
+our $VERSION = '0.00';
+
 sub get_results_for {
 	my ($station) = @_;
 
@@ -63,7 +65,10 @@ get '/multi/:station' => sub {
 			}
 		);
 	}
-	$template->param( departures => \@params );
+	$template->param(
+		departures => \@params,
+		version    => $VERSION
+	);
 
 	$self->render( text => $template->output );
 };

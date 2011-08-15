@@ -113,7 +113,10 @@ else {
 	}
 }
 
-$template->param( departures => \@params, );
+$template->param(
+	departures => \@params,
+	version    => $VERSION
+);
 
 say $template->output;
 
