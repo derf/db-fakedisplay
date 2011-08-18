@@ -1,8 +1,6 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Cache::File;
-use File::ShareDir qw(dist_file);
-use HTML::Template;
 use Travel::Status::DE::DeutscheBahn;
 
 our $VERSION = '0.00';
@@ -43,11 +41,7 @@ get '/:station' => sub {
 	my $self    = shift;
 	my $station = $self->stash('station');
 
-	my @params;
-	my $template = HTML::Template->new(
-		filename          => dist_file( 'db-fakedisplay', 'multi-lcd.html' ),
-		loop_context_vars => 1,
-	);
+	my @departures;
 	my @results = get_results_for($station);
 
 	$self->stash( 'version', $VERSION );
@@ -59,23 +53,24 @@ get '/:station' => sub {
 
 	for my $result (@results) {
 		push(
-			@params,
+			@departures,
 			{
-				time  => $result->time,
-				train => $result->train,
-				via => [ map { { stop => $_ } } $result->route_interesting(3) ],
+				time        => $result->time,
+				train       => $result->train,
+				via         => [ $result->route_interesting(3) ],
 				destination => $result->destination,
 				platform    => ( split( / /, $result->platform ) )[0],
 				info        => $result->info,
 			}
 		);
 	}
-	$template->param(
-		departures => \@params,
-		version    => $VERSION
-	);
 
-	$self->render( text => $template->output );
+	$self->render(
+		'multi',
+		departures => \@departures,
+		version    => $VERSION,
+		title      => "departures for ${station}"
+	);
 };
 
 get '/multi/:station' => sub {
@@ -141,5 +136,153 @@ v<%= $version %>
 </p>
 
 </div>
+</body>
+</html>
+
+
+@@ multi.html.ep
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title><%= $title %></title>
+	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+	<style type="text/css">
+
+	div.outer {
+		border: 0.2em solid #000066;
+		width: 55em;
+	}
+
+	div.display {
+		background-color: #0000ff;
+		color: white;
+		font-family: Sans-Serif;
+		font-weight: bold;
+		position: relative;
+		margin-bottom: 0;
+		margin-top: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		width: 55em;
+		height: 1.4em;
+	}
+
+	div.display div {
+		overflow: hidden;
+		position: absolute;
+		height: 100%;
+	}
+
+	div.time {
+		left: 0;
+		width: 6%;
+		font-size: 95%;
+	}
+
+	div.train {
+		left: 5%;
+		width: 9%;
+		background-color: white;
+		color: #0000ff;
+		font-size: 95%;
+	}
+
+	div.via {
+		left: 15%;
+		width: 35%;
+	}
+
+	div.via span {
+		margin-right: 0.4em;
+		font-size: 80%;
+	}
+
+	div.destination {
+		left: 50%;
+		width: 25%;
+		font-size: 120%;
+	}
+
+	div.platform {
+		left: 75%;
+		width: 5%;
+	}
+
+	div.info {
+		left: 80%;
+		width: 20%;
+		background-color: white;
+		color: #0000ff;
+		font-size: 80%;
+		line-height: 150%;
+	}
+
+	div.separator {
+		border-bottom: 0.1em solid #000066;
+	}
+
+	div.about {
+		text-align: right;;
+		font-family: Sans-Serif;
+		color: #666666;
+	}
+
+	div.about a {
+		color: #000066;
+	}
+
+	</style>
+</head>
+<body>
+
+<div class="outer">
+% my $i = 0;
+% for my $departure (@{$departures}) {
+% $i++;
+
+<div class="display <% if (($i % 2) == 0) { %> separator<% } %>">
+<div class="platform">
+%= $departure->{platform}
+</div>
+
+<div class="time">
+%= $departure->{time}
+</div>
+
+<div class="train">
+%= $departure->{train}
+</div>
+
+<div class="via">
+% my $via_max = @{$departure->{via}};
+% my $via_cur = 0;
+% for my $stop (@{$departure->{via}}) {
+% $via_cur++;
+<span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
+% }
+</div>
+
+<div class="destination">
+%= $departure->{destination}
+</div>
+
+% if ($departure->{info}) {
+<div class="info">
+%= $departure->{info}
+</div>
+% }
+
+</div> <!-- display -->
+
+% }
+
+</div> <!-- outer -->
+
+<div class="about">
+<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+v<%= $version %>
+</div>
+
 </body>
 </html>
