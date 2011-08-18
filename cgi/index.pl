@@ -25,29 +25,24 @@ sub get_results_for {
 	return @{$results};
 }
 
-get '/' => sub {
-	my $self    = shift;
-	my $station = $self->param('station');
-
-	$self->stash( 'version', $VERSION );
-
-	if ( not $station ) {
-		return $self->render;
-	}
-	$self->redirect_to("/${station}");
-} => 'index';
-
-get '/:station' => sub {
+sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');
+
+	$self->stash( departures => [] );
+	$self->stash( title      => 'db-fakedisplay' );
+	$self->stash( version    => $VERSION );
+
+	if ( not $station ) {
+		$self->render('multi');
+		return;
+	}
 
 	my @departures;
 	my @results = get_results_for($station);
 
-	$self->stash( 'version', $VERSION );
-
 	if ( not @results ) {
-		$self->render( 'index', error => "Got no results for '$station'", );
+		$self->render( 'multi', error => "Got no results for '$station'" );
 		return;
 	}
 
@@ -71,74 +66,21 @@ get '/:station' => sub {
 		version    => $VERSION,
 		title      => "departures for ${station}"
 	);
-};
+}
 
-get '/multi/:station' => sub {
+get '/_redirect' => sub {
 	my $self    = shift;
-	my $station = $self->stash('station');
+	my $station = $self->param('station');
 	$self->redirect_to("/${station}");
 };
+
+get '/'               => \&handle_request;
+get '/:station'       => \&handle_request;
+get '/multi/:station' => \&handle_request;
 
 app->start();
 
 __DATA__
-
-@@ index.html.ep
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<title>DB Fakedisplay</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-	<style type="text/css">
-
-body {
-	font-family: Sans-Serif;
-}
-
-p.about {
-	color: #666666;
-}
-
-p.about a {
-	color: #000066;
-	text-decoration: none;
-}
-
-	</style>
-</head>
-<body>
-<div>
-<p>
-DB-Fakedisplay displays the next departures at a DB station, just like the big
-LC display in the station itself.
-</p>
-
-<% if (my $error = stash 'error') { %>
-  Error: <%= $error %><br/>
-<% } %>
-<%= form_for index => begin %>
-<p>
-  Station name:<br/>
-  <%= text_field 'station' %><br/>
-  <%= submit_button 'Display' %>
-</p>
-<% end %>
-
-<p>
-(For example: "Koeln Hbf" or "Essen West")
-</p>
-
-<p class="about">
-This is <a
-href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
-v<%= $version %>
-</p>
-
-</div>
-</body>
-</html>
-
 
 @@ multi.html.ep
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -236,6 +178,8 @@ v<%= $version %>
 </head>
 <body>
 
+% if (@{$departures}) {
+
 <div class="outer">
 % my $i = 0;
 % for my $departure (@{$departures}) {
@@ -278,6 +222,34 @@ v<%= $version %>
 % }
 
 </div> <!-- outer -->
+
+% }
+% else {
+
+<p>
+DB-Fakedisplay displays the next departures at a DB station, just like the big
+LC display in the station itself.
+</p>
+
+% }
+
+<div class="input-field">
+
+<% if (my $error = stash 'error') { %>
+<p>
+  Error: <%= $error %><br/>
+</p>
+<% } %>
+
+<%= form_for _redirect => begin %>
+<p>
+  Station name:
+  <%= text_field 'station' %>
+  <%= submit_button 'Display' %>
+</p>
+<% end %>
+
+</div>
 
 <div class="about">
 <a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
