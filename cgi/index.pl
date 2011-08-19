@@ -165,7 +165,6 @@ __DATA__
 	}
 
 	div.about {
-		text-align: right;;
 		font-family: Sans-Serif;
 		color: #666666;
 	}
