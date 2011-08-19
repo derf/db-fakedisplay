@@ -28,6 +28,7 @@ sub get_results_for {
 sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');
+	my $via     = $self->stash('via');
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
@@ -47,6 +48,12 @@ sub handle_request {
 	}
 
 	for my $result (@results) {
+		if ($via) {
+			my @route = $result->route;
+			if (not( grep { $_ =~ m{$via}io } @route )) {
+				next;
+			}
+		}
 		push(
 			@departures,
 			{
@@ -71,11 +78,19 @@ sub handle_request {
 get '/_redirect' => sub {
 	my $self    = shift;
 	my $station = $self->param('station');
-	$self->redirect_to("/${station}");
+	my $via     = $self->param('via');
+
+	if ($via) {
+		$self->redirect_to("/${station}/${via}");
+	}
+	else {
+		$self->redirect_to("/${station}");
+	}
 };
 
 get '/'               => \&handle_request;
 get '/:station'       => \&handle_request;
+get '/:station/:via'  => \&handle_request;
 get '/multi/:station' => \&handle_request;
 
 app->start();
