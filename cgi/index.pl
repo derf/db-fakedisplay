@@ -3,7 +3,7 @@ use Mojolicious::Lite;
 use Cache::File;
 use Travel::Status::DE::DeutscheBahn;
 
-our $VERSION = '0.00';
+our $VERSION = '0.01';
 
 sub get_results_for {
 	my ($station) = @_;
