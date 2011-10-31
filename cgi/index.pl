@@ -106,6 +106,10 @@ __DATA__
 	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 	<style type="text/css">
 
+	html {
+		font-family: Sans-Serif;
+	}
+
 	div.outer {
 		border: 0.2em solid #000066;
 		width: 55em;
@@ -188,6 +192,16 @@ __DATA__
 		color: #000066;
 	}
 
+	span.fielddesc {
+		display: block;
+		float: left;
+		width: 10em;
+		text-align: right;
+		padding-right: 0.5em;
+	}
+
+	span.
+
 	</style>
 </head>
 <body>
@@ -257,8 +271,12 @@ LC display in the station itself.
 
 <%= form_for _redirect => begin %>
 <p>
-  Station name:
+  <span class="fielddesc">Station name</span>
   <%= text_field 'station' %>
+  <br/>
+  <span class="fielddesc fieldoptional">only display routes via</span>
+  <%= text_field 'via' %>
+  (optional)
   <%= submit_button 'Display' %>
 </p>
 <% end %>
