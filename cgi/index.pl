@@ -93,6 +93,14 @@ get '/:station'       => \&handle_request;
 get '/:station/:via'  => \&handle_request;
 get '/multi/:station' => \&handle_request;
 
+app->config(
+	hypnotoad => {
+		accepts => 10,
+		listen => ['http://*:8092'],
+		pid_file => '/tmp/db-fake.pid',
+	},
+);
+
 app->start();
 
 __DATA__
