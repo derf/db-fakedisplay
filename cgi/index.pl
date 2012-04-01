@@ -208,7 +208,9 @@ __DATA__
 		padding-right: 0.5em;
 	}
 
-	span.
+	input, select {
+		border: 1px solid #000066;
+	}
 
 	</style>
 </head>
