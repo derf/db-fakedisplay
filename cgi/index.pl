@@ -98,6 +98,7 @@ app->config(
 		accepts => 10,
 		listen => ['http://*:8092'],
 		pid_file => '/tmp/db-fake.pid',
+		workers => 2,
 	},
 );
 
