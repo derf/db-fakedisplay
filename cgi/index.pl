@@ -88,6 +88,8 @@ get '/_redirect' => sub {
 	}
 };
 
+app->defaults( layout => 'default' );
+
 get '/'               => \&handle_request;
 get '/:station'       => \&handle_request;
 get '/:station/:via'  => \&handle_request;
@@ -106,7 +108,7 @@ app->start();
 
 __DATA__
 
-@@ multi.html.ep
+@@ layouts/default.html.ep
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -217,6 +219,39 @@ __DATA__
 </head>
 <body>
 
+<%= content %>
+
+<div class="input-field">
+
+<% if (my $error = stash 'error') { %>
+<p>
+  Error: <%= $error %><br/>
+</p>
+<% } %>
+
+<%= form_for _redirect => begin %>
+<p>
+  <span class="fielddesc">Station name</span>
+  <%= text_field 'station' %>
+  <br/>
+  <span class="fielddesc fieldoptional">only display routes via</span>
+  <%= text_field 'via' %>
+  (optional)
+  <%= submit_button 'Display' %>
+</p>
+<% end %>
+
+</div>
+
+<div class="about">
+<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+v<%= $version %>
+</div>
+
+</body>
+</html>
+
+@@ multi.html.ep
 % if (@{$departures}) {
 
 <div class="outer">
@@ -271,36 +306,6 @@ LC display in the station itself.
 </p>
 
 % }
-
-<div class="input-field">
-
-<% if (my $error = stash 'error') { %>
-<p>
-  Error: <%= $error %><br/>
-</p>
-<% } %>
-
-<%= form_for _redirect => begin %>
-<p>
-  <span class="fielddesc">Station name</span>
-  <%= text_field 'station' %>
-  <br/>
-  <span class="fielddesc fieldoptional">only display routes via</span>
-  <%= text_field 'via' %>
-  (optional)
-  <%= submit_button 'Display' %>
-</p>
-<% end %>
-
-</div>
-
-<div class="about">
-<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
-v<%= $version %>
-</div>
-
-</body>
-</html>
 
 @@ not_found.html.ep
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
