@@ -215,6 +215,76 @@ __DATA__
 		border: 1px solid #000066;
 	}
 
+	div.s_display {
+		background-color: #0000ff;
+		color: white;
+		font-family: Sans-Serif;
+		font-weight: bold;
+		position: relative;
+		margin-left: 1em;
+		margin-top: 1em;
+		float: left;
+		width: 28em;
+		height: 4.5em;
+		border: 0.7em solid #000066;
+	}
+
+	div.s_display div {
+		overflow: hidden;
+		position: absolute;
+	}
+
+	div.s_no_data {
+		top: 0.5em;
+		left: 1em;
+		font-size: 1.7em;
+	}
+
+	div.s_time {
+		top: 0em;
+		left: 0em;
+		font-size: 1.7em;
+	}
+
+	div.s_train {
+		left: 0em;
+		top: 1.8em;
+	}
+
+	div.s_via {
+		top: 1.5em;
+		left: 5.8em;
+		width: 17em;
+		height: 1em;
+	}
+
+	div.s_via span {
+		margin-right: 0.4em;
+	}
+
+	div.s_destinatio {
+		top: 1.32em;
+		left: 3.2em;
+		width: 9.2em;
+		font-size: 1.8em;
+		height: 1em;
+	}
+
+	div.s_platform {
+		top: 0em;
+		right: 0em;
+		font-size: 3em;
+	}
+
+	div.s_info {
+		top: 0em;
+		left: 5.8em;
+		width: 16.5em;
+		height: 1em;
+		background-color: white;
+		color: #0000ff;
+	}
+
 	</style>
 </head>
 <body>
@@ -299,6 +369,57 @@ v<%= $version %>
 
 % }
 % else {
+
+<p>
+DB-Fakedisplay displays the next departures at a DB station, just like the big
+LC display in the station itself.
+</p>
+
+% }
+
+@@ single.html.ep
+
+<div class="s_display">
+
+% if (@{$departures}) {
+
+% my $i = 0;
+% for my $departure (@{$departures}) {
+% $i++;
+<div class="s_platform">
+%= $departure->{platform}
+</div>
+<div class="s_time">
+%= $departure->{time}
+</div>
+<div class="s_train">
+%= $departure->{train}
+</div>
+<div class="s_via">
+% my $via_max = @{$departure->{via}};
+% my $via_cur = 0;
+% for my $stop (@{$departure->{via}}) {
+% $via_cur++;
+<span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
+% }
+</div>
+<div class="s_destination">
+%= $departure->{destinatio}
+</div>
+% if ($departure->{info}) {
+<div class="s_info">
+%= $departure->{info}
+</div>
+% }
+
+% }
+% else {
+
+<div class="s_no_data">
+Bitte Ansage beachten
+</div>
+
+</div> <!-- s_display -->
 
 <p>
 DB-Fakedisplay displays the next departures at a DB station, just like the big
