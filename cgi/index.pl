@@ -30,6 +30,8 @@ sub handle_request {
 	my $station = $self->stash('station');
 	my $via     = $self->stash('via');
 
+	my @platforms = split(/,/, $self->param('platforms') // q{});
+
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
@@ -48,11 +50,15 @@ sub handle_request {
 	}
 
 	for my $result (@results) {
+		my $platform = ( split( / /, $result->platform ) )[0];
 		if ($via) {
 			my @route = $result->route;
 			if (not( grep { $_ =~ m{$via}io } @route )) {
 				next;
 			}
+		}
+		if (@platforms and not grep { $_ eq $platform } @platforms) {
+			next;
 		}
 		push(
 			@departures,
@@ -61,7 +67,7 @@ sub handle_request {
 				train       => $result->train,
 				via         => [ $result->route_interesting(3) ],
 				destination => $result->destination,
-				platform    => ( split( / /, $result->platform ) )[0],
+				platform    => $platform,
 				info        => $result->info,
 			}
 		);
@@ -79,12 +85,24 @@ get '/_redirect' => sub {
 	my $self    = shift;
 	my $station = $self->param('station');
 	my $via     = $self->param('via');
+	my $params  = $self->req->params;
+
+	$params->remove('station');
+	$params->remove('via');
+
+	for my $param (qw(platforms)) {
+		if (not $params->param($param)) {
+			$params->remove($param);
+		}
+	}
+
+	$params = $params->to_string;
 
 	if ($via) {
-		$self->redirect_to("/${station}/${via}");
+		$self->redirect_to("/${station}/${via}?${params}");
 	}
 	else {
-		$self->redirect_to("/${station}");
+		$self->redirect_to("/${station}?${params}");
 	}
 };
 
@@ -306,6 +324,10 @@ __DATA__
   <br/>
   <span class="fielddesc fieldoptional">only display routes via</span>
   <%= text_field 'via' %>
+  (optional)
+  <br/>
+  <span class="fielddesc fieldoptional">on platforms</span>
+  <%= text_field 'platforms' %>
   (optional)
   <%= submit_button 'Display' %>
 </p>
