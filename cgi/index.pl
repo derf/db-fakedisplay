@@ -54,6 +54,20 @@ sub handle_request {
 		return;
 	}
 
+	if ($template eq 'single') {
+		if (not @platforms) {
+			for my $result (@results) {
+				if (not ($result->platform ~~ \@platforms)) {
+					push(@platforms, $result->platform);
+				}
+			}
+			@platforms = sort { $a <=> $b } @platforms;
+		}
+		my %pcnt;
+		@results = grep { $pcnt{$_->platform}++ < 1 } @results;
+		@results = sort { $a->platform <=> $b->platform } @results;
+	}
+
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		if ($via) {
