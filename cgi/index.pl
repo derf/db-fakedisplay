@@ -30,14 +30,14 @@ sub handle_request {
 	my $station = $self->stash('station');
 	my $via     = $self->stash('via');
 
-	my @platforms = split(/,/, $self->param('platforms') // q{});
+	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my $template = $self->param('mode') // 'multi';
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
-	if (not($template ~~ [qw[multi single]])) {
+	if ( not( $template ~~ [qw[multi single]] ) ) {
 		$template = 'multi';
 	}
 
@@ -54,17 +54,17 @@ sub handle_request {
 		return;
 	}
 
-	if ($template eq 'single') {
-		if (not @platforms) {
+	if ( $template eq 'single' ) {
+		if ( not @platforms ) {
 			for my $result (@results) {
-				if (not ($result->platform ~~ \@platforms)) {
-					push(@platforms, $result->platform);
+				if ( not( $result->platform ~~ \@platforms ) ) {
+					push( @platforms, $result->platform );
 				}
 			}
 			@platforms = sort { $a <=> $b } @platforms;
 		}
 		my %pcnt;
-		@results = grep { $pcnt{$_->platform}++ < 1 } @results;
+		@results = grep { $pcnt{ $_->platform }++ < 1 } @results;
 		@results = sort { $a->platform <=> $b->platform } @results;
 	}
 
@@ -72,11 +72,11 @@ sub handle_request {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		if ($via) {
 			my @route = $result->route;
-			if (not( grep { $_ =~ m{$via}io } @route )) {
+			if ( not( grep { $_ =~ m{$via}io } @route ) ) {
 				next;
 			}
 		}
-		if (@platforms and not grep { $_ eq $platform } @platforms) {
+		if ( @platforms and not grep { $_ eq $platform } @platforms ) {
 			next;
 		}
 		push(
@@ -110,10 +110,10 @@ get '/_redirect' => sub {
 	$params->remove('via');
 
 	for my $param (qw(platforms)) {
-		if (not $params->param($param)) {
+		if ( not $params->param($param) ) {
 			$params->remove($param);
 		}
-		elsif ($param eq 'mode' and $params->param($param) eq 'multi') {
+		elsif ( $param eq 'mode' and $params->param($param) eq 'multi' ) {
 			$params->remove($param);
 		}
 	}
@@ -137,10 +137,10 @@ get '/multi/:station' => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		accepts => 10,
-		listen => ['http://*:8092'],
+		accepts  => 10,
+		listen   => ['http://*:8092'],
 		pid_file => '/tmp/db-fake.pid',
-		workers => 2,
+		workers  => 2,
 	},
 );
 
