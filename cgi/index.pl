@@ -31,13 +31,18 @@ sub handle_request {
 	my $via     = $self->stash('via');
 
 	my @platforms = split(/,/, $self->param('platforms') // q{});
+	my $template = $self->param('mode') // 'multi';
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
+	if (not($template ~~ [qw[multi single]])) {
+		$template = 'multi';
+	}
+
 	if ( not $station ) {
-		$self->render('multi');
+		$self->render($template);
 		return;
 	}
 
@@ -74,7 +79,7 @@ sub handle_request {
 	}
 
 	$self->render(
-		'multi',
+		$template,
 		departures => \@departures,
 		version    => $VERSION,
 		title      => "departures for ${station}"
@@ -92,6 +97,9 @@ get '/_redirect' => sub {
 
 	for my $param (qw(platforms)) {
 		if (not $params->param($param)) {
+			$params->remove($param);
+		}
+		elsif ($param eq 'mode' and $params->param($param) eq 'multi') {
 			$params->remove($param);
 		}
 	}
@@ -221,10 +229,15 @@ __DATA__
 		color: #000066;
 	}
 
+	div.input-field {
+		margin-top: 1em;
+		clear: both;
+	}
+
 	span.fielddesc {
 		display: block;
 		float: left;
-		width: 10em;
+		width: 15em;
 		text-align: right;
 		padding-right: 0.5em;
 	}
@@ -280,12 +293,12 @@ __DATA__
 		margin-right: 0.4em;
 	}
 
-	div.s_destinatio {
-		top: 1.32em;
-		left: 3.2em;
-		width: 9.2em;
-		font-size: 1.8em;
-		height: 1em;
+	div.s_destination {
+		top: 1.6em;
+		left: 3.6em;
+		width: 12em;
+		font-size: 1.6em;
+		height: 1.2em;
 	}
 
 	div.s_platform {
@@ -329,6 +342,9 @@ __DATA__
   <span class="fielddesc fieldoptional">on platforms</span>
   <%= text_field 'platforms' %>
   (optional)
+  <br/>
+  <span class="fielddesc fieldoptional">display type</span>
+  <%= select_field mode => [['combined' => 'multi'], ['platform' => 'single']] %>
   <%= submit_button 'Display' %>
 </p>
 <% end %>
@@ -401,13 +417,12 @@ LC display in the station itself.
 
 @@ single.html.ep
 
-<div class="s_display">
-
 % if (@{$departures}) {
 
 % my $i = 0;
 % for my $departure (@{$departures}) {
 % $i++;
+<div class="s_display">
 <div class="s_platform">
 %= $departure->{platform}
 </div>
@@ -426,22 +441,24 @@ LC display in the station itself.
 % }
 </div>
 <div class="s_destination">
-%= $departure->{destinatio}
+%= $departure->{destination}
 </div>
 % if ($departure->{info}) {
 <div class="s_info">
 %= $departure->{info}
 </div>
 % }
+</div> <!-- s_display -->
+% }
 
 % }
 % else {
 
+<div class="s_display">
 <div class="s_no_data">
 Bitte Ansage beachten
 </div>
-
-</div> <!-- s_display -->
+</div>
 
 <p>
 DB-Fakedisplay displays the next departures at a DB station, just like the big
