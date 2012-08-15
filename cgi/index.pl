@@ -109,11 +109,12 @@ get '/_redirect' => sub {
 	$params->remove('station');
 	$params->remove('via');
 
+	if ($params->param('mode') and $params->param('mode') eq 'multi') {
+		$params->remove('mode');
+	}
+
 	for my $param (qw(platforms)) {
 		if ( not $params->param($param) ) {
-			$params->remove($param);
-		}
-		elsif ( $param eq 'mode' and $params->param($param) eq 'multi' ) {
 			$params->remove($param);
 		}
 	}
