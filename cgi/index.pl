@@ -79,6 +79,11 @@ sub handle_request {
 		if ( @platforms and not grep { $_ eq $platform } @platforms ) {
 			next;
 		}
+		my $info = $result->info;
+
+		if ($info eq '+0') {
+			$info = undef;
+		}
 		push(
 			@departures,
 			{
@@ -87,7 +92,7 @@ sub handle_request {
 				via         => [ $result->route_interesting(3) ],
 				destination => $result->destination,
 				platform    => $platform,
-				info        => $result->info,
+				info        => $info,
 			}
 		);
 	}
