@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title><%= $title %></title>
+	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+	<style type="text/css">
+
+	html {
+		font-family: Sans-Serif;
+	}
+
+	div.outer {
+		border: 0.2em solid #000066;
+		width: 55em;
+	}
+
+	div.display {
+		background-color: #0000ff;
+		color: white;
+		font-family: Sans-Serif;
+		font-weight: bold;
+		position: relative;
+		margin-bottom: 0;
+		margin-top: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		width: 55em;
+		height: 1.4em;
+	}
+
+	div.display div {
+		overflow: hidden;
+		position: absolute;
+		height: 100%;
+	}
+
+	div.time {
+		left: 0;
+		width: 6%;
+		font-size: 95%;
+	}
+
+	div.train {
+		left: 5%;
+		width: 9%;
+		background-color: white;
+		color: #0000ff;
+		font-size: 95%;
+	}
+
+	div.via {
+		left: 15%;
+		width: 35%;
+	}
+
+	div.via span {
+		margin-right: 0.4em;
+		font-size: 80%;
+	}
+
+	div.destination {
+		left: 50%;
+		width: 25%;
+		font-size: 120%;
+	}
+
+	div.platform {
+		left: 75%;
+		width: 5%;
+	}
+
+	div.info {
+		left: 80%;
+		width: 20%;
+		background-color: white;
+		color: #0000ff;
+		font-size: 80%;
+		line-height: 150%;
+	}
+
+	div.separator {
+		border-bottom: 0.1em solid #000066;
+	}
+
+	div.about {
+		font-family: Sans-Serif;
+		color: #666666;
+	}
+
+	div.about a {
+		color: #000066;
+	}
+
+	div.input-field {
+		margin-top: 1em;
+		clear: both;
+	}
+
+	span.fielddesc {
+		display: block;
+		float: left;
+		width: 15em;
+		text-align: right;
+		padding-right: 0.5em;
+	}
+
+	input, select {
+		border: 1px solid #000066;
+	}
+
+	div.s_display {
+		background-color: #0000ff;
+		color: white;
+		font-family: Sans-Serif;
+		font-weight: bold;
+		position: relative;
+		margin-left: 1em;
+		margin-top: 1em;
+		float: left;
+		width: 28em;
+		height: 4.5em;
+		border: 0.7em solid #000066;
+	}
+
+	div.s_display div {
+		overflow: hidden;
+		position: absolute;
+	}
+
+	div.s_no_data {
+		top: 0.5em;
+		left: 1em;
+		font-size: 1.7em;
+	}
+
+	div.s_time {
+		top: 0em;
+		left: 0em;
+		font-size: 1.7em;
+	}
+
+	div.s_train {
+		left: 0em;
+		top: 1.8em;
+	}
+
+	div.s_via {
+		top: 1.5em;
+		left: 5.8em;
+		width: 17em;
+		height: 1em;
+	}
+
+	div.s_via span {
+		margin-right: 0.4em;
+	}
+
+	div.s_destination {
+		top: 1.6em;
+		left: 3.6em;
+		width: 12em;
+		font-size: 1.6em;
+		height: 1.2em;
+	}
+
+	div.s_platform {
+		top: 0em;
+		right: 0em;
+		font-size: 3em;
+	}
+
+	div.s_info {
+		top: 0em;
+		left: 5.8em;
+		width: 16.5em;
+		height: 1em;
+		background-color: white;
+		color: #0000ff;
+	}
+
+	</style>
+</head>
+<body>
+
+<%= content %>
+
+<div class="input-field">
+
+<% if (my $error = stash 'error') { %>
+<p>
+  Error: <%= $error %><br/>
+</p>
+<% } %>
+
+<%= form_for _redirect => begin %>
+<p>
+  <span class="fielddesc">Station name</span>
+  <%= text_field 'station' %>
+  <br/>
+  <span class="fielddesc fieldoptional">only display routes via</span>
+  <%= text_field 'via' %>
+  (optional)
+  <br/>
+  <span class="fielddesc fieldoptional">on platforms</span>
+  <%= text_field 'platforms' %>
+  (optional)
+  <br/>
+  <span class="fielddesc fieldoptional">display type</span>
+  <%= select_field mode => [['combined' => 'multi'], ['platform' => 'single']] %>
+  <%= submit_button 'Display' %>
+</p>
+<% end %>
+
+</div>
+
+<div class="about">
+<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+v<%= $version %>
+</div>
+
+</body>
+</html>

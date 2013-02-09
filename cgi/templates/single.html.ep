@@ -1,0 +1,49 @@
+% if (@{$departures}) {
+
+% my $i = 0;
+% for my $departure (@{$departures}) {
+% $i++;
+<div class="s_display">
+<div class="s_platform">
+%= $departure->{platform}
+</div>
+<div class="s_time">
+%= $departure->{time}
+</div>
+<div class="s_train">
+%= $departure->{train}
+</div>
+<div class="s_via">
+% my $via_max = @{$departure->{via}};
+% my $via_cur = 0;
+% for my $stop (@{$departure->{via}}) {
+% $via_cur++;
+<span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
+% }
+</div>
+<div class="s_destination">
+%= $departure->{destination}
+</div>
+% if ($departure->{info}) {
+<div class="s_info">
+%= $departure->{info}
+</div>
+% }
+</div> <!-- s_display -->
+% }
+
+% }
+% else {
+
+<div class="s_display">
+<div class="s_no_data">
+Bitte Ansage beachten
+</div>
+</div>
+
+<p>
+DB-Fakedisplay displays the next departures at a DB station, just like the big
+LC display in the station itself.
+</p>
+
+% }
