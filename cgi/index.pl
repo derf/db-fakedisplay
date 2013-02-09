@@ -81,8 +81,11 @@ sub handle_request {
 		}
 		my $info = $result->info;
 
-		if ($info eq '+0') {
+		if ( $info eq '+0' ) {
 			$info = undef;
+		}
+		if ( $info and $info =~ m{ ^ \+ (\d+) $ }ox ) {
+			$info = "Verspaetung ca. $1 Minuten";
 		}
 		push(
 			@departures,
@@ -114,7 +117,7 @@ get '/_redirect' => sub {
 	$params->remove('station');
 	$params->remove('via');
 
-	if ($params->param('mode') and $params->param('mode') eq 'multi') {
+	if ( $params->param('mode') and $params->param('mode') eq 'multi' ) {
 		$params->remove('mode');
 	}
 
