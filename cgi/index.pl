@@ -84,8 +84,9 @@ sub handle_request {
 		if ( $info eq '+0' ) {
 			$info = undef;
 		}
-		if ( $info and $info =~ m{ ^ \+ (\d+) $ }ox ) {
-			$info = "Verspaetung ca. $1 Minuten";
+		if ($info) {
+			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspaetung ca. $1 Minuten}x;
+			$info =~ s{ 1 \s Minute\Kn }{}x;
 		}
 		push(
 			@departures,
