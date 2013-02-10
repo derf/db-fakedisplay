@@ -4,6 +4,9 @@
 <head>
 	<title><%= $title %></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+% if ($self->stash('refresh_interval')) {
+	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
+% }
 	<style type="text/css">
 
 	html {

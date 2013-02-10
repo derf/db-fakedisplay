@@ -7,12 +7,14 @@ use utf8;
 
 our $VERSION = '0.03';
 
+my $refresh_interval = 900;
+
 sub get_results_for {
 	my ($station) = @_;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/db-fake',
-		default_expires => '900 sec'
+		default_expires => $refresh_interval . ' sec',
 	);
 
 	my $results = $cache->thaw($station);
@@ -87,7 +89,8 @@ sub handle_request {
 			$info = undef;
 		}
 		if ($info) {
-			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Minuten}x;
+			$info
+			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Minuten}x;
 			$info =~ s{ 1 \s Minute\Kn }{}x;
 		}
 		push(
@@ -105,9 +108,10 @@ sub handle_request {
 
 	$self->render(
 		$template,
-		departures => \@departures,
-		version    => $VERSION,
-		title      => "departures for ${station}"
+		departures       => \@departures,
+		version          => $VERSION,
+		title            => "departures for ${station}",
+		refresh_interval => $refresh_interval + 3,
 	);
 }
 
