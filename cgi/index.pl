@@ -2,6 +2,8 @@
 use Mojolicious::Lite;
 use Cache::File;
 use Travel::Status::DE::DeutscheBahn;
+use 5.014;
+use utf8;
 
 our $VERSION = '0.03';
 
@@ -85,7 +87,7 @@ sub handle_request {
 			$info = undef;
 		}
 		if ($info) {
-			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspaetung ca. $1 Minuten}x;
+			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Minuten}x;
 			$info =~ s{ 1 \s Minute\Kn }{}x;
 		}
 		push(
