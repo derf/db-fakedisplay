@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Cache::File;
+use List::MoreUtils qw(any);
 use Travel::Status::DE::DeutscheBahn;
 use 5.014;
 use utf8;
@@ -76,11 +77,11 @@ sub handle_request {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		if ($via) {
 			my @route = $result->route;
-			if ( not( grep { $_ =~ m{$via}io } @route ) ) {
+			if ( not( any { $_ =~ m{$via}io } @route ) ) {
 				next;
 			}
 		}
-		if ( @platforms and not grep { $_ eq $platform } @platforms ) {
+		if ( @platforms and not( any { $_ eq $platform } @platforms ) ) {
 			next;
 		}
 		my $info = $result->info;
