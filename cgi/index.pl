@@ -91,7 +91,7 @@ sub handle_request {
 		}
 		if ($info) {
 			$info
-			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Minuten}x;
+			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Min}x;
 			$info =~ s{ 1 \s Minute\Kn }{}x;
 		}
 		push(
