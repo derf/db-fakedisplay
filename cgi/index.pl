@@ -95,7 +95,7 @@ sub handle_request {
 		}
 		if ($info) {
 			$info
-			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Min}x;
+			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
 		push(
 			@departures,
