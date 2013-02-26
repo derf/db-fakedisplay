@@ -6,7 +6,7 @@ use Travel::Status::DE::DeutscheBahn;
 use 5.014;
 use utf8;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my $refresh_interval = 900;
 
@@ -37,6 +37,7 @@ sub handle_request {
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my $template = $self->param('mode') // 'multi';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
@@ -89,10 +90,12 @@ sub handle_request {
 		if ( $info eq '+0' ) {
 			$info = undef;
 		}
+		if ($hide_low_delay and $info) {
+			$info =~ s{ ^ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
+		}
 		if ($info) {
 			$info
 			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca. $1 Min}x;
-			$info =~ s{ 1 \s Minute\Kn }{}x;
 		}
 		push(
 			@departures,

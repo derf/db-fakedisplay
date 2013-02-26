@@ -214,6 +214,9 @@
   <%= text_field 'platforms' %>
   (optional)
   <br/>
+  <%= check_box 'hidelowdelay' => 1 %>
+  <span class="fielddesc fieldoptional">hide delay &lt; 5 minutes</span>
+  <br/>
   <span class="fielddesc fieldoptional">display type</span>
   <%= select_field mode => [['combined' => 'multi'], ['platform' => 'single']] %>
   <%= submit_button 'Display' %>
