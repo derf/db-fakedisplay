@@ -6,6 +6,8 @@ use Travel::Status::DE::DeutscheBahn;
 use 5.014;
 use utf8;
 
+no if $] >= 5.018, warnings => "experimental::smartmatch";
+
 our $VERSION = '0.04';
 
 my $refresh_interval = 900;
