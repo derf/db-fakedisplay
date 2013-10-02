@@ -224,6 +224,9 @@
 <% end %>
 
 </div>
+<p>
+Note: Umlauts do not work reliably. Try either ä → ae or ä → a.
+</p>
 
 <div class="about">
 <a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
