@@ -13,6 +13,12 @@
 		font-family: Sans-Serif;
 	}
 
+	span.error {
+		font-size: 150%;
+		font-weight: bold;
+		color: #dd0000;
+	}
+
 	div.outer {
 		border: 0.2em solid #000066;
 		width: 55em;
@@ -197,7 +203,7 @@
 
 <% if (my $error = stash 'error') { %>
 <p>
-  Error: <%= $error %><br/>
+  <span class="error">Error</span>: <%= $error %><br/>
 </p>
 <% } %>
 
