@@ -1,22 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 	<title><%= $title %></title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta charset="utf-8">
 % if ($self->stash('refresh_interval')) {
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
+
 	<style type="text/css">
 
 	html {
 		font-family: Sans-Serif;
-	}
-
-	span.error {
-		font-size: 150%;
-		font-weight: bold;
-		color: #dd0000;
 	}
 
 	div.outer {
@@ -92,32 +86,6 @@
 		border-bottom: 0.1em solid #000066;
 	}
 
-	div.about {
-		font-family: Sans-Serif;
-		color: #666666;
-	}
-
-	div.about a {
-		color: #000066;
-	}
-
-	div.input-field {
-		margin-top: 1em;
-		clear: both;
-	}
-
-	span.fielddesc {
-		display: block;
-		float: left;
-		width: 15em;
-		text-align: right;
-		padding-right: 0.5em;
-	}
-
-	input, select {
-		border: 1px solid #000066;
-	}
-
 	div.s_display {
 		background-color: #0000ff;
 		color: white;
@@ -188,8 +156,61 @@
 		color: #0000ff;
 	}
 
+	div.about {
+		font-family: Sans-Serif;
+		color: #666666;
+	}
+
+	div.about a {
+		color: #000066;
+		text-decoration: none;
+	}
+
+	div.error {
+		font-size: 150%;
+		font-weight: bold;
+		color: #ee0000;
+	}
+
+	pre {
+		margin-bottom: 2em;
+	}
+
+	span.optional,
+	span.notes {
+		color: #666666;
+	}
+
+	div.break {
+		heighT: 1em;
+	}
+
+	div.field {
+		width: 100%;
+		clear: both;
+	}
+
+	div.field div.desc {
+		float: left;
+		width: 14em;
+		text-align: right;
+		padding-right: 0.5em;
+	}
+
+	input, select {
+		border: 1px solid black;
+	}
+
+	div.notes {
+		margin-top: 4em;
+	}
+
+	div.notes ul {
+		margin-top: 1em;
+	}
+
 	</style>
-	%= javascript 'jquery-1.9.1.min.js'
+	%= javascript 'jquery-1.10.2.min.js'
 	%= javascript 'marquee.js'
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
@@ -197,42 +218,74 @@
 </head>
 <body>
 
-<%= content %>
+% if (my $error = stash 'error') {
+<div class="error">Received an error from the backend service:</div>
+<div>
+<pre>
+%= $error
+</pre>
+</div>
+% }
+
+%= content
 
 <div class="input-field">
 
-<% if (my $error = stash 'error') { %>
-<p>
-  <span class="error">Error</span>: <%= $error %><br/>
-</p>
-<% } %>
 
-<%= form_for _redirect => begin %>
-<p>
-  <span class="fielddesc">Station name</span>
-  <%= text_field 'station' %>
-  <br/>
-  <span class="fielddesc fieldoptional">only display routes via</span>
-  <%= text_field 'via' %>
-  (optional)
-  <br/>
-  <span class="fielddesc fieldoptional">on platforms</span>
-  <%= text_field 'platforms' %>
-  (optional)
-  <br/>
-  <%= check_box 'hidelowdelay' => 1 %>
-  <span class="fielddesc fieldoptional">hide delay &lt; 5 minutes</span>
-  <br/>
-  <span class="fielddesc fieldoptional">display type</span>
-  <%= select_field mode => [['combined' => 'multi'], ['platform' => 'single']] %>
-  <%= submit_button 'Display' %>
-</p>
-<% end %>
-
+%= form_for _redirect => begin
+<div>
+  <div class="field">
+    <div class="desc">Station name</div>
+    <div>
+      %= text_field 'station'
+      %= submit_button 'Display'
+    </div>
+  </div>
+  <div class="break"></div>
+  <span class="optional">optional:</span>
+  <div class="field">
+    <div class="desc">
+      only display routes via
+    </div>
+    <div>
+      %= text_field 'via'
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">
+      on platforms
+    </div>
+    <div>
+      %= text_field 'platforms'
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">
+      hide delay &lt; 5 minutes
+    </div>
+    <div>
+      %= check_box 'hidelowdelay' => 1
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">
+      display type
+    </div>
+    <div>
+      %= select_field mode => [['combined' => 'multi'], ['platform' => 'single']]
+    </div>
+  </div>
 </div>
-<p>
-Note: Umlauts do not work reliably. Try either ä → ae or ä → a.
-</p>
+% end
+
+</div> <!-- input-field -->
+
+<div class="notes">
+<span class="notes">notes:</span>
+<ul>
+<li>Umlauts do not work reliably. Try either ä → ae or ä → a</li>
+</ul>
+</div> <!-- notes -->
 
 <div class="about">
 <a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
