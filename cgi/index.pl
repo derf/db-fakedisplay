@@ -10,7 +10,7 @@ no if $] >= 5.018, warnings => "experimental::smartmatch";
 
 our $VERSION = qx{git describe --dirty} || '0.04';
 
-my $refresh_interval = 900;
+my $refresh_interval = 180;
 
 sub get_results_for {
 	my ($station) = @_;
