@@ -210,8 +210,8 @@
 	}
 
 	</style>
-	%= javascript 'jquery-1.10.2.min.js'
-	%= javascript 'marquee.js'
+	%= javascript '/jquery-1.10.2.min.js'
+	%= javascript '/marquee.js'
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
