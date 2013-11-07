@@ -38,7 +38,7 @@ sub handle_request {
 	my $via     = $self->stash('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
-	my $template = $self->param('mode') // 'multi';
+	my $template       = $self->param('mode')         // 'multi';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 
 	$self->stash( departures => [] );
@@ -92,12 +92,11 @@ sub handle_request {
 		if ( $info eq '+0' ) {
 			$info = undef;
 		}
-		if ($hide_low_delay and $info) {
+		if ( $hide_low_delay and $info ) {
 			$info =~ s{ ^ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
 		}
 		if ($info) {
-			$info
-			  =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
+			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
 		push(
 			@departures,
@@ -162,7 +161,7 @@ app->config(
 		accepts  => 10,
 		listen   => ['http://*:8092'],
 		pid_file => '/tmp/db-fake.pid',
-		workers  => 2,
+		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
 	},
 );
 
