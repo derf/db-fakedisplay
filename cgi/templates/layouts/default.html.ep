@@ -13,6 +13,13 @@
 		font-family: Sans-Serif;
 	}
 
+% if ($hide_opts) {
+	body {
+		margin: 0;
+		padding: 0;
+	}
+% }
+
 	div.outer {
 		border: 0.2em solid #000066;
 		width: 55em;
