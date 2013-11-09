@@ -40,6 +40,7 @@ sub handle_request {
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my $template       = $self->param('mode')         // 'multi';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts')    // 0;
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
@@ -50,7 +51,7 @@ sub handle_request {
 	}
 
 	if ( not $station ) {
-		$self->render($template);
+		$self->render( $template, hide_opts => 0 );
 		return;
 	}
 
@@ -58,7 +59,11 @@ sub handle_request {
 	my @results = get_results_for($station);
 
 	if ( not @results ) {
-		$self->render( 'multi', error => "Got no results for '$station'" );
+		$self->render(
+			'multi',
+			error     => "Got no results for '$station'",
+			hide_opts => 0
+		);
 		return;
 	}
 
@@ -117,6 +122,7 @@ sub handle_request {
 		version          => $VERSION,
 		title            => "departures for ${station}",
 		refresh_interval => $refresh_interval + 3,
+		hide_opts        => $hide_opts,
 	);
 }
 

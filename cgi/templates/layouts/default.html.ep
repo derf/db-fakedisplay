@@ -229,6 +229,7 @@
 
 %= content
 
+% if (not $hide_opts) {
 <div class="input-field">
 
 
@@ -291,6 +292,7 @@
 <a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
 v<%= $version %>
 </div>
+% }
 
 </body>
 </html>
