@@ -283,6 +283,14 @@
       %= select_field mode => [['combined' => 'multi'], ['platform' => 'single']]
     </div>
   </div>
+  <div class="field">
+    <div class="desc">
+      hide input fields
+    </div>
+    <div>
+      %= check_box 'hide_opts' => 1
+    </div>
+  </div>
 </div>
 % end
 
