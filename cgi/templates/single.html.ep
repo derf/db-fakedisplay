@@ -1,19 +1,20 @@
 % if (@{$departures}) {
 
+<div class="displaysingle">
 % my $i = 0;
 % for my $departure (@{$departures}) {
 % $i++;
-<div class="s_display">
-<div class="s_platform">
+<div class="display">
+<div class="platform">
 %= $departure->{platform}
 </div>
-<div class="s_time">
+<div class="time">
 %= $departure->{time}
 </div>
-<div class="s_train">
+<div class="train">
 %= $departure->{train}
 </div>
-<div class="s_via">
+<div class="via">
 % my $via_max = @{$departure->{via}};
 % my $via_cur = 0;
 % for my $stop (@{$departure->{via}}) {
@@ -21,24 +22,26 @@
 <span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
 % }
 </div>
-<div class="s_destination">
+<div class="destination">
 %= $departure->{destination}
 </div>
 % if ($departure->{info}) {
-<div class="s_info">
+<div class="info">
 <marquee behaviour="scroll" scrollamount="1" direction="left">
 %= $departure->{info}
 </marquee>
 </div>
 % }
-</div> <!-- s_display -->
+</div> <!-- display -->
 % }
+
+</div> <!-- displaysingle -->
 
 % }
 % else {
 
-<div class="s_display">
-<div class="s_no_data">
+<div class="display">
+<div class="no_data">
 Bitte Ansage beachten
 </div>
 </div>

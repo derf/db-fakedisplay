@@ -1,6 +1,6 @@
 % if (@{$departures}) {
 
-<div class="outer">
+<div class="displaymulti">
 % my $i = 0;
 % for my $departure (@{$departures}) {
 % $i++;
@@ -43,7 +43,7 @@
 
 % }
 
-</div> <!-- outer -->
+</div> <!-- displaymulti -->
 
 % }
 % else {

@@ -20,12 +20,12 @@
 	}
 % }
 
-	div.outer {
+	div.displaymulti {
 		border: 0.2em solid #000066;
 		width: 55em;
 	}
 
-	div.display {
+	div.displaymulti div.display {
 		background-color: #0000ff;
 		color: white;
 		font-family: Sans-Serif;
@@ -39,19 +39,19 @@
 		height: 1.4em;
 	}
 
-	div.display div {
+	div.displaymulti div.display div {
 		overflow: hidden;
 		position: absolute;
 		height: 100%;
 	}
 
-	div.time {
+	div.displaymulti div.time {
 		left: 0;
 		width: 6%;
 		font-size: 95%;
 	}
 
-	div.train {
+	div.displaymulti div.train {
 		left: 5%;
 		width: 9%;
 		background-color: white;
@@ -59,28 +59,28 @@
 		font-size: 95%;
 	}
 
-	div.via {
+	div.displaymulti div.via {
 		left: 15%;
 		width: 35%;
 	}
 
-	div.via span {
+	div.displaymulti div.via span {
 		margin-right: 0.4em;
 		font-size: 80%;
 	}
 
-	div.destination {
+	div.displaymulti div.destination {
 		left: 50%;
 		width: 25%;
 		font-size: 120%;
 	}
 
-	div.platform {
+	div.displaymulti div.platform {
 		left: 75%;
 		width: 5%;
 	}
 
-	div.info {
+	div.displaymulti div.info {
 		left: 80%;
 		width: 20%;
 		background-color: white;
@@ -89,11 +89,11 @@
 		line-height: 150%;
 	}
 
-	div.separator {
+	div.displaymulti div.separator {
 		border-bottom: 0.1em solid #000066;
 	}
 
-	div.s_display {
+	div.displaysingle div.display {
 		background-color: #0000ff;
 		color: white;
 		font-family: Sans-Serif;
@@ -107,40 +107,40 @@
 		border: 0.7em solid #000066;
 	}
 
-	div.s_display div {
+	div.displaysingle div.display div {
 		overflow: hidden;
 		position: absolute;
 	}
 
-	div.s_no_data {
+	div.displaysingle div.no_data {
 		top: 0.5em;
 		left: 1em;
 		font-size: 1.7em;
 	}
 
-	div.s_time {
+	div.displaysingle div.time {
 		top: 0em;
 		left: 0em;
 		font-size: 1.7em;
 	}
 
-	div.s_train {
+	div.displaysingle div.train {
 		left: 0em;
 		top: 1.8em;
 	}
 
-	div.s_via {
+	div.displaysingle div.via {
 		top: 1.5em;
 		left: 5.8em;
 		width: 17em;
 		height: 1em;
 	}
 
-	div.s_via span {
+	div.displaysingle div.via span {
 		margin-right: 0.4em;
 	}
 
-	div.s_destination {
+	div.displaysingle div.destination {
 		top: 1.6em;
 		left: 3.6em;
 		width: 12em;
@@ -148,13 +148,13 @@
 		height: 1.2em;
 	}
 
-	div.s_platform {
+	div.displaysingle div.platform {
 		top: 0em;
 		right: 0em;
 		font-size: 3em;
 	}
 
-	div.s_info {
+	div.displaysingle div.info {
 		top: 0em;
 		left: 5.8em;
 		width: 16.5em;
