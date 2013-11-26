@@ -98,10 +98,10 @@ sub handle_request {
 			$info = undef;
 		}
 		if ( $hide_low_delay and $info ) {
-			$info =~ s{ ^ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
+			$info =~ s{ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
 		}
 		if ($info) {
-			$info =~ s{ ^ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
+			$info =~ s{ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
 		push(
 			@departures,
