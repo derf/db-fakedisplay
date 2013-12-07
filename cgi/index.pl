@@ -46,7 +46,7 @@ sub handle_request {
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[multi single]] ) ) {
+	if ( not( $template ~~ [qw[clean multi single]] ) ) {
 		$template = 'multi';
 	}
 

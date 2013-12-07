@@ -20,6 +20,74 @@
 	}
 % }
 
+	div.displayclean div.display {
+		font-family: Sans-Serif;
+		position: relative;
+		margin-bottom: 0;
+		margin-top: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		width: 100%;
+		height: 4.4em;
+	}
+
+	div.displayclean div.display div {
+		overflow: hidden;
+		position: absolute;
+		height: 100%;
+	}
+
+	div.displayclean div.time {
+		left: 0;
+		top: 10%;
+		height: 1em;
+		font-size: 150%;
+	}
+
+	div.displayclean div.train {
+		left: 0;
+		width: 42%;
+		color: #000000;
+		font-size: 200%;
+		font-weight: bold;
+		text-align: right;
+	}
+
+	div.displayclean div.via {
+		top: 57%;
+		left: 44%;
+	}
+
+	div.displayclean div.via span {
+		margin-right: 0.4em;
+		font-size: 95%;
+		color: #333333;
+	}
+
+	div.displayclean div.destination {
+		left: 44%;
+		width: 78%;
+		font-size: 200%;
+	}
+
+	div.displayclean div.platform {
+		right: 0;
+		font-size: 200%;
+	}
+
+	div.displayclean div.info {
+		left: 0;
+		top: 57%;
+		width: 44%;
+		font-size: 80%;
+		line-height: 150%;
+		color: #dd0000;
+	}
+
+	div.displayclean div.separator {
+		border-bottom: 0.1em solid #000066;
+	}
+
 	div.displaymulti {
 		border: 0.2em solid #000066;
 		width: 55em;
@@ -280,7 +348,7 @@
       display type
     </div>
     <div>
-      %= select_field mode => [['combined' => 'multi'], ['platform' => 'single']]
+      %= select_field mode => [['combined' => 'multi'], ['platform' => 'single'], ['non-DB' => 'clean']]
     </div>
   </div>
   <div class="field">
