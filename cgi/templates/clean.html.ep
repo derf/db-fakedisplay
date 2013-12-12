@@ -1,48 +1,48 @@
 % if (@{$departures}) {
 
 <div class="displayclean">
+<ul>
 % my $i = 0;
 % for my $departure (@{$departures}) {
 % $i++;
 
-<div class="display <% if (($i % 2) == 0) { %> separator<% } %>">
-
-<div class="train">
+<li>
+<span class="line">
 %= $departure->{train}
-</div>
-
-<div class="destination">
-%= $departure->{destination}
-</div>
-
-<div class="platform">
-%= $departure->{platform}
-</div>
-
-<div class="time">
-%= $departure->{time}
-</div>
-
-<div class="via">
+</span>
+<span class="route">
 % my $via_max = @{$departure->{via}};
 % my $via_cur = 0;
 % for my $stop (@{$departure->{via}}) {
 % $via_cur++;
-<span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
+<%= $stop %><% if ($via_cur < $via_max) { %> - <% } %>
 % }
-</div>
+</span>
+<span class="dest">
+%= $departure->{destination}
+</span>
+<span class="countdown">
+% if ($departure->{delay}) {
+<span class="delay">(+<%= $departure->{delay} %>)</span>
+% }
+</span>
+<span class="time">
+%= $departure->{time}
+</span>
+</li>
 
+<!--
 % if ($departure->{info}) {
 <div class="info">
 %= $departure->{info}
 </div>
 % }
-
-</div> <!-- display -->
+-->
 
 % }
 
-</div> <!-- outer -->
+</ul>
+</div> <!-- displayclean -->
 
 % }
 % else {

@@ -83,6 +83,7 @@ sub handle_request {
 
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
+		my $delay = 0;
 		if ($via) {
 			my @route = $result->route;
 			if ( not( any { $_ =~ m{$via}io } @route ) ) {
@@ -96,6 +97,9 @@ sub handle_request {
 
 		if ( $info eq '+0' ) {
 			$info = undef;
+		}
+		if ( $info and $info =~ m{ \+ (\d+) }x ) {
+			$delay = $1;
 		}
 		if ( $hide_low_delay and $info ) {
 			$info =~ s{ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
@@ -112,6 +116,7 @@ sub handle_request {
 				destination => $result->destination,
 				platform    => $platform,
 				info        => $info,
+				delay       => $delay,
 			}
 		);
 	}
