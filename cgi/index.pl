@@ -98,7 +98,10 @@ sub handle_request {
 		if ( $info eq '+0' ) {
 			$info = undef;
 		}
-		if ( $info and $info =~ m{ \+ (\d+) }x ) {
+		if (    $template eq 'clean'
+			and $info
+			and $info =~ s{ (?: ca \. \s* )? \+ (\d+) :? \s* }{}x )
+		{
 			$delay = $1;
 		}
 		if ( $hide_low_delay and $info ) {

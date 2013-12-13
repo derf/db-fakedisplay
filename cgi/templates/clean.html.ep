@@ -10,6 +10,12 @@
 <span class="line">
 %= $departure->{train}
 </span>
+% if ($departure->{info} and length $departure->{info}) {
+<span class="info">
+%= $departure->{info}
+</span>
+% }
+% else {
 <span class="route">
 % my $via_max = @{$departure->{via}};
 % my $via_cur = 0;
@@ -18,6 +24,7 @@
 <%= $stop %><% if ($via_cur < $via_max) { %> - <% } %>
 % }
 </span>
+% }
 <span class="dest">
 %= $departure->{destination}
 </span>

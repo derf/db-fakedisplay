@@ -27,7 +27,6 @@
 		left:5px;
 		border-width:1px 2px;
 		width:100%;
-		height:499px;
 	}
 
 	div.displayclean ul {
@@ -40,20 +39,17 @@
 		list-style-type:none;
 		margin:0;
 		padding:0;
-		border-width:1px 0 25px;
-		border-style:solid;
-		border-color:#CCCCCC;
+		border-bottom: 1px solid #cccccc;
 	}
 
 	div.displayclean li {
-		height:70px;
+		height:7em;
 		background-color:#F8F8F8;
-		padding:5px;
 		display:block;
 		border-width:1px 0;
 		border-style:solid;
 		border-color:#CCCCCC;
-		width:95%;
+		width:100%;
 		position:relative;
 	}
 
@@ -61,55 +57,49 @@
 		color:#FFFFFF;
 		background-color:#666666;
 		font-weight:bold;
-		font-size:28px;
+		font-size: 3em;
 		padding:3px 8px 2px 5px;
 		position:absolute;
 		top:7px;
-		left:1%;
-	}
-
-	div.displayclean li .tram {
-		background-color:#CC0000;
-	}
-
-	div.displayclean li .sbahn {
-		background-color:#006E10;
-		-webkit-border-radius: 30px;
-		-moz-border-radius: 30px;
-		border-radius: 30px;
-	}
-
-	div.displayclean li .ubahn {
-		background-color:#001090;
-	}
-
-	div.displayclean li .bus {
-		background-color:#991199;
-		-webkit-border-radius: 10px;
-		-moz-border-radius: 10px;
-		border-radius: 10px;
+		left:2px;
 	}
 
 	div.displayclean li .route {
 		color:#444444;
-		font-size:21px;
+		font-size:2.1em;
 		position:absolute;
 		top:5px;
-		left:10em;
+		left:9.6em;
+		height: 1em;
+		width: 70%;
+		overflow: hidden;
+	}
+
+	div.displayclean li .info {
+		color:#ff0000;
+		font-size:2.1em;
+		position:absolute;
+		top:5px;
+		left:9.6em;
+		height: 1em;
+		width: 70%;
+		overflow: hidden;
 	}
 
 	div.displayclean li .dest {
 		color:#000000;
 		font-weight:bold;
-		font-size:46px;
+		font-size:4em;
 		position:absolute;
-		top:23px;
-		left:4.5em;
+		top:0.8em;
+		left:5em;
+		width: 70%;
+		overflow: hidden;
 	}
 
 	div.displayclean li .countdown {
 		color:#000000;
-		font-size:48px;
+		font-size:3em;
 		position:absolute;
 		right:5px;
 		bottom:2px;
@@ -117,7 +107,7 @@
 
 	div.displayclean li .header {
 		color:#000000;
-		font-size:55px;
+		font-size:2em;
 		font-weight:bold;
 		padding-top:8px;
 		border-width-top:0;
@@ -130,14 +120,14 @@
 	}
 
 	div.displayclean li .countdown .delay {
-		font-size:38px;
+		font-size:1em;
 		color:#FF0000;
 		padding-right:7px;
 	}
 
 	div.displayclean li .time {
 		color:#000000;
-		font-size:24px;
+		font-size:2.4em;
 		position:absolute;
 		right:5px;
 		top:5px;
