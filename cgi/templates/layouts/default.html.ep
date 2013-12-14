@@ -125,6 +125,10 @@
 		padding-right:7px;
 	}
 
+	div.displayclean li .countdown .platform {
+		font-weight: bold;
+	}
+
 	div.displayclean li .time {
 		color:#000000;
 		font-size:2.4em;

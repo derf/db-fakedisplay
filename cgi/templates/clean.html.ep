@@ -32,6 +32,9 @@
 % if ($departure->{delay}) {
 <span class="delay">(+<%= $departure->{delay} %>)</span>
 % }
+<span class="platform">
+%= $departure->{platform}
+</span>
 </span>
 <span class="time">
 %= $departure->{time}
