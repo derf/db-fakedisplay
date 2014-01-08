@@ -20,13 +20,18 @@ sub get_results_for {
 		default_expires => $refresh_interval . ' sec',
 	);
 
-	my $results = $cache->thaw($station);
+	# Cache::File has UTF-8 problems, so strip it (and any other potentially
+	# problematic chars).
+	my $cstation = $station;
+	$cstation =~ tr{[0-9a-zA-Z -]}{}cd;
+
+	my $results = $cache->thaw($cstation);
 
 	if ( not $results ) {
 		my $status
 		  = Travel::Status::DE::DeutscheBahn->new( station => $station );
 		$results = [ $status->results ];
-		$cache->freeze( $station, $results );
+		$cache->freeze( $cstation, $results );
 	}
 
 	return @{$results};
