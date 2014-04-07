@@ -43,6 +43,7 @@ sub handle_request {
 	my $via     = $self->stash('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
+	my @lines     = split( /,/, $self->param('lines')     // q{} );
 	my $template       = $self->param('mode')         // 'multi';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
@@ -88,7 +89,8 @@ sub handle_request {
 
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
-		my $delay = 0;
+		my $line     = $result->line;
+		my $delay    = 0;
 		if ($via) {
 			my @route = $result->route;
 			if ( not( any { $_ =~ m{$via}io } @route ) ) {
@@ -96,6 +98,9 @@ sub handle_request {
 			}
 		}
 		if ( @platforms and not( any { $_ eq $platform } @platforms ) ) {
+			next;
+		}
+		if ( @lines and not( any { $line =~ m{^$_} } @lines ) ) {
 			next;
 		}
 		my $info = $result->info;
