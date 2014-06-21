@@ -362,7 +362,12 @@
   <div class="field">
     <div class="desc">Station name</div>
     <div>
+% if (stash('stationlist')) {
+      %= select_field station => stash('stationlist')
+% }
+% else {
       %= text_field 'station'
+% }
       %= submit_button 'Display'
     </div>
   </div>

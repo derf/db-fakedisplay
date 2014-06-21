@@ -4,6 +4,7 @@ use Cache::File;
 use List::MoreUtils qw(any);
 use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::IRIS;
+use Travel::Status::DE::IRIS::Stations;
 use 5.014;
 use utf8;
 
@@ -79,6 +80,17 @@ sub handle_request {
 	my @results = get_results_for( $backend, $station );
 
 	if ( not @results ) {
+		if ( $backend eq 'iris' ) {
+			my @candidates = map { [ "$_->[1] ($_->[0])", $_->[0] ] }
+			  Travel::Status::DE::IRIS::Stations::get_station($station);
+			if (@candidates) {
+				$self->render(
+					'multi',
+					stationlist => \@candidates,
+					hide_opts   => 0
+				);
+			}
+		}
 		$self->render(
 			'multi',
 			error     => "Got no results for '$station'",
