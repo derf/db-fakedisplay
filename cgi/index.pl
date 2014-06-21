@@ -119,14 +119,20 @@ sub handle_request {
 		}
 		my $info;
 		if ( $backend eq 'iris' ) {
-			$info = join( ' +++ ', $result->info );
+			my $delaymsg
+			  = join( ', ', map { $_->[1] } $result->delay_messages );
+			my $qosmsg = join( ' +++ ', map { $_->[1] } $result->qos_messages );
 			if ( $result->is_cancelled ) {
-				$info = "Fahrt fällt aus: ${info}";
+				$info = "Fahrt fällt aus: ${delaymsg}";
 			}
-			if ( $result->delay > 0 ) {
+			elsif ( $result->delay and $result->delay > 0 ) {
 				$info = sprintf( 'Verspätung ca %d Min.%s%s',
-					$result->delay, $info ? q{: } : q{}, $info );
+					$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 			}
+			if ( $info and $qosmsg ) {
+				$info .= ' +++ ';
+			}
+			$info .= $qosmsg;
 		}
 		else {
 			$info = $result->info;
