@@ -402,6 +402,14 @@
   </div>
   <div class="field">
     <div class="desc">
+      backend
+    </div>
+    <div>
+      %= select_field backend => [['RIS' => 'ris'], ['IRIS' => 'iris']]
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">
       hide input fields
     </div>
     <div>

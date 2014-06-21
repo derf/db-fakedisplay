@@ -3,6 +3,7 @@ use Mojolicious::Lite;
 use Cache::File;
 use List::MoreUtils qw(any);
 use Travel::Status::DE::DeutscheBahn;
+use Travel::Status::DE::IRIS;
 use 5.014;
 use utf8;
 
@@ -13,7 +14,7 @@ our $VERSION = qx{git describe --dirty} || '0.04';
 my $refresh_interval = 180;
 
 sub get_results_for {
-	my ($station) = @_;
+	my ( $backend, $station ) = @_;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/db-fake',
@@ -25,13 +26,25 @@ sub get_results_for {
 	my $cstation = $station;
 	$cstation =~ tr{[0-9a-zA-Z -]}{}cd;
 
-	my $results = $cache->thaw($cstation);
+	my $cache_str = "${backend}_${cstation}";
+
+	my $results = $cache->thaw($cache_str);
 
 	if ( not $results ) {
-		my $status
-		  = Travel::Status::DE::DeutscheBahn->new( station => $station );
-		$results = [ $status->results ];
-		$cache->freeze( $cstation, $results );
+		if ( $backend eq 'iris' ) {
+			my $status = Travel::Status::DE::IRIS->new(
+				station      => $station,
+				serializable => 1
+			);
+			$results = [ $status->results ];
+			$cache->freeze( $cache_str, $results );
+		}
+		else {
+			my $status
+			  = Travel::Status::DE::DeutscheBahn->new( station => $station );
+			$results = [ $status->results ];
+			$cache->freeze( $cache_str, $results );
+		}
 	}
 
 	return @{$results};
@@ -47,6 +60,7 @@ sub handle_request {
 	my $template       = $self->param('mode')         // 'multi';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $backend        = $self->param('backend')      // 'ris';
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
@@ -62,7 +76,7 @@ sub handle_request {
 	}
 
 	my @departures;
-	my @results = get_results_for($station);
+	my @results = get_results_for( $backend, $station );
 
 	if ( not @results ) {
 		$self->render(
@@ -103,7 +117,20 @@ sub handle_request {
 		if ( @lines and not( any { $line =~ m{^$_} } @lines ) ) {
 			next;
 		}
-		my $info = $result->info;
+		my $info;
+		if ( $backend eq 'iris' ) {
+			$info = join( ' +++ ', $result->info );
+			if ( $result->is_cancelled ) {
+				$info = "Fahrt fällt aus: ${info}";
+			}
+			if ( $result->delay > 0 ) {
+				$info = sprintf( 'Verspätung ca %d Min.%s%s',
+					$result->delay, $info ? q{: } : q{}, $info );
+			}
+		}
+		else {
+			$info = $result->info;
+		}
 
 		if ( $info eq '+0' ) {
 			$info = undef;
