@@ -138,8 +138,14 @@ sub handle_request {
 				$info = "Fahrt fällt aus: ${delaymsg}";
 			}
 			elsif ( $result->delay and $result->delay > 0 ) {
-				$info = sprintf( 'Verspätung ca %d Min.%s%s',
+				if ($template eq 'clean') {
+					$info = $delaymsg;
+					$delay = $result->delay;
+				}
+				else {
+				$info = sprintf( 'Verspätung ca. %d Min.%s%s',
 					$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
+				}
 			}
 			if ( $info and $qosmsg ) {
 				$info .= ' +++ ';
