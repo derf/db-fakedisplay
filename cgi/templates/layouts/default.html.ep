@@ -434,6 +434,17 @@
 </div> <!-- notes -->
 
 <div class="notes">
+<span class="notes">examples:</span>
+<ul>
+<li><a href="/Essen%20Hbf">Essen HBf</a> (RIS, combined table)</li>
+<li><a href="/Dortmund/Bochum%7CHamm">Dortmund HBf</a> (RIS, combined table,
+only routes via Bochum or Hamm)</li>
+<li><a href="/Dortmund%20Uni?mode=clean&backend=iris">Dortmund Universit&auml;t</a> (IRIS, mobile view)</li>
+<li><a href="/KD?mode=single&backend=iris">D&uuml;sseldorf HBf</a> (IRIS, platform view)</li>
+</ul>
+</div>
+
+<div class="notes">
 <span class="notes">see also:</span>
 <ul>
 <li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DeutscheBahn RIS</a></li>
