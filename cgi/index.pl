@@ -119,6 +119,9 @@ sub handle_request {
 		my $delay    = 0;
 		if ($via) {
 			my @route = $result->route;
+			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
+				@route = $result->route_post;
+			}
 			if ( not( any { $_ =~ m{$via}io } @route ) ) {
 				next;
 			}
@@ -138,13 +141,13 @@ sub handle_request {
 				$info = "Fahrt fällt aus: ${delaymsg}";
 			}
 			elsif ( $result->delay and $result->delay > 0 ) {
-				if ($template eq 'clean') {
-					$info = $delaymsg;
+				if ( $template eq 'clean' ) {
+					$info  = $delaymsg;
 					$delay = $result->delay;
 				}
 				else {
-				$info = sprintf( 'Verspätung ca. %d Min.%s%s',
-					$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
+					$info = sprintf( 'Verspätung ca. %d Min.%s%s',
+						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 				}
 			}
 			if ( $info and $qosmsg ) {
