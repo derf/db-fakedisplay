@@ -33,7 +33,7 @@
 
 % if ($departure->{info}) {
 <div class="info">
-<marquee behaviour="scroll" scrollamount="1" direction="left">
+<marquee behavior="scroll" scrollamount="1" direction="left">
 %= $departure->{info}
 </marquee>
 </div>
