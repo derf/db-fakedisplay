@@ -10,6 +10,26 @@
 <span class="line">
 %= $departure->{train}
 </span>
+% if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
+<span class="moreinfo">
+<ul>
+% for my $pair (@{$departure->{moreinfo}}) {
+<li>
+% if ($pair->[0]->isa('DateTime')) {
+%= $pair->[0]->strftime('%H:%M')
+% }
+% else {
+%= $pair->[0]
+% }
+:
+<span class="reason">
+%= $pair->[1]
+</span>
+</li>
+% }
+</ul>
+</span>
+% }
 % if ($departure->{info} and length $departure->{info}) {
 <span class="info">
 %= $departure->{info}

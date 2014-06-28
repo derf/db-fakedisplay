@@ -29,7 +29,7 @@
 		width:100%;
 	}
 
-	div.displayclean ul {
+	div.displayclean > ul {
 		position:absolute;
 		width:100%;
 		background-color:#F8F8F8;
@@ -42,8 +42,8 @@
 		border-bottom: 1px solid #cccccc;
 	}
 
-	div.displayclean li {
-		height:7em;
+	div.displayclean > ul > li {
+		min-height:7em;
 		background-color:#F8F8F8;
 		display:block;
 		border-width:1px 0;
@@ -84,6 +84,28 @@
 		height: 1em;
 		width: 70%;
 		overflow: hidden;
+	}
+
+	div.displayclean li .moreinfo {
+		color:#000000;
+		font-size:2.1em;
+		position:absolute;
+		top:5px;
+		left:8em;
+		min-height: 1em;
+		width: 70%;
+		background-color: white;
+		border: 1px solid black;
+		z-index: 5;
+		visibility: hidden;
+	}
+
+	div.displayclean li:hover .moreinfo {
+		visibility: visible;
+	}
+
+	div.displayclean li .moreinfo .reason {
+		color: #ff0000;
 	}
 
 	div.displayclean li .dest {

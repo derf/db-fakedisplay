@@ -132,7 +132,7 @@ sub handle_request {
 		if ( @lines and not( any { $line =~ m{^$_} } @lines ) ) {
 			next;
 		}
-		my $info;
+		my ( $info, $moreinfo );
 		if ( $backend eq 'iris' ) {
 			my $delaymsg
 			  = join( ', ', map { $_->[1] } $result->delay_messages );
@@ -154,9 +154,14 @@ sub handle_request {
 				$info .= ' +++ ';
 			}
 			$info .= $qosmsg;
+
+			$moreinfo = [ $result->messages ];
 		}
 		else {
 			$info = $result->info;
+			if ($info) {
+				$moreinfo = [ [ 'RIS', $info ] ];
+			}
 		}
 
 		if ( $info eq '+0' ) {
@@ -183,6 +188,7 @@ sub handle_request {
 				destination => $result->destination,
 				platform    => $platform,
 				info        => $info,
+				moreinfo    => $moreinfo,
 				delay       => $delay,
 			}
 		);
