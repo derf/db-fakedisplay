@@ -96,7 +96,8 @@
 		visibility: hidden;
 	}
 
-	div.displayclean li:hover .moreinfo {
+	div.displayclean li:hover .moreinfo
+	div.displayclean li .moreinfo:hover {
 		visibility: visible;
 	}
 
