@@ -116,7 +116,7 @@ sub handle_request {
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		my $line     = $result->line;
-		my $delay    = 0;
+		my $delay    = $result->delay;
 		if ($via) {
 			my @route = $result->route;
 			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
