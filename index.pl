@@ -67,7 +67,7 @@ sub handle_request {
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[clean multi single]] ) ) {
+	if ( not( $template ~~ [qw[clean json multi single]] ) ) {
 		$template = 'multi';
 	}
 
@@ -194,14 +194,25 @@ sub handle_request {
 		);
 	}
 
-	$self->render(
-		$template,
-		departures       => \@departures,
-		version          => $VERSION,
-		title            => "departures for ${station}",
-		refresh_interval => $refresh_interval + 3,
-		hide_opts        => $hide_opts,
-	);
+	if ( $template eq 'json' ) {
+		$self->render(
+			json => {
+				preformatted => \@departures,
+				version      => $VERSION,
+				raw          => \@results,
+			}
+		);
+	}
+	else {
+		$self->render(
+			$template,
+			departures       => \@departures,
+			version          => $VERSION,
+			title            => "departures for ${station}",
+			refresh_interval => $refresh_interval + 3,
+			hide_opts        => $hide_opts,
+		);
+	}
 }
 
 get '/_redirect' => sub {
