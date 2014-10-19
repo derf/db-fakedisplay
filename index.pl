@@ -79,6 +79,28 @@ sub handle_request {
 	my @departures;
 	my @results = get_results_for( $backend, $station );
 
+	if ( not @results and $template eq 'json' ) {
+		if ( $backend eq 'iris' ) {
+			my @candidates = map { { code => $_->[0], name => $_->[1] } }
+			  Travel::Status::DE::IRIS::Stations::get_station($station);
+			$self->render(
+				json => {
+					version    => $VERSION,
+					error      => 'ambiguous station code/name',
+					candidates => \@candidates,
+				}
+			);
+			return;
+		}
+		$self->render(
+			json => {
+				version => $VERSION,
+				error   => 'unknown station code/name',
+			}
+		);
+		return;
+	}
+
 	if ( not @results ) {
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { [ "$_->[1] ($_->[0])", $_->[0] ] }
@@ -89,6 +111,7 @@ sub handle_request {
 					stationlist => \@candidates,
 					hide_opts   => 0
 				);
+				return;
 			}
 		}
 		$self->render(
