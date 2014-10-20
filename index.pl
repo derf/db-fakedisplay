@@ -10,7 +10,7 @@ use utf8;
 
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = qx{git describe --dirty} || '0.04';
+our $VERSION = qx{git describe --dirty} || '0.05';
 
 my $refresh_interval = 180;
 
