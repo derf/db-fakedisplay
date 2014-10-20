@@ -64,6 +64,11 @@ sub handle_request {
 	my $backend        = $self->param('backend')      // 'ris';
 	my $callback       = $self->param('callback');
 
+	my $api_version
+	  = $backend eq 'iris'
+	  ? $Travel::Status::DE::IRIS::VERSION
+	  : $Travel::Status::DE::DeutscheBahn::VERSION;
+
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
@@ -87,17 +92,19 @@ sub handle_request {
 			  Travel::Status::DE::IRIS::Stations::get_station($station);
 			$json = $self->render_to_string(
 				json => {
-					version    => $VERSION,
-					error      => 'ambiguous station code/name',
-					candidates => \@candidates,
+					api_version => $api_version,
+					version     => $VERSION,
+					error       => 'ambiguous station code/name',
+					candidates  => \@candidates,
 				}
 			);
 		}
 		else {
 			$json = $self->render_to_string(
 				json => {
-					version => $VERSION,
-					error   => 'unknown station code/name',
+					api_version => $api_version,
+					version     => $VERSION,
+					error       => 'unknown station code/name',
 				}
 			);
 		}
@@ -235,6 +242,7 @@ sub handle_request {
 	if ( $template eq 'json' ) {
 		my $json = $self->render_to_string(
 			json => {
+				api_version  => $api_version,
 				preformatted => \@departures,
 				version      => $VERSION,
 				raw          => \@results,
