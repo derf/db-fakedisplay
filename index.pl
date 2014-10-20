@@ -62,6 +62,7 @@ sub handle_request {
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
 	my $backend        = $self->param('backend')      // 'ris';
+	my $callback       = $self->param('callback');
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-fakedisplay' );
@@ -80,24 +81,38 @@ sub handle_request {
 	my @results = get_results_for( $backend, $station );
 
 	if ( not @results and $template eq 'json' ) {
+		my $json;
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { { code => $_->[0], name => $_->[1] } }
 			  Travel::Status::DE::IRIS::Stations::get_station($station);
-			$self->render(
+			$json = $self->render_to_string(
 				json => {
 					version    => $VERSION,
 					error      => 'ambiguous station code/name',
 					candidates => \@candidates,
 				}
 			);
-			return;
 		}
-		$self->render(
-			json => {
-				version => $VERSION,
-				error   => 'unknown station code/name',
-			}
-		);
+		else {
+			$json = $self->render_to_string(
+				json => {
+					version => $VERSION,
+					error   => 'unknown station code/name',
+				}
+			);
+		}
+		if ($callback) {
+			$self->render(
+				data   => "$callback($json);",
+				format => 'json'
+			);
+		}
+		else {
+			$self->render(
+				data   => $json,
+				format => 'json'
+			);
+		}
 		return;
 	}
 
@@ -218,13 +233,25 @@ sub handle_request {
 	}
 
 	if ( $template eq 'json' ) {
-		$self->render(
+		my $json = $self->render_to_string(
 			json => {
 				preformatted => \@departures,
 				version      => $VERSION,
 				raw          => \@results,
 			}
 		);
+		if ($callback) {
+			$self->render(
+				data   => "$callback($json);",
+				format => 'json'
+			);
+		}
+		else {
+			$self->render(
+				data   => $json,
+				format => 'json'
+			);
+		}
 	}
 	else {
 		$self->render(
