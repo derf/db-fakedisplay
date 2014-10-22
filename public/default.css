@@ -42,6 +42,28 @@ div.displayclean li .line {
 	left:2px;
 }
 
+div.displayclean li .tram {
+	background-color: #CC0000;
+}
+
+div.displayclean li .sbahn {
+	background-color:#006E10;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+
+div.displayclean li .ubahn {
+	background-color:#001090;
+}
+
+div.displayclean li .bus {
+	background-color:#991199;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
 div.displayclean li .route {
 	color:#444444;
 	font-size:2.1em;

@@ -7,7 +7,11 @@
 % $i++;
 
 <li>
-<span class="line">
+% my $linetype = q{};
+% if ( $departure->{train} =~ m{ ^ S \s? \d{1,2} $ }x ) {
+%   $linetype = 'sbahn';
+% }
+<span class="line <%= $linetype %>">
 %= $departure->{train}
 </span>
 % if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
