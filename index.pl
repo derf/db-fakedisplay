@@ -78,7 +78,7 @@ sub handle_request {
 	}
 
 	if ( not $station ) {
-		$self->render( $template, hide_opts => 0 );
+		$self->render( $template, hide_opts => 0, show_intro => 1 );
 		return;
 	}
 

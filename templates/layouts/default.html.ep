@@ -18,7 +18,7 @@
 <body style="<%= ($hide_opts ? 'margin: 0; padding: 0;' : q{}) %>">
 
 % if (my $error = stash 'error') {
-<div class="error">Received an error from the backend service:</div>
+<div class="error">Backend-Fehler:</div>
 <div>
 <pre>
 %= $error
@@ -28,6 +28,24 @@
 
 %= content
 
+% if (stash 'show_intro') {
+<p>
+  Diese Seite ist ein Frontend zum
+  <a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">Abfahrtsmonitor</a>
+  der Deutschen Bahn. Sie ersetzt ihn nicht, kann dafür aber gut die in den
+  Bahnhofshallen bzw. an den Gleisen verbauten Anzeigen nachahmen.
+</p>
+<p>
+  Als Backend werden sowohl das RIS ("Reisenden-Informationssystem", d.h. der
+  Bahn-Abfahrtsmonitor) als auch das IRIS ("Innerbetriebliches
+  Reisenden-Informationssystem") unterstützt. Im Normalfall enthält das
+  IRIS mehr und detailliertere Angaben, aktuell wird ein Großteil davon
+  aber noch nicht unterstützt. Umleitungen und ausfallende Halte werden
+  aktuell ebenfalls nicht angezeigt.
+</p>
+% }
+
+
 % if (not $hide_opts) {
 <div class="input-field">
 
@@ -35,7 +53,7 @@
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">Station name</div>
+    <div class="desc">Bahnhof / Haltestelle</div>
     <div>
 % if (stash('stationlist')) {
       %= select_field station => stash('stationlist')
@@ -47,10 +65,10 @@
     </div>
   </div>
   <div class="break"></div>
-  <span class="optional">optional:</span>
+  <span class="optional">Optionale Einstellungen:</span>
   <div class="field">
     <div class="desc">
-      only display routes via
+      Einschränken auf Unterwegshalte:
     </div>
     <div>
       %= text_field 'via'
@@ -58,7 +76,7 @@
   </div>
   <div class="field">
     <div class="desc">
-      on platforms
+      Nur folgende Gleise anzeigen:
     </div>
     <div>
       %= text_field 'platforms'
@@ -66,7 +84,7 @@
   </div>
   <div class="field">
     <div class="desc">
-      hide delay &lt; 5 minutes
+      Nur Verspätungen über 5 Minuten anzeigen
     </div>
     <div>
       %= check_box 'hidelowdelay' => 1
@@ -74,15 +92,15 @@
   </div>
   <div class="field">
     <div class="desc">
-      display type
+      Layout
     </div>
     <div>
-      %= select_field mode => [['combined' => 'multi'], ['platform' => 'single'], ['non-DB' => 'clean']]
+      %= select_field mode => [['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'], ['Öffi' => 'clean']]
     </div>
   </div>
   <div class="field">
     <div class="desc">
-      backend
+      Backend
     </div>
     <div>
       %= select_field backend => [['RIS' => 'ris'], ['IRIS' => 'iris']]
@@ -90,7 +108,7 @@
   </div>
   <div class="field">
     <div class="desc">
-      hide input fields
+      Formular verstecken
     </div>
     <div>
       %= check_box 'hide_opts' => 1
@@ -102,30 +120,32 @@
 </div> <!-- input-field -->
 
 <div class="notes">
-<span class="notes">notes:</span>
+<span class="notes">Anmerkungen:</span>
 <ul>
-<li>Umlauts do not work reliably. Try either ä → ae or ä → a</li>
+<li>Umlaute funktionieren nicht mit allen Backend/Layout-Kombinationen.
+Wenn etwas nicht funktioniert:
+Umschreibungen der Art ä → ae oder ä → a benutzen.</li>
 </ul>
 </div> <!-- notes -->
 
 <div class="notes">
-<span class="notes">examples:</span>
+<span class="notes">Beispiele:</span>
 <ul>
-<li><a href="/Essen%20Hbf">Essen HBf</a> (RIS, combined table)</li>
-<li><a href="/Dortmund/Bochum%7CHamm">Dortmund HBf</a> (RIS, combined table,
-only routes via Bochum or Hamm)</li>
-<li><a href="/Dortmund%20Uni?mode=clean&backend=iris">Dortmund Universit&auml;t</a> (IRIS, mobile view)</li>
-<li><a href="/KD?mode=single&backend=iris">D&uuml;sseldorf HBf</a> (IRIS, platform view)</li>
+<li><a href="/Essen%20Hbf">Essen HBf</a> (RIS, Bahnhofstafel)</li>
+<li><a href="/Dortmund/Bochum%7CHamm">Dortmund HBf</a> (RIS, Bahnhofstafel,
+nur Züge via Bochum oder Hamm)</li>
+<li><a href="/Dortmund%20Uni?mode=clean&backend=iris">Dortmund Universit&auml;t</a> (IRIS, "Mobile" Ansicht)</li>
+<li><a href="/KD?mode=single&backend=iris">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
 </ul>
 </div>
 
 <div class="notes">
-<span class="notes">see also:</span>
+<span class="notes">Siehe auch:</span>
 <ul>
 <li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DeutscheBahn RIS</a></li>
 <li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amd;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
 >DeutscheBahn IRIS</a> (see <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a>)</li>
-<li><a href="http://www.frubi.net/iris/?station=Essen%20HBf">frubi.net arrival/departure monitor</a></li>
+<li><a href="http://www.frubi.net/iris/?station=Essen%20HBf">frubi.net IRIS-Interface</a></li>
 <li><a href="http://vrrf.finalrewind.org/">vrr-fakedisplay</a></li>
 </ul>
 </div> <!-- notes -->
