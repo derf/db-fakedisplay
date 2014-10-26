@@ -78,7 +78,11 @@ sub handle_request {
 	}
 
 	if ( not $station ) {
-		$self->render( $template, hide_opts => 0, show_intro => 1 );
+		$self->render(
+			$template,
+			hide_opts  => 0,
+			show_intro => 1
+		);
 		return;
 	}
 
@@ -200,7 +204,17 @@ sub handle_request {
 			}
 			$info .= $qosmsg;
 
-			$moreinfo = [ $result->messages ];
+			if ( $result->canceled_stops ) {
+				my $cancel_line = join( q{, }, $result->canceled_stops );
+				$info
+				  = 'Ohne Halt in: '
+				  . $cancel_line
+				  . ( $info ? ' +++ ' : q{} )
+				  . $info;
+				push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
+			}
+
+			push( @{$moreinfo}, $result->messages );
 		}
 		else {
 			$info = $result->info;
