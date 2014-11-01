@@ -204,7 +204,7 @@ sub handle_request {
 			}
 			$info .= $qosmsg;
 
-			if ( $result->canceled_stops ) {
+			if ( $result->canceled_stops and not $result->is_cancelled ) {
 				my $cancel_line = join( q{, }, $result->canceled_stops );
 				$info
 				  = 'Ohne Halt in: '
