@@ -214,6 +214,12 @@ sub handle_request {
 				push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
 			}
 
+			if ( $result->additional_stops and not $result->is_cancelled ) {
+				my $additional_line = join( q{, }, $result->additional_stops );
+				push( @{$moreinfo},
+					[ 'Zusätzliche Halte', $additional_line ] );
+			}
+
 			push( @{$moreinfo}, $result->messages );
 		}
 		else {
