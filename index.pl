@@ -247,14 +247,15 @@ sub handle_request {
 		push(
 			@departures,
 			{
-				time        => $result->time,
-				train       => $result->train,
-				via         => [ $result->route_interesting(3) ],
-				destination => $result->destination,
-				platform    => $platform,
-				info        => $info,
-				moreinfo    => $moreinfo,
-				delay       => $delay,
+				time         => $result->time,
+				train        => $result->train,
+				via          => [ $result->route_interesting(3) ],
+				destination  => $result->destination,
+				platform     => $platform,
+				info         => $info,
+				is_cancelled => $result->is_cancelled,
+				moreinfo     => $moreinfo,
+				delay        => $delay,
 			}
 		);
 	}

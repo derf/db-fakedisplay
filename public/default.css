@@ -120,6 +120,12 @@ div.displayclean li .dest {
 	overflow: hidden;
 }
 
+div.displayclean li .cancelled {
+	text-decoration: line-through;
+	text-decoration-color: red;
+	-moz-text-decoration-color: red;
+}
+
 div.displayclean li .countdown {
 	color:#000000;
 	font-size:3em;

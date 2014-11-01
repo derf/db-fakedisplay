@@ -49,7 +49,11 @@
 % }
 </span>
 % }
-<span class="dest">
+% my $extraclasses = q{};
+% if ($departure->{is_cancelled}) {
+%   $extraclasses .= ' cancelled';
+% }
+<span class="dest <%= $extraclasses %>">
 %= $departure->{destination}
 </span>
 <span class="countdown">
