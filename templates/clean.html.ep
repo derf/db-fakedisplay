@@ -57,7 +57,7 @@
 %= $departure->{destination}
 </span>
 <span class="countdown">
-% if ($departure->{delay}) {
+% if ($departure->{delay} and not $departure->{is_cancelled}) {
 <span class="delay">(+<%= $departure->{delay} %>)</span>
 % }
 <span class="platform">
