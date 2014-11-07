@@ -253,9 +253,11 @@ sub handle_request {
 				destination  => $result->destination,
 				platform     => $platform,
 				info         => $info,
-				is_cancelled => $result->is_cancelled,
-				moreinfo     => $moreinfo,
-				delay        => $delay,
+				is_cancelled => $result->can('is_canceled')
+				? $result->is_cancelled
+				: undef,
+				moreinfo => $moreinfo,
+				delay    => $delay,
 			}
 		);
 	}
