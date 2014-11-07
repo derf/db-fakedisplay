@@ -253,7 +253,7 @@ sub handle_request {
 				destination  => $result->destination,
 				platform     => $platform,
 				info         => $info,
-				is_cancelled => $result->can('is_canceled')
+				is_cancelled => $result->can('is_cancelled')
 				? $result->is_cancelled
 				: undef,
 				moreinfo => $moreinfo,
