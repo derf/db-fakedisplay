@@ -7,7 +7,9 @@
 
 <div class="display <% if (($i % 2) == 0) { %> separator<% } %>">
 <div class="platform">
+% if (not $departure->{is_cancelled}) {
 %= $departure->{platform}
+% }
 </div>
 
 <div class="time">
