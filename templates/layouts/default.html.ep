@@ -39,9 +39,8 @@
   Als Backend werden sowohl das RIS ("Reisenden-Informationssystem", d.h. der
   Bahn-Abfahrtsmonitor) als auch das IRIS ("Innerbetriebliches
   Reisenden-Informationssystem") unterstützt. Im Normalfall enthält das
-  IRIS mehr und detailliertere Angaben, aktuell wird ein Großteil davon
-  aber noch nicht unterstützt. Umleitungen und ausfallende Halte werden
-  aktuell ebenfalls nicht angezeigt.
+  IRIS mehr und detailliertere Angaben, davon werden aber noch nicht alle
+  unterstützt.
 </p>
 % }
 
