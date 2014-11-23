@@ -33,6 +33,16 @@ sub get_results_for {
 
 	if ( not $results ) {
 		if ( $backend eq 'iris' ) {
+
+			# requests with DS100 codes should be preferred (they avoid
+			# encoding problems on the IRIS server). However, only use them
+			# if we have an exact match. Ask the backend otherwise.
+			my @station_matches
+			  = Travel::Status::DE::IRIS::Stations::get_station($station);
+			if ( @station_matches == 1 ) {
+				$station = $station_matches[0][0];
+			}
+
 			my $status = Travel::Status::DE::IRIS->new(
 				station      => $station,
 				serializable => 1
