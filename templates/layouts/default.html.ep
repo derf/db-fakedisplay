@@ -113,6 +113,16 @@
       %= check_box 'hide_opts' => 1
     </div>
   </div>
+  <div class="break"></div>
+  <span class="optional">Nur für IRIS-Backend:</span>
+  <div class="field">
+    <div class="desc">
+      Ankunft- oder Abfahrtzeiten anzeigen?
+    </div>
+    <div>
+      %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
+    </div>
+  </div>
 </div>
 % end
 

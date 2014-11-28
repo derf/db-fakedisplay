@@ -72,6 +72,7 @@ sub handle_request {
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
 	my $backend        = $self->param('backend')      // 'ris';
+	my $admode         = $self->param('admode')       // 'deparr';
 	my $callback       = $self->param('callback');
 
 	my $api_version
@@ -191,6 +192,16 @@ sub handle_request {
 		if ( @lines and not( any { $line =~ m{^$_} } @lines ) ) {
 			next;
 		}
+		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
+		{
+			next;
+		}
+		if (    $backend eq 'iris'
+			and $admode eq 'dep'
+			and not $result->departure )
+		{
+			next;
+		}
 		my ( $info, $moreinfo );
 		if ( $backend eq 'iris' ) {
 			my $delaymsg
@@ -239,6 +250,17 @@ sub handle_request {
 			}
 		}
 
+		my $time = $result->time;
+
+		if ( $backend eq 'iris' ) {
+
+			# ->time defaults to dep, so we only need to overwrite $time
+			# if we want arrival times
+			if ( $admode eq 'arr' ) {
+				$time = $result->sched_arrival->strftime('%H:%M');
+			}
+		}
+
 		if ( $info eq '+0' ) {
 			$info = undef;
 		}
@@ -257,7 +279,7 @@ sub handle_request {
 		push(
 			@departures,
 			{
-				time         => $result->time,
+				time         => $time,
 				train        => $result->train,
 				via          => [ $result->route_interesting(3) ],
 				destination  => $result->destination,
