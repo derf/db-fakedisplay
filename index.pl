@@ -68,11 +68,12 @@ sub handle_request {
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my @lines     = split( /,/, $self->param('lines')     // q{} );
-	my $template       = $self->param('mode')         // 'multi';
-	my $hide_low_delay = $self->param('hidelowdelay') // 0;
-	my $hide_opts      = $self->param('hide_opts')    // 0;
-	my $backend        = $self->param('backend')      // 'ris';
-	my $admode         = $self->param('admode')       // 'deparr';
+	my $template       = $self->param('mode')          // 'multi';
+	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
+	my $hide_opts      = $self->param('hide_opts')     // 0;
+	my $show_realtime  = $self->param('show_realtime') // 0;
+	my $backend        = $self->param('backend')       // 'ris';
+	my $admode         = $self->param('admode')        // 'deparr';
 	my $callback       = $self->param('callback');
 
 	my $api_version
@@ -173,6 +174,21 @@ sub handle_request {
 		@results = sort { $a->platform <=> $b->platform } @results;
 	}
 
+	if ( $backend eq 'iris' and $show_realtime ) {
+		if ( $admode eq 'arr' ) {
+			@results = sort {
+				( $a->arrival // $a->departure )
+				  <=> ( $b->arrival // $b->depearture )
+			} @results;
+		}
+		else {
+			@results = sort {
+				( $a->departure // $a->arrival )
+				  <=> ( $b->departure // $b->arrival )
+			} @results;
+		}
+	}
+
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		my $line     = $result->line;
@@ -259,6 +275,17 @@ sub handle_request {
 			if ( $admode eq 'arr' ) {
 				$time = $result->sched_arrival->strftime('%H:%M');
 			}
+
+			if ($show_realtime) {
+				if ( ( $admode eq 'arr' and $result->arrival )
+					or not $result->departure )
+				{
+					$time = $result->arrival->strftime('%H:%M');
+				}
+				else {
+					$time = $result->departure->strftime('%H:%M');
+				}
+			}
 		}
 
 		if ( $info eq '+0' ) {
@@ -324,6 +351,7 @@ sub handle_request {
 			title            => "departures for ${station}",
 			refresh_interval => $refresh_interval + 3,
 			hide_opts        => $hide_opts,
+			show_realtime    => $show_realtime,
 		);
 	}
 }

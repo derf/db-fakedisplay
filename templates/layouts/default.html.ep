@@ -123,6 +123,14 @@
       %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
     </div>
   </div>
+  <div class="field">
+    <div class="desc">
+      Erwartete Abfahrtzeiten statt Fahrplandaten verwenden?
+    </div>
+    <div>
+      %= check_box 'show_realtime' => 1
+    </div>
+  </div>
 </div>
 % end
 

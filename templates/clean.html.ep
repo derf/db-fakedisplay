@@ -58,15 +58,26 @@
 </span>
 <span class="countdown">
 % if ($departure->{delay} and not $departure->{is_cancelled}) {
+% if ($show_realtime) {
+<span class="delaynorm">(+<%= $departure->{delay} %>)</span>
+% }
+% else {
 <span class="delay">(+<%= $departure->{delay} %>)</span>
+% }
 % }
 <span class="platform">
 %= $departure->{platform}
 </span>
 </span>
-<span class="time">
+<span class="time <%= ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) ? 'delayed' : q{} %>">
+% if ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) {
+<span class="delayed">
+% }
 %= $departure->{time}
 </span>
+% if ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) {
+</span>
+% }
 </li>
 
 <!--

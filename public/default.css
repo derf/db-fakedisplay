@@ -155,6 +155,12 @@ div.displayclean li .countdown .delay {
 	padding-right:7px;
 }
 
+div.displayclean li .countdown .delaynorm {
+	font-size:0.9em;
+	color:#BB3333;
+	padding-right:7px;
+}
+
 div.displayclean li .countdown .platform {
 	font-weight: bold;
 }
@@ -166,6 +172,10 @@ div.displayclean li .time {
 	position:absolute;
 	right:5px;
 	top:5px;
+}
+
+div.displayclean span.delayed {
+	color: #ff0000;
 }
 
 div.displaymulti {
