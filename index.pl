@@ -241,6 +241,17 @@ sub handle_request {
 			}
 			$info .= $qosmsg;
 
+			if ( $result->additional_stops and not $result->is_cancelled ) {
+				my $additional_line = join( q{, }, $result->additional_stops );
+				$info
+				  = 'Zusätzliche Halte: '
+				  . $additional_line
+				  . ( $info ? ' +++ ' : q{} )
+				  . $info;
+				push( @{$moreinfo},
+					[ 'Zusätzliche Halte', $additional_line ] );
+			}
+
 			if ( $result->canceled_stops and not $result->is_cancelled ) {
 				my $cancel_line = join( q{, }, $result->canceled_stops );
 				$info
@@ -249,12 +260,6 @@ sub handle_request {
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
 				push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
-			}
-
-			if ( $result->additional_stops and not $result->is_cancelled ) {
-				my $additional_line = join( q{, }, $result->additional_stops );
-				push( @{$moreinfo},
-					[ 'Zusätzliche Halte', $additional_line ] );
 			}
 
 			push( @{$moreinfo}, $result->messages );
