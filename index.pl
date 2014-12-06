@@ -356,7 +356,7 @@ sub handle_request {
 			);
 		}
 	}
-	if ( $template eq 'marudor_v1' ) {
+	elsif ( $template eq 'marudor_v1' ) {
 		$callback //= 'db_fakedisplay';
 		my $json = $self->render_to_string(
 			json => {
