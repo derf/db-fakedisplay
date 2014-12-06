@@ -15,7 +15,7 @@ our $VERSION = qx{git describe --dirty} || '0.05';
 my $refresh_interval = 180;
 
 sub get_results_for {
-	my ( $backend, $station ) = @_;
+	my ( $backend, $station, %opt ) = @_;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/db-fake',
@@ -45,14 +45,17 @@ sub get_results_for {
 
 			my $status = Travel::Status::DE::IRIS->new(
 				station      => $station,
-				serializable => 1
+				serializable => 1,
+				%opt
 			);
 			$results = [ $status->results ];
 			$cache->freeze( $cache_str, $results );
 		}
 		else {
-			my $status
-			  = Travel::Status::DE::DeutscheBahn->new( station => $station );
+			my $status = Travel::Status::DE::DeutscheBahn->new(
+				station => $station,
+				%opt
+			);
 			$results = [ $status->results ];
 			$cache->freeze( $cache_str, $results );
 		}
@@ -75,6 +78,7 @@ sub handle_request {
 	my $backend        = $self->param('backend')       // 'ris';
 	my $admode         = $self->param('admode')        // 'deparr';
 	my $callback       = $self->param('callback');
+	my %opt;
 
 	my $api_version
 	  = $backend eq 'iris'
@@ -85,7 +89,7 @@ sub handle_request {
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[clean json multi single]] ) ) {
+	if ( not( $template ~~ [qw[clean json marudor_v1 multi single]] ) ) {
 		$template = 'multi';
 	}
 
@@ -98,10 +102,14 @@ sub handle_request {
 		return;
 	}
 
-	my @departures;
-	my @results = get_results_for( $backend, $station );
+	if ( $template eq 'marudor_v1' and $backend eq 'iris' ) {
+		$opt{lookahead} = 120;
+	}
 
-	if ( not @results and $template eq 'json' ) {
+	my @departures;
+	my @results = get_results_for( $backend, $station, %opt );
+
+	if ( not @results and $template ~~ [qw[json marudor_v1]] ) {
 		my $json;
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { { code => $_->[0], name => $_->[1] } }
@@ -347,6 +355,20 @@ sub handle_request {
 				format => 'json'
 			);
 		}
+	}
+	if ( $template eq 'marudor_v1' ) {
+		$callback //= 'db_fakedisplay';
+		my $json = $self->render_to_string(
+			json => {
+				api_version  => $api_version,
+				preformatted => \@departures,
+				version      => $VERSION,
+			}
+		);
+		$self->render(
+			data   => "$callback($json);",
+			format => 'json'
+		);
 	}
 	else {
 		$self->render(
