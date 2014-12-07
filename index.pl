@@ -256,8 +256,12 @@ sub handle_request {
 				  . $additional_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				push( @{$moreinfo},
-					[ 'Zusätzliche Halte', $additional_line ] );
+				if ( $template ne 'marudor_v1' ) {
+					push(
+						@{$moreinfo},
+						[ 'Zusätzliche Halte', $additional_line ]
+					);
+				}
 			}
 
 			if ( $result->canceled_stops and not $result->is_cancelled ) {
@@ -267,7 +271,9 @@ sub handle_request {
 				  . $cancel_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
+				if ( $template ne 'marudor_v1' ) {
+					push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
+				}
 			}
 
 			push( @{$moreinfo}, $result->messages );
@@ -328,8 +334,10 @@ sub handle_request {
 				is_cancelled => $result->can('is_cancelled')
 				? $result->is_cancelled
 				: undef,
-				moreinfo => $moreinfo,
-				delay    => $delay,
+				moreinfo         => $moreinfo,
+				delay            => $delay,
+				additional_stops => [ $result->additional_stops ],
+				canceled_stops   => [ $result->canceled_stops ],
 			}
 		);
 	}
