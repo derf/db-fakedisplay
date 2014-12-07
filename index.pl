@@ -334,6 +334,16 @@ sub handle_request {
 				is_cancelled => $result->can('is_cancelled')
 				? $result->is_cancelled
 				: undef,
+				messages => {
+					delay => [
+						map { { timestamp => $_->[0], text => $_->[1] } }
+						  $result->delay_messages
+					],
+					qos => [
+						map { { timestamp => $_->[0], text => $_->[1] } }
+						  $result->qos_messages
+					],
+				},
 				moreinfo         => $moreinfo,
 				delay            => $delay,
 				additional_stops => [ $result->additional_stops ],
