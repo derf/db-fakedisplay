@@ -64,10 +64,20 @@
 <span class="countdown">
 % if ($departure->{delay} and not $departure->{is_cancelled}) {
 % if ($show_realtime) {
-<span class="delaynorm">(<%= sprintf('+%d', $departure->{delay}) %>)</span>
+% if ($departure->{delay} > 0) {
+<span class="delaynorm">(+<%= $departure->{delay} %>)</span>
 % }
 % else {
+<span class="undelaynorm">(<%= $departure->{delay} %>)</span>
+% }
+% }
+% else {
+% if ($departure->{delay} > 0) {
 <span class="delay">(+<%= $departure->{delay} %>)</span>
+% }
+% else {
+<span class="undelay">(<%= $departure->{delay} %>)</span>
+% }
 % }
 % }
 <span class="platform">

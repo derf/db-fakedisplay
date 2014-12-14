@@ -155,9 +155,21 @@ div.displayclean li .countdown .delay {
 	padding-right:7px;
 }
 
+div.displayclean li .countdown .undelay {
+	font-size:1em;
+	color:#006600;
+	padding-right:7px;
+}
+
 div.displayclean li .countdown .delaynorm {
 	font-size:0.9em;
 	color:#BB3333;
+	padding-right:7px;
+}
+
+div.displayclean li .countdown .undelaynorm {
+	font-size:0.9em;
+	color:#338833;
 	padding-right:7px;
 }
 
