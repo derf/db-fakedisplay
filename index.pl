@@ -322,34 +322,60 @@ sub handle_request {
 		if ($info) {
 			$info =~ s{ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
-		push(
-			@departures,
-			{
-				time         => $time,
-				train        => $result->train,
-				via          => [ $result->route_interesting(3) ],
-				destination  => $result->destination,
-				platform     => $platform,
-				info         => $info,
-				is_cancelled => $result->can('is_cancelled')
-				? $result->is_cancelled
-				: undef,
-				messages => {
-					delay => [
-						map { { timestamp => $_->[0], text => $_->[1] } }
-						  $result->delay_messages
-					],
-					qos => [
-						map { { timestamp => $_->[0], text => $_->[1] } }
-						  $result->qos_messages
-					],
-				},
-				moreinfo         => $moreinfo,
-				delay            => $delay,
-				additional_stops => [ $result->additional_stops ],
-				canceled_stops   => [ $result->canceled_stops ],
-			}
-		);
+		if ($backend eq 'iris') {
+			push(
+				@departures,
+				{
+					time         => $time,
+					train        => $result->train,
+					via          => [ $result->route_interesting(3) ],
+					destination  => $result->destination,
+					platform     => $platform,
+					info         => $info,
+					is_cancelled => $result->can('is_cancelled')
+					? $result->is_cancelled
+					: undef,
+					messages => {
+						delay => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							$result->delay_messages
+						],
+						qos => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							$result->qos_messages
+						],
+					},
+					moreinfo         => $moreinfo,
+					delay            => $delay,
+					additional_stops => [ $result->additional_stops ],
+					canceled_stops   => [ $result->canceled_stops ],
+				}
+			);
+		}
+		else {
+			push(
+				@departures,
+				{
+					time         => $time,
+					train        => $result->train,
+					via          => [ $result->route_interesting(3) ],
+					destination  => $result->destination,
+					platform     => $platform,
+					info         => $info,
+					is_cancelled => $result->can('is_cancelled')
+					? $result->is_cancelled
+					: undef,
+					messages => {
+						delay => [ ],
+						qos => [ ],
+					},
+					moreinfo         => $moreinfo,
+					delay            => $delay,
+					additional_stops => [ ],
+					canceled_stops   => [ ],
+				}
+			);
+		}
 	}
 
 	if ( $template eq 'json' ) {
