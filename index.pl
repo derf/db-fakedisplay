@@ -329,6 +329,7 @@ sub handle_request {
 					time         => $time,
 					train        => $result->train,
 					via          => [ $result->route_interesting(3) ],
+					scheduled_route => [ $result->sched_route ],
 					destination  => $result->destination,
 					platform     => $platform,
 					info         => $info,
