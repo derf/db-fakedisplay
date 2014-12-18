@@ -322,28 +322,28 @@ sub handle_request {
 		if ($info) {
 			$info =~ s{ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
-		if ($backend eq 'iris') {
+		if ( $backend eq 'iris' ) {
 			push(
 				@departures,
 				{
-					time         => $time,
-					train        => $result->train,
-					via          => [ $result->route_interesting(3) ],
+					time            => $time,
+					train           => $result->train,
+					via             => [ $result->route_interesting(3) ],
 					scheduled_route => [ $result->sched_route ],
-					destination  => $result->destination,
-					platform     => $platform,
-					info         => $info,
-					is_cancelled => $result->can('is_cancelled')
+					destination     => $result->destination,
+					platform        => $platform,
+					info            => $info,
+					is_cancelled    => $result->can('is_cancelled')
 					? $result->is_cancelled
 					: undef,
 					messages => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
-							$result->delay_messages
+							  $result->delay_messages
 						],
 						qos => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
-							$result->qos_messages
+							  $result->qos_messages
 						],
 					},
 					moreinfo         => $moreinfo,
@@ -367,13 +367,13 @@ sub handle_request {
 					? $result->is_cancelled
 					: undef,
 					messages => {
-						delay => [ ],
-						qos => [ ],
+						delay => [],
+						qos   => [],
 					},
 					moreinfo         => $moreinfo,
 					delay            => $delay,
-					additional_stops => [ ],
-					canceled_stops   => [ ],
+					additional_stops => [],
+					canceled_stops   => [],
 				}
 			);
 		}
