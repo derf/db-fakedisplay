@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= $title %></title>
+	<title><%= stash('title') // 'db-fakedisplay' %></title>
 	<meta charset="utf-8">
 % if ($self->stash('refresh_interval')) {
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
@@ -15,7 +15,7 @@
 	$(function () {  $('marquee').marquee() });
 	% end
 </head>
-<body style="<%= ($hide_opts ? 'margin: 0; padding: 0;' : q{}) %>">
+<body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>">
 
 % if (my $error = stash 'error') {
 <div class="error">Backend-Fehler:</div>
@@ -45,7 +45,7 @@
 % }
 
 
-% if (not $hide_opts) {
+% if (not stash('hide_opts')) {
 <div class="input-field">
 
 
@@ -169,7 +169,7 @@ nur Züge via Bochum oder Hamm)</li>
 
 <div class="about">
 <a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
-v<%= $version %>
+v<%= stash('version') // '???' %>
 </div>
 % }
 
