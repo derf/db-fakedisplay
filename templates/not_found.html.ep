@@ -1,13 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<title>page not found</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</head>
-<body>
+<div class="error">404 Page Not Found</div>
 <div>
-page not found
+<pre>
+Die aufgerufene URL existiert nicht und ist keine gültige Abbildung auf einen
+Bahnhofsnamen.
+
+The requested URL does not exist and does not map to a train station.
+</pre>
 </div>
-</body>
-</html>
