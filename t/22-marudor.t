@@ -38,8 +38,13 @@ $t->get_ok('/EDUV?mode=marudor_v1&backend=iris')
               qr{ ^ (Dortmund|Bochum|Essen|D.sseldorf|Solingen) \s Hbf $}x,
               '.scheduled_route[0]')
   ->json_like('/preformatted/0/via/0',
-              qr{ ^ Dortmund-Dorstfeld S.d | Dortmund-Oespel $}x,
+              qr{ ^ Dortmund-Dorstfeld \s S.d | Dortmund-Oespel $}x,
               '.scheduled_route[0]')
   ;
+
+$t->get_ok('/EDUV?mode=marudor_v1&backend=iris&callback=my_callback')
+  ->status_is(200)
+  ->content_like(qr{ ^ my_callback \( }x, 'json callback works');
+# ) <- just here to fix bracket grouping in vim
 
 done_testing();
