@@ -402,7 +402,6 @@ sub handle_request {
 		}
 	}
 	elsif ( $template eq 'marudor_v1' ) {
-		$callback //= 'db_fakedisplay';
 		my $json = $self->render_to_string(
 			json => {
 				api_version  => $api_version,
@@ -410,10 +409,18 @@ sub handle_request {
 				version      => $VERSION,
 			}
 		);
-		$self->render(
-			data   => "$callback($json);",
-			format => 'json'
-		);
+		if ($callback) {
+			$self->render(
+				data   => "$callback($json);",
+				format => 'json'
+			);
+		}
+		else {
+			$self->render(
+				data   => $json,
+				format => 'json'
+			);
+		}
 	}
 	else {
 		$self->render(
