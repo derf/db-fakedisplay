@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Cache::File;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw();
 use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
@@ -206,14 +206,14 @@ sub handle_request {
 			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
 				@route = $result->route_post;
 			}
-			if ( not( any { $_ =~ m{$via}io } @route ) ) {
+			if ( not( List::MoreUtils::any { $_ =~ m{$via}io } @route ) ) {
 				next;
 			}
 		}
-		if ( @platforms and not( any { $_ eq $platform } @platforms ) ) {
+		if ( @platforms and not( List::MoreUtils::any { $_ eq $platform } @platforms ) ) {
 			next;
 		}
-		if ( @lines and not( any { $line =~ m{^$_} } @lines ) ) {
+		if ( @lines and not( List::MoreUtils::any { $line =~ m{^$_} } @lines ) ) {
 			next;
 		}
 		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
