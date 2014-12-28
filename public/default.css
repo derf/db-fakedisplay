@@ -81,9 +81,10 @@ div.displayclean li .info {
 	position:absolute;
 	top:5px;
 	left:8em;
-	height: 1em;
+	height: 1.1em;
 	width: 70%;
 	overflow: hidden;
+	z-index: 2;
 }
 
 div.displayclean li .moreinfo {
@@ -114,9 +115,10 @@ div.displayclean li .dest {
 	font-weight:bold;
 	font-size:4em;
 	position:absolute;
-	top:0.7em;
+	top:0.65em;
 	left:4.2em;
 	width: 70%;
+	z-index: 1;
 	overflow: hidden;
 }
 
