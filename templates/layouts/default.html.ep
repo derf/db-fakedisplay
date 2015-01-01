@@ -26,6 +26,12 @@
 </div>
 % }
 
+% if (time() < 1420178400) {
+<div class="error">Note: Due to an unknown problem on the Deutsche Bahn IRIS
+server, no schedule data is available. This service will resume operation
+on 2015-01-02 at 07:00 CET.</div>
+% }
+
 %= content
 
 % if (stash 'show_intro') {
