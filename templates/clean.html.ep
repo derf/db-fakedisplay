@@ -112,8 +112,7 @@
 % else {
 
 <p>
-DB-Fakedisplay displays the next departures at a DB station, just like the big
-LC display in the station itself.
+<div class="error">No matching departures</div>
 </p>
 
 % }
