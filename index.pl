@@ -78,6 +78,7 @@ sub handle_request {
 	my $backend        = $self->param('backend')       // 'ris';
 	my $admode         = $self->param('admode')        // 'deparr';
 	my $callback       = $self->param('callback');
+	my $apiver         = $self->param('version')       // 0;
 	my %opt;
 
 	my $api_version
@@ -89,7 +90,8 @@ sub handle_request {
 	$self->stash( title      => 'db-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[clean json marudor_v1 multi single]] ) ) {
+	if ( not( $template ~~ [qw[clean json marudor_v1 marudor multi single]] ) )
+	{
 		$template = 'multi';
 	}
 
@@ -102,14 +104,14 @@ sub handle_request {
 		return;
 	}
 
-	if ( $template eq 'marudor_v1' and $backend eq 'iris' ) {
+	if ( $template eq 'marudor' and $backend eq 'iris' ) {
 		$opt{lookahead} = 120;
 	}
 
 	my @departures;
 	my @results = get_results_for( $backend, $station, %opt );
 
-	if ( not @results and $template ~~ [qw[json marudor_v1]] ) {
+	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
 		my $json;
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { { code => $_->[0], name => $_->[1] } }
@@ -210,10 +212,13 @@ sub handle_request {
 				next;
 			}
 		}
-		if ( @platforms and not( List::MoreUtils::any { $_ eq $platform } @platforms ) ) {
+		if ( @platforms
+			and not( List::MoreUtils::any { $_ eq $platform } @platforms ) )
+		{
 			next;
 		}
-		if ( @lines and not( List::MoreUtils::any { $line =~ m{^$_} } @lines ) ) {
+		if ( @lines and not( List::MoreUtils::any { $line =~ m{^$_} } @lines ) )
+		{
 			next;
 		}
 		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
@@ -256,7 +261,7 @@ sub handle_request {
 				  . $additional_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor_v1' ) {
+				if ( $template ne 'marudor_v1' and $template ne 'marudor' ) {
 					push(
 						@{$moreinfo},
 						[ 'Zusätzliche Halte', $additional_line ]
@@ -271,7 +276,7 @@ sub handle_request {
 				  . $cancel_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor_v1' ) {
+				if ( $template ne 'marudor_v1' and $template ne 'marudor' ) {
 					push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
 				}
 			}
@@ -322,7 +327,91 @@ sub handle_request {
 		if ($info) {
 			$info =~ s{ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
 		}
-		if ( $backend eq 'iris' ) {
+
+		if ( $template eq 'marudor' ) {
+			my ( $route_idx, $sched_idx ) = ( 0, 0 );
+			my @json_route;
+			my @route       = $result->route;
+			my @sched_route = $result->sched_route;
+
+			while ( $route_idx <= $#route and $sched_idx <= $#sched_route ) {
+				if ( $route[$route_idx] eq $sched_route[$sched_idx] ) {
+					push( @json_route, { name => $route[$route_idx] } );
+					$route_idx++;
+					$sched_idx++;
+				}
+
+				# this branch is inefficient, but won't be taken frequently
+				elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
+					push(
+						@json_route,
+						{
+							name         => $route[$route_idx],
+							isAdditional => 1
+						}
+					);
+					$route_idx++;
+				}
+				else {
+					push(
+						@json_route,
+						{
+							name        => $sched_route[$sched_idx],
+							isCancelled => 1
+						}
+					);
+					$sched_idx++;
+				}
+			}
+			while ( $route_idx++ < $#route ) {
+				push(
+					@json_route,
+					{
+						name         => $route[ $route_idx++ ],
+						isAdditional => 1,
+						isCancelled  => 0
+					}
+				);
+			}
+			while ( $sched_idx++ < $#sched_route ) {
+				push(
+					@json_route,
+					{
+						name         => $route[ $route_idx++ ],
+						isAdditional => 0,
+						isCancelled  => 1
+					}
+				);
+			}
+
+			push(
+				@departures,
+				{
+					delay       => $delay,
+					destination => $result->destination,
+					isCancelled => $result->can('is_cancelled')
+					? $result->is_cancelled
+					: undef,
+					messages => {
+						delay => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							  $result->delay_messages
+						],
+						qos => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							  $result->qos_messages
+						],
+					},
+					platform          => $result->platform,
+					route             => \@json_route,
+					scheduledPlatform => $result->sched_platform,
+					time              => $time,
+					train             => $result->train,
+					via               => [ $result->route_interesting(3) ],
+				}
+			);
+		}
+		elsif ( $backend eq 'iris' ) {
 			push(
 				@departures,
 				{
@@ -386,6 +475,25 @@ sub handle_request {
 				preformatted => \@departures,
 				version      => $VERSION,
 				raw          => \@results,
+			}
+		);
+		if ($callback) {
+			$self->render(
+				data   => "$callback($json);",
+				format => 'json'
+			);
+		}
+		else {
+			$self->render(
+				data   => $json,
+				format => 'json'
+			);
+		}
+	}
+	elsif ( $template eq 'marudor' ) {
+		my $json = $self->render_to_string(
+			json => {
+				departures => \@departures,
 			}
 		);
 		if ($callback) {
