@@ -12,13 +12,17 @@
 %   $via_cur++;
 %   $route_str .= $stop . ($via_cur < $via_max ? ' - ' : q{});
 % }
+% my $extraclasses = q{};
+% if ($departure->{is_cancelled}) {
+%   $extraclasses .= ' cancelled';
+% }
 
 <li>
 % my $linetype = q{};
 % if ( $departure->{train} =~ m{ ^ S \s? \d{1,2} $ }x ) {
 %   $linetype = 'sbahn';
 % }
-<span class="line <%= $linetype %>">
+<span class="line <%= $linetype %> <%= $extraclasses %>">
 %= $departure->{train}
 </span>
 % if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
@@ -54,10 +58,6 @@
 %= $route_str
 </span>
 % }
-% my $extraclasses = q{};
-% if ($departure->{is_cancelled}) {
-%   $extraclasses .= ' cancelled';
-% }
 <span class="dest <%= $extraclasses %>">
 %= $departure->{destination}
 </span>
@@ -80,11 +80,11 @@
 % }
 % }
 % }
-<span class="platform">
+<span class="platform <%= $extraclasses %>">
 %= $departure->{platform}
 </span>
 </span>
-<span class="time <%= ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) ? 'delayed' : q{} %>">
+<span class="time <%= ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
 % if ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) {
 <span class="delayed">
 % }
