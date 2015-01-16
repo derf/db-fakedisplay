@@ -20,6 +20,7 @@ sub get_results_for {
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/db-fake',
 		default_expires => $refresh_interval . ' sec',
+		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
 	# Cache::File has UTF-8 problems, so strip it (and any other potentially
