@@ -25,6 +25,16 @@
 <span class="line <%= $linetype %> <%= $extraclasses %>">
 %= $departure->{train}
 </span>
+% if (@{$departure->{replaced_by}} or @{$departure->{replacement_for}}) {
+<span class="lineinfo">
+% for my $replacement (@{$departure->{replaced_by}}) {
+<span class="replaced">→ <%= $replacement %></span>
+% }
+% for my $replacement (@{$departure->{replacement_for}}) {
+<span class="replacement">↑ <%= $replacement %></span>
+% }
+</span>
+% }
 % if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
 <span class="moreinfo">
 <ul>

@@ -42,6 +42,22 @@ div.displayclean li .line {
 	left:2px;
 }
 
+div.displayclean li .lineinfo {
+	color:#000000;
+	font-size: 2em;
+	position:absolute;
+	bottom:2px;
+	left:2px;
+}
+
+div.displayclean li .lineinfo .replacement {
+	color: #006600;
+}
+
+div.displayclean li .lineinfo .replaced {
+	color: #660000;
+}
+
 div.displayclean li .tram {
 	background-color: #CC0000;
 }
