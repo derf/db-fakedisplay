@@ -250,6 +250,16 @@ sub handle_request {
 						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 				}
 			}
+			if ( $result->replacement_for and $template ne 'clean') {
+				for my $rep ($result->replacement_for) {
+					$info = sprintf('Ersatzzug für %s %s %s%s',
+						$rep->type,
+						$rep->train_no,
+						$info ? '+++ ' : q{},
+						$info // q{}
+					);
+				}
+			}
 			if ( $info and $qosmsg ) {
 				$info .= ' +++ ';
 			}
