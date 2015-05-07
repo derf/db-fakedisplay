@@ -250,13 +250,12 @@ sub handle_request {
 						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 				}
 			}
-			if ( $result->replacement_for and $template ne 'clean') {
-				for my $rep ($result->replacement_for) {
-					$info = sprintf('Ersatzzug für %s %s %s%s',
-						$rep->type,
-						$rep->train_no,
-						$info ? '+++ ' : q{},
-						$info // q{}
+			if ( $result->replacement_for and $template ne 'clean' ) {
+				for my $rep ( $result->replacement_for ) {
+					$info = sprintf(
+						'Ersatzzug für %s %s %s%s',
+						$rep->type, $rep->train_no,
+						$info ? '+++ ' : q{}, $info // q{}
 					);
 				}
 			}
@@ -426,11 +425,28 @@ sub handle_request {
 			push(
 				@departures,
 				{
-					time            => $time,
+					time          => $time,
+					sched_arrival => $result->sched_arrival
+					? $result->sched_arrival->strftime('%H:%M')
+					: undef,
+					sched_departure => $result->sched_departure
+					? $result->sched_departure->strftime('%H:%M')
+					: undef,
+					arrival => $result->arrival
+					? $result->arrival->strftime('%H:%M')
+					: undef,
+					departure => $result->departure
+					? $result->departure->strftime('%H:%M')
+					: undef,
 					train           => $result->train,
+					train_type      => $result->type,
+					train_line      => $result->line_no,
+					train_no        => $result->train_no,
 					via             => [ $result->route_interesting(3) ],
 					scheduled_route => [ $result->sched_route ],
+					route_post      => [ $result->route_post ],
 					destination     => $result->destination,
+					origin          => $result->origin,
 					platform        => $platform,
 					info            => $info,
 					is_cancelled    => $result->can('is_cancelled')
@@ -451,9 +467,17 @@ sub handle_request {
 					additional_stops => [ $result->additional_stops ],
 					canceled_stops   => [ $result->canceled_stops ],
 					replaced_by      => $result->can('replaced_by')
-					? [ map { $_->type . q{ } . $_->train_no } $result->replaced_by ] : [],
-					replacement_for  => $result->can('replacement_for')
-					? [ map { $_->type . q{ } . $_->train_no } $result->replacement_for ] : [],
+					? [
+						map { $_->type . q{ } . $_->train_no }
+						  $result->replaced_by
+					  ]
+					: [],
+					replacement_for => $result->can('replacement_for')
+					? [
+						map { $_->type . q{ } . $_->train_no }
+						  $result->replacement_for
+					  ]
+					: [],
 				}
 			);
 		}

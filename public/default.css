@@ -109,12 +109,14 @@ div.displayclean li .moreinfo {
 	position:fixed;
 	top:1em;
 	left:1em;
+	right:1em;
 	min-height: 1em;
-	width: 90%;
+	max-height: 90%;
 	background-color: white;
 	border: 1px solid black;
 	z-index: 5;
 	display: none;
+	overflow: auto;
 }
 
 div.displayclean li .collapsed-moreinfo {
@@ -125,7 +127,14 @@ div.displayclean li .expanded-moreinfo {
 	display: block;
 }
 
-div.displayclean li .moreinfo .reason {
+div.displayclean li .moreinfo .mheader {
+	text-align: center;
+	background-color: #cccccc;
+	font-size: 120%;
+}
+
+div.displayclean li .moreinfo .reason,
+div.displayclean li .moreinfo .minfo {
 	color: #ff0000;
 }
 

@@ -35,12 +35,49 @@
 % }
 </span>
 % }
-% if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
 <span class="moreinfo">
-<ul>
-% if ($route_str) {
-<li> Via: <%= $route_str %> </li>
+<div class="mheader">
+<span class="train-line"><%= $departure->{train_type} // q{???} %></span><!--
+--><span class="train-line"><%= $departure->{train_line} // q{} %></span>
+% if ($departure->{train_line}) {
+<span class="train-no"><%= $departure->{train_no} // q{???} %></span>
 % }
+% else {
+<span class="train-line"><%= $departure->{train_no} // q{???} %></span>
+% }
+:
+<span class="train-origin"><%= $departure->{origin} // q{???} %></span>
+→
+<span class="train-dest"><%= $departure->{destination} // q{???} %></span>
+% if ($departure->{is_cancelled}) {
+<div class="minfo">Fahrt fällt aus</div>
+% }
+% elsif ($departure->{delay} > 0) {
+<div class="minfo">+<%= $departure->{delay} %></div>
+% }
+</div>
+% if (not $departure->{is_cancelled}) {
+% if ($departure->{sched_arrival}) {
+Ankunft: <%= $departure->{sched_arrival} %>
+% if ($departure->{arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
+(heute: <%= $departure->{arrival} %>)
+% }
+<br/>
+% }
+% if ($departure->{sched_departure}) {
+Abfahrt: <%= $departure->{sched_departure} %>
+% if ($departure->{departure} and $departure->{departure} ne $departure->{sched_departure}) {
+(heute: <%= $departure->{departure} %>)
+% }
+<br/>
+% }
+% }
+% if ($departure->{route_post} and @{$departure->{route_post}}) {
+Über: <span class="mroute"><%= join(' – ', @{$departure->{route_post} // q{???}}) %></span><br/>
+% }
+% if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
+Meldungen:
+<ul>
 % for my $pair (@{$departure->{moreinfo}}) {
 <li>
 % if ($pair->[0]->isa('DateTime')) {
@@ -56,8 +93,8 @@
 </li>
 % }
 </ul>
-</span>
 % }
+</span>
 % if ($departure->{info} and length $departure->{info}) {
 <span class="info">
 %= $departure->{info}
