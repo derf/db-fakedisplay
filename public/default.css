@@ -113,7 +113,7 @@ div.displayclean li .moreinfo {
 	min-height: 1em;
 	max-height: 90%;
 	background-color: white;
-	border: 1px solid black;
+	border: 0.2em inset #666666;
 	z-index: 5;
 	display: none;
 	overflow: auto;
