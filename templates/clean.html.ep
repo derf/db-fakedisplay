@@ -52,7 +52,7 @@
 % if ($departure->{is_cancelled}) {
 <div class="minfo">Fahrt fällt aus</div>
 % }
-% elsif ($departure->{delay} > 0) {
+% elsif (defined $departure->{delay} and $departure->{delay} > 0) {
 <div class="minfo">+<%= $departure->{delay} %></div>
 % }
 </div>
