@@ -502,6 +502,8 @@ sub handle_request {
 					delay            => $delay,
 					additional_stops => [],
 					canceled_stops   => [],
+					replaced_by      => [],
+					replacement_for  => [],
 				}
 			);
 		}
