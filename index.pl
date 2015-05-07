@@ -449,10 +449,8 @@ sub handle_request {
 					origin          => $result->origin,
 					platform        => $platform,
 					info            => $info,
-					is_cancelled    => $result->can('is_cancelled')
-					? $result->is_cancelled
-					: undef,
-					messages => {
+					is_cancelled    => $result->is_cancelled,
+					messages        => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
 							  $result->delay_messages
@@ -466,18 +464,14 @@ sub handle_request {
 					delay            => $delay,
 					additional_stops => [ $result->additional_stops ],
 					canceled_stops   => [ $result->canceled_stops ],
-					replaced_by      => $result->can('replaced_by')
-					? [
+					replaced_by      => [
 						map { $_->type . q{ } . $_->train_no }
 						  $result->replaced_by
-					  ]
-					: [],
-					replacement_for => $result->can('replacement_for')
-					? [
+					],
+					replacement_for => [
 						map { $_->type . q{ } . $_->train_no }
 						  $result->replacement_for
-					  ]
-					: [],
+					],
 				}
 			);
 		}
