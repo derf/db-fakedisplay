@@ -136,6 +136,15 @@ div.displayclean li .moreinfo .mheader {
 div.displayclean li .moreinfo .reason,
 div.displayclean li .moreinfo .minfo {
 	color: #ff0000;
+	margin-bottom: 0.6em;
+}
+
+div.displayclean li .moreinfo .timeinfo {
+	margin-bottom: 0.6em;
+}
+
+div.displayclean li .moreinfo .mroute {
+	margin-bottom: 0.6em;
 }
 
 div.displayclean li .dest {

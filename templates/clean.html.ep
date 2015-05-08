@@ -57,6 +57,7 @@
 % }
 </div>
 % if (not $departure->{is_cancelled}) {
+<div class="timeinfo">
 % if ($departure->{sched_arrival}) {
 Ankunft: <%= $departure->{sched_arrival} %>
 % if ($departure->{arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
@@ -71,9 +72,12 @@ Abfahrt: <%= $departure->{sched_departure} %>
 % }
 <br/>
 % }
+</div> <!-- timeinfo -->
 % }
 % if ($departure->{route_post} and @{$departure->{route_post}}) {
-Über: <span class="mroute"><%= join(' – ', @{$departure->{route_post} // q{???}}) %></span><br/>
+<div class="mroute">
+Über: <%= join(' – ', @{$departure->{route_post} // q{???}}) %>
+</div> <!-- mroute -->
 % }
 % if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
 Meldungen:
