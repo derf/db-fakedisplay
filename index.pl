@@ -481,6 +481,7 @@ sub handle_request {
 				{
 					time         => $time,
 					train        => $result->train,
+					train_type   => $result->type,
 					via          => [ $result->route_interesting(3) ],
 					destination  => $result->destination,
 					platform     => $platform,

@@ -45,8 +45,10 @@
 % else {
 <span class="train-line"><%= $departure->{train_no} // q{???} %></span>
 % }
+% if ($departure->{origin}) {
 :
-<span class="train-origin"><%= $departure->{origin} // q{???} %></span>
+<span class="train-origin"><%= $departure->{origin} %></span>
+% }
 →
 <span class="train-dest"><%= $departure->{destination} // q{???} %></span>
 % if ($departure->{is_cancelled}) {
