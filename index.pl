@@ -505,6 +505,7 @@ sub handle_request {
 	}
 
 	if ( $template eq 'json' ) {
+		$self->res->headers->access_control_allow_origin('*');
 		my $json = $self->render_to_string(
 			json => {
 				api_version  => $api_version,
@@ -527,6 +528,7 @@ sub handle_request {
 		}
 	}
 	elsif ( $template eq 'marudor' ) {
+		$self->res->headers->access_control_allow_origin('*');
 		my $json = $self->render_to_string(
 			json => {
 				departures => \@departures,
