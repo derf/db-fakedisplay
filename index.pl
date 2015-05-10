@@ -113,6 +113,7 @@ sub handle_request {
 	my @results = get_results_for( $backend, $station, %opt );
 
 	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
+		$self->res->headers->access_control_allow_origin('*');
 		my $json;
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { { code => $_->[0], name => $_->[1] } }
