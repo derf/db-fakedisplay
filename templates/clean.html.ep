@@ -18,11 +18,22 @@
 %   }
     <li>
 %   my $linetype = q{};
-%   if ( $departure->{train} =~ m{ ^ S \s? \d{1,2} $ }x ) {
+%   if ( $departure->{train_type} eq 'S' ) {
 %     $linetype = 'sbahn';
 %   }
     <span class="line <%= $linetype %> <%= $extraclasses %>">
-%=  $departure->{train}
+    % if ($departure->{train_type} and $departure->{train_no}) {
+%=    $departure->{train_type}
+%   }
+%   if ($departure->{train_line} ) {
+%=    $departure->{train_line}
+%   }
+%   elsif ($departure->{train_no}) {
+      <span class="trainno"><%= $departure->{train_no} %></span>
+%   }
+%   else {
+%=    $departure->{train}
+%   }
     </span>
 %   if (@{$departure->{replaced_by}} or @{$departure->{replacement_for}}) {
       <span class="lineinfo">

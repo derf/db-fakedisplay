@@ -35,11 +35,15 @@ div.displayclean li .line {
 	color:#FFFFFF;
 	background-color:#666666;
 	font-weight:bold;
-	font-size: 3em;
+	font-size: 2.9em;
 	padding:3px 8px 2px 5px;
 	position:absolute;
 	top:7px;
 	left:2px;
+}
+
+div.displayclean li .line .trainno {
+	font-weight: normal;
 }
 
 div.displayclean li .lineinfo {
@@ -85,7 +89,7 @@ div.displayclean li .route {
 	font-size:2.1em;
 	position:absolute;
 	top:5px;
-	left:8em;
+	left:7.7em;
 	height: 1em;
 	width: 70%;
 	overflow: hidden;
@@ -96,7 +100,7 @@ div.displayclean li .info {
 	font-size:2.1em;
 	position:absolute;
 	top:5px;
-	left:8em;
+	left:7.7em;
 	height: 1.1em;
 	width: 70%;
 	overflow: hidden;
@@ -149,11 +153,11 @@ div.displayclean li .moreinfo .mroute {
 
 div.displayclean li .dest {
 	color:#000000;
-	font-weight:bold;
+	/*font-weight:bold;*/
 	font-size:4em;
 	position:absolute;
 	top:0.65em;
-	left:4.2em;
+	left:4em;
 	width: 70%;
 	z-index: 1;
 	overflow: hidden;
