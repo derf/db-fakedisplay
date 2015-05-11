@@ -167,8 +167,9 @@ nur Züge via Bochum oder Hamm)</li>
 <span class="notes">Siehe auch:</span>
 <ul>
 <li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DeutscheBahn RIS</a></li>
+<li><a href="http://marudor.de/">Handyfreundliches Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
 <li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amd;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
->DeutscheBahn IRIS</a> (see <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a>)</li>
+>DeutscheBahn IRIS</a> und <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a></li>
 <li><a href="http://www.frubi.net/iris/?station=Essen%20HBf">frubi.net IRIS-Interface</a></li>
 <li><a href="http://vrrf.finalrewind.org/">vrr-fakedisplay</a></li>
 </ul>
