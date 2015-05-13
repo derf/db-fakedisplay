@@ -49,7 +49,7 @@ sub get_results_for {
 				serializable => 1,
 				%opt
 			);
-			$results = [ $status->results ];
+			$results = [ [ $status->results ], $status->errstr ];
 			$cache->freeze( $cache_str, $results );
 		}
 		else {
@@ -57,7 +57,7 @@ sub get_results_for {
 				station => $station,
 				%opt
 			);
-			$results = [ $status->results ];
+			$results = [ [ $status->results ], $status->errstr ];
 			$cache->freeze( $cache_str, $results );
 		}
 	}
@@ -110,29 +110,52 @@ sub handle_request {
 	}
 
 	my @departures;
-	my @results = get_results_for( $backend, $station, %opt );
+	my ( $results_ref, $errstr ) = get_results_for( $backend, $station, %opt );
+	my @results = @{$results_ref};
 
 	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
 		$self->res->headers->access_control_allow_origin('*');
 		my $json;
-		if ( $backend eq 'iris' ) {
-			my @candidates = map { { code => $_->[0], name => $_->[1] } }
-			  Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ($errstr) {
 			$json = $self->render_to_string(
 				json => {
 					api_version => $api_version,
 					version     => $VERSION,
-					error       => 'ambiguous station code/name',
-					candidates  => \@candidates,
+					error       => $errstr,
 				}
 			);
+		}
+		elsif ( $backend eq 'iris' ) {
+			my @candidates = map { { code => $_->[0], name => $_->[1] } }
+			  Travel::Status::DE::IRIS::Stations::get_station($station);
+			if ( @candidates > 1
+				or ( @candidates == 1 and $candidates[0]{code} ne $station ) )
+			{
+				$json = $self->render_to_string(
+					json => {
+						api_version => $api_version,
+						version     => $VERSION,
+						error       => 'ambiguous station code/name',
+						candidates  => \@candidates,
+					}
+				);
+			}
+			else {
+				$json = $self->render_to_string(
+					json => {
+						api_version => $api_version,
+						version     => $VERSION,
+						error => ( $errstr // "Got no results for '$station'" )
+					}
+				);
+			}
 		}
 		else {
 			$json = $self->render_to_string(
 				json => {
 					api_version => $api_version,
 					version     => $VERSION,
-					error       => 'unknown station code/name',
+					error       => ( $errstr // 'unknown station code/name' )
 				}
 			);
 		}
@@ -155,7 +178,9 @@ sub handle_request {
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { [ "$_->[1] ($_->[0])", $_->[0] ] }
 			  Travel::Status::DE::IRIS::Stations::get_station($station);
-			if (@candidates) {
+			if ( @candidates > 1
+				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+			{
 				$self->render(
 					'multi',
 					stationlist => \@candidates,
@@ -166,7 +191,7 @@ sub handle_request {
 		}
 		$self->render(
 			'multi',
-			error     => "Got no results for '$station'",
+			error => ( $errstr // "Got no results for '$station'" ),
 			hide_opts => 0
 		);
 		return;
