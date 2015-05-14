@@ -151,6 +151,18 @@ div.displayclean li .moreinfo .mroute {
 	margin-bottom: 0.6em;
 }
 
+div.displayclean li .moreinfo .mroute .separator {
+	color: #999999;
+}
+
+div.displayclean li .moreinfo .mroute .important-stop {
+	color: #000000;
+}
+
+div.displayclean li .moreinfo .mroute .generic-stop {
+	color: #555555;
+}
+
 div.displayclean li .dest {
 	color:#000000;
 	/*font-weight:bold;*/

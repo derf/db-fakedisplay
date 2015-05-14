@@ -65,6 +65,15 @@ sub get_results_for {
 	return @{$results};
 }
 
+helper 'is_important' => sub {
+	my ( $self, $stop ) = @_;
+
+	if ( $stop =~ m{ Hbf | Flughafen }ox ) {
+		return 1;
+	}
+	return;
+};
+
 sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');

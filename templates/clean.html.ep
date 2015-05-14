@@ -73,14 +73,14 @@
 %     if ($departure->{sched_arrival}) {
         Ankunft: <%= $departure->{sched_arrival} %>
 %       if ($departure->{arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
-          (heute: <%= $departure->{arrival} %>)
+          (heute <%= $departure->{arrival} %>)
 %       }
         <br/>
 %     }
 %     if ($departure->{sched_departure}) {
         Abfahrt: <%= $departure->{sched_departure} %>
 %       if ($departure->{departure} and $departure->{departure} ne $departure->{sched_departure}) {
-          (heute: <%= $departure->{departure} %>)
+          (heute <%= $departure->{departure} %>)
 %       }
         <br/>
 %     }
@@ -88,7 +88,19 @@
 %   }
 %   if ($departure->{route_post} and @{$departure->{route_post}}) {
       <div class="mroute">
-      Über: <%= join(' – ', @{$departure->{route_post} // q{???}}) %>
+      Über:
+%       my $first = 0;
+%       for my $stop (@{$departure->{route_post} // q{???}}) {
+%         if ($first++) {
+            <span class="separator">–</span>
+%         }
+%         if ($self->is_important($stop)) {
+            <span class="important-stop"><%= $stop %></span>
+%         }
+%         else {
+            <span class="generic-stop"><%= $stop %></span>
+%         }
+%       }
       </div> <!-- mroute -->
 %   }
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
