@@ -101,7 +101,7 @@ on 2015-01-02 at 07:00 CET.</div>
       Layout
     </div>
     <div>
-      %= select_field mode => [['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'], ['Öffi' => 'clean']]
+      %= select_field mode => [['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'], ['Infoscreen' => 'clean']]
     </div>
   </div>
   <div class="field">
