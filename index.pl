@@ -224,7 +224,7 @@ sub handle_request {
 		if ( $admode eq 'arr' ) {
 			@results = sort {
 				( $a->arrival // $a->departure )
-				  <=> ( $b->arrival // $b->depearture )
+				  <=> ( $b->arrival // $b->departure )
 			} @results;
 		}
 		else {
