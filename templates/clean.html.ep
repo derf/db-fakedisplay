@@ -3,6 +3,7 @@
 <div class="displayclean">
 <ul>
 % my $i = 0;
+% my $dt_now = DateTime->now;
 % for my $departure (@{$departures}) {
 %   $i++;
 %   my $route_str = q{};
@@ -109,7 +110,13 @@
 %     for my $pair (@{$departure->{moreinfo}}) {
         <li>
 %       if ($pair->[0]->isa('DateTime')) {
-%=        $pair->[0]->strftime('%H:%M')
+%         if ($pair->[0]->day != $dt_now->day) {
+%           $pair->[0]->set_locale('de_DE');
+%=          $pair->[0]->strftime('%a %H:%M')
+%         }
+%         else {
+%=          $pair->[0]->strftime('%H:%M')
+%         }
 %       }
 %       else {
 %=        $pair->[0]
