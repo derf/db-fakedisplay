@@ -101,7 +101,7 @@ on 2015-01-02 at 07:00 CET.</div>
       Layout
     </div>
     <div>
-      %= select_field mode => [['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'], ['Infoscreen' => 'clean']]
+      %= select_field mode => [ ['Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
     </div>
   </div>
   <div class="field">
@@ -109,7 +109,7 @@ on 2015-01-02 at 07:00 CET.</div>
       Backend
     </div>
     <div>
-      %= select_field backend => [['RIS' => 'ris'], ['IRIS' => 'iris']]
+      %= select_field backend => [ ['IRIS' => 'iris'], ['RIS' => 'ris'] ]
     </div>
   </div>
   <div class="field">
