@@ -16,13 +16,16 @@
 %   my $extraclasses = q{};
 %   if ($departure->{is_cancelled}) {
 %     $extraclasses .= ' cancelled';
+      <li class="cancelled">
 %   }
-    <li>
+%   else {
+      <li>
+%   }
 %   my $linetype = q{};
 %   if ( $departure->{train_type} eq 'S' ) {
 %     $linetype = 'sbahn';
 %   }
-    <span class="line <%= $linetype %> <%= $extraclasses %>">
+    <span class="line <%= $linetype %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}
 %   }
@@ -143,7 +146,7 @@
     <span class="dest <%= $extraclasses %>">
 %=  $departure->{destination}
     </span>
-    <span class="countdown">
+    <span class="countdown <%= $extraclasses %>">
 %   if ($departure->{delay} and not $departure->{is_cancelled}) {
 %     if ($show_realtime) {
 %       if ($departure->{delay} > 0) {

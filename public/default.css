@@ -175,15 +175,12 @@ div.displayclean li .dest {
 	overflow: hidden;
 }
 
-div.displayclean li .cancelled {
-	text-decoration: line-through;
-	text-decoration-color: red;
-	-moz-text-decoration-color: red;
+div.displayclean li.cancelled {
+	background-color: #ffe7d0;
 }
 
 div.displayclean li .countdown {
 	color: #000000;
-	background-color: #f8f8f8;
 	font-size: 3em;
 	position: absolute;
 	right: 5px;
@@ -234,7 +231,6 @@ div.displayclean li .countdown .platform {
 
 div.displayclean li .time {
 	color:#000000;
-	background-color: #f8f8f8;
 	font-size:2.4em;
 	position:absolute;
 	right:5px;
