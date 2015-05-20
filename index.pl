@@ -81,11 +81,11 @@ sub handle_request {
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my @lines     = split( /,/, $self->param('lines')     // q{} );
-	my $template       = $self->param('mode')          // 'multi';
+	my $template       = $self->param('mode')          // 'clean';
 	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
 	my $hide_opts      = $self->param('hide_opts')     // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $backend        = $self->param('backend')       // 'ris';
+	my $backend        = $self->param('backend')       // 'iris';
 	my $admode         = $self->param('admode')        // 'deparr';
 	my $callback       = $self->param('callback');
 	my $apiver         = $self->param('version')       // 0;
@@ -102,12 +102,12 @@ sub handle_request {
 
 	if ( not( $template ~~ [qw[clean json marudor_v1 marudor multi single]] ) )
 	{
-		$template = 'multi';
+		$template = 'clean';
 	}
 
 	if ( not $station ) {
 		$self->render(
-			$template,
+			'landingpage',
 			hide_opts  => 0,
 			show_intro => 1
 		);
@@ -191,7 +191,7 @@ sub handle_request {
 				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
 			{
 				$self->render(
-					'multi',
+					'landingpage',
 					stationlist => \@candidates,
 					hide_opts   => 0
 				);
@@ -199,7 +199,7 @@ sub handle_request {
 			}
 		}
 		$self->render(
-			'multi',
+			'landingpage',
 			error => ( $errstr // "Got no results for '$station'" ),
 			hide_opts => 0
 		);
@@ -624,10 +624,6 @@ get '/_redirect' => sub {
 
 	$params->remove('station');
 	$params->remove('via');
-
-	if ( $params->param('mode') and $params->param('mode') eq 'multi' ) {
-		$params->remove('mode');
-	}
 
 	for my $param (qw(platforms)) {
 		if ( not $params->param($param) ) {
