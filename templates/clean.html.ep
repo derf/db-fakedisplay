@@ -90,19 +90,25 @@
 %     }
       </div> <!-- timeinfo -->
 %   }
-%   if ($departure->{route_post} and @{$departure->{route_post}}) {
+%   if ($departure->{route_post_diff} and @{$departure->{route_post_diff}}) {
       <div class="mroute">
       Über:
 %       my $first = 0;
-%       for my $stop (@{$departure->{route_post} // q{???}}) {
+%       for my $stop (@{$departure->{route_post_diff} // q{???}}) {
 %         if ($first++) {
             <span class="separator">–</span>
 %         }
-%         if ($self->is_important($stop)) {
-            <span class="important-stop"><%= $stop %></span>
+%         if ($stop->{isAdditional}) {
+            <span class="additional-stop"><%= $stop->{name} %></span>
+%         }
+%         elsif ($stop->{isCancelled}) {
+            <span class="cancelled-stop"><%= $stop->{name} %></span>
+%         }
+%         elsif ($self->is_important($stop->{name})) {
+            <span class="important-stop"><%= $stop->{name} %></span>
 %         }
 %         else {
-            <span class="generic-stop"><%= $stop %></span>
+            <span class="generic-stop"><%= $stop->{name} %></span>
 %         }
 %       }
       </div> <!-- mroute -->

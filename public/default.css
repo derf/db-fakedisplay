@@ -163,6 +163,14 @@ div.displayclean li .moreinfo .mroute .generic-stop {
 	color: #555555;
 }
 
+div.displayclean li .moreinfo .mroute .additional-stop {
+	color: #009900;
+}
+
+div.displayclean li .moreinfo .mroute .cancelled-stop {
+	color: #cc0000;
+}
+
 div.displayclean li .dest {
 	color:#000000;
 	/*font-weight:bold;*/

@@ -74,6 +74,67 @@ helper 'is_important' => sub {
 	return;
 };
 
+helper 'json_route_diff' => sub {
+	my ( $self, $route, $sched_route ) = @_;
+	my @json_route;
+	my @route       = @{$route};
+	my @sched_route = @{$sched_route};
+
+	my $route_idx = 0;
+	my $sched_idx = 0;
+
+	while ( $route_idx <= $#route and $sched_idx <= $#sched_route ) {
+		if ( $route[$route_idx] eq $sched_route[$sched_idx] ) {
+			push( @json_route, { name => $route[$route_idx] } );
+			$route_idx++;
+			$sched_idx++;
+		}
+
+		# this branch is inefficient, but won't be taken frequently
+		elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
+			push(
+				@json_route,
+				{
+					name         => $route[$route_idx],
+					isAdditional => 1
+				}
+			);
+			$route_idx++;
+		}
+		else {
+			push(
+				@json_route,
+				{
+					name        => $sched_route[$sched_idx],
+					isCancelled => 1
+				}
+			);
+			$sched_idx++;
+		}
+	}
+	while ( $route_idx++ < $#route ) {
+		push(
+			@json_route,
+			{
+				name         => $route[ $route_idx++ ],
+				isAdditional => 1,
+				isCancelled  => 0
+			}
+		);
+	}
+	while ( $sched_idx++ < $#sched_route ) {
+		push(
+			@json_route,
+			{
+				name         => $route[ $route_idx++ ],
+				isAdditional => 0,
+				isCancelled  => 1
+			}
+		);
+	}
+	return @json_route;
+};
+
 sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');
@@ -374,60 +435,8 @@ sub handle_request {
 		}
 
 		if ( $template eq 'marudor' ) {
-			my ( $route_idx, $sched_idx ) = ( 0, 0 );
-			my @json_route;
-			my @route       = $result->route;
-			my @sched_route = $result->sched_route;
-
-			while ( $route_idx <= $#route and $sched_idx <= $#sched_route ) {
-				if ( $route[$route_idx] eq $sched_route[$sched_idx] ) {
-					push( @json_route, { name => $route[$route_idx] } );
-					$route_idx++;
-					$sched_idx++;
-				}
-
-				# this branch is inefficient, but won't be taken frequently
-				elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
-					push(
-						@json_route,
-						{
-							name         => $route[$route_idx],
-							isAdditional => 1
-						}
-					);
-					$route_idx++;
-				}
-				else {
-					push(
-						@json_route,
-						{
-							name        => $sched_route[$sched_idx],
-							isCancelled => 1
-						}
-					);
-					$sched_idx++;
-				}
-			}
-			while ( $route_idx++ < $#route ) {
-				push(
-					@json_route,
-					{
-						name         => $route[ $route_idx++ ],
-						isAdditional => 1,
-						isCancelled  => 0
-					}
-				);
-			}
-			while ( $sched_idx++ < $#sched_route ) {
-				push(
-					@json_route,
-					{
-						name         => $route[ $route_idx++ ],
-						isAdditional => 0,
-						isCancelled  => 1
-					}
-				);
-			}
+			my @json_route = $self->json_route_diff( [ $result->route ],
+				[ $result->sched_route ] );
 
 			push(
 				@departures,
@@ -480,12 +489,18 @@ sub handle_request {
 					via             => [ $result->route_interesting(3) ],
 					scheduled_route => [ $result->sched_route ],
 					route_post      => [ $result->route_post ],
-					destination     => $result->destination,
-					origin          => $result->origin,
-					platform        => $platform,
-					info            => $info,
-					is_cancelled    => $result->is_cancelled,
-					messages        => {
+					route_post_diff => [
+						$self->json_route_diff(
+							[ $result->route_post ],
+							[ $result->sched_route_post ]
+						)
+					],
+					destination  => $result->destination,
+					origin       => $result->origin,
+					platform     => $platform,
+					info         => $info,
+					is_cancelled => $result->is_cancelled,
+					messages     => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
 							  $result->delay_messages
