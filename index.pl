@@ -112,25 +112,27 @@ helper 'json_route_diff' => sub {
 			$sched_idx++;
 		}
 	}
-	while ( $route_idx++ < $#route ) {
+	while ( $route_idx < $#route ) {
 		push(
 			@json_route,
 			{
-				name         => $route[ $route_idx++ ],
+				name         => $route[ $route_idx ],
 				isAdditional => 1,
 				isCancelled  => 0
 			}
 		);
+		$route_idx++;
 	}
-	while ( $sched_idx++ < $#sched_route ) {
+	while ( $sched_idx < $#sched_route ) {
 		push(
 			@json_route,
 			{
-				name         => $route[ $route_idx++ ],
+				name         => $sched_route[ $sched_idx ],
 				isAdditional => 0,
 				isCancelled  => 1
 			}
 		);
+		$sched_idx++;
 	}
 	return @json_route;
 };
