@@ -50,6 +50,8 @@
       </span>
 %   }
     <span class="moreinfo">
+    <div class="moreinfo-bgbox"></div>
+    <span class="moreinfo-inner">
     <div class="mheader">
     <span class="train-line"><%= $departure->{train_type} // q{???} %></span><!--
  --><span class="train-line"><%= $departure->{train_line} // q{} %></span>
@@ -138,7 +140,8 @@
 %     }
       </ul>
 %   }
-    </span>
+    </span> <!-- moreinfo-inner -->
+    </span> <!-- moreinfo -->
 %   if ($departure->{info} and length $departure->{info}) {
       <span class="info">
 %=    $departure->{info}
