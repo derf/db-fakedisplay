@@ -108,42 +108,19 @@ div.displayclean li .info {
 }
 
 div.displayclean li .moreinfo {
-	position:fixed;
-	top:0em;
-	left:0em;
-	right:0em;
-	bottom:0em;
-	z-index: 4;
-	display: none;
-}
-
-div.displayclean li .moreinfo-bgbox {
-	display: block;
-	position: absolute;
-	top:0em;
-	left:0em;
-	right:0em;
-	bottom:0em;
-	background-color: black;
-	z-index: 5;
-	opacity: 0.8;
-}
-
-div.displayclean li .moreinfo-inner {
-	position:absolute;
 	color:#000000;
 	font-size:2.1em;
+	position:fixed;
 	top:1em;
 	left:1em;
 	right:1em;
 	min-height: 1em;
 	max-height: 90%;
 	background-color: white;
-	border: 0.2em solid black;
-	z-index: 6;
+	border: 0.2em inset #666666;
+	z-index: 5;
+	display: none;
 	overflow: auto;
-	display: block;
-	opacity: 1;
 }
 
 div.displayclean li .collapsed-moreinfo {
