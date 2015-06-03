@@ -111,13 +111,14 @@ div.displayclean li .moreinfo {
 	color:#000000;
 	font-size:2.1em;
 	position:fixed;
-	top:1em;
-	left:1em;
-	right:1em;
-	min-height: 1em;
-	max-height: 90%;
+	top:0em;
+	padding-top: 1em;
+	left:0em;
+	padding-left: 1em;
+	right:0em;
+	padding-right: 1em;
+	bottom:0em;
 	background-color: white;
-	border: 0.2em inset #666666;
 	z-index: 5;
 	display: none;
 	overflow: auto;
@@ -133,7 +134,7 @@ div.displayclean li .expanded-moreinfo {
 
 div.displayclean li .moreinfo .mheader {
 	text-align: center;
-	background-color: #cccccc;
+	background-color: #dddddd;
 	font-size: 120%;
 }
 
