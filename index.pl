@@ -116,7 +116,7 @@ helper 'json_route_diff' => sub {
 		push(
 			@json_route,
 			{
-				name         => $route[ $route_idx ],
+				name         => $route[$route_idx],
 				isAdditional => 1,
 				isCancelled  => 0
 			}
@@ -127,7 +127,7 @@ helper 'json_route_diff' => sub {
 		push(
 			@json_route,
 			{
-				name         => $sched_route[ $sched_idx ],
+				name         => $sched_route[$sched_idx],
 				isAdditional => 0,
 				isCancelled  => 1
 			}
@@ -497,12 +497,13 @@ sub handle_request {
 							[ $result->sched_route_post ]
 						)
 					],
-					destination  => $result->destination,
-					origin       => $result->origin,
-					platform     => $platform,
-					info         => $info,
-					is_cancelled => $result->is_cancelled,
-					messages     => {
+					destination        => $result->destination,
+					origin             => $result->origin,
+					platform           => $platform,
+					scheduled_platform => $result->sched_platform,
+					info               => $info,
+					is_cancelled       => $result->is_cancelled,
+					messages           => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
 							  $result->delay_messages

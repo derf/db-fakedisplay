@@ -71,7 +71,7 @@
 %   elsif (defined $departure->{delay} and $departure->{delay} > 0) {
       <div class="minfo">+<%= $departure->{delay} %></div>
 %   }
-    </div>
+    </div> <!-- mheader -->
 %   if (not $departure->{is_cancelled}) {
       <div class="timeinfo">
 %     if ($departure->{sched_arrival}) {
@@ -138,7 +138,7 @@
 %     }
       </ul>
 %   }
-    </span>
+    </span> <!-- moreinfo -->
 %   if ($departure->{info} and length $departure->{info}) {
       <span class="info">
 %=    $departure->{info}
@@ -171,7 +171,13 @@
 %       }
 %     }
 %   }
-    <span class="platform <%= $extraclasses %>">
+%   if ($departure->{scheduled_platform} and $departure->{platform} and
+%       $departure->{scheduled_platform} ne $departure->{platform}) {
+      <span class="platform changed-platform">
+%   }
+%   else {
+      <span class="platform">
+%   }
 %=  $departure->{platform}
     </span>
     </span>
