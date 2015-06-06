@@ -30,9 +30,9 @@ sub get_results_for {
 
 	my $cache_str = "${backend}_${cstation}";
 
-	my $results = $cache->thaw($cache_str);
+	my $data = $cache->thaw($cache_str);
 
-	if ( not $results ) {
+	if ( not $data ) {
 		if ( $backend eq 'iris' ) {
 
 			# requests with DS100 codes should be preferred (they avoid
@@ -49,20 +49,26 @@ sub get_results_for {
 				serializable => 1,
 				%opt
 			);
-			$results = [ [ $status->results ], $status->errstr ];
-			$cache->freeze( $cache_str, $results );
+			$data = {
+				results => [ $status->results ],
+				errstr  => $status->errstr,
+			};
+			$cache->freeze( $cache_str, $data );
 		}
 		else {
 			my $status = Travel::Status::DE::DeutscheBahn->new(
 				station => $station,
 				%opt
 			);
-			$results = [ [ $status->results ], $status->errstr ];
-			$cache->freeze( $cache_str, $results );
+			$data = {
+				results => [ $status->results ],
+				errstr  => $status->errstr,
+			};
+			$cache->freeze( $cache_str, $data );
 		}
 	}
 
-	return @{$results};
+	return $data;
 }
 
 helper 'is_important' => sub {
@@ -182,8 +188,10 @@ sub handle_request {
 	}
 
 	my @departures;
-	my ( $results_ref, $errstr ) = get_results_for( $backend, $station, %opt );
-	my @results = @{$results_ref};
+	my $data        = get_results_for( $backend, $station, %opt );
+	my $results_ref = $data->{results};
+	my $errstr      = $data->{errstr};
+	my @results     = @{$results_ref};
 
 	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
 		$self->res->headers->access_control_allow_origin('*');
