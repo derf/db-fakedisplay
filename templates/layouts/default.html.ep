@@ -158,8 +158,8 @@ Umschreibungen der Art ä → ae oder ä → a benutzen.</li>
 <li><a href="/Essen%20Hbf">Essen HBf</a> (RIS, Bahnhofstafel)</li>
 <li><a href="/Dortmund/Bochum%7CHamm">Dortmund HBf</a> (RIS, Bahnhofstafel,
 nur Züge via Bochum oder Hamm)</li>
-<li><a href="/Dortmund%20Uni?mode=clean&backend=iris">Dortmund Universit&auml;t</a> (IRIS, "Mobile" Ansicht)</li>
-<li><a href="/KD?mode=single&backend=iris">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
+<li><a href="/Dortmund%20Uni?mode=clean&amp;backend=iris">Dortmund Universit&auml;t</a> (IRIS, "Mobile" Ansicht)</li>
+<li><a href="/KD?mode=single&amp;backend=iris">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
 </ul>
 </div>
 
@@ -168,7 +168,7 @@ nur Züge via Bochum oder Hamm)</li>
 <ul>
 <li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DeutscheBahn RIS</a></li>
 <li><a href="http://marudor.de/">Handyfreundliches Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
-<li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amd;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
+<li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amp;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
 >DeutscheBahn IRIS</a> und <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a></li>
 <li><a href="http://www.frubi.net/iris/?station=Essen%20HBf">frubi.net IRIS-Interface</a></li>
 <li><a href="http://vrrf.finalrewind.org/">vrr-fakedisplay</a></li>

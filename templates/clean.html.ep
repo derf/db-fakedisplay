@@ -25,7 +25,7 @@
 %   if ( $departure->{train_type} eq 'S' ) {
 %     $linetype = 'sbahn';
 %   }
-    <span class="line <%= $linetype %>">
+    <div class="line <%= $linetype %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}
 %   }
@@ -38,18 +38,18 @@
 %   else {
 %=    $departure->{train}
 %   }
-    </span>
+    </div>
 %   if (@{$departure->{replaced_by}} or @{$departure->{replacement_for}}) {
-      <span class="lineinfo">
+      <div class="lineinfo">
 %     for my $replacement (@{$departure->{replaced_by}}) {
         <span class="replaced">→ <%= $replacement %></span>
 %     }
 %     for my $replacement (@{$departure->{replacement_for}}) {
         <span class="replacement">↑ <%= $replacement %></span>
 %     }
-      </span>
+      </div>
 %   }
-    <span class="moreinfo">
+    <div class="moreinfo">
     <div class="mheader">
     <span class="train-line"><%= $departure->{train_type} // q{???} %></span><!--
  --><span class="train-line"><%= $departure->{train_line} // q{} %></span>
@@ -138,7 +138,7 @@
 %     }
       </ul>
 %   }
-    </span> <!-- moreinfo -->
+    </div> <!-- moreinfo -->
 %   if ($departure->{info} and length $departure->{info}) {
       <span class="info">
 %=    $departure->{info}
