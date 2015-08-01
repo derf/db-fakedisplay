@@ -14,14 +14,7 @@ my $t = Test::Mojo->new;
 # be because of RIS problems or unanticipated schedule changes.
 # TODO: Support mock XML from hard disk.
 
-$t->get_ok('/Dortmund Universitat')
-  ->status_is(200)
-  ->content_like(qr{S 1}, 'train name')
-  ->content_like(qr{Dortmund Hbf}, 'dest')
-  ->content_like(qr{Dortmund-Oespel}, 'via')
-  ;
-
-$t->get_ok('/Dortmund Universitat&backend=ris')
+$t->get_ok('/Dortmund Universitat?backend=ris')
   ->status_is(200)
   ->content_like(qr{S 1}, 'train name')
   ->content_like(qr{Dortmund Hbf}, 'dest')
