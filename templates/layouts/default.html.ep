@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= stash('title') // 'db-fakedisplay' %></title>
+	<title><%= stash('title') // 'db-infoscreen' %></title>
 	<meta charset="utf-8">
 % if ($self->stash('refresh_interval')) {
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
@@ -170,12 +170,12 @@ nur Züge via Bochum oder Hamm)</li>
 <li><a href="http://marudor.de/">Handyfreundliches Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
 <li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amp;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
 >DeutscheBahn IRIS</a> und <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a></li>
-<li><a href="http://vrrf.finalrewind.org/">vrr-fakedisplay</a></li>
+<li><a href="http://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
 </ul>
 </div> <!-- notes -->
 
 <div class="about">
-<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+<a href="http://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 v<%= stash('version') // '???' %>
 </div>
 % }

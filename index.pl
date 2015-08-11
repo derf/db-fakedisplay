@@ -18,7 +18,7 @@ sub get_results_for {
 	my ( $backend, $station, %opt ) = @_;
 
 	my $cache = Cache::File->new(
-		cache_root      => '/tmp/db-fake',
+		cache_root      => '/tmp/db-fakedisplay',
 		default_expires => $refresh_interval . ' sec',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
@@ -166,7 +166,7 @@ sub handle_request {
 	  : $Travel::Status::DE::DeutscheBahn::VERSION;
 
 	$self->stash( departures => [] );
-	$self->stash( title      => 'db-fakedisplay' );
+	$self->stash( title      => 'db-infoscreen' );
 	$self->stash( version    => $VERSION );
 
 	if ( not( $template ~~ [qw[clean json marudor_v1 marudor multi single]] ) )
@@ -678,7 +678,7 @@ app->config(
 	hypnotoad => {
 		accepts  => 10,
 		listen   => ['http://*:8092'],
-		pid_file => '/tmp/db-fake.pid',
+		pid_file => '/tmp/db-fakedisplay.pid',
 		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
 	},
 );
