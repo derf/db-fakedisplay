@@ -74,7 +74,7 @@ on 2015-01-02 at 07:00 CET.</div>
   <span class="optional">Optionale Einstellungen:</span>
   <div class="field">
     <div class="desc">
-      Einschränken auf Unterwegshalte:
+      Nur Züge über
     </div>
     <div>
       %= text_field 'via'
@@ -82,7 +82,7 @@ on 2015-01-02 at 07:00 CET.</div>
   </div>
   <div class="field">
     <div class="desc">
-      Nur folgende Gleise anzeigen:
+      Gleise
     </div>
     <div>
       %= text_field 'platforms'
@@ -90,7 +90,7 @@ on 2015-01-02 at 07:00 CET.</div>
   </div>
   <div class="field">
     <div class="desc">
-      Nur Verspätungen über 5 Minuten anzeigen
+      Verspätungen &lt;5 Minuten ignorieren
     </div>
     <div>
       %= check_box 'hidelowdelay' => 1
@@ -124,7 +124,7 @@ on 2015-01-02 at 07:00 CET.</div>
   <span class="optional">Nur für IRIS-Backend:</span>
   <div class="field">
     <div class="desc">
-      Ankunft- oder Abfahrtzeiten anzeigen?
+      Ankunfts- oder Abfahrtszeiten
     </div>
     <div>
       %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
@@ -132,7 +132,7 @@ on 2015-01-02 at 07:00 CET.</div>
   </div>
   <div class="field">
     <div class="desc">
-      Erwartete Abfahrtzeiten statt Fahrplandaten verwenden?
+      Erwartete Zeiten statt Fahrplandaten
     </div>
     <div>
       %= check_box 'show_realtime' => 1
@@ -146,9 +146,9 @@ on 2015-01-02 at 07:00 CET.</div>
 <div class="notes">
 <span class="notes">Anmerkungen:</span>
 <ul>
-<li>Umlaute funktionieren nicht mit allen Backend/Layout-Kombinationen.
-Wenn etwas nicht funktioniert:
-Umschreibungen der Art ä → ae oder ä → a benutzen.</li>
+<li>Umlaute werden nicht bei allen Backend/Layout-Kombinationen korrekt unterstützt.
+Wenn etwas nicht funktioniert helfen meist
+Umschreibungen der Art ä → ae oder ä → a.</li>
 </ul>
 </div> <!-- notes -->
 
