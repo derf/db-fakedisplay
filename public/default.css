@@ -427,19 +427,14 @@ div.break {
 }
 
 div.field {
-	width: 100%;
-	clear: both;
-}
-
-div.field div.desc {
-	float: left;
-	width: 14em;
-	text-align: right;
-	padding-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.6em;
 }
 
 input, select {
-	border: 1px solid black;
+	width: 20em;
+	max-width: 100%;
+	min-height: 1.8em;
 }
 
 div.notes {
