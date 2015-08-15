@@ -1,0 +1,23 @@
+body {
+	margin: 0;
+}
+
+div.displayclean > ul > li {
+	font-size: 35%;
+}
+
+div.displayclean li .moreinfo {
+	font-size: 2.6em;
+}
+
+p,
+div.input-field,
+div.notes {
+	max-width: 94%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+p {
+	text-align: justify;
+}

@@ -3,12 +3,16 @@
 <head>
 	<title><%= stash('title') // 'db-infoscreen' %></title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 % if ($self->stash('refresh_interval')) {
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
 
 	%= stylesheet '/default.css'
+% if ($self->browser->mobile) {
+	%= stylesheet '/mobile.css'
+% }
 	%= javascript '/jquery-1.10.2.min.js'
 	%= javascript '/collapse.js'
 	%= javascript '/marquee.js'
