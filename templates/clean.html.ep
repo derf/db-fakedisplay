@@ -51,13 +51,17 @@
 %   }
     <div class="moreinfo">
     <div class="mheader">
-    <span class="train-line"><%= $departure->{train_type} // q{???} %></span><!--
- --><span class="train-line"><%= $departure->{train_line} // q{} %></span>
-%   if ($departure->{train_line}) {
-      <span class="train-no"><%= $departure->{train_no} // q{???} %></span>
+%   if ($departure->{train_no} or $departure->{line_no}) {
+      <span class="train-line"><%= $departure->{train_type} // q{???} %></span>
+%     if ($departure->{train_line}) {
+        <span class="train-no"><%= $departure->{train_no} // q{???} %></span>
+%     }
+%     else {
+        <span class="train-line"><%= $departure->{train_no} // q{???} %></span>
+%     }
 %   }
 %   else {
-      <span class="train-line"><%= $departure->{train_no} // q{???} %></span>
+      <span class="train-line"><%= $departure->{train} // q{???} %></span>
 %   }
 %   if ($departure->{origin}) {
       :
@@ -88,6 +92,12 @@
 %       }
         <br/>
 %     }
+%     if (not ($departure->{sched_arrival} or $departure->{sched_departure})) {
+        Abfahrt: <%= $departure->{time} %>
+%       if ($departure->{delay}) {
+          (heute +<%= $departure->{delay} %>)
+%       }
+%     }
       </div> <!-- timeinfo -->
 %   }
 %   if ($departure->{route_post_diff} and @{$departure->{route_post_diff}}) {
@@ -109,6 +119,25 @@
 %         }
 %         else {
             <span class="generic-stop"><%= $stop->{name} %></span>
+%         }
+%       }
+      </div> <!-- mroute -->
+%   }
+%   elsif ($departure->{route_timetable}) {
+      <div class="mroute">
+      Über:
+%       my $first = 0;
+%       for my $stop (@{$departure->{route_timetable}}) {
+%         my ($time, $name) = @{$stop};
+%         if ($first++) {
+            <span class="separator">–</span>
+%         }
+          <span class="generic-stop"><%= $time %></span>
+%         if ($self->is_important($name)) {
+            <span class="important-stop"><%= $name %></span>
+%         }
+%         else {
+            <span class="generic-stop"><%= $name %></span>
 %         }
 %       }
       </div> <!-- mroute -->
@@ -135,6 +164,9 @@
 %=      $pair->[1]
         </span>
         </li>
+%     }
+%     if ($departure->{route_info}) {
+        <li><%= $departure->{route_info} %></li>
 %     }
       </ul>
 %   }

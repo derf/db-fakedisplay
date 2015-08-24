@@ -560,6 +560,8 @@ sub handle_request {
 					canceled_stops   => [],
 					replaced_by      => [],
 					replacement_for  => [],
+					route_timetable  => [ $result->route_timetable ],
+					route_info       => $result->route_info,
 				}
 			);
 		}
