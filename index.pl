@@ -507,7 +507,7 @@ sub handle_request {
 					],
 					destination        => $result->destination,
 					origin             => $result->origin,
-					platform           => $platform,
+					platform           => $result->platform,
 					scheduled_platform => $result->sched_platform,
 					info               => $info,
 					is_cancelled       => $result->is_cancelled,
