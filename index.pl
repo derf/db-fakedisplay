@@ -448,32 +448,95 @@ sub handle_request {
 			my @json_route = $self->json_route_diff( [ $result->route ],
 				[ $result->sched_route ] );
 
-			push(
-				@departures,
-				{
-					delay       => $delay,
-					destination => $result->destination,
-					isCancelled => $result->can('is_cancelled')
-					? $result->is_cancelled
-					: undef,
-					messages => {
-						delay => [
-							map { { timestamp => $_->[0], text => $_->[1] } }
-							  $result->delay_messages
-						],
-						qos => [
-							map { { timestamp => $_->[0], text => $_->[1] } }
-							  $result->qos_messages
-						],
-					},
-					platform          => $result->platform,
-					route             => \@json_route,
-					scheduledPlatform => $result->sched_platform,
-					time              => $time,
-					train             => $result->train,
-					via               => [ $result->route_interesting(3) ],
+			if ( $apiver == 1 ) {
+				push(
+					@departures,
+					{
+						delay       => $delay,
+						destination => $result->destination,
+						isCancelled => $result->can('is_cancelled')
+						? $result->is_cancelled
+						: undef,
+						messages => {
+							delay => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->delay_messages
+							],
+							qos => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->qos_messages
+							],
+						},
+						platform          => $result->platform,
+						route             => \@json_route,
+						scheduledPlatform => $result->sched_platform,
+						time              => $time,
+						train             => $result->train,
+						via               => [ $result->route_interesting(3) ],
+					}
+				);
+			}
+			else {    # apiver == 2
+				my ( $delay_arr, $delay_dep, $sched_arr, $sched_dep );
+				if ( $result->arrival ) {
+					$delay_arr = $result->arrival->subtract_datetime(
+						$result->sched_arrival )->in_units('minutes');
 				}
-			);
+				if ( $result->departure ) {
+					$delay_dep = $result->departure->subtract_datetime(
+						$result->sched_departure )->in_units('minutes');
+				}
+				if ( $result->sched_arrival ) {
+					$sched_arr = $result->sched_arrival->strftime('%H:%M');
+				}
+				if ( $result->sched_departure ) {
+					$sched_dep = $result->sched_departure->strftime('%H:%M');
+				}
+				push(
+					@departures,
+					{
+						delayArrival   => $delay_arr,
+						delayDeparture => $delay_dep,
+						destination    => $result->destination,
+						isCancelled    => $result->can('is_cancelled')
+						? $result->is_cancelled
+						: undef,
+						messages => {
+							delay => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->delay_messages
+							],
+							qos => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->qos_messages
+							],
+						},
+						platform           => $result->platform,
+						route              => \@json_route,
+						scheduledPlatform  => $result->sched_platform,
+						scheduledArrival   => $sched_arr,
+						scheduledDeparture => $sched_dep,
+						train              => $result->train,
+						via                => [ $result->route_interesting(3) ],
+					}
+				);
+			}
 		}
 		elsif ( $backend eq 'iris' ) {
 			push(
