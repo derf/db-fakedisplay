@@ -152,18 +152,19 @@ on 2015-01-02 at 07:00 CET.</div>
 <ul>
 <li>Umlaute werden nicht bei allen Backend/Layout-Kombinationen korrekt unterstützt.
 Wenn etwas nicht funktioniert helfen meist
-Umschreibungen der Art ä → ae oder ä → a.</li>
+Umschreibungen der Art ä → ae oder ä → a</li>
+<li>Das RIS-Backend ist deprecated und wird bald ausgetauscht oder entfernt</li>
 </ul>
 </div> <!-- notes -->
 
 <div class="notes">
 <span class="notes">Beispiele:</span>
 <ul>
-<li><a href="/Essen%20Hbf">Essen HBf</a> (RIS, Bahnhofstafel)</li>
-<li><a href="/Dortmund/Bochum%7CHamm">Dortmund HBf</a> (RIS, Bahnhofstafel,
+<li><a href="/Essen%20Hbf?mode=multi">Essen HBf</a> (IRIS, Bahnhofstafel)</li>
+<li><a href="/Dortmund/Bochum%7CHamm?mode=multi">Dortmund HBf</a> (IRIS, Bahnhofstafel,
 nur Züge via Bochum oder Hamm)</li>
-<li><a href="/Dortmund%20Uni?mode=clean&amp;backend=iris">Dortmund Universit&auml;t</a> (IRIS, "Mobile" Ansicht)</li>
-<li><a href="/KD?mode=single&amp;backend=iris">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
+<li><a href="/Dortmund%20Uni?mode=clean">Dortmund Universit&auml;t</a> (IRIS, Mobile/Infoscreen)</li>
+<li><a href="/KD?mode=single">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
 </ul>
 </div>
 
