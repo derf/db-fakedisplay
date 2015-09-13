@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Cache::File;
+use File::Slurp qw(read_file write_file);
 use List::MoreUtils qw();
 use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::IRIS;
@@ -13,6 +14,14 @@ no if $] >= 5.018, warnings => "experimental::smartmatch";
 our $VERSION = qx{git describe --dirty} || '0.05';
 
 my $refresh_interval = 180;
+
+sub log_api_access {
+	my $counter = 1;
+	if ( -r $ENV{DBFAKEDISPLAY_STATS} ) {
+		$counter = read_file( $ENV{DBFAKEDISPLAY_STATS} ) + 1;
+	}
+	write_file( $ENV{DBFAKEDISPLAY_STATS}, $counter );
+}
 
 sub get_results_for {
 	my ( $backend, $station, %opt ) = @_;
@@ -33,6 +42,9 @@ sub get_results_for {
 	my $data = $cache->thaw($cache_str);
 
 	if ( not $data ) {
+		if ( $ENV{DBFAKEDISPLAY_STATS} ) {
+			log_api_access();
+		}
 		if ( $backend eq 'iris' ) {
 
 			# requests with DS100 codes should be preferred (they avoid
