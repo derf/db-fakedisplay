@@ -41,17 +41,16 @@ on 2015-01-02 at 07:00 CET.</div>
 
 % if (stash 'show_intro') {
 <p>
-  Diese Seite ist ein Frontend zum
-  <a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">Abfahrtsmonitor</a>
-  der Deutschen Bahn. Sie ersetzt ihn nicht, kann dafür aber gut die in den
-  Bahnhofshallen bzw. an den Gleisen verbauten Anzeigen nachahmen.
+  Diese Seite ist ein Frontend zum IRIS (Abfahrtsmonitor)
+  der Deutschen Bahn. Sie kann wahlweise die in Bahnhofshallen / an
+  Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
+  Infoscreen-taugliche Abfahrtsmonitor liefern.
 </p>
 <p>
   Als Backend werden sowohl das RIS ("Reisenden-Informationssystem", d.h. der
   Bahn-Abfahrtsmonitor) als auch das IRIS ("Innerbetriebliches
-  Reisenden-Informationssystem") unterstützt. Im Normalfall enthält das
-  IRIS mehr und detailliertere Angaben, davon werden aber noch nicht alle
-  unterstützt.
+  Reisenden-Informationssystem"?) unterstützt. Im Normalfall enthält das
+  IRIS mehr und detailliertere Angaben.
 </p>
 % }
 
