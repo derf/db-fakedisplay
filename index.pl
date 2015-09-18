@@ -4,6 +4,7 @@ use Cache::File;
 use File::Slurp qw(read_file write_file);
 use List::MoreUtils qw();
 use Travel::Status::DE::HAFAS;
+use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use 5.014;
@@ -268,6 +269,25 @@ sub handle_request {
 	}
 
 	if ( not @results ) {
+		if ( $backend eq 'ris' ) {
+			my %db_service = Travel::Status::DE::HAFAS::get_service('DB');
+			my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
+				url   => $db_service{stopfinder},
+				input => $station,
+			);
+			my @candidates
+			  = map { [ "$_->{name} ($_->{id})", $_->{id} ] } $sf->results;
+			if ( @candidates > 1
+				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+			{
+				$self->render(
+					'landingpage',
+					stationlist => \@candidates,
+					hide_opts   => 0
+				);
+				return;
+			}
+		}
 		if ( $backend eq 'iris' ) {
 			my @candidates = map { [ "$_->[1] ($_->[0])", $_->[0] ] }
 			  Travel::Status::DE::IRIS::Stations::get_station($station);
