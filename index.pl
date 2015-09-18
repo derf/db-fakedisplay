@@ -435,11 +435,12 @@ sub handle_request {
 		else {
 			$info = $result->info;
 			if ($info) {
-				$moreinfo = [ [ 'RIS', $info ] ];
+				$moreinfo = [ [ 'HAFAS', $info ] ];
 			}
 			if ( $result->delay and $result->delay > 0 ) {
 				$info = 'ca. +' . $result->delay . ': ' . $info;
 			}
+			push( @{$moreinfo}, map { [ 'HAFAS', $_ ] } $result->messages );
 		}
 
 		my $time = $result->time;
@@ -658,7 +659,6 @@ sub handle_request {
 					canceled_stops   => [],
 					replaced_by      => [],
 					replacement_for  => [],
-					route_info       => [ $result->messages ],
 				}
 			);
 		}
