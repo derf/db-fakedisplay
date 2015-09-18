@@ -7,9 +7,9 @@
 % for my $departure (@{$departures}) {
 %   $i++;
 %   my $route_str = q{};
-%   my $via_max = @{$departure->{via}};
+%   my $via_max = @{$departure->{via} // []};
 %   my $via_cur = 0;
-%   for my $stop (@{$departure->{via}}) {
+%   for my $stop (@{$departure->{via} // []}) {
 %     $via_cur++;
 %     $route_str .= $stop . ($via_cur < $via_max ? ' - ' : q{});
 %   }

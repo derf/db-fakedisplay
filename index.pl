@@ -3,7 +3,7 @@ use Mojolicious::Lite;
 use Cache::File;
 use File::Slurp qw(read_file write_file);
 use List::MoreUtils qw();
-use Travel::Status::DE::DeutscheBahn;
+use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use 5.014;
@@ -68,8 +68,9 @@ sub get_results_for {
 			$cache->freeze( $cache_str, $data );
 		}
 		else {
-			my $status = Travel::Status::DE::DeutscheBahn->new(
-				station => $station,
+			my $status = Travel::Status::DE::HAFAS->new(
+				station       => $station,
+				excluded_mots => [qw[bus ferry ondemand tram u]],
 				%opt
 			);
 			$data = {
@@ -175,7 +176,7 @@ sub handle_request {
 	my $api_version
 	  = $backend eq 'iris'
 	  ? $Travel::Status::DE::IRIS::VERSION
-	  : $Travel::Status::DE::DeutscheBahn::VERSION;
+	  : $Travel::Status::DE::HAFAS::VERSION;
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-infoscreen' );
@@ -322,7 +323,7 @@ sub handle_request {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		my $line     = $result->line;
 		my $delay    = $result->delay;
-		if ($via) {
+		if ( $via and $result->can('route') ) {
 			my @route = $result->route;
 			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
 				@route = $result->route_post;
@@ -415,6 +416,9 @@ sub handle_request {
 			$info = $result->info;
 			if ($info) {
 				$moreinfo = [ [ 'RIS', $info ] ];
+			}
+			if ( $result->delay and $result->delay > 0 ) {
+				$info = 'ca. +' . $result->delay . ': ' . $info;
 			}
 		}
 
@@ -618,7 +622,6 @@ sub handle_request {
 					time         => $time,
 					train        => $result->train,
 					train_type   => $result->type,
-					via          => [ $result->route_interesting(3) ],
 					destination  => $result->destination,
 					platform     => $platform,
 					info         => $info,
@@ -635,8 +638,7 @@ sub handle_request {
 					canceled_stops   => [],
 					replaced_by      => [],
 					replacement_for  => [],
-					route_timetable  => [ $result->route_timetable ],
-					route_info       => $result->route_info,
+					route_info       => [ $result->messages ],
 				}
 			);
 		}

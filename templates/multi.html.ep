@@ -21,9 +21,9 @@
 </div>
 
 <div class="via">
-% my $via_max = @{$departure->{via}};
+% my $via_max = @{$departure->{via} // []};
 % my $via_cur = 0;
-% for my $stop (@{$departure->{via}}) {
+% for my $stop (@{$departure->{via} // []}) {
 % $via_cur++;
 <span><%= $stop %><% if ($via_cur < $via_max) { %> - <% } %></span>
 % }
