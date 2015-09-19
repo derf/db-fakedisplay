@@ -276,7 +276,7 @@ sub handle_request {
 				input => $station,
 			);
 			my @candidates
-			  = map { [ "$_->{name} ($_->{id})", $_->{id} ] } $sf->results;
+			  = map { [ $_->{name}, $_->{id} ] } $sf->results;
 			if ( @candidates > 1
 				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
 			{
@@ -289,7 +289,7 @@ sub handle_request {
 			}
 		}
 		if ( $backend eq 'iris' ) {
-			my @candidates = map { [ "$_->[1] ($_->[0])", $_->[0] ] }
+			my @candidates = map { [ $_->[1], $_->[0] ] }
 			  Travel::Status::DE::IRIS::Stations::get_station($station);
 			if ( @candidates > 1
 				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
