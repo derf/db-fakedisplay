@@ -92,6 +92,113 @@ sub get_results_for {
 	return $data;
 }
 
+helper 'handle_no_results' => sub {
+	my ( $self, $backend, $station, $errstr ) = @_;
+
+	if ( $backend eq 'ris' ) {
+		my %db_service = Travel::Status::DE::HAFAS::get_service('DB');
+		my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
+			url   => $db_service{stopfinder},
+			input => $station,
+		);
+		my @candidates
+		  = map { [ $_->{name}, $_->{id} ] } $sf->results;
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+		{
+			$self->render(
+				'landingpage',
+				stationlist => \@candidates,
+				hide_opts   => 0
+			);
+			return;
+		}
+	}
+	if ( $backend eq 'iris' ) {
+		my @candidates = map { [ $_->[1], $_->[0] ] }
+		  Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+		{
+			$self->render(
+				'landingpage',
+				stationlist => \@candidates,
+				hide_opts   => 0
+			);
+			return;
+		}
+	}
+	$self->render(
+		'landingpage',
+		error => ( $errstr // "Got no results for '$station'" ),
+		hide_opts => 0
+	);
+	return;
+};
+
+helper 'handle_no_results_marudor' => sub {
+	my ( $self, $backend, $station, $errstr, $api_version, $callback ) = @_;
+
+	$self->res->headers->access_control_allow_origin(q{*});
+	my $json;
+	if ($errstr) {
+		$json = $self->render_to_string(
+			json => {
+				api_version => $api_version,
+				version     => $VERSION,
+				error       => $errstr,
+			}
+		);
+	}
+	elsif ( $backend eq 'iris' ) {
+		my @candidates = map { { code => $_->[0], name => $_->[1] } }
+		  Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0]{code} ne $station ) )
+		{
+			$json = $self->render_to_string(
+				json => {
+					api_version => $api_version,
+					version     => $VERSION,
+					error       => 'ambiguous station code/name',
+					candidates  => \@candidates,
+				}
+			);
+		}
+		else {
+			$json = $self->render_to_string(
+				json => {
+					api_version => $api_version,
+					version     => $VERSION,
+					error => ( $errstr // "Got no results for '$station'" )
+				}
+			);
+		}
+	}
+	else {
+		$json = $self->render_to_string(
+			json => {
+				api_version => $api_version,
+				version     => $VERSION,
+				error       => ( $errstr // 'unknown station code/name' )
+			}
+		);
+	}
+	if ($callback) {
+		$self->render(
+			data   => "$callback($json);",
+			format => 'json'
+		);
+	}
+	else {
+		$self->render(
+			data   => $json,
+			format => 'json'
+		);
+	}
+	return;
+};
+
 helper 'is_important' => sub {
 	my ( $self, $stop ) = @_;
 
@@ -215,105 +322,13 @@ sub handle_request {
 	my @results     = @{$results_ref};
 
 	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
-		$self->res->headers->access_control_allow_origin(q{*});
-		my $json;
-		if ($errstr) {
-			$json = $self->render_to_string(
-				json => {
-					api_version => $api_version,
-					version     => $VERSION,
-					error       => $errstr,
-				}
-			);
-		}
-		elsif ( $backend eq 'iris' ) {
-			my @candidates = map { { code => $_->[0], name => $_->[1] } }
-			  Travel::Status::DE::IRIS::Stations::get_station($station);
-			if ( @candidates > 1
-				or ( @candidates == 1 and $candidates[0]{code} ne $station ) )
-			{
-				$json = $self->render_to_string(
-					json => {
-						api_version => $api_version,
-						version     => $VERSION,
-						error       => 'ambiguous station code/name',
-						candidates  => \@candidates,
-					}
-				);
-			}
-			else {
-				$json = $self->render_to_string(
-					json => {
-						api_version => $api_version,
-						version     => $VERSION,
-						error => ( $errstr // "Got no results for '$station'" )
-					}
-				);
-			}
-		}
-		else {
-			$json = $self->render_to_string(
-				json => {
-					api_version => $api_version,
-					version     => $VERSION,
-					error       => ( $errstr // 'unknown station code/name' )
-				}
-			);
-		}
-		if ($callback) {
-			$self->render(
-				data   => "$callback($json);",
-				format => 'json'
-			);
-		}
-		else {
-			$self->render(
-				data   => $json,
-				format => 'json'
-			);
-		}
+		$self->handle_no_results_marudor( $backend, $station, $errstr,
+			$api_version, $callback );
 		return;
 	}
 
 	if ( not @results ) {
-		if ( $backend eq 'ris' ) {
-			my %db_service = Travel::Status::DE::HAFAS::get_service('DB');
-			my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
-				url   => $db_service{stopfinder},
-				input => $station,
-			);
-			my @candidates
-			  = map { [ $_->{name}, $_->{id} ] } $sf->results;
-			if ( @candidates > 1
-				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
-			{
-				$self->render(
-					'landingpage',
-					stationlist => \@candidates,
-					hide_opts   => 0
-				);
-				return;
-			}
-		}
-		if ( $backend eq 'iris' ) {
-			my @candidates = map { [ $_->[1], $_->[0] ] }
-			  Travel::Status::DE::IRIS::Stations::get_station($station);
-			if ( @candidates > 1
-				or ( @candidates == 1 and $candidates[0][1] ne $station ) )
-			{
-				$self->render(
-					'landingpage',
-					stationlist => \@candidates,
-					hide_opts   => 0
-				);
-				return;
-			}
-		}
-		$self->render(
-			'landingpage',
-			error => ( $errstr // "Got no results for '$station'" ),
-			hide_opts => 0
-		);
+		$self->handle_no_results( $backend, $station, $errstr );
 		return;
 	}
 
