@@ -438,7 +438,12 @@ sub handle_request {
 				$moreinfo = [ [ 'HAFAS', $info ] ];
 			}
 			if ( $result->delay and $result->delay > 0 ) {
-				$info = 'ca. +' . $result->delay . ': ' . $info;
+				if ($info) {
+					$info = 'ca. +' . $result->delay . ': ' . $info;
+				}
+				else {
+					$info = 'ca. +' . $result->delay;
+				}
 			}
 			push( @{$moreinfo}, map { [ 'HAFAS', $_ ] } $result->messages );
 		}
@@ -465,9 +470,6 @@ sub handle_request {
 			}
 		}
 
-		if ( $info eq '+0' ) {
-			$info = undef;
-		}
 		if (    $template eq 'clean'
 			and $info
 			and $info =~ s{ (?: ca \. \s* )? \+ (\d+) :? \s* }{}x )
