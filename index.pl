@@ -10,7 +10,7 @@ use Travel::Status::DE::IRIS::Stations;
 use 5.014;
 use utf8;
 
-no if $] >= 5.018, warnings => "experimental::smartmatch";
+no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 our $VERSION = qx{git describe --dirty} || '0.05';
 
@@ -22,6 +22,7 @@ sub log_api_access {
 		$counter = read_file( $ENV{DBFAKEDISPLAY_STATS} ) + 1;
 	}
 	write_file( $ENV{DBFAKEDISPLAY_STATS}, $counter );
+	return;
 }
 
 sub get_results_for {
@@ -208,7 +209,7 @@ sub handle_request {
 	my @results     = @{$results_ref};
 
 	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
-		$self->res->headers->access_control_allow_origin('*');
+		$self->res->headers->access_control_allow_origin(q{*});
 		my $json;
 		if ($errstr) {
 			$json = $self->render_to_string(
@@ -348,7 +349,7 @@ sub handle_request {
 			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
 				@route = $result->route_post;
 			}
-			if ( not( List::MoreUtils::any { $_ =~ m{$via}io } @route ) ) {
+			if ( not( List::MoreUtils::any { m{$via}i } @route ) ) {
 				next;
 			}
 		}
@@ -472,15 +473,15 @@ sub handle_request {
 
 		if (    $template eq 'clean'
 			and $info
-			and $info =~ s{ (?: ca \. \s* )? \+ (\d+) :? \s* }{}x )
+			and $info =~ s{ (?: ca [.] \s* )? [+] (\d+) :? \s* }{}x )
 		{
 			$delay = $1;
 		}
 		if ( $hide_low_delay and $info ) {
-			$info =~ s{ (?: ca\. \s* )? \+ [ 1 2 3 4 ] $ }{}x;
+			$info =~ s{ (?: ca [.] \s* )? [+] [ 1 2 3 4 ] $ }{}x;
 		}
 		if ($info) {
-			$info =~ s{ (?: ca\. \s* )? \+ (\d+) }{Verspätung ca $1 Min.}x;
+			$info =~ s{ (?: ca [.] \s* )? [+] (\d+) }{Verspätung ca $1 Min.}x;
 		}
 
 		if ( $template eq 'marudor' ) {
@@ -667,7 +668,7 @@ sub handle_request {
 	}
 
 	if ( $template eq 'json' ) {
-		$self->res->headers->access_control_allow_origin('*');
+		$self->res->headers->access_control_allow_origin(q{*});
 		my $json = $self->render_to_string(
 			json => {
 				api_version  => $api_version,
@@ -690,7 +691,7 @@ sub handle_request {
 		}
 	}
 	elsif ( $template eq 'marudor' ) {
-		$self->res->headers->access_control_allow_origin('*');
+		$self->res->headers->access_control_allow_origin(q{*});
 		my $json = $self->render_to_string(
 			json => {
 				departures => \@departures,
@@ -741,6 +742,7 @@ sub handle_request {
 			show_realtime    => $show_realtime,
 		);
 	}
+	return;
 }
 
 get '/_redirect' => sub {
