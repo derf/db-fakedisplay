@@ -297,8 +297,7 @@ sub handle_request {
 	$self->stash( title      => 'db-infoscreen' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[clean json marudor_v1 marudor multi single]] ) )
-	{
+	if ( not( $template ~~ [qw[clean json marudor multi single]] ) ) {
 		$template = 'clean';
 	}
 
@@ -321,7 +320,7 @@ sub handle_request {
 	my $errstr      = $data->{errstr};
 	my @results     = @{$results_ref};
 
-	if ( not @results and $template ~~ [qw[json marudor_v1 marudor]] ) {
+	if ( not @results and $template ~~ [qw[json marudor]] ) {
 		$self->handle_no_results_marudor( $backend, $station, $errstr,
 			$api_version, $callback );
 		return;
@@ -432,7 +431,7 @@ sub handle_request {
 				  . $additional_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor_v1' and $template ne 'marudor' ) {
+				if ( $template ne 'marudor' ) {
 					push(
 						@{$moreinfo},
 						[ 'Zusätzliche Halte', $additional_line ]
@@ -447,7 +446,7 @@ sub handle_request {
 				  . $cancel_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor_v1' and $template ne 'marudor' ) {
+				if ( $template ne 'marudor' ) {
 					push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
 				}
 			}
@@ -716,27 +715,6 @@ sub handle_request {
 		my $json = $self->render_to_string(
 			json => {
 				departures => \@departures,
-			}
-		);
-		if ($callback) {
-			$self->render(
-				data   => "$callback($json);",
-				format => 'json'
-			);
-		}
-		else {
-			$self->render(
-				data   => $json,
-				format => 'json'
-			);
-		}
-	}
-	elsif ( $template eq 'marudor_v1' ) {
-		my $json = $self->render_to_string(
-			json => {
-				api_version  => $api_version,
-				preformatted => \@departures,
-				version      => $VERSION,
 			}
 		);
 		if ($callback) {
