@@ -69,7 +69,7 @@ sub get_results_for {
 			};
 			$cache->freeze( $cache_str, $data );
 		}
-		else {
+		elsif ( $backend eq 'ris' ) {
 			my $status = Travel::Status::DE::HAFAS->new(
 				station       => $station,
 				excluded_mots => [qw[bus ferry ondemand tram u]],
@@ -80,6 +80,12 @@ sub get_results_for {
 				errstr  => $status->errstr,
 			};
 			$cache->freeze( $cache_str, $data );
+		}
+		else {
+			$data = {
+				results => [],
+				errstr  => "Backend '$backend' not supported",
+			};
 		}
 	}
 
