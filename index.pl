@@ -96,9 +96,9 @@ helper 'handle_no_results' => sub {
 	my ( $self, $backend, $station, $errstr ) = @_;
 
 	if ( $backend eq 'ris' ) {
-		my %db_service = Travel::Status::DE::HAFAS::get_service('DB');
+		my $db_service = Travel::Status::DE::HAFAS::get_service('DB');
 		my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
-			url   => $db_service{stopfinder},
+			url   => $db_service->{stopfinder},
 			input => $station,
 		);
 		my @candidates
