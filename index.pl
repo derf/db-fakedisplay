@@ -663,13 +663,14 @@ sub handle_request {
 			push(
 				@departures,
 				{
-					time         => $time,
-					train        => $result->train,
-					train_type   => $result->type,
-					destination  => $result->destination,
-					platform     => $platform,
-					info         => $info,
-					is_cancelled => $result->can('is_cancelled')
+					time             => $time,
+					train            => $result->train,
+					train_type       => $result->type,
+					destination      => $result->destination,
+					platform         => $platform,
+					changed_platform => $result->is_changed_platform,
+					info             => $info,
+					is_cancelled     => $result->can('is_cancelled')
 					? $result->is_cancelled
 					: undef,
 					messages => {
