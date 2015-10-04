@@ -16,6 +16,12 @@ our $VERSION = qx{git describe --dirty} || '0.05';
 
 my $refresh_interval = 180;
 
+my %default = (
+	backend => 'iris',
+	mode    => 'clean',
+	admode  => 'deparr',
+);
+
 sub log_api_access {
 	my $counter = 1;
 	if ( -r $ENV{DBFAKEDISPLAY_STATS} ) {
@@ -754,8 +760,13 @@ get '/_redirect' => sub {
 	$params->remove('station');
 	$params->remove('via');
 
-	for my $param (qw(platforms)) {
-		if ( not $params->param($param) ) {
+	for my $param (qw(platforms backend mode admode)) {
+		if (
+			not $params->param($param)
+			or ( exists $default{$param}
+				and $params->param($param) eq $default{$param} )
+		  )
+		{
 			$params->remove($param);
 		}
 	}
