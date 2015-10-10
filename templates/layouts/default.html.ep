@@ -52,6 +52,9 @@ on 2015-01-02 at 07:00 CET.</div>
   Reisenden-Informationssystem"?) unterstützt. Im Normalfall enthält das
   IRIS mehr und detailliertere Angaben.
 </p>
+<p>
+Alle Angaben ohne Gewähr.
+</p>
 % }
 
 
@@ -104,7 +107,7 @@ on 2015-01-02 at 07:00 CET.</div>
       Layout
     </div>
     <div>
-      %= select_field mode => [ ['Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
+      %= select_field mode => [ ['App / Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
     </div>
   </div>
   <div class="field">
