@@ -142,7 +142,7 @@ helper 'handle_no_results' => sub {
 	return;
 };
 
-helper 'handle_no_results_marudor' => sub {
+helper 'handle_no_results_json' => sub {
 	my ( $self, $backend, $station, $errstr, $api_version, $callback ) = @_;
 
 	$self->res->headers->access_control_allow_origin(q{*});
@@ -316,7 +316,8 @@ sub handle_request {
 		return;
 	}
 
-	if ( $template eq 'marudor' and $backend eq 'iris' ) {
+	if ( $template eq 'marudor' ) {
+		$backend = 'iris';
 		$opt{lookahead} = 120;
 	}
 
@@ -327,7 +328,7 @@ sub handle_request {
 	my @results     = @{$results_ref};
 
 	if ( not @results and $template ~~ [qw[json marudor]] ) {
-		$self->handle_no_results_marudor( $backend, $station, $errstr,
+		$self->handle_no_results_json( $backend, $station, $errstr,
 			$api_version, $callback );
 		return;
 	}
