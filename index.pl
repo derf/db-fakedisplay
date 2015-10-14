@@ -792,9 +792,9 @@ get '/multi/:station' => \&handle_request;
 app->config(
 	hypnotoad => {
 		accepts  => 10,
-		listen   => ['http://*:8092'],
+		listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
 		pid_file => '/tmp/db-fakedisplay.pid',
-		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
+		workers  => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 	},
 );
 
