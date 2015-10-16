@@ -371,11 +371,8 @@ sub handle_request {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		my $line     = $result->line;
 		my $delay    = $result->delay;
-		if ( $via and $result->can('route') ) {
-			my @route = $result->route;
-			if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
-				@route = $result->route_post;
-			}
+		if ( $via and $result->can('route_post') ) {
+			my @route = $result->route_post;
 			if ( not( List::MoreUtils::any { m{$via}i } @route ) ) {
 				next;
 			}

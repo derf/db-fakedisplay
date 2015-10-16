@@ -135,25 +135,6 @@
 %       }
       </div> <!-- mroute -->
 %   }
-%   elsif ($departure->{route_timetable}) {
-      <div class="mroute">
-      Über:
-%       my $first = 0;
-%       for my $stop (@{$departure->{route_timetable}}) {
-%         my ($time, $name) = @{$stop};
-%         if ($first++) {
-            <span class="separator">–</span>
-%         }
-          <span class="generic-stop"><%= $time %></span>
-%         if ($self->is_important($name)) {
-            <span class="important-stop"><%= $name %></span>
-%         }
-%         else {
-            <span class="generic-stop"><%= $name %></span>
-%         }
-%       }
-      </div> <!-- mroute -->
-%   }
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
       Meldungen:
       <ul>
