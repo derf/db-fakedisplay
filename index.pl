@@ -33,49 +33,63 @@ sub log_api_access {
 
 sub get_results_for {
 	my ( $backend, $station, %opt ) = @_;
+	my $data;
 
-	my $cache = Cache::File->new(
-		cache_root      => '/tmp/db-fakedisplay',
+	my $cache_hafas = Cache::File->new(
+		cache_root      => '/tmp/dbf-hafas',
 		default_expires => $refresh_interval . ' sec',
+		lock_level      => Cache::File::LOCK_LOCAL(),
+	);
+
+	my $cache_iris_main = Cache::File->new(
+		cache_root      => '/tmp/dbf-iris-main',
+		default_expires => '2 hours',
+		lock_level      => Cache::File::LOCK_LOCAL(),
+	);
+
+	my $cache_iris_rt = Cache::File->new(
+		cache_root      => '/tmp/dbf-iris-realtime',
+		default_expires => '50 seconds',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
 	# Cache::File has UTF-8 problems, so strip it (and any other potentially
 	# problematic chars).
-	my $cstation = $station;
-	$cstation =~ tr{[0-9a-zA-Z -]}{}cd;
+	my $cache_str = $station;
+	$cache_str =~ tr{[0-9a-zA-Z -]}{}cd;
 
-	my $cache_str = "${backend}_${cstation}";
+	if ( $backend eq 'iris' ) {
 
-	my $data = $cache->thaw($cache_str);
-
-	if ( not $data ) {
 		if ( $ENV{DBFAKEDISPLAY_STATS} ) {
 			log_api_access();
 		}
-		if ( $backend eq 'iris' ) {
 
-			# requests with DS100 codes should be preferred (they avoid
-			# encoding problems on the IRIS server). However, only use them
-			# if we have an exact match. Ask the backend otherwise.
-			my @station_matches
-			  = Travel::Status::DE::IRIS::Stations::get_station($station);
-			if ( @station_matches == 1 ) {
-				$station = $station_matches[0][0];
-			}
-
-			my $status = Travel::Status::DE::IRIS->new(
-				station      => $station,
-				serializable => 1,
-				%opt
-			);
-			$data = {
-				results => [ $status->results ],
-				errstr  => $status->errstr,
-			};
-			$cache->freeze( $cache_str, $data );
+		# requests with DS100 codes should be preferred (they avoid
+		# encoding problems on the IRIS server). However, only use them
+		# if we have an exact match. Ask the backend otherwise.
+		my @station_matches
+		  = Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ( @station_matches == 1 ) {
+			$station = $station_matches[0][0];
 		}
-		elsif ( $backend eq 'ris' ) {
+
+		my $status = Travel::Status::DE::IRIS->new(
+			station        => $station,
+			main_cache     => $cache_iris_main,
+			realtime_cache => $cache_iris_rt,
+			%opt
+		);
+		$data = {
+			results => [ $status->results ],
+			errstr  => $status->errstr,
+		};
+	}
+	elsif ( $backend eq 'ris' ) {
+		$data = $cache_hafas->thaw($cache_str);
+		if ( not $data ) {
+			if ( $ENV{DBFAKEDISPLAY_STATS} ) {
+				log_api_access();
+			}
 			my $status = Travel::Status::DE::HAFAS->new(
 				station       => $station,
 				excluded_mots => [qw[bus ferry ondemand tram u]],
@@ -85,14 +99,14 @@ sub get_results_for {
 				results => [ $status->results ],
 				errstr  => $status->errstr,
 			};
-			$cache->freeze( $cache_str, $data );
+			$cache_hafas->freeze( $cache_str, $data );
 		}
-		else {
-			$data = {
-				results => [],
-				errstr  => "Backend '$backend' not supported",
-			};
-		}
+	}
+	else {
+		$data = {
+			results => [],
+			errstr  => "Backend '$backend' not supported",
+		};
 	}
 
 	return $data;
