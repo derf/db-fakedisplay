@@ -41,16 +41,15 @@ on 2015-01-02 at 07:00 CET.</div>
 
 % if (stash 'show_intro') {
 <p>
-  Diese Seite ist ein Frontend zum IRIS (Abfahrtsmonitor)
+  Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
   der Deutschen Bahn. Sie kann wahlweise die in Bahnhofshallen / an
   Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
   Infoscreen-taugliche Abfahrtsmonitor liefern.
 </p>
 <p>
-  Als Backend werden sowohl das RIS ("Reisenden-Informationssystem", d.h. der
-  Bahn-Abfahrtsmonitor) als auch das IRIS ("Innerbetriebliches
-  Reisenden-Informationssystem"?) unterstützt. Im Normalfall enthält das
-  IRIS mehr und detailliertere Angaben.
+  Als Backend werden sowohl das HAFAS/RIS ("Reisenden-Informationssystem")
+  als auch das IRIS unterstützt. Im Normalfall enthält das IRIS mehr und
+  detailliertere Angaben.
 </p>
 <p>
 Alle Angaben ohne Gewähr.
@@ -88,7 +87,7 @@ Alle Angaben ohne Gewähr.
       Backend
     </div>
     <div>
-      %= select_field backend => [ ['IRIS' => 'iris'], ['RIS' => 'ris'] ]
+      %= select_field backend => [ ['IRIS' => 'iris'], ['HAFAS' => 'ris'] ]
     </div>
   </div>
   <div class="field">
@@ -166,7 +165,6 @@ Alle Angaben ohne Gewähr.
 <li>Umlaute werden nicht bei allen Backend/Layout-Kombinationen korrekt unterstützt.
 Wenn etwas nicht funktioniert helfen meist
 Umschreibungen der Art ä → ae oder ä → a</li>
-<li>Das RIS-Backend ist deprecated und wird bald ausgetauscht oder entfernt</li>
 </ul>
 </div> <!-- notes -->
 
