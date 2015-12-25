@@ -304,6 +304,7 @@ sub handle_request {
 	my $show_realtime  = $self->param('show_realtime') // 0;
 	my $backend        = $self->param('backend')       // 'iris';
 	my $admode         = $self->param('admode')        // 'deparr';
+	my $with_related   = $self->param('recursive')     // 0;
 	my $callback       = $self->param('callback');
 	my $apiver         = $self->param('version')       // 0;
 	my %opt;
@@ -333,6 +334,10 @@ sub handle_request {
 	if ( $template eq 'marudor' ) {
 		$backend = 'iris';
 		$opt{lookahead} = 120;
+	}
+
+	if ($with_related) {
+		$opt{with_related} = 1;
 	}
 
 	my @departures;

@@ -147,6 +147,14 @@ Alle Angaben ohne Gewähr.
       %= check_box 'show_realtime' => 1
     </div>
   </div>
+  <div class="field">
+    <div class="desc">
+      Betriebliche Bahnhofstrennungen ignorieren (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
+    </div>
+    <div>
+      %= check_box 'recursive' => 1
+    </div>
+  </div>
 </div>
 % end
 
