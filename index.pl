@@ -425,11 +425,10 @@ sub handle_request {
 			}
 			elsif ( $result->delay and $result->delay > 0 ) {
 				if ( $template eq 'clean' ) {
-					$info  = $delaymsg;
-					$delay = $result->delay;
+					$info = $delaymsg;
 				}
 				else {
-					$info = sprintf( 'Verspätung ca. %d Min.%s%s',
+					$info = sprintf( 'ca. +%d%s%s',
 						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 				}
 			}
@@ -514,14 +513,13 @@ sub handle_request {
 			}
 		}
 
-		if (    $template eq 'clean'
-			and $info
-			and $info =~ s{ (?: ca [.] \s* )? [+] (\d+) :? \s* }{}x )
-		{
-			$delay = $1;
-		}
-		if ( $hide_low_delay and $info ) {
-			$info =~ s{ (?: ca [.] \s* )? [+] [ 1 2 3 4 ] $ }{}x;
+		if ($hide_low_delay) {
+			if ($info) {
+				$info =~ s{ (?: ca [.] \s* )? [+] [ 1 2 3 4 ] $ }{}x;
+			}
+			if ( $delay and $delay < 5 ) {
+				$delay = undef;
+			}
 		}
 		if ($info) {
 			$info =~ s{ (?: ca [.] \s* )? [+] (\d+) }{Verspätung ca $1 Min.}x;
@@ -762,6 +760,7 @@ sub handle_request {
 			title            => "departures for ${station}",
 			refresh_interval => $refresh_interval + 3,
 			hide_opts        => $hide_opts,
+			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
 		);
 	}
