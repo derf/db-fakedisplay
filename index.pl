@@ -757,7 +757,7 @@ sub handle_request {
 			$template,
 			departures       => \@departures,
 			version          => $VERSION,
-			title            => "departures for ${station}",
+			title            => "Abfahrtsmonitor ${station}",
 			refresh_interval => $refresh_interval + 3,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
