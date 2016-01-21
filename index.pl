@@ -80,8 +80,9 @@ sub get_results_for {
 			%opt
 		);
 		$data = {
-			results => [ $status->results ],
-			errstr  => $status->errstr,
+			results      => [ $status->results ],
+			errstr       => $status->errstr,
+			station_name => $status->station->{name},
 		};
 	}
 	elsif ( $backend eq 'ris' ) {
@@ -753,11 +754,12 @@ sub handle_request {
 		}
 	}
 	else {
+		my $station_name = $data->{station_name} // $station;
 		$self->render(
 			$template,
 			departures       => \@departures,
 			version          => $VERSION,
-			title            => "Abfahrtsmonitor ${station}",
+			title            => "Abfahrtsmonitor $station_name",
 			refresh_interval => $refresh_interval + 3,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
