@@ -71,19 +71,31 @@ sub get_results_for {
 		  = Travel::Status::DE::IRIS::Stations::get_station($station);
 		if ( @station_matches == 1 ) {
 			$station = $station_matches[0][0];
+			my $status = Travel::Status::DE::IRIS->new(
+				station        => $station,
+				main_cache     => $cache_iris_main,
+				realtime_cache => $cache_iris_rt,
+				%opt
+			);
+			$data = {
+				results => [ $status->results ],
+				errstr  => $status->errstr,
+				station_name =>
+				  ( $status->station ? $status->station->{name} : $station ),
+			};
 		}
-
-		my $status = Travel::Status::DE::IRIS->new(
-			station        => $station,
-			main_cache     => $cache_iris_main,
-			realtime_cache => $cache_iris_rt,
-			%opt
-		);
-		$data = {
-			results      => [ $status->results ],
-			errstr       => $status->errstr,
-			station_name => $status->station->{name},
-		};
+		elsif ( @station_matches > 1 ) {
+			$data = {
+				results => [],
+				errstr  => 'Ambiguous station name',
+			};
+		}
+		else {
+			$data = {
+				results => [],
+				errstr  => 'Unknown station name',
+			};
+		}
 	}
 	elsif ( $backend eq 'ris' ) {
 		$data = $cache_hafas->thaw($cache_str);
