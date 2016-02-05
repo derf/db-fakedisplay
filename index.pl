@@ -36,19 +36,20 @@ sub get_results_for {
 	my $data;
 
 	my $cache_hafas = Cache::File->new(
-		cache_root      => '/tmp/dbf-hafas',
+		cache_root => $ENV{DBFAKEDISPLAY_HAFAS_CACHE} // '/tmp/dbf-hafas',
 		default_expires => $refresh_interval . ' sec',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
 	my $cache_iris_main = Cache::File->new(
-		cache_root      => '/tmp/dbf-iris-main',
+		cache_root => $ENV{DBFAKEDISPLAY_IRIS_CACHE} // '/tmp/dbf-iris-main',
 		default_expires => '2 hours',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
 	my $cache_iris_rt = Cache::File->new(
-		cache_root      => '/tmp/dbf-iris-realtime',
+		cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
+		  // '/tmp/dbf-iris-realtime',
 		default_expires => '50 seconds',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
