@@ -76,6 +76,7 @@
       <div class="minfo">+<%= $departure->{delay} %></div>
 %   }
     </div> <!-- mheader -->
+    <div class="mfooter">
     <div class="platforminfo">
 %   if ($departure->{platform}) {
       Gleis <%= $departure->{platform} %>
@@ -163,6 +164,7 @@
 %     }
       </ul>
 %   }
+    </div> <!-- mfooter -->
     </div> <!-- moreinfo -->
 %   if ($departure->{info} and length $departure->{info}) {
       <span class="info">

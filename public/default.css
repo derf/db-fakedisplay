@@ -112,11 +112,8 @@ div.displayclean li .moreinfo {
 	font-size:2.1em;
 	position:fixed;
 	top:0em;
-	padding-top: 1em;
 	left:0em;
-	padding-left: 1em;
 	right:0em;
-	padding-right: 1em;
 	bottom:0em;
 	background-color: white;
 	z-index: 5;
@@ -134,14 +131,23 @@ div.displayclean li .expanded-moreinfo {
 
 div.displayclean li .moreinfo .mheader {
 	text-align: center;
-	background-color: #dddddd;
 	font-size: 120%;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	padding-left: 1em;
+	padding-right: 1em;
+	border-bottom: 0.1em dashed #cccccc;
+}
+
+div.displayclean li .moreinfo .mfooter {
+	padding-top: 1em;
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 div.displayclean li .moreinfo .reason,
 div.displayclean li .moreinfo .minfo {
 	color: #ff0000;
-	margin-bottom: 0.6em;
 }
 
 div.displayclean li .moreinfo .timeinfo {
