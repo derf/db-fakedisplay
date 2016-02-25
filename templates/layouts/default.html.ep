@@ -32,7 +32,7 @@
 % }
 
 % if (time() < 1420178400 and param('backend') and (param('backend') eq 'iris' ) ) {
-<div class="error">Note: Due to an unknown problem on the Deutsche Bahn IRIS
+<div class="error">Note: Due to an unknown problem on the IRIS
 server, no schedule data is available. This service will resume operation
 on 2015-01-02 at 07:00 CET.</div>
 % }
@@ -42,7 +42,7 @@ on 2015-01-02 at 07:00 CET.</div>
 % if (stash 'show_intro') {
 <p>
   Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
-  der Deutschen Bahn. Sie kann wahlweise die in Bahnhofshallen / an
+  der DB. Sie kann wahlweise die in Bahnhofshallen / an
   Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
   Infoscreen-taugliche Abfahrtsmonitor liefern.
 </p>
@@ -182,21 +182,20 @@ nur Züge via Bochum oder Hamm)</li>
 <div class="notes">
 <span class="notes">Siehe auch:</span>
 <ul>
-<li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DeutscheBahn RIS</a></li>
+<li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB RIS</a></li>
 <li><a href="http://marudor.de/">Handyfreundliches Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
-<li><a href="https://iris.noncd.db.de/wbt/js/index.html?typ=ab&amp;style=qrab&amp;bhf=EE&amp;SecLang=&amp;Zeilen=40&amp;footer=0&amp;disrupt=1"
->DeutscheBahn IRIS</a> und <a href="http://www.db-netz.de/file/2361656/data/betriebsstellen.pdf">betriebsstellen.pdf</a></li>
-<li><a href="http://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
+<li><a href="http://data.deutschebahn.com/datasets/betriebsstellen/">Betriebsstellenliste</a></li>
+<li><a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
 </ul>
 </div> <!-- notes -->
 
 <div class="about">
-<a href="http://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
+<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 v<%= stash('version') // '???' %><br/>
 Backends:<br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+<a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+<a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
 </div>
 % }
