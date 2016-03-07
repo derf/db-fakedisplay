@@ -185,6 +185,7 @@ div.displayclean li .dest {
 	position:absolute;
 	top:0.65em;
 	left:4em;
+	bottom:-0.1em;
 	width: 70%;
 	z-index: 1;
 	overflow: hidden;
