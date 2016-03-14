@@ -9,13 +9,13 @@
 % }
 
 
-	%= stylesheet '/default.css'
+	%= stylesheet '/static/default.css'
 % if ($self->browser->mobile) {
-	%= stylesheet '/mobile.css'
+	%= stylesheet '/static/mobile.css'
 % }
-	%= javascript '/jquery-1.10.2.min.js'
-	%= javascript '/collapse.js'
-	%= javascript '/marquee.js'
+	%= javascript '/static/jquery-1.10.2.min.js'
+	%= javascript '/static/collapse.js'
+	%= javascript '/static/marquee.js'
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
