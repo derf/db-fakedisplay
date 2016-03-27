@@ -44,7 +44,7 @@ on 2015-01-02 at 07:00 CET.</div>
   Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
   der DB. Sie kann wahlweise die in Bahnhofshallen / an
   Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
-  Infoscreen-taugliche Abfahrtsmonitor liefern.
+  Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
 </p>
 <p>
   Als Backend werden sowohl das HAFAS/RIS ("Reisenden-Informationssystem")
@@ -114,7 +114,7 @@ Alle Angaben ohne Gewähr.
   </div>
   <div class="field">
     <div class="desc">
-      Verspätungen &lt;5 Minuten ignorieren
+      Nur Verspätungen &gt;5 Min. anzeigen
     </div>
     <div>
       %= check_box 'hidelowdelay' => 1
@@ -122,7 +122,7 @@ Alle Angaben ohne Gewähr.
   </div>
   <div class="field">
     <div class="desc">
-      Formular verstecken
+      Formular verstecken (für Infoscreens)
     </div>
     <div>
       %= check_box 'hide_opts' => 1
@@ -132,7 +132,7 @@ Alle Angaben ohne Gewähr.
   <span class="optional">Nur für IRIS-Backend:</span>
   <div class="field">
     <div class="desc">
-      Ankunfts- oder Abfahrtszeiten
+      Ankunfts- oder Abfahrtszeit anzeigen?
     </div>
     <div>
       %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
@@ -154,6 +154,9 @@ Alle Angaben ohne Gewähr.
       %= check_box 'recursive' => 1
     </div>
   </div>
+  <div class="field">
+    %= submit_button 'Anzeigen'
+  <div>
 </div>
 % end
 
