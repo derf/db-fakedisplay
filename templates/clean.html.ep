@@ -21,7 +21,7 @@
 %   else {
       <li>
 %   }
-%   my $linetype = q{};
+%   my $linetype = 'bahn';
 %   if ( $departure->{train_type} eq 'S' ) {
 %     $linetype = 'sbahn';
 %   }
@@ -51,24 +51,25 @@
 %   }
     <div class="moreinfo">
     <div class="mheader">
-%   if ($departure->{train_no} or $departure->{line_no}) {
-      <span class="train-line"><%= $departure->{train_type} // q{???} %></span>
+    <div>
+%   if ($departure->{train_no} or $departure->{train_line}) {
+      <span class="train-line <%= $linetype %>"><%= $departure->{train_type} %>
+      <%= $departure->{train_line} // $departure->{train_no} %></span>
 %     if ($departure->{train_line}) {
-        <span class="train-no"><%= $departure->{train_no} // q{???} %></span>
-%     }
-%     else {
-        <span class="train-line"><%= $departure->{train_no} // q{???} %></span>
+        <span class="train-no"><%= $departure->{train_no} %></span>
 %     }
 %   }
 %   else {
       <span class="train-line"><%= $departure->{train} // q{???} %></span>
 %   }
+    </div>
+    <div>
 %   if ($departure->{origin}) {
-      :
       <span class="train-origin"><%= $departure->{origin} %></span>
+      →
 %   }
-    →
     <span class="train-dest"><%= $departure->{destination} // q{???} %></span>
+    </div>
 %   if ($departure->{is_cancelled}) {
       <div class="minfo">Fahrt fällt aus</div>
 %   }

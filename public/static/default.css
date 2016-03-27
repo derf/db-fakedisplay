@@ -34,9 +34,7 @@ div.displayclean > ul > li {
 div.displayclean li .line {
 	color:#FFFFFF;
 	background-color:#666666;
-	font-weight:bold;
 	font-size: 2.9em;
-	padding:3px 8px 2px 5px;
 	position:absolute;
 	top:7px;
 	left:2px;
@@ -62,26 +60,21 @@ div.displayclean li .lineinfo .replaced {
 	color: #660000;
 }
 
-div.displayclean li .tram {
-	background-color: #CC0000;
-}
-
 div.displayclean li .sbahn {
+	font-weight:bold;
+	color:#FFFFFF;
 	background-color:#006E10;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	border-radius: 30px;
+	padding:3px 8px 2px 5px;
 }
 
-div.displayclean li .ubahn {
-	background-color:#001090;
-}
-
-div.displayclean li .bus {
-	background-color:#991199;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+div.displayclean li .bahn {
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#666666;
+	padding:3px 8px 2px 5px;
 }
 
 div.displayclean li .route {
