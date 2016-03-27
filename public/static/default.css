@@ -67,14 +67,21 @@ div.displayclean li .sbahn {
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	border-radius: 30px;
-	padding:3px 8px 2px 5px;
+	padding:3px 6px 2px 6px;
 }
 
 div.displayclean li .bahn {
 	font-weight:bold;
 	color:#FFFFFF;
 	background-color:#666666;
-	padding:3px 8px 2px 5px;
+	padding:3px 5px 2px 5px;
+}
+
+div.displayclean li .fern {
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#993333;
+	padding:3px 5px 2px 5px;
 }
 
 div.displayclean li .route {
