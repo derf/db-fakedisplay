@@ -163,15 +163,6 @@ Alle Angaben ohne Gewähr.
 </div> <!-- input-field -->
 
 <div class="notes">
-<span class="notes">Anmerkungen:</span>
-<ul>
-<li>Umlaute werden nicht bei allen Backend/Layout-Kombinationen korrekt unterstützt.
-Wenn etwas nicht funktioniert helfen meist
-Umschreibungen der Art ä → ae oder ä → a</li>
-</ul>
-</div> <!-- notes -->
-
-<div class="notes">
 <span class="notes">Beispiele:</span>
 <ul>
 <li><a href="/Essen%20Hbf?mode=multi">Essen HBf</a> (IRIS, Bahnhofstafel)</li>
@@ -185,8 +176,9 @@ nur Züge via Bochum oder Hamm)</li>
 <div class="notes">
 <span class="notes">Siehe auch:</span>
 <ul>
-<li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB RIS</a></li>
-<li><a href="http://marudor.de/">Handyfreundliches Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
+<li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB RIS</a>
+   (<a href="http://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
+<li><a href="http://marudor.de/">Alternatives Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
 <li><a href="http://data.deutschebahn.com/datasets/betriebsstellen/">Betriebsstellenliste</a></li>
 <li><a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
 </ul>
