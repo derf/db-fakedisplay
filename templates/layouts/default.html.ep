@@ -179,9 +179,23 @@ nur Züge via Bochum oder Hamm)</li>
 <ul>
 <li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB RIS</a>
    (<a href="http://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
-<li><a href="http://marudor.de/">Alternatives Interface</a> von <a href="https://twitter.com/marudor">@marudor</a></li>
 <li><a href="http://data.deutschebahn.com/datasets/betriebsstellen/">Betriebsstellenliste</a></li>
 <li><a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
+</ul>
+</div> <!-- notes -->
+
+<div class="notes">
+<span class="notes">Developers Developers Developers Developers:</span>
+<ul>
+<li>Diese Seite kann gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
+	Das App/Infoscreen-Template kann dazu (falls nötig) mit
+	<span style="font-family: monospace;">force_mobile=1</span> bzw.
+	<span style="font-family: monospace;">force_mobile=0</span> auf die mobile
+	bzw. die Desktopversion festgelegt werden</li>
+<li>Die Parameter <span style="font-family: monospace;">mode=marudor&amp;version=2</span>
+	liefern ein JSON-Interface. Die route-Elemente können zusätzlich
+	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
+	selbsterklärend sein</li>
 </ul>
 </div> <!-- notes -->
 
