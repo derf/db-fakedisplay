@@ -14,8 +14,6 @@ no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 our $VERSION = qx{git describe --dirty} || '0.05';
 
-my $refresh_interval = 180;
-
 my %default = (
 	backend => 'iris',
 	mode    => 'clean',
@@ -37,7 +35,7 @@ sub get_results_for {
 
 	my $cache_hafas = Cache::File->new(
 		cache_root => $ENV{DBFAKEDISPLAY_HAFAS_CACHE} // '/tmp/dbf-hafas',
-		default_expires => $refresh_interval . ' sec',
+		default_expires => '180 seconds',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
@@ -773,7 +771,7 @@ sub handle_request {
 			departures       => \@departures,
 			version          => $VERSION,
 			title            => "Abfahrtsmonitor $station_name",
-			refresh_interval => $refresh_interval + 3,
+			refresh_interval => 120,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
