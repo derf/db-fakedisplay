@@ -31,6 +31,10 @@
 </pre>
 </div>
 % }
+% elsif (stash('stationlist')) {
+<div class="error">Mehrdeutige Eingabe</div>
+<div>Bitte eine Station aus der Liste auswählen</div>
+% }
 
 % if (time() < 1420178400 and param('backend') and (param('backend') eq 'iris' ) ) {
 <div class="error">Note: Due to an unknown problem on the IRIS
