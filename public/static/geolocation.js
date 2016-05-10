@@ -2,13 +2,19 @@ $(document).ready(function() {
 	var removeStatus = function() {
 		$('div.candidatestatus').remove();
 	};
+	var showError = function(str) {
+		var errnode = $(document.createElement('span'));
+		errnode.attr('class', 'error');
+		errnode.text(str);
+		$('div.candidatelist').append(errnode);
+	};
 
 	var processResult = function(data) {
 		removeStatus();
 		if (data.error) {
-			$('div.candidatelist').text(data.error);
+			showError(data.error);
 		} else if (data.candidates.length == 0) {
-			$('div.candidatelist').text("Keine Bahnhöfe in 70km Umkreis gefunden");
+			showError('Keine Bahnhöfe in 70km Umkreis gefunden');
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
@@ -33,13 +39,13 @@ $(document).ready(function() {
 	var processError = function(error) {
 		removeStatus();
 		if (error.code == error.PERMISSION_DENIED) {
-			$('div.candidatelist').text('Geolocation request denied');
+			showError('Standortanfrage abglehnt. Vermutlich fehlen die Rechte im Browser oder der Android Location Service ist deaktiviert.');
 		} else if (error.code == error.POSITION_UNAVAILABLE) {
-			$('div.candidatelist').text('Geolocation not available');
+			showError('Standort konnte nicht ermittelt werden (Service nicht verfügbar)');
 		} else if (error.code == error.TIMEOUT) {
-			$('div.candidatelist').text('Geolocation timeout');
+			showError('Standort konnte nicht ermittelt werden (Timeout)');
 		} else {
-			$('div.candidatelist').text('Unknown error');
+			showError('Standort konnte nicht ermittelt werden (unbekannter Fehler)');
 		}
 	};
 
@@ -48,6 +54,6 @@ $(document).ready(function() {
 		$('div.candidatestatus').text('Position wird bestimmt…');
 	} else {
 		removeStatus();
-		$('div.candidatelist').text('Geolocation is not supported by your browser');
+		showError('Standortanfragen werden von diesem Browser nicht unterstützt');
 	}
 });

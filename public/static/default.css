@@ -443,6 +443,11 @@ div.error {
 	color: #ee0000;
 }
 
+span.error {
+	font-size: 120%;
+	color: #ee0000;
+}
+
 pre {
 	margin-bottom: 2em;
 }
