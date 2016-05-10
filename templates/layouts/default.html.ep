@@ -63,7 +63,8 @@ on 2015-01-02 at 07:00 CET.</div>
 Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
-<a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Nahe gelegene Bahnhöfe suchen</a>
+<a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+(experimentell)
 </p>
 % }
 

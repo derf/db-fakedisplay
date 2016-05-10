@@ -22,8 +22,20 @@ $(document).ready(function() {
 		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult);
 	};
 
+	var processError = function(error) {
+		if (error.code == error.PERMISSION_DENIED) {
+			$('div.candidatelist').text('Geolocation request denied');
+		} else if (error.code == error.POSITION_UNAVAILABLE) {
+			$('div.candidatelist').text('Geolocation not available');
+		} else if (error.code == error.TIMEOUT) {
+			$('div.candidatelist').text('Geolocation timeout');
+		} else {
+			$('div.candidatelist').text('Unknown error');
+		}
+	};
+
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(processLocation);
+		navigator.geolocation.getCurrentPosition(processLocation, processError);
 	} else {
 		$('div.candidatelist').text('Geolocation is not supported by your browser');
 	}
