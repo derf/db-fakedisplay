@@ -810,6 +810,28 @@ get '/_redirect' => sub {
 	}
 };
 
+get '/_auto' => sub {
+	my $self = shift;
+
+	$self->render('geolocation', with_geolocation => 1, hide_opts => 1);
+};
+
+post '/_geolocation' => sub {
+	my $self = shift;
+
+	my $lon = $self->param('lon');
+	my $lat = $self->param('lat');
+
+	if (not $lon or not $lat) {
+		$self->render(json => {error => 'Invalid lon/lat received'});
+	}
+	else {
+		$self->render(json => {
+			candidates => [ Travel::Status::DE::IRIS::Stations::get_stations_by_location($lon, $lat, 10) ],
+		});
+	}
+};
+
 app->defaults( layout => 'default' );
 
 get '/'               => \&handle_request;

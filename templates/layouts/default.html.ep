@@ -20,6 +20,9 @@
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
+	% if (stash('with_geolocation')) {
+	%= javascript '/static/geolocation.js'
+	% }
 </head>
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>">
 
@@ -58,6 +61,9 @@ on 2015-01-02 at 07:00 CET.</div>
 </p>
 <p>
 Alle Angaben ohne Gewähr.
+</p>
+<p class="geolink">
+<a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Nahe gelegene Bahnhöfe suchen</a>
 </p>
 % }
 

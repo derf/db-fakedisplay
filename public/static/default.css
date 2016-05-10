@@ -404,6 +404,18 @@ div.displaysingle div.info {
 	color: #0000ff;
 }
 
+div.candidatelist a {
+	display: block;
+	text-decoration: none;
+	color: black;
+	padding: 1em;
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	width: 20em;
+	text-align: center;
+	background-color: #dddddd;
+}
+
 div.about {
 	font-family: Sans-Serif;
 	color: #666666;
