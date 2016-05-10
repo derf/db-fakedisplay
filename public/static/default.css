@@ -2,6 +2,11 @@ html {
 	font-family: Sans-Serif;
 }
 
+a {
+	color: #000099;
+	text-decoration: none;
+}
+
 div.displayclean {
 	background-color:#F8F8F8;
 	border-width:1px 2px;
