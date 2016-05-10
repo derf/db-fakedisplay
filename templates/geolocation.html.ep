@@ -1,2 +1,3 @@
 <div class="candidateheader">Nächstgelegene Stationen:</div>
+<div class="candidatestatus">Bitte warten…</div>
 <div class="candidatelist"></div>

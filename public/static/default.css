@@ -404,6 +404,11 @@ div.displaysingle div.info {
 	color: #0000ff;
 }
 
+div.candidatestatus {
+	text-align: center;
+	color: #999999;
+}
+
 div.candidatelist a {
 	display: block;
 	text-decoration: none;
