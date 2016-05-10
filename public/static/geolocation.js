@@ -2,6 +2,8 @@ $(document).ready(function() {
 	var processResult = function(data) {
 		if (data.error) {
 			$('div.candidatelist').text(data.error);
+		} else if (data.candidates.length == 0) {
+			$('div.candidatelist').text("Keine Bahnhöfe in 70km Umkreis gefunden");
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
