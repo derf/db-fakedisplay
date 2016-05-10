@@ -421,7 +421,7 @@ div.candidatestatus {
 div.candidatelist a {
 	display: block;
 	text-decoration: none;
-	font-size: 150%;
+	font-size: 1.4em;
 	padding: 0.8em;
 	text-align: center;
 	border-bottom: 2px solid #cccccc;
