@@ -421,15 +421,11 @@ div.candidatestatus {
 div.candidatelist a {
 	display: block;
 	text-decoration: none;
-	color: black;
-	padding: 1em;
-	margin-top: 0.1em;
-	margin-bottom: 0.1em;
-	margin-left: auto;
-	margin-right: auto;
-	width: 20em;
+	font-size: 200%;
+	padding: 0.5em;
+	margin-top: 0.2em;
 	text-align: center;
-	background-color: #dddddd;
+	border-bottom: 2px solid #cccccc;
 }
 
 div.about {
