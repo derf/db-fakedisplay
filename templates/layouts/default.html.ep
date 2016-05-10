@@ -218,6 +218,10 @@ Backends:<br/>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
+<a href="http://data.deutschebahn.com/datasets/haltestellen/">Haltestellendaten</a>
+© DB Station&amp;Service AG,
+Europaplatz 1,
+10557 Berlin, lizensiert unter CC-BY 4.0
 </div>
 % }
 
