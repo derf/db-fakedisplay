@@ -18,9 +18,9 @@ $(document).ready(function() {
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
-				var ds100 = candidate[0][0],
-					name = candidate[0][1],
-					distance = candidate[1];
+				var ds100 = candidate.ds100,
+					name = candidate.name,
+					distance = candidate.distance;
 				distance = distance.toFixed(1);
 
 				var stationlink = $(document.createElement('a'));

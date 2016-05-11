@@ -826,8 +826,18 @@ post '/_geolocation' => sub {
 		$self->render(json => {error => 'Invalid lon/lat received'});
 	}
 	else {
+		my @candidates = map {
+			{
+				ds100 => $_->[0][0],
+				name => $_->[0][1],
+				eva => $_->[0][2],
+				lon => $_->[0][3],
+				lat => $_->[0][4],
+				distance => $_->[1],
+			}
+		} Travel::Status::DE::IRIS::Stations::get_stations_by_location($lon, $lat, 10);
 		$self->render(json => {
-			candidates => [ Travel::Status::DE::IRIS::Stations::get_stations_by_location($lon, $lat, 10) ],
+			candidates => [ @candidates ],
 		});
 	}
 };
