@@ -835,7 +835,7 @@ post '/_geolocation' => sub {
 				lat => $_->[0][4],
 				distance => $_->[1],
 			}
-		} Travel::Status::DE::IRIS::Stations::get_stations_by_location($lon, $lat, 10);
+		} Travel::Status::DE::IRIS::Stations::get_station_by_location($lon, $lat, 10);
 		$self->render(json => {
 			candidates => [ @candidates ],
 		});
