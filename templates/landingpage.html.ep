@@ -15,6 +15,5 @@ Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
 <a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
-(experimentell)
 </p>
 % }
