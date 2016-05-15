@@ -39,35 +39,7 @@
 <div>Bitte eine Station aus der Liste auswählen</div>
 % }
 
-% if (time() < 1420178400 and param('backend') and (param('backend') eq 'iris' ) ) {
-<div class="error">Note: Due to an unknown problem on the IRIS
-server, no schedule data is available. This service will resume operation
-on 2015-01-02 at 07:00 CET.</div>
-% }
-
 %= content
-
-% if (stash 'show_intro') {
-<p>
-  Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
-  der DB. Sie kann wahlweise die in Bahnhofshallen / an
-  Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
-  Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
-</p>
-<p>
-  Als Backend werden sowohl das HAFAS/RIS ("Reisenden-Informationssystem")
-  als auch das IRIS unterstützt. Im Normalfall enthält das IRIS mehr und
-  detailliertere Angaben.
-</p>
-<p>
-Alle Angaben ohne Gewähr.
-</p>
-<p class="geolink">
-<a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
-(experimentell)
-</p>
-% }
-
 
 % if (not stash('hide_opts')) {
 <div class="input-field">
