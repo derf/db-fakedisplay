@@ -34,6 +34,12 @@ $(document).ready(function() {
 				var stationlink = $(document.createElement('a'));
 				stationlink.attr('href', ds100);
 				stationlink.text(name);
+
+				var distancenode = $(document.createElement('div'));
+				distancenode.attr('class', 'distance');
+				distancenode.text(distance);
+
+				stationlink.append(distancenode);
 				$('div.candidatelist').append(stationlink);
 			});
 		}

@@ -422,9 +422,20 @@ div.candidatelist a {
 	display: block;
 	text-decoration: none;
 	font-size: 1.4em;
-	padding: 0.6em;
+	padding-top: 0.3em;
 	text-align: center;
 	border-bottom: 2px solid #cccccc;
+}
+
+div.candidatelist a .distance:after {
+	content: " km";
+}
+
+div.candidatelist a .distance {
+	font-size: 0.6em;
+	color: #999999;
+	padding-top: 0.2em;
+	padding-bottom: 0.3em;
 }
 
 div.about {
