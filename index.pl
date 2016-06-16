@@ -403,6 +403,7 @@ sub handle_request {
 		my $line     = $result->line;
 		my $delay    = $result->delay;
 		if ( $via and $result->can('route_post') ) {
+			$via =~ s{ , \s* }{|}gx;
 			my @route = $result->route_post;
 			if ( not( List::MoreUtils::any { m{$via}i } @route ) ) {
 				next;
@@ -813,7 +814,11 @@ get '/_redirect' => sub {
 get '/_auto' => sub {
 	my $self = shift;
 
-	$self->render('geolocation', with_geolocation => 1, hide_opts => 1);
+	$self->render(
+		'geolocation',
+		with_geolocation => 1,
+		hide_opts        => 1
+	);
 };
 
 post '/_geolocation' => sub {
@@ -822,23 +827,26 @@ post '/_geolocation' => sub {
 	my $lon = $self->param('lon');
 	my $lat = $self->param('lat');
 
-	if (not $lon or not $lat) {
-		$self->render(json => {error => 'Invalid lon/lat received'});
+	if ( not $lon or not $lat ) {
+		$self->render( json => { error => 'Invalid lon/lat received' } );
 	}
 	else {
 		my @candidates = map {
 			{
-				ds100 => $_->[0][0],
-				name => $_->[0][1],
-				eva => $_->[0][2],
-				lon => $_->[0][3],
-				lat => $_->[0][4],
+				ds100    => $_->[0][0],
+				name     => $_->[0][1],
+				eva      => $_->[0][2],
+				lon      => $_->[0][3],
+				lat      => $_->[0][4],
 				distance => $_->[1],
 			}
-		} Travel::Status::DE::IRIS::Stations::get_station_by_location($lon, $lat, 10);
-		$self->render(json => {
-			candidates => [ @candidates ],
-		});
+		  } Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
+			$lat, 10 );
+		$self->render(
+			json => {
+				candidates => [@candidates],
+			}
+		);
 	}
 };
 
