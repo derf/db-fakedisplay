@@ -10,11 +10,14 @@
 
 
 	%= stylesheet '/static/default.css'
+	%= stylesheet '/static/jquery-ui.min.css'
 % my $force_mobile = param('force_mobile') // -1;
 % if ($force_mobile == 1 or ($self->browser->mobile and $force_mobile != 0)) {
 	%= stylesheet '/static/mobile.css'
 % }
 	%= javascript '/static/jquery-1.10.2.min.js'
+	%= javascript '/static/jquery-ui.min.js'
+	%= javascript '/static/autocomplete.js'
 	%= javascript '/static/collapse.js'
 	%= javascript '/static/marquee.js'
 	%= javascript begin
@@ -54,7 +57,7 @@
       %= select_field station => stash('stationlist')
 % }
 % else {
-      %= text_field 'station'
+      %= text_field 'station', class => 'station'
 % }
     </div>
   </div>
