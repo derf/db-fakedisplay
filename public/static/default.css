@@ -409,6 +409,12 @@ div.displaysingle div.info {
 	color: #0000ff;
 }
 
+ul.ui-autocomplete {
+	max-height: 20em;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 div.geolocation {
 	text-align: center;
 }
