@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<title><%= stash('title') // 'db-infoscreen' %></title>
 	<meta charset="utf-8">
@@ -142,7 +142,7 @@
   </div>
   <div class="field">
     %= submit_button 'Anzeigen'
-  <div>
+  </div>
 </div>
 % end
 
@@ -152,7 +152,7 @@
 <span class="notes">Beispiele:</span>
 <ul>
 <li><a href="/Essen%20Hbf?mode=multi">Essen HBf</a> (IRIS, Bahnhofstafel)</li>
-<li><a href="/Dortmund Hbf/Bochum%7CHamm?mode=multi">Dortmund HBf</a> (IRIS, Bahnhofstafel,
+<li><a href="/Dortmund%20Hbf/Bochum%7CHamm?mode=multi">Dortmund HBf</a> (IRIS, Bahnhofstafel,
 nur Züge via Bochum oder Hamm)</li>
 <li><a href="/Dortmund%20Universität?mode=clean">Dortmund Universit&auml;t</a> (IRIS, Mobile/Infoscreen)</li>
 <li><a href="/KD?mode=single">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
