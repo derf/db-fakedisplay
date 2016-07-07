@@ -1,9 +1,8 @@
 % if (stash 'show_intro') {
 <p>
   Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
-  der DB. Sie kann wahlweise die in Bahnhofshallen / an
-  Haltestellen montierten Anzeigen nachahmen oder einen Handy- und
-  Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
+  der DB. Sie kann wahlweise die vor Ort montierten Anzeigen nachahmen oder
+  einen Handy- und Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
 </p>
 <p>
 Alle Angaben ohne Gewähr.
