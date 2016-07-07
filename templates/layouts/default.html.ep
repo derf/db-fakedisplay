@@ -62,7 +62,7 @@
     </div>
   </div>
   <div class="field">
-    %= submit_button 'Anzeigen'
+    %= submit_button 'Abfartsmonitor'
   </div>
   <div class="break"></div>
   <span class="optional">Optionale Einstellungen:</span>
@@ -87,7 +87,7 @@
       Nur Züge über
     </div>
     <div>
-      %= text_field 'via'
+      %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)'
     </div>
   </div>
   <div class="field">
@@ -95,7 +95,7 @@
       Gleise
     </div>
     <div>
-      %= text_field 'platforms'
+      %= text_field 'platforms', placeholder => '1, 2, 5, ...'
     </div>
   </div>
   <div class="field">
@@ -177,7 +177,7 @@ nur Züge via Bochum oder Hamm)</li>
 	<span style="font-family: monospace;">force_mobile=1</span> bzw.
 	<span style="font-family: monospace;">force_mobile=0</span> auf die mobile
 	bzw. die Desktopversion festgelegt werden</li>
-<li>Die Parameter <span style="font-family: monospace;">mode=marudor&amp;version=2</span>
+<li>Die Parameter <span style="font-family: monospace;">mode=marudor&amp;version=3</span>
 	liefern ein JSON-Interface. Die route-Elemente können zusätzlich
 	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
 	selbsterklärend sein</li>

@@ -6,11 +6,6 @@
   Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
 </p>
 <p>
-  Als Backend werden sowohl das HAFAS/RIS ("Reisenden-Informationssystem")
-  als auch das IRIS unterstützt. Im Normalfall enthält das IRIS mehr und
-  detailliertere Angaben.
-</p>
-<p>
 Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
