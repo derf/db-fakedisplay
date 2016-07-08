@@ -509,6 +509,10 @@ input, select {
 	min-height: 1.8em;
 }
 
+input[type="checkbox"] {
+	width: 1.5em;
+}
+
 div.notes {
 	margin-top: 2em;
 }

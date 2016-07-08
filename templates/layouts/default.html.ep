@@ -100,18 +100,18 @@
   </div>
   <div class="field">
     <div class="desc">
-      Nur Verspätungen &gt;5 Min. anzeigen
-    </div>
-    <div>
-      %= check_box 'hidelowdelay' => 1
+      %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
+      <label for="id_hidelowdelay">
+        Nur Verspätungen &gt;5 Min. anzeigen
+      </label>
     </div>
   </div>
   <div class="field">
     <div class="desc">
-      Formular verstecken (für Infoscreens)
-    </div>
-    <div>
-      %= check_box 'hide_opts' => 1
+      %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
+      <label for="id_hide_opts">
+        Formular verstecken (für Infoscreens)
+      </label>
     </div>
   </div>
   <div class="break"></div>
@@ -126,18 +126,18 @@
   </div>
   <div class="field">
     <div class="desc">
-      Erwartete Zeiten statt Fahrplandaten
-    </div>
-    <div>
-      %= check_box 'show_realtime' => 1
+      %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
+      <label for="id_show_realtime">
+        Erwartete Zeiten statt Fahrplandaten
+      </label>
     </div>
   </div>
   <div class="field">
     <div class="desc">
+      %= check_box 'recursive' => 1, id => 'id_recursive'
+      <label for="id_recursive">
       Betriebliche Bahnhofstrennungen ignorieren (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
-    </div>
-    <div>
-      %= check_box 'recursive' => 1
+      </label>
     </div>
   </div>
   <div class="field">
