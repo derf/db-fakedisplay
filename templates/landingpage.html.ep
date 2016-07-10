@@ -8,6 +8,9 @@
 Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
-<a href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+<a class="button" href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+</p>
+<p>
+Oder hier angeben:
 </p>
 % }
