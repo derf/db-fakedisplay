@@ -56,8 +56,11 @@
 % if (stash('stationlist')) {
       %= select_field station => stash('stationlist')
 % }
-% else {
+% elsif (stash('station')) {
       %= text_field 'station', class => 'station'
+% }
+% else {
+      %= text_field 'station', class => 'station', autofocus => 'autofocus'
 % }
     </div>
   </div>
