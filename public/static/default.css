@@ -551,7 +551,10 @@ input[type="submit"], .button {
 
 input[type="submit"]:active,
 input[type="submit"]:focus,
-input[type="submit"]:hover {
+input[type="submit"]:hover,
+.button:active,
+.button:focus,
+.button:hover {
 	color: #fff;
 	background-color: #286090;
 	border-color: #204d74;
