@@ -8,7 +8,6 @@ a {
 }
 
 div.displayclean {
-	background-color:#F8F8F8;
 	border-width:1px 2px;
 	width:100%;
 	margin-bottom: 5em;
@@ -17,21 +16,16 @@ div.displayclean {
 div.displayclean > ul {
 	position:relative;
 	width:100%;
-	background-color:#F8F8F8;
 
 	list-style-type:none;
 	margin:0;
 	padding:0;
-	border-bottom: 1px solid #cccccc;
 }
 
 div.displayclean > ul > li {
 	min-height:7em;
-	background-color:#F8F8F8;
 	display:block;
-	border-width:1px 0;
-	border-style:solid;
-	border-color:#CCCCCC;
+	border-bottom: 1px solid #999999;
 	width:100%;
 	position:relative;
 }
