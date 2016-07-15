@@ -30,6 +30,7 @@
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>">
 
 % if (my $error = stash 'error') {
+<div class="container">
 <div class="error">Backend-Fehler:</div>
 <div>
 <pre>
@@ -40,11 +41,13 @@
 % elsif (stash('stationlist')) {
 <div class="error">Mehrdeutige Eingabe</div>
 <div>Bitte eine Station aus der Liste auswählen</div>
+</div>
 % }
 
 %= content
 
 % if (not stash('hide_opts')) {
+<div class="container">
 <div class="input-field">
 
 
@@ -186,6 +189,8 @@ nur Züge via Bochum oder Hamm)</li>
 	selbsterklärend sein</li>
 </ul>
 </div> <!-- notes -->
+
+</div> <!-- container -->
 
 <div class="about">
 <a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>

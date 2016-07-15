@@ -1,4 +1,5 @@
 % if (stash 'show_intro') {
+<div class="container">
 <p>
   Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
   der DB. Sie kann wahlweise die vor Ort montierten Anzeigen nachahmen oder
@@ -13,4 +14,5 @@ Alle Angaben ohne Gewähr.
 <p>
 Oder hier angeben:
 </p>
+</div>
 % }
