@@ -29,8 +29,8 @@
 </head>
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>">
 
-% if (my $error = stash 'error') {
 <div class="container">
+% if (my $error = stash 'error') {
 <div class="error">Backend-Fehler:</div>
 <div>
 <pre>
@@ -41,8 +41,8 @@
 % elsif (stash('stationlist')) {
 <div class="error">Mehrdeutige Eingabe</div>
 <div>Bitte eine Station aus der Liste auswählen</div>
-</div>
 % }
+</div>
 
 %= content
 
