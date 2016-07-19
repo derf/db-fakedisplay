@@ -2,15 +2,19 @@ $(document).ready(function() {
 	var removeStatus = function() {
 		$('div.candidatestatus').remove();
 	};
-	var showError = function(oneline, str) {
+	var showError = function(header, message, code) {
 		var errnode = $(document.createElement('div'));
 		errnode.attr('class', 'error');
-		errnode.text(str);
+		errnode.text(message);
 
-		if (oneline) {
+		var headnode = $(document.createElement('strong'));
+		headnode.text(header);
+		errnode.prepend(headnode);
+
+		if (code) {
 			var shortnode = $(document.createElement('div'));
-			shortnode.attr('class', 'errshort');
-			shortnode.text(oneline);
+			shortnode.attr('class', 'errcode');
+			shortnode.text(code);
 			errnode.append(shortnode);
 		}
 
@@ -20,9 +24,9 @@ $(document).ready(function() {
 	var processResult = function(data) {
 		removeStatus();
 		if (data.error) {
-			showError('Backend-Fehler', data.error);
+			showError('Backend-Fehler:', data.error, null);
 		} else if (data.candidates.length == 0) {
-			showError(null, 'Keine Bahnhöfe in 70km Umkreis gefunden');
+			showError('Keine Bahnhöfe in 70km Umkreis gefunden', '', null);
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
@@ -53,13 +57,13 @@ $(document).ready(function() {
 	var processError = function(error) {
 		removeStatus();
 		if (error.code == error.PERMISSION_DENIED) {
-			showError('geolocation.error.PERMISSION_DENIED', 'Standortanfrage nicht möglich. Vermutlich fehlen die Rechte im Browser oder der Android Location Service ist deaktiviert.');
+			showError('Standortanfrage nicht möglich.', 'Vermutlich fehlen die Rechte im Browser oder der Android Location Service ist deaktiviert.', 'geolocation.error.PERMISSION_DENIED');
 		} else if (error.code == error.POSITION_UNAVAILABLE) {
-			showError('geolocation.error.POSITION_UNAVAILABLE', 'Standort konnte nicht ermittelt werden (Service nicht verfügbar)');
+			showError('Standort konnte nicht ermittelt werden', '(Service nicht verfügbar)', 'geolocation.error.POSITION_UNAVAILABLE');
 		} else if (error.code == error.TIMEOUT) {
-			showError('geolocation.error.TIMEOUT', 'Standort konnte nicht ermittelt werden (Timeout)');
+			showError('Standort konnte nicht ermittelt werden', '(Timeout)', 'geolocation.error.TIMEOUT');
 		} else {
-			showError('unknown geolocatior.error code', 'Standort konnte nicht ermittelt werden (unbekannter Fehler)');
+			showError('Standort konnte nicht ermittelt werden', '(unbekannter Fehler)', 'unknown geolocation.error code');
 		}
 	};
 
@@ -68,6 +72,6 @@ $(document).ready(function() {
 		$('div.candidatestatus').text('Position wird bestimmt…');
 	} else {
 		removeStatus();
-		showError(null, 'Standortanfragen werden von diesem Browser nicht unterstützt');
+		showError('Standortanfragen werden von diesem Browser nicht unterstützt', '', null);
 	}
 });

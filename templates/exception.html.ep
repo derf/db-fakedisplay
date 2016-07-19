@@ -1,10 +1,8 @@
-<div class="error">500 Internal Server Error</div>
-<div>
+<div class="error">
+<strong>500 Internal Server Error:</strong>
+Beim Bearbeiten der Anfrage ist ein Fehler aufgetreten.<br/>
+
 <pre>
-Beim Bearbeiten der Anfrage ist ein Fehler aufgetreten.
-
-An error occured while processing your request.
-
 ----------[Debug start]----------
 %= $exception->message
 Stash:

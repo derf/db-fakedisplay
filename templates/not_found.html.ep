@@ -1,9 +1,7 @@
-<div class="error">404 Page Not Found</div>
-<div>
-<pre>
+<div class="container">
+<div class="error">
+<strong>404 Page Not Found:</strong>
 Die aufgerufene URL existiert nicht und ist keine gültige Abbildung auf einen
 Bahnhofsnamen.
-
-The requested URL does not exist and does not map to a train station.
-</pre>
+</div>
 </div>

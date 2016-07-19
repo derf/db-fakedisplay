@@ -39,8 +39,8 @@
 </div>
 % }
 % elsif (stash('stationlist')) {
-<div class="error">Mehrdeutige Eingabe</div>
-<div>Bitte eine Station aus der Liste auswählen</div>
+<div class="error"><strong>Mehrdeutige Eingabe.</strong>
+Bitte eine Station aus der Liste auswählen</div>
 % }
 </div>
 
