@@ -908,9 +908,9 @@ post '/_geolocation' => sub {
 app->defaults( layout => 'default' );
 
 get '/'               => \&handle_request;
-get '/:station'       => \&handle_request;
-get '/:station/:via'  => \&handle_request;
-get '/multi/:station' => \&handle_request;
+get '/#station'       => \&handle_request;
+get '/#station/#via'  => \&handle_request;
+get '/multi/#station' => \&handle_request;
 
 app->config(
 	hypnotoad => {
