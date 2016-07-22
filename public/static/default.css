@@ -424,7 +424,7 @@ div.candidatelist a {
 	font-size: 1.4em;
 	padding-top: 0.3em;
 	text-align: center;
-	border-bottom: 2px solid #cccccc;
+	border-bottom: 1px solid #999999;
 }
 
 div.candidatelist a .distance:after {
