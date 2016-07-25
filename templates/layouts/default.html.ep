@@ -31,8 +31,7 @@
 
 <div class="container">
 % if (my $error = stash 'error') {
-<div class="error">Backend-Fehler:</div>
-<div>
+<div class="error"><strong>Backend-Fehler:</strong>
 <pre>
 %= $error
 </pre>

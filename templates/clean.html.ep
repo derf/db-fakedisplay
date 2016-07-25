@@ -235,8 +235,8 @@
 % }
 % else {
 
-<p>
-<div class="error">No matching departures</div>
-</p>
+<div class="error"><strong>Keine Abfahrten gefunden.</strong>
+Möglicherweise ist der Filter zu restriktiv, oder an dieser Station fahren
+momentan keine Züge.</div>
 
 % }
