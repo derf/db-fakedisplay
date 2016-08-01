@@ -92,7 +92,7 @@ Bitte eine Station aus der Liste auswählen</div>
       Nur Züge über
     </div>
     <div>
-      %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)'
+      %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
     </div>
   </div>
   <div class="field">
