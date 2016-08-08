@@ -31,12 +31,13 @@ div.displayclean > ul > li {
 }
 
 div.displayclean li .line {
-	color:#FFFFFF;
-	background-color:#666666;
 	font-size: 2.9em;
 	position:absolute;
-	top:7px;
+	bottom:5px;
 	left:2px;
+	max-width: 6em;
+	max-height: 3ex;
+	overflow: hidden;
 }
 
 div.displayclean li .line .trainno {
@@ -63,24 +64,22 @@ div.displayclean li .sbahn {
 	font-weight:bold;
 	color:#FFFFFF;
 	background-color:#006E10;
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
 	border-radius: 30px;
 	padding:3px 6px 2px 6px;
 }
 
 div.displayclean li .bahn {
 	font-weight:bold;
-	color:#FFFFFF;
-	background-color:#666666;
+	border-radius: 5px;
 	padding:3px 5px 2px 5px;
+	background-color: #eeeeee;
 }
 
 div.displayclean li .fern {
 	font-weight:bold;
-	color:#FFFFFF;
-	background-color:#995555;
+	border-radius: 5px;
 	padding:3px 5px 2px 5px;
+	background-color: #ffdddd;
 }
 
 div.displayclean li .route {
@@ -116,7 +115,6 @@ div.displayclean li .moreinfo {
 	bottom:0em;
 	background-color: white;
 	z-index: 5;
-	display: none;
 	overflow: auto;
 }
 

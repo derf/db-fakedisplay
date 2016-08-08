@@ -54,7 +54,7 @@
 %     }
       </div>
 %   }
-    <div class="moreinfo">
+    <div class="moreinfo collapsed-moreinfo">
     <div class="mheader">
     <div>
 %   if ($departure->{train_no} or $departure->{train_line}) {
