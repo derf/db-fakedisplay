@@ -319,6 +319,7 @@ sub handle_request {
 	my $with_related   = $self->param('recursive')     // 0;
 	my $callback       = $self->param('callback');
 	my $apiver         = $self->param('version')       // 0;
+	my @train_types     = split( /,/, $self->param('train_types')     // q{} );
 	my %opt;
 
 	my $api_version
@@ -401,6 +402,7 @@ sub handle_request {
 	for my $result (@results) {
 		my $platform = ( split( / /, $result->platform ) )[0];
 		my $line     = $result->line;
+		my $train_type     = $result->type;
 		my $delay    = $result->delay;
 		if ( $via and $result->can('route_post') ) {
 			$via =~ s{ , \s* }{|}gx;
@@ -415,6 +417,10 @@ sub handle_request {
 			next;
 		}
 		if ( @lines and not( List::MoreUtils::any { $line =~ m{^$_} } @lines ) )
+		{
+			next;
+		}
+		if ( @train_types and not ( List::MoreUtils::any { $train_type =~ m{^$_} } @train_types ))
 		{
 			next;
 		}
