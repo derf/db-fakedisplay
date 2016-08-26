@@ -191,6 +191,7 @@ nur Züge via Bochum oder Hamm)</li>
 
 </div> <!-- container -->
 
+<div class="container">
 <div class="about">
 <a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 v<%= stash('version') // '???' %><br/>
@@ -203,7 +204,8 @@ v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
 © DB Station&amp;Service AG,
 Europaplatz 1,
 10557 Berlin, lizensiert unter CC-BY 4.0
-</div>
+</div> <!-- about -->
+</div> <!-- container -->
 % }
 
 </body>

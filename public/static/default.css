@@ -436,6 +436,7 @@ div.candidatelist a .distance {
 }
 
 div.about {
+	margin-top: 2em;
 	font-family: Sans-Serif;
 	color: #666666;
 }
