@@ -235,8 +235,10 @@
 % }
 % else {
 
+<div class="container">
 <div class="error"><strong>Keine Abfahrten gefunden.</strong>
 Möglicherweise ist der Filter zu restriktiv, oder an dieser Station fahren
 momentan keine Züge.</div>
+</div> <!-- container -->
 
 % }
