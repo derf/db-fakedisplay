@@ -101,7 +101,6 @@ div.displayclean li .info {
 	height: 1.1em;
 	width: 70%;
 	overflow: hidden;
-	z-index: 2;
 }
 
 div.displayclean li .moreinfo {
@@ -183,7 +182,6 @@ div.displayclean li .dest {
 	left:4em;
 	bottom:-0.1em;
 	width: 70%;
-	z-index: 1;
 	overflow: hidden;
 }
 
@@ -193,10 +191,12 @@ div.displayclean li.cancelled {
 
 div.displayclean li .countdown {
 	color: #000000;
+	background-color: #ffffff;
 	font-size: 3em;
 	position: absolute;
 	right: 5px;
 	bottom: 2px;
+	padding-left: 0.2em;
 }
 
 div.displayclean li .header {
@@ -216,6 +216,7 @@ div.displayclean li .head {
 div.displayclean li .countdown .delay {
 	font-size:1em;
 	color:#FF0000;
+	background-color: #ffffff;
 	padding-right:7px;
 }
 
@@ -247,14 +248,17 @@ div.displayclean li .countdown .changed-platform {
 
 div.displayclean li .time {
 	color:#000000;
+	background-color: #ffffff;
 	font-size:2.4em;
 	position:absolute;
 	right:5px;
 	top:5px;
+	padding-left: 0.2em;
 }
 
 div.displayclean span.delayed {
 	color: #ff0000;
+	background-color: #ffffff;
 }
 
 div.displaymulti {
