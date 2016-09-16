@@ -191,7 +191,7 @@ div.displayclean li.cancelled {
 
 div.displayclean li .countdown {
 	color: #000000;
-	background-color: #ffffff;
+	background-color: inherit;
 	font-size: 3em;
 	position: absolute;
 	right: 5px;
@@ -216,7 +216,7 @@ div.displayclean li .head {
 div.displayclean li .countdown .delay {
 	font-size:1em;
 	color:#FF0000;
-	background-color: #ffffff;
+	background-color: inherit;
 	padding-right:7px;
 }
 
@@ -248,7 +248,7 @@ div.displayclean li .countdown .changed-platform {
 
 div.displayclean li .time {
 	color:#000000;
-	background-color: #ffffff;
+	background-color: inherit;
 	font-size:2.4em;
 	position:absolute;
 	right:5px;
@@ -258,7 +258,7 @@ div.displayclean li .time {
 
 div.displayclean span.delayed {
 	color: #ff0000;
-	background-color: #ffffff;
+	background-color: inherit;
 }
 
 div.displaymulti {
