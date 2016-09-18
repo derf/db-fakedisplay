@@ -70,84 +70,86 @@ Bitte eine Station aus der Liste auswählen</div>
     %= submit_button 'Abfartsmonitor'
   </div>
   <div class="break"></div>
-  <span class="optional">Optionale Einstellungen:</span>
-  <div class="field">
-    <div class="desc">
-      Frontend
+  <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
+  <div class="moresettings moresettings-collapsed">
+    <div class="field">
+      <div class="desc">
+        Frontend
+      </div>
+      <div>
+        %= select_field mode => [ ['App / Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
+      </div>
     </div>
-    <div>
-      %= select_field mode => [ ['App / Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
+    <div class="field">
+      <div class="desc">
+        Backend
+      </div>
+      <div>
+        %= select_field backend => [ ['IRIS' => 'iris'], ['HAFAS' => 'ris'] ]
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      Backend
+    <div class="field">
+      <div class="desc">
+        Nur Züge über
+      </div>
+      <div>
+        %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
+      </div>
     </div>
-    <div>
-      %= select_field backend => [ ['IRIS' => 'iris'], ['HAFAS' => 'ris'] ]
+    <div class="field">
+      <div class="desc">
+        Gleise
+      </div>
+      <div>
+        %= text_field 'platforms', placeholder => '1, 2, 5, ...'
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      Nur Züge über
+    <div class="field">
+      <div class="desc">
+        %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
+        <label for="id_hidelowdelay">
+          Nur Verspätungen &gt;5 Min. anzeigen
+        </label>
+      </div>
     </div>
-    <div>
-      %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
+    <div class="field">
+      <div class="desc">
+        %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
+        <label for="id_hide_opts">
+          Formular verstecken (für Infoscreens)
+        </label>
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      Gleise
+    <div class="break"></div>
+    <span class="optional">Nur für IRIS-Backend:</span>
+    <div class="field">
+      <div class="desc">
+        Ankunfts- oder Abfahrtszeit anzeigen?
+      </div>
+      <div>
+        %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
+      </div>
     </div>
-    <div>
-      %= text_field 'platforms', placeholder => '1, 2, 5, ...'
+    <div class="field">
+      <div class="desc">
+        %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
+        <label for="id_show_realtime">
+          Erwartete Zeiten statt Fahrplandaten
+        </label>
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
-      <label for="id_hidelowdelay">
-        Nur Verspätungen &gt;5 Min. anzeigen
-      </label>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'recursive' => 1, id => 'id_recursive'
+        <label for="id_recursive">
+        Betriebliche Bahnhofstrennungen ignorieren (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
+        </label>
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
-      <label for="id_hide_opts">
-        Formular verstecken (für Infoscreens)
-      </label>
+    <div class="field">
+      %= submit_button 'Anzeigen'
     </div>
-  </div>
-  <div class="break"></div>
-  <span class="optional">Nur für IRIS-Backend:</span>
-  <div class="field">
-    <div class="desc">
-      Ankunfts- oder Abfahrtszeit anzeigen?
-    </div>
-    <div>
-      %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
-    </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
-      <label for="id_show_realtime">
-        Erwartete Zeiten statt Fahrplandaten
-      </label>
-    </div>
-  </div>
-  <div class="field">
-    <div class="desc">
-      %= check_box 'recursive' => 1, id => 'id_recursive'
-      <label for="id_recursive">
-      Betriebliche Bahnhofstrennungen ignorieren (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
-      </label>
-    </div>
-  </div>
-  <div class="field">
-    %= submit_button 'Anzeigen'
-  </div>
+  </div> <!-- moresettings -->
 </div>
 % end
 

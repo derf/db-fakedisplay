@@ -483,6 +483,26 @@ span.notes {
 	color: #666666;
 }
 
+.moresettings-header {
+	cursor: pointer;
+}
+
+.moresettings-header-collapsed:before {
+	content: "▹ "
+}
+
+.moresettings-header-expanded:before {
+	content: "▿ "
+}
+
+.moresettings-collapsed {
+	display: none;
+}
+
+.moresettings-expanded {
+	display: block;
+}
+
 div.break {
 	height: 1em;
 }
@@ -550,8 +570,24 @@ input[type="submit"]:hover,
 	border-color: #204d74;
 }
 
-input[type="submit"]:active {
+input[type="submit"]:active,
+.button.active {
 	box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+
+.button-light {
+	color: #333;
+	background-color: #fff;
+	border-color: #ccc;
+}
+
+.button-light:active,
+.button-light:focus,
+.button-light:hover
+{
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
 }
 
 div.notes {

@@ -19,4 +19,21 @@ $(document).ready(function() {
 			});
 		});
 	});
+	$('.moresettings-header').each(function() {
+		$(this).click(function() {
+			var moresettings = $('.moresettings');
+			if ($(this).hasClass('moresettings-header-collapsed')) {
+				$(this).removeClass('moresettings-header-collapsed');
+				$(this).addClass('moresettings-header-expanded');
+				moresettings.removeClass('moresettings-collapsed');
+				moresettings.addClass('moresettings-expanded');
+			}
+			else {
+				$(this).removeClass('moresettings-header-expanded');
+				$(this).addClass('moresettings-header-collapsed');
+				moresettings.removeClass('moresettings-expanded');
+				moresettings.addClass('moresettings-collapsed');
+			}
+		});
+	});
 });
