@@ -140,9 +140,9 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        %= check_box 'recursive' => 1, id => 'id_recursive'
-        <label for="id_recursive">
-        Betriebliche Bahnhofstrennungen ignorieren (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
+        %= check_box 'no_related' => 1, id => 'id_no_related'
+        <label for="id_no_related">
+        Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
         </label>
       </div>
     </div>

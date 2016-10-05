@@ -316,9 +316,9 @@ sub handle_request {
 	my $show_realtime  = $self->param('show_realtime') // 0;
 	my $backend        = $self->param('backend')       // 'iris';
 	my $admode         = $self->param('admode')        // 'deparr';
-	my $with_related   = $self->param('recursive')     // 0;
-	my $callback       = $self->param('callback');
 	my $apiver         = $self->param('version')       // 0;
+	my $callback       = $self->param('callback');
+	my $with_related   = !$self->param('no_related');
 	my @train_types = split( /,/, $self->param('train_types') // q{} );
 	my %opt;
 
