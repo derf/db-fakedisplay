@@ -28,6 +28,7 @@ div.displayclean > ul > li {
 	border-bottom: 1px solid #999999;
 	width:100%;
 	position:relative;
+	background-color: #ffffff;
 }
 
 div.displayclean li .line {
