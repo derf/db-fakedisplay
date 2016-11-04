@@ -306,7 +306,7 @@ helper 'json_route_diff' => sub {
 sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');
-	my $via     = $self->stash('via');
+	my $via     = $self->stash('via') // $self->param('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my @lines     = split( /,/, $self->param('lines')     // q{} );
@@ -363,6 +363,18 @@ sub handle_request {
 		$self->handle_no_results_json( $backend, $station, $errstr,
 			$api_version, $callback );
 		return;
+	}
+
+	# foo/bar used to mean "departures for foo via bar", and this is still the
+	# default. However, there are also stations named "foo/bar". So, if
+	# "foo" is not a valid station, try "foo/bar" instead
+	if ( not @results and $self->stash('via')) {
+		$station = "$station/$via";
+		$via = undef;
+		$data        = get_results_for( $backend, $station, %opt );
+		$results_ref = $data->{results};
+		$errstr      = $data->{errstr};
+		@results     = @{$results_ref};
 	}
 
 	if ( not @results ) {
@@ -847,13 +859,11 @@ sub handle_request {
 get '/_redirect' => sub {
 	my $self    = shift;
 	my $station = $self->param('station');
-	my $via     = $self->param('via');
 	my $params  = $self->req->params;
 
 	$params->remove('station');
-	$params->remove('via');
 
-	for my $param (qw(platforms backend mode admode)) {
+	for my $param (qw(platforms backend mode admode via)) {
 		if (
 			not $params->param($param)
 			or ( exists $default{$param}
@@ -866,12 +876,7 @@ get '/_redirect' => sub {
 
 	$params = $params->to_string;
 
-	if ($via) {
-		$self->redirect_to("/${station}/${via}?${params}");
-	}
-	else {
-		$self->redirect_to("/${station}?${params}");
-	}
+	$self->redirect_to("/${station}?${params}");
 };
 
 get '/_auto' => sub {
