@@ -48,7 +48,7 @@ sub get_results_for {
 	my $cache_iris_rt = Cache::File->new(
 		cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
 		  // '/tmp/dbf-iris-realtime',
-		default_expires => '50 seconds',
+		default_expires => '70 seconds',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
