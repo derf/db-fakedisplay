@@ -306,7 +306,7 @@ helper 'json_route_diff' => sub {
 sub handle_request {
 	my $self    = shift;
 	my $station = $self->stash('station');
-	my $via     = $self->stash('via') // $self->param('via');
+	my $via     = $self->param('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
 	my @lines     = split( /,/, $self->param('lines')     // q{} );
@@ -365,12 +365,12 @@ sub handle_request {
 		return;
 	}
 
-	# foo/bar used to mean "departures for foo via bar", and this is still the
-	# default. However, there are also stations named "foo/bar". So, if
-	# "foo" is not a valid station, try "foo/bar" instead
-	if ( not @results and $self->stash('via')) {
-		$station = "$station/$via";
-		$via = undef;
+	# foo/bar used to mean "departures for foo via bar". This is now
+	# deprecated, but most of these cases are handled here.
+	if ( not @results and $station =~ m{/} ) {
+		( $station, $via ) = split( qr{/}, $station );
+		$self->param( station => $station );
+		$self->param( via     => $via );
 		$data        = get_results_for( $backend, $station, %opt );
 		$results_ref = $data->{results};
 		$errstr      = $data->{errstr};
@@ -921,9 +921,8 @@ post '/_geolocation' => sub {
 app->defaults( layout => 'default' );
 
 get '/'               => \&handle_request;
-get '/#station'       => \&handle_request;
-get '/#station/#via'  => \&handle_request;
-get '/multi/#station' => \&handle_request;
+get '/multi/*station' => \&handle_request;
+get '/*station'       => \&handle_request;
 
 app->config(
 	hypnotoad => {
