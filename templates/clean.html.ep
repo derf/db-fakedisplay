@@ -46,11 +46,11 @@
     </div>
 %   if (@{$departure->{replaced_by}} or @{$departure->{replacement_for}}) {
       <div class="lineinfo">
-%     for my $replacement (@{$departure->{replaced_by}}) {
-        <span class="replaced">→ <%= $replacement %></span>
+%     if (@{$departure->{replaced_by}}) {
+        %#<span class="replaced">→ Ersatzzug</span>
 %     }
-%     for my $replacement (@{$departure->{replacement_for}}) {
-        <span class="replacement">↑ <%= $replacement %></span>
+%     if (@{$departure->{replacement_for}}) {
+        <span class="replacement">Ersatzzug</span>
 %     }
       </div>
 %   }
@@ -80,6 +80,16 @@
 %   }
 %   elsif (defined $departure->{delay} and $departure->{delay} > 0) {
       <div class="minfo">+<%= $departure->{delay} %></div>
+%   }
+%   if (@{$departure->{replaced_by}}) {
+%     for my $replacement (@{$departure->{replaced_by}}) {
+        <span class="replaced">Ersatzzug: <%= $replacement %></span>
+%     }
+%   }
+%   if (@{$departure->{replacement_for}}) {
+%     for my $replacement (@{$departure->{replacement_for}}) {
+        <span class="replacement">Ersatzzug für <%= $replacement %></span>
+%     }
 %   }
     </div> <!-- mheader -->
     <div class="mfooter">

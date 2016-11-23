@@ -49,15 +49,15 @@ div.displayclean li .lineinfo {
 	color:#000000;
 	font-size: 2em;
 	position:absolute;
-	bottom:2px;
+	top:0px;
 	left:2px;
 }
 
-div.displayclean li .lineinfo .replacement {
+div.displayclean .replacement {
 	color: #006600;
 }
 
-div.displayclean li .lineinfo .replaced {
+div.displayclean .replaced {
 	color: #660000;
 }
 
