@@ -67,7 +67,7 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
   </div>
   <div class="field">
-    %= submit_button 'Abfartsmonitor'
+    %= submit_button 'Abfahrtsmonitor'
   </div>
   <div class="break"></div>
   <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
