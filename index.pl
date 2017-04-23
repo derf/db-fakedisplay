@@ -2,6 +2,7 @@
 use Mojolicious::Lite;
 use Cache::File;
 use File::Slurp qw(read_file write_file);
+use List::Util qw(max);
 use List::MoreUtils qw();
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::HAFAS::StopFinder;
@@ -332,7 +333,13 @@ sub handle_request {
 	$self->stash( title      => 'db-infoscreen' );
 	$self->stash( version    => $VERSION );
 
-	if ( not( $template ~~ [qw[clean json marudor multi single]] ) ) {
+	if ( $station =~ s{ [.] txt $ }{}x ) {
+		$template = 'text';
+		$self->param( station => $station );
+		$self->stash( layout => 'text' );
+	}
+
+	if ( not( $template ~~ [qw[clean json marudor multi single text]] ) ) {
 		$template = 'clean';
 	}
 
@@ -708,6 +715,20 @@ sub handle_request {
 				);
 			}
 		}
+		elsif ( $template eq 'text' ) {
+			push(
+				@departures,
+				[
+					sprintf( '%5s %s%s',
+						$time,
+						( $delay and $delay > 0 ) ? q{+} : q{},
+						$delay || q{} ),
+					$result->train,
+					$result->destination,
+					$platform // q{ }
+				]
+			);
+		}
 		elsif ( $backend eq 'iris' ) {
 			push(
 				@departures,
@@ -840,6 +861,23 @@ sub handle_request {
 				format => 'json'
 			);
 		}
+	}
+	elsif ( $template eq 'text' ) {
+		my @line_length;
+		for my $i ( 0 .. $#{ $departures[0] } ) {
+			$line_length[$i] = max map { length( $_->[$i] ) } @departures;
+		}
+		my $output = q{};
+		for my $departure (@departures) {
+			$output .= sprintf(
+				join( q{  }, ( map { "%-${_}s" } @line_length ) ) . "\n",
+				@{$departure}[ 0 .. $#{$departure} ]
+			);
+		}
+		$self->render(
+			text   => $output,
+			format => 'text',
+		);
 	}
 	else {
 		my $station_name = $data->{station_name} // $station;
