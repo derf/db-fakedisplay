@@ -464,6 +464,9 @@ sub handle_request {
 			if ( $result->is_cancelled ) {
 				$info = "Fahrt fällt aus: ${delaymsg}";
 			}
+			elsif ( $result->departure_is_cancelled ) {
+				$info = "Zug endet hier: ${delaymsg}";
+			}
 			elsif ( $result->delay and $result->delay > 0 ) {
 				if ( $template eq 'clean' ) {
 					$info = $delaymsg;
@@ -759,13 +762,15 @@ sub handle_request {
 							[ $result->sched_route_post ]
 						)
 					],
-					destination        => $result->destination,
-					origin             => $result->origin,
-					platform           => $result->platform,
-					scheduled_platform => $result->sched_platform,
-					info               => $info,
-					is_cancelled       => $result->is_cancelled,
-					messages           => {
+					destination            => $result->destination,
+					origin                 => $result->origin,
+					platform               => $result->platform,
+					scheduled_platform     => $result->sched_platform,
+					info                   => $info,
+					is_cancelled           => $result->is_cancelled,
+					departure_is_cancelled => $result->departure_is_cancelled,
+					arrival_is_cancelled   => $result->arrival_is_cancelled,
+					messages               => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
 							  $result->delay_messages

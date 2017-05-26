@@ -14,7 +14,7 @@
 %     $route_str .= $stop . ($via_cur < $via_max ? ' - ' : q{});
 %   }
 %   my $extraclasses = q{};
-%   if ($departure->{is_cancelled}) {
+%   if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
 %     $extraclasses .= ' cancelled';
       <li class="cancelled">
 %   }
@@ -79,7 +79,11 @@
       <div class="minfo">Fahrt fällt aus</div>
 %   }
 %   elsif (defined $departure->{delay} and $departure->{delay} > 0) {
-      <div class="minfo">+<%= $departure->{delay} %></div>
+      <div class="minfo">+<%= $departure->{delay} %>
+%     if ($departure->{departure_is_cancelled}) {
+        (endet hier)
+%     }
+      </div>
 %   }
 %   if (@{$departure->{replaced_by}}) {
 %     for my $replacement (@{$departure->{replaced_by}}) {
