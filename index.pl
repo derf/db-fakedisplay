@@ -75,7 +75,7 @@ sub get_results_for {
 				station        => $station,
 				main_cache     => $cache_iris_main,
 				realtime_cache => $cache_iris_rt,
-				lookbehind     => 60,
+				lookbehind     => 20,
 				%opt
 			);
 			$data = {
