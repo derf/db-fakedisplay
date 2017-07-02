@@ -27,7 +27,8 @@
 %   }
 %   elsif ( $departure->{train_type} eq 'IC'
 %          or $departure->{train_type} eq 'ICE'
-%          or $departure->{train_type} eq 'EC' ) {
+%          or $departure->{train_type} eq 'EC'
+%          or $departure->{train_type} eq 'THA' ) {
 %     $linetype = 'fern';
 %   }
     <div class="line <%= $linetype %>">
