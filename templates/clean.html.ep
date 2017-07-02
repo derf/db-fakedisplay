@@ -99,12 +99,12 @@
     </div> <!-- mheader -->
     <div class="mfooter">
     <div class="platforminfo">
-%   if ($departure->{platform}) {
-      Gleis <%= $departure->{platform} %>
+%   if ($departure->{scheduled_platform} or $departure->{platform}) {
+      Gleis <%= $departure->{scheduled_platform} // $departure->{platform} %>
 %   }
 %   if ($departure->{scheduled_platform} and $departure->{platform}
 %       and $departure->{scheduled_platform} ne $departure->{platform}) {
-      (nicht Gleis <%= $departure->{scheduled_platform} %>)
+      (heute Gleis <%= $departure->{platform} %>)
 %   }
 %   elsif ($departure->{changed_platform}) {
       (Gleiswechsel)
