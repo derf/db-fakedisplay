@@ -321,6 +321,7 @@ sub handle_request {
 	my $apiver         = $self->param('version')       // 0;
 	my $callback       = $self->param('callback');
 	my $with_related   = !$self->param('no_related');
+	my $save_defaults  = $self->param('save_defaults') // 0;
 	my @train_types = split( /,/, $self->param('train_types') // q{} );
 	my %opt;
 
@@ -328,6 +329,16 @@ sub handle_request {
 	  = $backend eq 'iris'
 	  ? $Travel::Status::DE::IRIS::VERSION
 	  : $Travel::Status::DE::HAFAS::VERSION;
+
+	if ($save_defaults) {
+		$self->session( has_data      => 1 );
+		$self->session( mode          => $template );
+		$self->session( hidelowdelay  => $hide_low_delay );
+		$self->session( hide_opts     => $hide_opts );
+		$self->session( show_realtime => $show_realtime );
+		$self->session( admode        => $admode );
+		$self->session( no_related    => !$with_related );
+	}
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'db-infoscreen' );
@@ -344,6 +355,13 @@ sub handle_request {
 	}
 
 	if ( not $station ) {
+		if ( $self->session('has_data') ) {
+			for my $param (
+				qw(mode hidelowdelay hide_opts show_realtime admode no_related))
+			{
+				$self->param( $param => $self->session($param) );
+			}
+		}
 		$self->render(
 			'landingpage',
 			hide_opts  => 0,
@@ -963,6 +981,7 @@ post '/_geolocation' => sub {
 };
 
 app->defaults( layout => 'default' );
+app->sessions->default_expiration( 3600 * 24 * 28 );
 
 get '/'               => \&handle_request;
 get '/multi/*station' => \&handle_request;

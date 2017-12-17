@@ -147,6 +147,14 @@ Bitte eine Station aus der Liste auswählen</div>
       </div>
     </div>
     <div class="field">
+      <div class="desc">
+        %= check_box 'save_defaults' => 1, id => 'id_save_defaults'
+        <label for="id_save_defaults">
+        Ausgewählte Optionen als Default speichern
+        </label>
+      </div>
+    </div>
+    <div class="field">
       %= submit_button 'Anzeigen'
     </div>
   </div> <!-- moresettings -->
