@@ -344,7 +344,7 @@ sub handle_request {
 	$self->stash( title      => 'db-infoscreen' );
 	$self->stash( version    => $VERSION );
 
-	if ( $station =~ s{ [.] txt $ }{}x ) {
+	if ( defined $station and $station =~ s{ [.] txt $ }{}x ) {
 		$template = 'text';
 		$self->param( station => $station );
 		$self->stash( layout => 'text' );
