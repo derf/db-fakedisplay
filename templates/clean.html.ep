@@ -1,6 +1,11 @@
 % if (@{$departures}) {
 
-<div class="displayclean">
+% if (param('dark')) {
+<div class="displayclean displaycleandark">
+% }
+% else {
+<div class="displayclean displaycleanlight">
+% }
 <ul>
 % my $i = 0;
 % my $dt_now = DateTime->now;

@@ -27,7 +27,8 @@
 	%= javascript '/static/geolocation.js'
 	% }
 </head>
-<body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>">
+<body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>
+<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
 
 <div class="container">
 % if (my $error = stash 'error') {
@@ -109,6 +110,14 @@ Bitte eine Station aus der Liste auswählen</div>
         %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
         <label for="id_hidelowdelay">
           Nur Verspätungen &gt;5 Min. anzeigen
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'dark' => 1, id => 'id_dark'
+        <label for="id_dark">
+          Dunkles Layout (experimentell)
         </label>
       </div>
     </div>

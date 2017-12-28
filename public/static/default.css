@@ -25,9 +25,17 @@ div.displayclean > ul {
 div.displayclean > ul > li {
 	min-height:7em;
 	display:block;
-	border-bottom: 1px solid #999999;
 	width:100%;
 	position:relative;
+}
+
+div.displaycleandark > ul > li {
+	border-bottom: 1px solid #999999;
+	background-color: #000000;
+}
+
+div.displaycleanlight > ul > li {
+	border-bottom: 1px solid #999999;
 	background-color: #ffffff;
 }
 
@@ -63,27 +71,47 @@ div.displayclean .replaced {
 
 div.displayclean li .sbahn {
 	font-weight:bold;
-	background-color:#95d79f;
 	border-radius: 30px;
 	padding:3px 6px 2px 6px;
+}
+
+div.displaycleanlight li .sbahn {
+	background-color:#95d79f;
+}
+
+div.displaycleandark li .sbahn {
+	background-color:#115511;
 }
 
 div.displayclean li .bahn {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
+}
+
+div.displaycleanlight li .bahn {
 	background-color: #eeeeee;
+}
+
+div.displaycleandark li .bahn {
+	background-color: #333333;
 }
 
 div.displayclean li .fern {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
+}
+
+div.displaycleanlight li .fern {
 	background-color: #ffdddd;
 }
 
+div.displaycleandark li .fern {
+	background-color: #551111;
+}
+
 div.displayclean li .route {
-	color:#444444;
 	font-size:2.1em;
 	position:absolute;
 	top:5px;
@@ -91,6 +119,14 @@ div.displayclean li .route {
 	height: 1em;
 	width: 70%;
 	overflow: hidden;
+}
+
+div.displaycleanlight li .route {
+	color:#444444;
+}
+
+div.displaycleandark li .route {
+	color:#bbbbbb;
 }
 
 div.displayclean li .info {
@@ -175,7 +211,6 @@ div.displayclean li .moreinfo .mroute .cancelled-stop {
 }
 
 div.displayclean li .dest {
-	color:#000000;
 	/*font-weight:bold;*/
 	font-size:4em;
 	position:absolute;
@@ -186,18 +221,37 @@ div.displayclean li .dest {
 	overflow: hidden;
 }
 
-div.displayclean li.cancelled {
+div.displaycleanlight li .dest {
+	color:#000000;
+}
+
+div.displaycleandark li .dest {
+	color:#ffffff;
+}
+
+div.displaycleanlight li.cancelled {
 	background-color: #ffe7d0;
 }
 
+div.displaycleandark li.cancelled {
+	background-color: #512f00;
+}
+
 div.displayclean li .countdown {
-	color: #000000;
 	background-color: inherit;
 	font-size: 3em;
 	position: absolute;
 	right: 5px;
 	bottom: 2px;
 	padding-left: 0.2em;
+}
+
+div.displaycleanlight li .countdown {
+	color: #000000;
+}
+
+div.displaycleandark li .countdown {
+	color: #ffffff;
 }
 
 div.displayclean li .header {
@@ -248,13 +302,20 @@ div.displayclean li .countdown .changed-platform {
 }
 
 div.displayclean li .time {
-	color:#000000;
 	background-color: inherit;
 	font-size:2.4em;
 	position:absolute;
 	right:5px;
 	top:5px;
 	padding-left: 0.2em;
+}
+
+div.displaycleanlight li .time {
+	color:#000000;
+}
+
+div.displaycleandark li .time {
+	color:#ffffff;
 }
 
 div.displayclean span.delayed {
