@@ -316,8 +316,10 @@ sub handle_request {
 	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
 	my $hide_opts      = $self->param('hide_opts')     // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
+	my $show_details   = $self->param('detailed')      // 0;
 	my $backend        = $self->param('backend')       // 'iris';
 	my $admode         = $self->param('admode')        // 'deparr';
+	my $dark_layout    = $self->param('dark')          // 0;
 	my $apiver         = $self->param('version')       // 0;
 	my $callback       = $self->param('callback');
 	my $with_related   = !$self->param('no_related');
@@ -337,6 +339,8 @@ sub handle_request {
 		$self->session( hide_opts     => $hide_opts );
 		$self->session( show_realtime => $show_realtime );
 		$self->session( admode        => $admode );
+		$self->session( dark          => $dark_layout );
+		$self->session( detailed      => $show_details );
 		$self->session( no_related    => !$with_related );
 	}
 

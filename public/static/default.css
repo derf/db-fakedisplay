@@ -151,16 +151,22 @@ div.displayclean li .info {
 }
 
 div.displayclean li .moreinfo {
-	color:#000000;
 	font-size:2.1em;
 	position:fixed;
 	top:0em;
 	left:0em;
 	right:0em;
 	bottom:0em;
-	background-color: white;
 	z-index: 5;
 	overflow: auto;
+}
+
+div.displaycleanlight li .moreinfo {
+	background-color: #ffffff;
+}
+
+div.displaycleandark li .moreinfo {
+	background-color: #000000;
 }
 
 div.displayclean li .collapsed-moreinfo {
@@ -200,23 +206,43 @@ div.displayclean li .moreinfo .mroute {
 	margin-bottom: 0.6em;
 }
 
-div.displayclean li .moreinfo .mroute .separator {
+div.displaycleanlight li .moreinfo .mroute .separator {
 	color: #999999;
 }
 
-div.displayclean li .moreinfo .mroute .important-stop {
+div.displaycleandark li .moreinfo .mroute .separator {
+	color: #999999;
+}
+
+div.displaycleanlight li .moreinfo .mroute .important-stop {
 	color: #000000;
 }
 
-div.displayclean li .moreinfo .mroute .generic-stop {
+div.displaycleandark li .moreinfo .mroute .important-stop {
+	color: #ffffff;
+}
+
+div.displaycleanlight li .moreinfo .mroute .generic-stop {
 	color: #555555;
 }
 
-div.displayclean li .moreinfo .mroute .additional-stop {
+div.displaycleandark li .moreinfo .mroute .generic-stop {
+	color: #999999;
+}
+
+div.displaycleanlight li .moreinfo .mroute .additional-stop {
 	color: #009900;
 }
 
-div.displayclean li .moreinfo .mroute .cancelled-stop {
+div.displaycleandark li .moreinfo .mroute .additional-stop {
+	color: #009900;
+}
+
+div.displaycleanlight li .moreinfo .mroute .cancelled-stop {
+	color: #cc0000;
+}
+
+div.displaycleandark li .moreinfo .mroute .cancelled-stop {
 	color: #cc0000;
 }
 
