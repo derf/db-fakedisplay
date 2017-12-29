@@ -141,6 +141,14 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
+        %= check_box 'detailed' => 1, id => 'id_detailed'
+        <label for="id_detailed">
+          Detaillierte Übersicht
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
         %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
         <label for="id_show_realtime">
           Erwartete Zeiten statt Fahrplandaten
