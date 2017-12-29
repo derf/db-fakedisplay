@@ -361,7 +361,7 @@ sub handle_request {
 	if ( not $station ) {
 		if ( $self->session('has_data') ) {
 			for my $param (
-				qw(mode hidelowdelay hide_opts show_realtime admode no_related))
+				qw(mode hidelowdelay hide_opts show_realtime admode no_related dark detailed))
 			{
 				$self->param( $param => $self->session($param) );
 			}
