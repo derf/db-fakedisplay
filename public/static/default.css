@@ -53,14 +53,16 @@ div.displayclean li .line .trainno {
 	font-weight: normal;
 }
 
-div.displayclean li .extra_trainno {
-	font-size: 2em;
-	position:absolute;
-	top:5px;
-	left:2px;
-	max-width: 6em;
-	max-height: 3ex;
-	overflow: hidden;
+div.displayclean li .line .trainno_sub {
+	font-weight: normal;
+	font-size: 0.6em;
+	text-align: center;
+}
+
+div.displayclean li .sbahn .trainno_sub {
+	font-weight: normal;
+	font-size: 0.5em;
+	text-align: center;
 }
 
 div.displayclean li .lineinfo {

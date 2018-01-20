@@ -49,15 +49,12 @@
 %   else {
 %=    $departure->{train}
 %   }
-    </div>
-%   if (param('detailed')) {
-%     if ($departure->{train_line} and $departure->{train_no}
-%         and $departure->{train_line} ne $departure->{train_no}) {
-        <div class="extra_trainno">
-%=      $departure->{train_no}
-        </div>
-%     }
+%   if ($departure->{train_line} and $departure->{train_no}
+%       and $departure->{train_line} ne $departure->{train_no}
+%       and param('detailed')) {
+      <div class="trainno_sub"><%= $departure->{train_no} %></div>
 %   }
+    </div>
 %   if (@{$departure->{replaced_by}} or @{$departure->{replacement_for}}) {
       <div class="lineinfo">
 %     if (@{$departure->{replaced_by}}) {
