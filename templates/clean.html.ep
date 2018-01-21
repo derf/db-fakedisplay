@@ -242,7 +242,24 @@
     </span>
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
-%=  $departure->{time}
+%   if (param('detailed')) {
+%     my $arrow = '→';
+%     if (not $departure->{sched_arrival}) {
+%       $arrow = '↦';
+%     }
+%     elsif (not $departure->{sched_departure}) {
+%       $arrow = '⇥';
+%     }
+%     if ($show_realtime) {
+%=      ($departure->{arrival} // q{}) . $arrow . ($departure->{departure} // q{})
+%     }
+%     else {
+%=      ($departure->{sched_arrival} // q{}) . $arrow . ($departure->{sched_departure} // q{})
+%     }
+%   }
+%   else {
+%=    $departure->{time}
+%   }
     </span>
     </li>
 
