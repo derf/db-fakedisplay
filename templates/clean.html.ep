@@ -242,14 +242,8 @@
     </span>
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
-%   if ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) {
-      <span class="delayed">
-%   }
 %=  $departure->{time}
     </span>
-%   if ($show_realtime and $departure->{delay} and not $departure->{is_cancelled}) {
-      </span>
-%   }
     </li>
 
 % }
