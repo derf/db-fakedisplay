@@ -956,6 +956,15 @@ get '/_auto' => sub {
 	);
 };
 
+get '/_datenschutz' => sub {
+	my $self = shift;
+
+	$self->render(
+		'privacy',
+		hide_opts        => 1
+	);
+};
+
 post '/_geolocation' => sub {
 	my $self = shift;
 
@@ -983,6 +992,15 @@ post '/_geolocation' => sub {
 			}
 		);
 	}
+};
+
+get '/_impressum' => sub {
+	my $self = shift;
+
+	$self->render(
+		'imprint',
+		hide_opts        => 1
+	);
 };
 
 app->defaults( layout => 'default' );

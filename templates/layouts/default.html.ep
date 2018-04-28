@@ -230,7 +230,9 @@ v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
 <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
 © DB Station&amp;Service AG,
 Europaplatz 1,
-10557 Berlin, lizensiert unter CC-BY 4.0
+10557 Berlin, lizensiert unter CC-BY 4.0<br/>
+<a href="_datenschutz">Datenschutzerklärung</a><br/>
+<a href="_impressum">Impressum</a><br/>
 </div> <!-- about -->
 </div> <!-- container -->
 % }
