@@ -124,11 +124,12 @@ div.displaycleandark li .fern {
 }
 
 div.displayclean li .route {
+	background-color: transparent;
 	font-size:2.1em;
 	position:absolute;
-	top:5px;
+	top:1px;
 	left:7.7em;
-	height: 1em;
+	height: 1.2em;
 	width: 70%;
 	overflow: hidden;
 }
@@ -143,11 +144,12 @@ div.displaycleandark li .route {
 
 div.displayclean li .info {
 	color:#ff0000;
+	background-color: transparent;
 	font-size:2.1em;
 	position:absolute;
-	top:5px;
+	top:1px;
 	left:7.7em;
-	height: 1.1em;
+	height: 1.2em;
 	width: 70%;
 	overflow: hidden;
 }
@@ -249,12 +251,12 @@ div.displaycleandark li .moreinfo .mroute .cancelled-stop {
 }
 
 div.displayclean li .dest {
-	/*font-weight:bold;*/
+	background-color: transparent;
 	font-size:4em;
 	position:absolute;
-	top:0.65em;
+	top:0.62em;
 	left:4em;
-	bottom:-0.1em;
+	bottom:0px;
 	width: 70%;
 	overflow: hidden;
 }
@@ -276,7 +278,7 @@ div.displaycleandark li.cancelled {
 }
 
 div.displayclean li .countdown {
-	background-color: inherit;
+	background-color: transparent;
 	font-size: 3em;
 	position: absolute;
 	right: 5px;
@@ -309,7 +311,7 @@ div.displayclean li .head {
 div.displayclean li .countdown .delay {
 	font-size:1em;
 	color:#FF0000;
-	background-color: inherit;
+	background-color: transparent;
 	padding-right:7px;
 }
 
@@ -340,7 +342,7 @@ div.displayclean li .countdown .changed-platform {
 }
 
 div.displayclean li .time {
-	background-color: inherit;
+	background-color: transparent;
 	font-size:2.3em;
 	position:absolute;
 	right:5px;
@@ -358,7 +360,7 @@ div.displaycleandark li .time {
 
 div.displayclean span.delayed {
 	color: #ff0000;
-	background-color: inherit;
+	background-color: transparent;
 }
 
 div.displaymulti {
