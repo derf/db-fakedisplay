@@ -57,12 +57,14 @@ div.displayclean li .line .trainno_sub {
 	font-weight: normal;
 	font-size: 0.6em;
 	text-align: center;
+	margin-top: -0.2em;
 }
 
 div.displayclean li .sbahn .trainno_sub {
 	font-weight: normal;
 	font-size: 0.5em;
 	text-align: center;
+	margin-top: -0.25em;
 }
 
 div.displayclean li .lineinfo {
