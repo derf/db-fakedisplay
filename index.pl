@@ -237,7 +237,7 @@ helper 'handle_no_results_json' => sub {
 helper 'is_important' => sub {
 	my ( $self, $stop ) = @_;
 
-	if ( $stop =~ m{ Hbf | Centraal | Flughafen }ox ) {
+	if ( $stop =~ m{ HB $ | Hbf | Centraal | Flughafen }x ) {
 		return 1;
 	}
 	return;
