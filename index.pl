@@ -362,7 +362,8 @@ sub handle_request {
 	if ( not $station ) {
 		if ( $self->session('has_data') ) {
 			for my $param (
-				qw(mode hidelowdelay hide_opts show_realtime admode no_related dark detailed))
+				qw(mode hidelowdelay hide_opts show_realtime admode no_related dark detailed)
+			  )
 			{
 				$self->param( $param => $self->session($param) );
 			}
@@ -959,10 +960,7 @@ get '/_auto' => sub {
 get '/_datenschutz' => sub {
 	my $self = shift;
 
-	$self->render(
-		'privacy',
-		hide_opts        => 1
-	);
+	$self->render( 'privacy', hide_opts => 1 );
 };
 
 post '/_geolocation' => sub {
@@ -997,10 +995,7 @@ post '/_geolocation' => sub {
 get '/_impressum' => sub {
 	my $self = shift;
 
-	$self->render(
-		'imprint',
-		hide_opts        => 1
-	);
+	$self->render( 'imprint', hide_opts => 1 );
 };
 
 app->defaults( layout => 'default' );
