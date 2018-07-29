@@ -231,8 +231,8 @@ v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
 © DB Station&amp;Service AG,
 Europaplatz 1,
 10557 Berlin, lizensiert unter CC-BY 4.0<br/>
-<a href="_datenschutz">Datenschutzerklärung</a><br/>
-<a href="_impressum">Impressum</a><br/>
+<a href="_datenschutz" rel="nofollow">Datenschutzerklärung</a><br/>
+<a href="_impressum" rel="nofollow">Impressum</a><br/>
 </div> <!-- about -->
 </div> <!-- container -->
 % }
