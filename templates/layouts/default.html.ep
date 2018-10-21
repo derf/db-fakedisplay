@@ -18,20 +18,18 @@
 	%if (stash('load_marquee')) {
 	%= javascript '/static/jquery-1.10.2.min.js'
 	%= javascript '/static/jquery-ui.min.js'
-	%= javascript '/static/autocomplete.js'
-	%= javascript '/static/collapse.js'
-	%= javascript '/static/marquee.js'
+	%= javascript '/static/dbf.min.js'
+	%= javascript '/static/marquee.min.js'
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
 	% } else {
 	%= javascript '/static/jquery-1.10.2.min.js', defer => undef
 	%= javascript '/static/jquery-ui.min.js', defer => undef
-	%= javascript '/static/autocomplete.js', defer => undef
-	%= javascript '/static/collapse.js', defer => undef
+	%= javascript '/static/dbf.min.js', defer => undef
 	% }
 	% if (stash('with_geolocation')) {
-	%= javascript '/static/geolocation.js', defer => undef
+	%= javascript '/static/geolocation.min.js', defer => undef
 	% }
 </head>
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>
