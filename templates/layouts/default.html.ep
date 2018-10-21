@@ -15,6 +15,7 @@
 % if ($force_mobile == 1 or ($self->browser->mobile and $force_mobile != 0)) {
 	%= stylesheet '/static/mobile.css'
 % }
+	%if (stash('load_marquee')) {
 	%= javascript '/static/jquery-1.10.2.min.js'
 	%= javascript '/static/jquery-ui.min.js'
 	%= javascript '/static/autocomplete.js'
@@ -23,8 +24,14 @@
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
+	% } else {
+	%= javascript '/static/jquery-1.10.2.min.js', defer => undef
+	%= javascript '/static/jquery-ui.min.js', defer => undef
+	%= javascript '/static/autocomplete.js', defer => undef
+	%= javascript '/static/collapse.js', defer => undef
+	% }
 	% if (stash('with_geolocation')) {
-	%= javascript '/static/geolocation.js'
+	%= javascript '/static/geolocation.js', defer => undef
 	% }
 </head>
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>

@@ -919,6 +919,7 @@ sub handle_request {
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
+			load_marquee     => ($template eq 'single' or $template eq 'multi'),
 		);
 	}
 	return;
