@@ -7,5 +7,8 @@ Dependencies
 ------------
 
  * perl >= 5.10
+ * Cache::File (part of the Cache module)
  * Mojolicious
- * Travel::Status::DE::DeutscheBahn >= 0.04
+ * Mojolicious::Plugin::BrowserDetect
+ * Travel::Status::DE::DeutscheBahn >= 2.03
+ * Travel::Status::DE::IRIS >= 1.21
