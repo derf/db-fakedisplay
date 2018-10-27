@@ -217,7 +217,11 @@ nur Züge via Bochum oder Hamm)</li>
 <li>Die Parameter <span style="font-family: monospace;">mode=marudor&amp;version=3</span>
 	liefern ein JSON-Interface. Die route-Elemente können zusätzlich
 	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
-	selbsterklärend sein. Bitte keine Batch-Requests.</li>
+	selbsterklärend sein.</li>
+<li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
+	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
+	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
+	betreiben.</li>
 </ul>
 </div> <!-- notes -->
 
