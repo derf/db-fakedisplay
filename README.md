@@ -1,7 +1,7 @@
 db-fakedisplay - Infoscreen for DB departures
 ---------------------------------------------
 
-* <http://finalrewind.org/projects/db-fakedisplay/>
+* <https://finalrewind.org/projects/db-fakedisplay/>
 
 Dependencies
 ------------
@@ -34,6 +34,10 @@ reverse proxy requests for db-fakedisplay to the appropriate port.
 You can then run the app using a Mojo::Server of your choice, e.g.  **perl
 index.pl daemon -m production** (quick&dirty, does not respect all variables)
 or **hypnotad** (recommended).
+
+All code in this repository may be used under the terms of the BSD-2-Clause
+(db-fakedisplay, see COPYING) and MIT (jquery, jqueryui, and marquee libraries;
+see the respective files) licenses.  Attribution is appreciated.
 
 System requirements
 -------------------

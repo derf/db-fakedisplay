@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+# Copyright (C) 2011-2018 Daniel Friesel <derf+dbf@finalrewind.org>
+# License: 2-Clause BSD
 use Mojolicious::Lite;
 use Cache::File;
 use File::Slurp qw(read_file write_file);

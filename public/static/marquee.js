@@ -1,6 +1,7 @@
 /**
 * author Remy Sharp
-* url http://remysharp.com/tag/marquee
+* url https://remysharp.com/2008/09/10/the-silky-smooth-marquee
+* license MIT
 */
 
 (function ($) {
