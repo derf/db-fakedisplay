@@ -83,7 +83,7 @@ Bitte eine Station aus der Liste auswählen</div>
         Frontend
       </div>
       <div>
-        %= select_field mode => [ ['App / Infoscreen' => 'clean'], ['Bahnhofstafel' => 'multi'], ['Gleis' => 'single'] ]
+        %= select_field mode => [ ['App' => 'app'], ['Infoscreen' => 'infoscreen'], ['Bahnhofstafel' => 'multi'], ['Gleisanzeiger' => 'single'] ]
       </div>
     </div>
     <div class="field">
@@ -191,7 +191,7 @@ Bitte eine Station aus der Liste auswählen</div>
 <li><a href="/Essen%20Hbf?mode=multi">Essen HBf</a> (IRIS, Bahnhofstafel)</li>
 <li><a href="/Dortmund%20Hbf/Bochum%7CHamm?mode=multi">Dortmund HBf</a> (IRIS, Bahnhofstafel,
 nur Züge via Bochum oder Hamm)</li>
-<li><a href="/Dortmund%20Universität?mode=clean">Dortmund Universit&auml;t</a> (IRIS, Mobile/Infoscreen)</li>
+<li><a href="/Dortmund%20Universität?mode=infoscreen">Dortmund Universit&auml;t</a> (IRIS, Infoscreen)</li>
 <li><a href="/KD?mode=single">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
 </ul>
 </div>

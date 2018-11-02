@@ -19,7 +19,7 @@ our $VERSION = qx{git describe --dirty} || '0.05';
 
 my %default = (
 	backend => 'iris',
-	mode    => 'clean',
+	mode    => 'app',
 	admode  => 'deparr',
 );
 
@@ -37,7 +37,7 @@ sub get_results_for {
 	my $data;
 
 	my $cache_hafas = Cache::File->new(
-		cache_root => $ENV{DBFAKEDISPLAY_HAFAS_CACHE} // '/tmp/dbf-hafas',
+		cache_root      => $ENV{DBFAKEDISPLAY_HAFAS_CACHE} // '/tmp/dbf-hafas',
 		default_expires => '180 seconds',
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
@@ -167,7 +167,7 @@ helper 'handle_no_results' => sub {
 	}
 	$self->render(
 		'landingpage',
-		error => ( $errstr // "Got no results for '$station'" ),
+		error     => ( $errstr // "Got no results for '$station'" ),
 		hide_opts => 0
 	);
 	return;
@@ -314,20 +314,20 @@ sub handle_request {
 	my $via     = $self->param('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
-	my @lines     = split( /,/, $self->param('lines')     // q{} );
-	my $template       = $self->param('mode')          // 'clean';
-	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
-	my $hide_opts      = $self->param('hide_opts')     // 0;
+	my @lines     = split( /,/, $self->param('lines') // q{} );
+	my $template  = $self->param('mode') // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts') // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $show_details   = $self->param('detailed')      // 0;
-	my $backend        = $self->param('backend')       // 'iris';
-	my $admode         = $self->param('admode')        // 'deparr';
-	my $dark_layout    = $self->param('dark')          // 0;
-	my $apiver         = $self->param('version')       // 0;
+	my $show_details   = $self->param('detailed') // 0;
+	my $backend        = $self->param('backend') // 'iris';
+	my $admode         = $self->param('admode') // 'deparr';
+	my $dark_layout    = $self->param('dark') // 0;
+	my $apiver         = $self->param('version') // 0;
 	my $callback       = $self->param('callback');
 	my $with_related   = !$self->param('no_related');
 	my $save_defaults  = $self->param('save_defaults') // 0;
-	my @train_types = split( /,/, $self->param('train_types') // q{} );
+	my @train_types    = split( /,/, $self->param('train_types') // q{} );
 	my %opt;
 
 	my $api_version
@@ -357,8 +357,11 @@ sub handle_request {
 		$self->stash( layout => 'text' );
 	}
 
-	if ( not( $template ~~ [qw[clean json marudor multi single text]] ) ) {
-		$template = 'clean';
+	if (
+		not( $template ~~ [qw[app infoscreen json marudor multi single text]] )
+	  )
+	{
+		$template = 'app';
 	}
 
 	if ( not $station ) {
@@ -494,7 +497,7 @@ sub handle_request {
 				$info = "Zug endet hier: ${delaymsg}";
 			}
 			elsif ( $result->delay and $result->delay > 0 ) {
-				if ( $template eq 'clean' ) {
+				if ( $template eq 'app' or $template eq 'infoscreen' ) {
 					$info = $delaymsg;
 				}
 				else {
@@ -502,7 +505,10 @@ sub handle_request {
 						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
 				}
 			}
-			if ( $result->replacement_for and $template ne 'clean' ) {
+			if (    $result->replacement_for
+				and $template ne 'app'
+				and $template ne 'infoscreen' )
+			{
 				for my $rep ( $result->replacement_for ) {
 					$info = sprintf(
 						'Ersatzzug für %s %s %s%s',
@@ -921,7 +927,10 @@ sub handle_request {
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
-			load_marquee     => ($template eq 'single' or $template eq 'multi'),
+			load_marquee     => (
+				     $template eq 'single'
+				  or $template eq 'multi'
+			),
 		);
 	}
 	return;
@@ -985,7 +994,7 @@ post '/_geolocation' => sub {
 				lat      => $_->[0][4],
 				distance => $_->[1],
 			}
-		  } Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
+		} Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
 			$lat, 10 );
 		$self->render(
 			json => {
