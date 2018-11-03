@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$('div.displayclean > ul > li').each(function() {
+	$('div.app > ul > li, div.infoscreen > ul > li').each(function() {
 		$(this).click(function() {
 			$(this).children('.moreinfo').each(function() {
 				if ($(this).hasClass('expanded-moreinfo')) {

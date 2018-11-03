@@ -7,13 +7,13 @@ a {
 	text-decoration: none;
 }
 
-div.displayclean {
+div.app {
 	border-width:1px 2px;
 	width:100%;
 	margin-bottom: 5em;
 }
 
-div.displayclean > ul {
+div.app > ul {
 	position:relative;
 	width:100%;
 
@@ -22,24 +22,24 @@ div.displayclean > ul {
 	padding:0;
 }
 
-div.displayclean > ul > li {
+div.app > ul > li {
 	min-height:7em;
 	display:block;
 	width:100%;
 	position:relative;
 }
 
-div.displaycleandark > ul > li {
+div.appdark > ul > li {
 	border-bottom: 1px solid #999999;
 	background-color: #000000;
 }
 
-div.displaycleanlight > ul > li {
+div.applight > ul > li {
 	border-bottom: 1px solid #999999;
 	background-color: #ffffff;
 }
 
-div.displayclean li .line {
+div.app li .line {
 	font-size: 2.7em;
 	position:absolute;
 	bottom:5px;
@@ -49,25 +49,25 @@ div.displayclean li .line {
 	overflow: hidden;
 }
 
-div.displayclean li .line .trainno {
+div.app li .line .trainno {
 	font-weight: normal;
 }
 
-div.displayclean li .line .trainno_sub {
+div.app li .line .trainno_sub {
 	font-weight: normal;
 	font-size: 0.6em;
 	text-align: center;
 	margin-top: -0.2em;
 }
 
-div.displayclean li .sbahn .trainno_sub {
+div.app li .sbahn .trainno_sub {
 	font-weight: normal;
 	font-size: 0.5em;
 	text-align: center;
 	margin-top: -0.25em;
 }
 
-div.displayclean li .lineinfo {
+div.app li .lineinfo {
 	color:#000000;
 	font-size: 2em;
 	position:absolute;
@@ -75,57 +75,57 @@ div.displayclean li .lineinfo {
 	left:2px;
 }
 
-div.displayclean .replacement {
+div.app .replacement {
 	color: #006600;
 }
 
-div.displayclean .replaced {
+div.app .replaced {
 	color: #660000;
 }
 
-div.displayclean li .sbahn {
+div.app li .sbahn {
 	font-weight:bold;
 	border-radius: 30px;
 	padding:3px 6px 2px 6px;
 }
 
-div.displaycleanlight li .sbahn {
+div.applight li .sbahn {
 	background-color:#95d79f;
 }
 
-div.displaycleandark li .sbahn {
+div.appdark li .sbahn {
 	background-color:#115511;
 }
 
-div.displayclean li .bahn {
+div.app li .bahn {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
 }
 
-div.displaycleanlight li .bahn {
+div.applight li .bahn {
 	background-color: #eeeeee;
 }
 
-div.displaycleandark li .bahn {
+div.appdark li .bahn {
 	background-color: #333333;
 }
 
-div.displayclean li .fern {
+div.app li .fern {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
 }
 
-div.displaycleanlight li .fern {
+div.applight li .fern {
 	background-color: #ffdddd;
 }
 
-div.displaycleandark li .fern {
+div.appdark li .fern {
 	background-color: #551111;
 }
 
-div.displayclean li .route {
+div.app li .route {
 	background-color: transparent;
 	font-size:2.1em;
 	position:absolute;
@@ -136,15 +136,15 @@ div.displayclean li .route {
 	overflow: hidden;
 }
 
-div.displaycleanlight li .route {
+div.applight li .route {
 	color:#444444;
 }
 
-div.displaycleandark li .route {
+div.appdark li .route {
 	color:#bbbbbb;
 }
 
-div.displayclean li .info {
+div.app li .info {
 	color:#ff0000;
 	background-color: transparent;
 	font-size:2.1em;
@@ -156,7 +156,7 @@ div.displayclean li .info {
 	overflow: hidden;
 }
 
-div.displayclean li .moreinfo {
+div.app li .moreinfo {
 	font-size:2.1em;
 	position:fixed;
 	top:0em;
@@ -167,23 +167,23 @@ div.displayclean li .moreinfo {
 	overflow: auto;
 }
 
-div.displaycleanlight li .moreinfo {
+div.applight li .moreinfo {
 	background-color: #ffffff;
 }
 
-div.displaycleandark li .moreinfo {
+div.appdark li .moreinfo {
 	background-color: #000000;
 }
 
-div.displayclean li .collapsed-moreinfo {
+div.app li .collapsed-moreinfo {
 	display: none;
 }
 
-div.displayclean li .expanded-moreinfo {
+div.app li .expanded-moreinfo {
 	display: block;
 }
 
-div.displayclean li .moreinfo .mheader {
+div.app li .moreinfo .mheader {
 	text-align: center;
 	font-size: 120%;
 	padding-top: 0.5em;
@@ -193,66 +193,66 @@ div.displayclean li .moreinfo .mheader {
 	border-bottom: 0.1em dashed #cccccc;
 }
 
-div.displayclean li .moreinfo .mfooter {
+div.app li .moreinfo .mfooter {
 	padding-top: 1em;
 	padding-left: 1em;
 	padding-right: 1em;
 }
 
-div.displayclean li .moreinfo .reason,
-div.displayclean li .moreinfo .minfo {
+div.app li .moreinfo .reason,
+div.app li .moreinfo .minfo {
 	color: #ff0000;
 }
 
-div.displayclean li .moreinfo .timeinfo {
+div.app li .moreinfo .timeinfo {
 	margin-bottom: 0.6em;
 }
 
-div.displayclean li .moreinfo .mroute {
+div.app li .moreinfo .mroute {
 	margin-bottom: 0.6em;
 }
 
-div.displaycleanlight li .moreinfo .mroute .separator {
+div.applight li .moreinfo .mroute .separator {
 	color: #999999;
 }
 
-div.displaycleandark li .moreinfo .mroute .separator {
+div.appdark li .moreinfo .mroute .separator {
 	color: #999999;
 }
 
-div.displaycleanlight li .moreinfo .mroute .important-stop {
+div.applight li .moreinfo .mroute .important-stop {
 	color: #000000;
 }
 
-div.displaycleandark li .moreinfo .mroute .important-stop {
+div.appdark li .moreinfo .mroute .important-stop {
 	color: #ffffff;
 }
 
-div.displaycleanlight li .moreinfo .mroute .generic-stop {
+div.applight li .moreinfo .mroute .generic-stop {
 	color: #555555;
 }
 
-div.displaycleandark li .moreinfo .mroute .generic-stop {
+div.appdark li .moreinfo .mroute .generic-stop {
 	color: #999999;
 }
 
-div.displaycleanlight li .moreinfo .mroute .additional-stop {
+div.applight li .moreinfo .mroute .additional-stop {
 	color: #009900;
 }
 
-div.displaycleandark li .moreinfo .mroute .additional-stop {
+div.appdark li .moreinfo .mroute .additional-stop {
 	color: #009900;
 }
 
-div.displaycleanlight li .moreinfo .mroute .cancelled-stop {
+div.applight li .moreinfo .mroute .cancelled-stop {
 	color: #cc0000;
 }
 
-div.displaycleandark li .moreinfo .mroute .cancelled-stop {
+div.appdark li .moreinfo .mroute .cancelled-stop {
 	color: #cc0000;
 }
 
-div.displayclean li .dest {
+div.app li .dest {
 	background-color: transparent;
 	font-size:4em;
 	position:absolute;
@@ -263,23 +263,23 @@ div.displayclean li .dest {
 	overflow: hidden;
 }
 
-div.displaycleanlight li .dest {
+div.applight li .dest {
 	color:#000000;
 }
 
-div.displaycleandark li .dest {
+div.appdark li .dest {
 	color:#ffffff;
 }
 
-div.displaycleanlight li.cancelled {
+div.applight li.cancelled {
 	background-color: #ffe7d0;
 }
 
-div.displaycleandark li.cancelled {
+div.appdark li.cancelled {
 	background-color: #512f00;
 }
 
-div.displayclean li .countdown {
+div.app li .countdown {
 	background-color: transparent;
 	font-size: 3em;
 	position: absolute;
@@ -288,15 +288,15 @@ div.displayclean li .countdown {
 	padding-left: 0.2em;
 }
 
-div.displaycleanlight li .countdown {
+div.applight li .countdown {
 	color: #000000;
 }
 
-div.displaycleandark li .countdown {
+div.appdark li .countdown {
 	color: #ffffff;
 }
 
-div.displayclean li .header {
+div.app li .header {
 	color:#000000;
 	font-size:2em;
 	font-weight:bold;
@@ -306,44 +306,44 @@ div.displayclean li .header {
 	text-align:center;
 }
 
-div.displayclean li .head {
+div.app li .head {
 	border-bottom-width:0;
 }
 
-div.displayclean li .countdown .delay {
+div.app li .countdown .delay {
 	font-size:1em;
 	color:#FF0000;
 	background-color: transparent;
 	padding-right:7px;
 }
 
-div.displayclean li .countdown .undelay {
+div.app li .countdown .undelay {
 	font-size:1em;
 	color:#006600;
 	padding-right:7px;
 }
 
-div.displayclean li .countdown .delaynorm {
+div.app li .countdown .delaynorm {
 	font-size:0.9em;
 	color:#BB3333;
 	padding-right:7px;
 }
 
-div.displayclean li .countdown .undelaynorm {
+div.app li .countdown .undelaynorm {
 	font-size:0.9em;
 	color:#338833;
 	padding-right:7px;
 }
 
-div.displayclean li .countdown .platform {
+div.app li .countdown .platform {
 	font-weight: bold;
 }
 
-div.displayclean li .countdown .changed-platform {
+div.app li .countdown .changed-platform {
 	color:#ff0000;
 }
 
-div.displayclean li .time {
+div.app li .time {
 	background-color: transparent;
 	font-size:2.3em;
 	position:absolute;
@@ -352,18 +352,380 @@ div.displayclean li .time {
 	padding-left: 0.2em;
 }
 
-div.displaycleanlight li .time {
+div.applight li .time {
 	color:#000000;
 }
 
-div.displaycleandark li .time {
+div.appdark li .time {
 	color:#ffffff;
 }
 
-div.displayclean span.delayed {
+div.app span.delayed {
 	color: #ff0000;
 	background-color: transparent;
 }
+
+/* ... */
+
+div.infoscreen {
+	border-width:1px 2px;
+	width:100%;
+	margin-bottom: 5em;
+}
+
+div.infoscreen > ul {
+	position:relative;
+	width:100%;
+
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+div.infoscreen > ul > li {
+	min-height:7em;
+	display:block;
+	width:100%;
+	position:relative;
+}
+
+div.infoscreendark > ul > li {
+	border-bottom: 1px solid #999999;
+	background-color: #000000;
+}
+
+div.infoscreenlight > ul > li {
+	border-bottom: 1px solid #999999;
+	background-color: #ffffff;
+}
+
+div.infoscreen li .line {
+	font-size: 2.7em;
+	position:absolute;
+	bottom:5px;
+	left:2px;
+	max-width: 6em;
+	max-height: 3ex;
+	overflow: hidden;
+}
+
+div.infoscreen li .line .trainno {
+	font-weight: normal;
+}
+
+div.infoscreen li .line .trainno_sub {
+	font-weight: normal;
+	font-size: 0.6em;
+	text-align: center;
+	margin-top: -0.2em;
+}
+
+div.infoscreen li .sbahn .trainno_sub {
+	font-weight: normal;
+	font-size: 0.5em;
+	text-align: center;
+	margin-top: -0.25em;
+}
+
+div.infoscreen li .lineinfo {
+	color:#000000;
+	font-size: 2em;
+	position:absolute;
+	top:0px;
+	left:2px;
+}
+
+div.infoscreen .replacement {
+	color: #006600;
+}
+
+div.infoscreen .replaced {
+	color: #660000;
+}
+
+div.infoscreen li .sbahn {
+	font-weight:bold;
+	border-radius: 30px;
+	padding:3px 6px 2px 6px;
+}
+
+div.infoscreenlight li .sbahn {
+	background-color:#95d79f;
+}
+
+div.infoscreendark li .sbahn {
+	background-color:#115511;
+}
+
+div.infoscreen li .bahn {
+	font-weight:bold;
+	border-radius: 5px;
+	padding:3px 5px 2px 5px;
+}
+
+div.infoscreenlight li .bahn {
+	background-color: #eeeeee;
+}
+
+div.infoscreendark li .bahn {
+	background-color: #333333;
+}
+
+div.infoscreen li .fern {
+	font-weight:bold;
+	border-radius: 5px;
+	padding:3px 5px 2px 5px;
+}
+
+div.infoscreenlight li .fern {
+	background-color: #ffdddd;
+}
+
+div.infoscreendark li .fern {
+	background-color: #551111;
+}
+
+div.infoscreen li .route {
+	background-color: transparent;
+	font-size:2.1em;
+	position:absolute;
+	top:1px;
+	left:7.7em;
+	height: 1.2em;
+	width: 70%;
+	overflow: hidden;
+}
+
+div.infoscreenlight li .route {
+	color:#444444;
+}
+
+div.infoscreendark li .route {
+	color:#bbbbbb;
+}
+
+div.infoscreen li .info {
+	color:#ff0000;
+	background-color: transparent;
+	font-size:2.1em;
+	position:absolute;
+	top:1px;
+	left:7.7em;
+	height: 1.2em;
+	width: 70%;
+	overflow: hidden;
+}
+
+div.infoscreen li .moreinfo {
+	font-size:2.1em;
+	position:fixed;
+	top:0em;
+	left:0em;
+	right:0em;
+	bottom:0em;
+	z-index: 5;
+	overflow: auto;
+}
+
+div.infoscreenlight li .moreinfo {
+	background-color: #ffffff;
+}
+
+div.infoscreendark li .moreinfo {
+	background-color: #000000;
+}
+
+div.infoscreen li .collapsed-moreinfo {
+	display: none;
+}
+
+div.infoscreen li .expanded-moreinfo {
+	display: block;
+}
+
+div.infoscreen li .moreinfo .mheader {
+	text-align: center;
+	font-size: 120%;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	padding-left: 1em;
+	padding-right: 1em;
+	border-bottom: 0.1em dashed #cccccc;
+}
+
+div.infoscreen li .moreinfo .mfooter {
+	padding-top: 1em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+div.infoscreen li .moreinfo .reason,
+div.infoscreen li .moreinfo .minfo {
+	color: #ff0000;
+}
+
+div.infoscreen li .moreinfo .timeinfo {
+	margin-bottom: 0.6em;
+}
+
+div.infoscreen li .moreinfo .mroute {
+	margin-bottom: 0.6em;
+}
+
+div.infoscreenlight li .moreinfo .mroute .separator {
+	color: #999999;
+}
+
+div.infoscreendark li .moreinfo .mroute .separator {
+	color: #999999;
+}
+
+div.infoscreenlight li .moreinfo .mroute .important-stop {
+	color: #000000;
+}
+
+div.infoscreendark li .moreinfo .mroute .important-stop {
+	color: #ffffff;
+}
+
+div.infoscreenlight li .moreinfo .mroute .generic-stop {
+	color: #555555;
+}
+
+div.infoscreendark li .moreinfo .mroute .generic-stop {
+	color: #999999;
+}
+
+div.infoscreenlight li .moreinfo .mroute .additional-stop {
+	color: #009900;
+}
+
+div.infoscreendark li .moreinfo .mroute .additional-stop {
+	color: #009900;
+}
+
+div.infoscreenlight li .moreinfo .mroute .cancelled-stop {
+	color: #cc0000;
+}
+
+div.infoscreendark li .moreinfo .mroute .cancelled-stop {
+	color: #cc0000;
+}
+
+div.infoscreen li .dest {
+	background-color: transparent;
+	font-size:4em;
+	position:absolute;
+	top:0.62em;
+	left:4em;
+	bottom:0px;
+	width: 70%;
+	overflow: hidden;
+}
+
+div.infoscreenlight li .dest {
+	color:#000000;
+}
+
+div.infoscreendark li .dest {
+	color:#ffffff;
+}
+
+div.infoscreenlight li.cancelled {
+	background-color: #ffe7d0;
+}
+
+div.infoscreendark li.cancelled {
+	background-color: #512f00;
+}
+
+div.infoscreen li .countdown {
+	background-color: transparent;
+	font-size: 3em;
+	position: absolute;
+	right: 5px;
+	bottom: 2px;
+	padding-left: 0.2em;
+}
+
+div.infoscreenlight li .countdown {
+	color: #000000;
+}
+
+div.infoscreendark li .countdown {
+	color: #ffffff;
+}
+
+div.infoscreen li .header {
+	color:#000000;
+	font-size:2em;
+	font-weight:bold;
+	padding-top:8px;
+	border-width-top:0;
+	display:block;
+	text-align:center;
+}
+
+div.infoscreen li .head {
+	border-bottom-width:0;
+}
+
+div.infoscreen li .countdown .delay {
+	font-size:1em;
+	color:#FF0000;
+	background-color: transparent;
+	padding-right:7px;
+}
+
+div.infoscreen li .countdown .undelay {
+	font-size:1em;
+	color:#006600;
+	padding-right:7px;
+}
+
+div.infoscreen li .countdown .delaynorm {
+	font-size:0.9em;
+	color:#BB3333;
+	padding-right:7px;
+}
+
+div.infoscreen li .countdown .undelaynorm {
+	font-size:0.9em;
+	color:#338833;
+	padding-right:7px;
+}
+
+div.infoscreen li .countdown .platform {
+	font-weight: bold;
+}
+
+div.infoscreen li .countdown .changed-platform {
+	color:#ff0000;
+}
+
+div.infoscreen li .time {
+	background-color: transparent;
+	font-size:2.3em;
+	position:absolute;
+	right:5px;
+	top:4px;
+	padding-left: 0.2em;
+}
+
+div.infoscreenlight li .time {
+	color:#000000;
+}
+
+div.infoscreendark li .time {
+	color:#ffffff;
+}
+
+div.infoscreen span.delayed {
+	color: #ff0000;
+	background-color: transparent;
+}
+
+/* ... */
 
 div.displaymulti {
 	border: 0.2em solid #000066;

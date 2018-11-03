@@ -1,10 +1,10 @@
 % if (@{$departures}) {
 
 % if (param('dark')) {
-<div class="displayclean displaycleandark">
+<div class="infoscreen infoscreendark">
 % }
 % else {
-<div class="displayclean displaycleanlight">
+<div class="infoscreen infoscreenlight">
 % }
 <ul>
 % my $i = 0;
@@ -266,7 +266,7 @@
 % }
 
   </ul>
-  </div> <!-- displayclean -->
+  </div> <!-- infoscreen -->
 
 % }
 % else {
