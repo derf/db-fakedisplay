@@ -10,6 +10,7 @@ Dependencies
  * Cache::File (part of the Cache module)
  * Mojolicious
  * Mojolicious::Plugin::BrowserDetect
+ * Travel::Status::DE::DBWagenreihung >= 0.00
  * Travel::Status::DE::DeutscheBahn >= 2.03
  * Travel::Status::DE::IRIS >= 1.21
 

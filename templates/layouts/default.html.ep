@@ -232,6 +232,8 @@ nur Züge via Bochum oder Hamm)</li>
 <a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 v<%= stash('version') // '???' %><br/>
 Backends:<br/>
+<!--<a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">-->Travel::Status::DE::DBWagenreihung<!--</a>-->
+v<%= $Travel::Status::DE::DBWagenreihung::VERSION %><br/>
 <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>

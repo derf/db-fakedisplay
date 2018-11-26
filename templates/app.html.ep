@@ -143,6 +143,12 @@
 %       }
 %     }
       </div> <!-- timeinfo -->
+%     if ($linetype eq 'fern' and $departure->{wr_link}) {
+        <div class="verbose">
+          <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
+        </div>
+%     }
+
 %   }
 %   if ($departure->{route_post_diff} and @{$departure->{route_post_diff}}) {
       <div class="mroute">

@@ -1,0 +1,30 @@
+<div class="container">
+<div style="height: 2em;">
+(experimentell, die URL wird sich noch ändern und die Anzeige wird noch schöner)
+</div>
+
+<div style="position: relative; width: 100%; height: 2em;">
+% for my $section ($wr->sections) {
+<div style="position: absolute; left: <%= $section->{start_percent} %>%; right: <%= 100 - $section->{end_percent} %>%; top: 0em; bottom: 0em; text-align: center;">
+%= $section->{name}
+</div>
+% }
+</div>
+<div style="position: relative; width: 100%; height: 2em;">
+% for my $wagon ($wr->wagons) {
+% my $bg = '';
+% if ($wagon->is_first_class) {
+% $bg = 'background-color: #ffff99;';
+% }
+<div style="position: absolute; left: <%= $wagon->{position}{start_percent} %>%; right: <%= 100 - $wagon->{position}{end_percent} %>%; top: 0em; bottom: 0em; border: 1px solid black; text-align: center; <%= $bg %>">
+% if ($wagon->is_locomotive or $wagon->is_powercar) {
+LOK
+% }
+% else {
+%= $wagon->{number} // '?'
+% }
+</div>
+% }
+</div>
+
+</div>

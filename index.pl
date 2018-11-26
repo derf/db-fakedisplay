@@ -6,6 +6,7 @@ use Cache::File;
 use File::Slurp qw(read_file write_file);
 use List::Util qw(max);
 use List::MoreUtils qw();
+use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS;
@@ -824,6 +825,9 @@ sub handle_request {
 						map { $_->type . q{ } . $_->train_no }
 						  $result->replacement_for
 					],
+					wr_link => $result->sched_departure
+					? $result->sched_departure->strftime('%Y%m%d%H%M')
+					: undef,
 				}
 			);
 		}
@@ -1008,6 +1012,23 @@ get '/_impressum' => sub {
 	my $self = shift;
 
 	$self->render( 'imprint', hide_opts => 1 );
+};
+
+get '/_wr/:train/:departure' => sub {
+	my $self      = shift;
+	my $train     = $self->stash('train');
+	my $departure = $self->stash('departure');
+
+	my $wr = Travel::Status::DE::DBWagenreihung->new(
+		departure    => $departure,
+		train_number => $train,
+	);
+
+	$self->render(
+		'wagenreihung',
+		wr        => $wr,
+		hide_opts => 1,
+	);
 };
 
 app->defaults( layout => 'default' );

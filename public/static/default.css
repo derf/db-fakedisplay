@@ -204,6 +204,10 @@ div.app li .moreinfo .minfo {
 	color: #ff0000;
 }
 
+div.app li .moreinfo .verbose {
+	margin-bottom: 0.6em;
+}
+
 div.app li .moreinfo .timeinfo {
 	margin-bottom: 0.6em;
 }
