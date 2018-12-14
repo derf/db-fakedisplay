@@ -17,6 +17,7 @@ use utf8;
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 our $VERSION = qx{git describe --dirty} || '0.05';
+chomp $VERSION;
 
 my %default = (
 	backend => 'iris',
