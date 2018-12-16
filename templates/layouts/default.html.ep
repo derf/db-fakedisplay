@@ -186,23 +186,11 @@ Bitte eine Station aus der Liste auswählen</div>
 </div> <!-- input-field -->
 
 <div class="notes">
-<span class="notes">Beispiele:</span>
-<ul>
-<li><a href="/Essen%20Hbf?mode=multi">Essen HBf</a> (IRIS, Bahnhofstafel)</li>
-<li><a href="/Dortmund%20Hbf/Bochum%7CHamm?mode=multi">Dortmund HBf</a> (IRIS, Bahnhofstafel,
-nur Züge via Bochum oder Hamm)</li>
-<li><a href="/Dortmund%20Universität?mode=infoscreen">Dortmund Universit&auml;t</a> (IRIS, Infoscreen)</li>
-<li><a href="/KD?mode=single">D&uuml;sseldorf HBf</a> (IRIS, Gleistafel)</li>
-</ul>
-</div>
-
-<div class="notes">
 <span class="notes">Siehe auch:</span>
 <ul>
-<li><a href="http://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB RIS</a>
-   (<a href="http://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
-<li><a href="http://data.deutschebahn.com/datasets/betriebsstellen/">Betriebsstellenliste</a></li>
-<li><a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
+<li><a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB Abfahrtsmonitor</a>
+   (<a href="https://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
+<li>Für Nahverkehr: <a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
 </ul>
 </div> <!-- notes -->
 
