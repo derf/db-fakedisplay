@@ -231,7 +231,10 @@ helper 'handle_no_results_json' => sub {
 helper 'is_important' => sub {
 	my ( $self, $stop ) = @_;
 
-	if ( $stop =~ m{ HB $ | Hbf | Centraal | Flughafen }x ) {
+	# Centraal: dutch main station (Hbf in .nl)
+	# HB:  swiss main station (Hbf in .ch)
+	# hl.n.: czech main station (Hbf in .cz)
+	if ( $stop =~ m{ HB $ | hl\.n\. $ | Hbf | Centraal | Flughafen }x ) {
 		return 1;
 	}
 	return;
