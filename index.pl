@@ -188,7 +188,7 @@ helper 'handle_no_results_json' => sub {
 			}
 		);
 	}
-	elsif ( $backend eq 'iris' ) {
+	else {
 		my @candidates = map { { code => $_->[0], name => $_->[1] } }
 		  Travel::Status::DE::IRIS::Stations::get_station($station);
 		if ( @candidates > 1
@@ -212,15 +212,6 @@ helper 'handle_no_results_json' => sub {
 				}
 			);
 		}
-	}
-	else {
-		$json = $self->render_to_string(
-			json => {
-				api_version => $api_version,
-				version     => $VERSION,
-				error       => ( $errstr // 'unknown station code/name' )
-			}
-		);
 	}
 	if ($callback) {
 		$self->render(
@@ -358,8 +349,23 @@ sub handle_request {
 		$self->stash( layout => 'text' );
 	}
 
+	# Historically, there were two JSON APIs: 'json' (undocumented, raw
+	# passthrough of serialized Travel::Status::DE::IRIS::Result /
+	# Travel::Status::DE::DE::HAFAS::Result objects) and 'marudor'
+	# (documented, IRIS only, stable versioned API). The latter was initially
+	# created for marudor.de, but quickly used by other clients as well.
+	#
+	# marudor.de switched to a nodejs IRIS parser in December 2018. As the
+	# 'json' API was not used and the 'marudor' variant is no longer related to
+	# (or used by) marudor.de, it was renamed to 'json'. Many clients won't
+	# notice this for year to come, so we make sure mode=marudor still works as
+	# intended.
+	if ($template eq 'marudor') {
+		$template = 'json';
+	}
+
 	if (
-		not( $template ~~ [qw[app infoscreen json marudor multi single text]] )
+		not( $template ~~ [qw[app infoscreen json multi single text]] )
 	  )
 	{
 		$template = 'app';
@@ -382,7 +388,7 @@ sub handle_request {
 		return;
 	}
 
-	if ( $template eq 'marudor' ) {
+	if ( $template eq 'json' ) {
 		$backend = 'iris';
 		$opt{lookahead} = 120;
 	}
@@ -397,7 +403,7 @@ sub handle_request {
 	my $errstr      = $data->{errstr};
 	my @results     = @{$results_ref};
 
-	if ( not @results and $template ~~ [qw[json marudor]] ) {
+	if ( not @results and $template eq 'json' ) {
 		$self->handle_no_results_json( $backend, $station, $errstr,
 			$api_version, $callback );
 		return;
@@ -530,7 +536,7 @@ sub handle_request {
 				  . $additional_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor' ) {
+				if ( $template ne 'json' ) {
 					push(
 						@{$moreinfo},
 						[ 'Zusätzliche Halte', $additional_line ]
@@ -545,7 +551,7 @@ sub handle_request {
 				  . $cancel_line
 				  . ( $info ? ' +++ ' : q{} )
 				  . $info;
-				if ( $template ne 'marudor' ) {
+				if ( $template ne 'json' ) {
 					push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
 				}
 			}
@@ -602,7 +608,7 @@ sub handle_request {
 			$info =~ s{ (?: ca [.] \s* )? [+] (\d+) }{Verspätung ca $1 Min.}x;
 		}
 
-		if ( $template eq 'marudor' ) {
+		if ( $template eq 'json' ) {
 			my @json_route = $self->json_route_diff( [ $result->route ],
 				[ $result->sched_route ] );
 
@@ -861,29 +867,6 @@ sub handle_request {
 	}
 
 	if ( $template eq 'json' ) {
-		$self->res->headers->access_control_allow_origin(q{*});
-		my $json = $self->render_to_string(
-			json => {
-				api_version  => $api_version,
-				preformatted => \@departures,
-				version      => $VERSION,
-				raw          => \@results,
-			}
-		);
-		if ($callback) {
-			$self->render(
-				data   => "$callback($json);",
-				format => 'json'
-			);
-		}
-		else {
-			$self->render(
-				data   => $json,
-				format => 'json'
-			);
-		}
-	}
-	elsif ( $template eq 'marudor' ) {
 		$self->res->headers->access_control_allow_origin(q{*});
 		my $json = $self->render_to_string(
 			json => {

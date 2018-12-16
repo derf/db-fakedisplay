@@ -14,7 +14,7 @@ my $t = Test::Mojo->new;
 # be because of IRIS problems or unanticipated schedule changes.
 # TODO: Support mock XML from hard disk.
 
-$t->get_ok('/EDUV?mode=marudor&version=1')
+$t->get_ok('/EDUV?mode=json&version=1')
   ->status_is(200)
   ->json_has('/departures', 'has departures')
   ->json_has('/departures/0', 'has a departure')
@@ -38,7 +38,7 @@ $t->get_ok('/EDUV?mode=marudor&version=1')
               '.via[0]')
   ;
 
-$t->get_ok('/EDUV?mode=marudor&version=1&callback=my_callback')
+$t->get_ok('/EDUV?mode=json&version=1&callback=my_callback')
   ->status_is(200)
   ->content_like(qr{ ^ my_callback \( }x, 'json callback works');
 # ) <- just here to fix bracket grouping in vim

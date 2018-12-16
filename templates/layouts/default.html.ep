@@ -214,10 +214,10 @@ nur Züge via Bochum oder Hamm)</li>
 	"App"-Frontend verwenden (und vorerst den Parameter <span style="font-family: monospace;">force_mobile=1</span>
 	hinzufügen, das ist bald aber nicht mehr nötig). Für eine große Ansicht
 	(z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
-<li>Die Parameter <span style="font-family: monospace;">mode=marudor&amp;version=3</span>
-	liefern ein JSON-Interface. Die route-Elemente können zusätzlich
+<li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
+	bieten ein JSON-Interface. Die route-Elemente können zusätzlich
 	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
-	selbsterklärend sein.</li>
+	selbsterklärend sein. Dieses Interface nutzt ausschließlich das IRIS-Backend.</li>
 <li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
 	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
 	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
