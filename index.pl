@@ -459,7 +459,7 @@ sub handle_request {
 	}
 
 	for my $result (@results) {
-		my $platform   = ( split( / /, $result->platform ) )[0];
+		my $platform   = ( split( qr{ }, $result->platform // '' ) )[0];
 		my $line       = $result->line;
 		my $train_type = $result->type;
 		my $delay      = $result->delay;
