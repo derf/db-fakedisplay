@@ -1,7 +1,7 @@
 db-infoscreen - App/Infoscreen for Railway Departures in Germany
 ---
 
-[https://finalrewind.org/projects/db-fakedisplay/](db-infoscreen homepage)
+[db-infoscreen homepage](https://finalrewind.org/projects/db-fakedisplay/)
 
 db-infoscreen (formerly db-fakedisplay) shows departures at german train
 stations, serving both as infoscreen / webapp and station board look-alike.
