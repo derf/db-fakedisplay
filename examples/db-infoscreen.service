@@ -1,0 +1,23 @@
+[Unit]
+Description=dbf.finalrewind.org
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+PIDFile=/tmp/db-fakedisplay.pid
+ExecStart=/usr/bin/hypnotoad -f index.pl
+ExecStop=/usr/bin/hypnotoad -s index.pl
+ExecReload=/usr/bin/hypnotoad index.pl
+User=db-fakedisplay
+WorkingDirectory=/srv/www/db-fakedisplay
+Environment=LANG=en_US.UTF-8
+Environment=DBFAKEDISPLAY_LISTEN=http://127.0.0.1:8092
+Environment=DBFAKEDISPLAY_WORKERS=4
+Environment=DBFAKEDISPLAY_STATS=/tmp/dbf-api-stats
+Environment=DBFAKEDISPLAY_HAFAS_CACHE=/var/cache/dbf/hafas
+Environment=DBFAKEDISPLAY_IRIS_CACHE=/var/cache/dbf/iris
+Environment=DBFAKEDISPLAY_IRISRT_CACHE=/var/cache/dbf/iris-rt
+
+[Install]
+WantedBy=multi-user.target
