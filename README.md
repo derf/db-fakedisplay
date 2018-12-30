@@ -1,10 +1,21 @@
-db-fakedisplay - Infoscreen for DB departures
----------------------------------------------
+db-infoscreen - App/Infoscreen for Railway Departures in Germany
+---
 
-* <https://finalrewind.org/projects/db-fakedisplay/>
+[https://finalrewind.org/projects/db-fakedisplay/](db-infoscreen homepage)
+
+db-infoscreen (formerly db-fakedisplay) shows departures at german train
+stations, serving both as infoscreen / webapp and station board look-alike.
+
+Thanks to the undocumented IRIS backend, it usually has very detailed
+information about delay reasons and service limitations.
+
+There's a public [db-infoscreen service on
+finalrewind.org](https://dbf.finalrewind.org/). You can also host your own
+instance if you like, see the Setup notes below.
+
 
 Dependencies
-------------
+---
 
  * perl >= 5.10
  * Cache::File (part of the Cache module)
@@ -15,9 +26,9 @@ Dependencies
  * Travel::Status::DE::IRIS >= 1.21
 
 Setup
------
+---
 
-db-fakedisplay respects the following environment variables:
+db-infoscreen respects the following environment variables:
 
 | Variable | Default | Description |
 | :------- | :------ | :---------- |
@@ -30,20 +41,20 @@ db-fakedisplay respects the following environment variables:
 
 Set these as needed, create `templates/imprint.html.ep` (imprint) and
 `templates/privacy.html.ep` (privacy policy), and configure your web server to
-reverse proxy requests for db-fakedisplay to the appropriate port.
+pass requests for db-infoscreen to the appropriate port.
 
-You can then run the app using a Mojo::Server of your choice, e.g.  **perl
+You can run the app using a Mojo::Server of your choice, e.g.  **perl
 index.pl daemon -m production** (quick&dirty, does not respect all variables)
 or **hypnotad** (recommended).
 
 All code in this repository may be used under the terms of the BSD-2-Clause
-(db-fakedisplay, see COPYING) and MIT (jquery, jqueryui, and marquee libraries;
+(db-infoscreen, see COPYING) and MIT (jquery, jqueryui, and marquee libraries;
 see the respective files) licenses.  Attribution is appreciated.
 
 System requirements
--------------------
+---
 
 Resource requirements depend on usage. For a few requests per second, about
 50MB (150k inodes) cache and one or two CPU cores should be sufficient.
-db-fakedisplay typically needs 50MB RAM per worker process, though calculating
-with 100MB per worker is recommended to have an appropriate safety margin.
+db-infoscreen typically needs 50MB RAM per worker process, though calculating
+with 100MB per worker is recommended to leave a safety margin.
