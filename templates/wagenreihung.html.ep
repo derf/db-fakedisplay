@@ -34,6 +34,9 @@
       <div style="position: absolute; left: 7em; right: 0em;
       top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %=      $wagon->type
+%       if ($wagon->has_compartments) {
+          Abteilwagen
+%       }
       </div>
 %   }
   </div>
