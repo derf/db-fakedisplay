@@ -1,5 +1,14 @@
 <div class="container">
-  
+  <div style="text-align: center;">
+%=  $wr->train_type
+%=  $wr->train_no
+  </div>
+  <div style="text-align: center;">
+    ??? → ???
+  </div>
+  <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
+  Zugtyp: <%= $wr->train_subtype // 'IC?' %>
+</div>
 </div>
 <div class="container">
   <div style="position: relative; width: 100%; height: 60ex;">
