@@ -3,9 +3,9 @@
 %=  $wr->train_type
 %=  $wr->train_no
   </div>
-  <div style="text-align: center;">
+<!--  <div style="text-align: center;">
     ??? → ???
-  </div>
+  </div> -->
   <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
   Zugtyp: <%= $wr->train_subtype // 'IC?' %>
 </div>
@@ -60,11 +60,23 @@
 %       if ($wagon->has_bistro) {
           🍴
 %       }
-%       if ($wagon->is_interregio) {
-          Interregio
-%       }
 %       if ($wagon->has_compartments) {
           🚪
+%       }
+%       if ($wagon->has_quiet_area) {
+          🤫
+%       }
+%       if ($wagon->has_phone_area) {
+          📱
+%       }
+%       if ($wagon->has_family_area) {
+          👪
+%       }
+%       if ($wagon->has_bahn_comfort) {
+          bahn.comfort
+%       }
+%       if ($wagon->is_interregio) {
+          Interregio
 %       }
         <span style="color: #999999;">
 %=        $wagon->type
