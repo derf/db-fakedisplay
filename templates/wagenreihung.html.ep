@@ -64,7 +64,7 @@
           🚪
 %       }
 %       if ($wagon->has_quiet_area) {
-          🤫
+          🔇
 %       }
 %       if ($wagon->has_phone_area) {
           📱
