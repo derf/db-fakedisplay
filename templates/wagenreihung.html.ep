@@ -39,6 +39,12 @@
       </div>
       <div style="position: absolute; left: 7em; right: 0em;
       top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
+%       if ($wagon->is_first_class) {
+          <span style="display: inline-block; width: 0.8em; text-align: center; color: #ffffff; background-color: #666666; border: 1px solid #666666;">1</span>
+%       }
+%       if ($wagon->is_second_class) {
+          <span style="display: inline-block; width: 0.8em; text-align: center; color: #666666; border: 1px solid #666666;">2</span>
+%       }
 %       if ($wagon->has_accessibility) {
           ♿
 %       }
