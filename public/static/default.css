@@ -97,7 +97,9 @@ div.appdark li .sbahn {
 	background-color:#115511;
 }
 
-div.app li .bahn {
+div.app li .bahn,
+div.app li .fern,
+div.app li .ext {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
@@ -111,18 +113,22 @@ div.appdark li .bahn {
 	background-color: #333333;
 }
 
-div.app li .fern {
-	font-weight:bold;
-	border-radius: 5px;
-	padding:3px 5px 2px 5px;
-}
-
 div.applight li .fern {
 	background-color: #ffdddd;
 }
 
 div.appdark li .fern {
 	background-color: #551111;
+}
+
+div.applight li .ext {
+	background-color: #ffdddd;
+	border: 2px solid #ff6666;
+}
+
+div.appdark li .ext {
+	background-color: #551111;
+	border: 2px solid #993333;
 }
 
 div.app li .route {
@@ -461,7 +467,9 @@ div.infoscreendark li .sbahn {
 	background-color:#115511;
 }
 
-div.infoscreen li .bahn {
+div.infoscreen li .bahn,
+div.infoscreen li .fern,
+div.infoscreen li .ext {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
@@ -475,18 +483,22 @@ div.infoscreendark li .bahn {
 	background-color: #333333;
 }
 
-div.infoscreen li .fern {
-	font-weight:bold;
-	border-radius: 5px;
-	padding:3px 5px 2px 5px;
-}
-
 div.infoscreenlight li .fern {
 	background-color: #ffdddd;
 }
 
 div.infoscreendark li .fern {
 	background-color: #551111;
+}
+
+div.infoscreenlight li .ext {
+	background-color: #ffdddd;
+	border: 2px solid #ff6666;
+}
+
+div.infoscreendark li .ext {
+	background-color: #551111;
+	border: 2px solid #993333;
 }
 
 div.infoscreen li .route {

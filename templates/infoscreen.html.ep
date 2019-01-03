@@ -33,8 +33,13 @@
 %   elsif ( $departure->{train_type} eq 'IC'
 %          or $departure->{train_type} eq 'ICE'
 %          or $departure->{train_type} eq 'EC'
-%          or $departure->{train_type} eq 'THA' ) {
+%          or $departure->{train_type} eq 'EN') {
 %     $linetype = 'fern';
+%   }
+%   elsif ( $departure->{train_type} eq 'THA'
+%          or $departure->{train_type} eq 'FLX'
+%          or $departure->{train_type} eq 'NJ') {
+%     $linetype = 'ext';
 %   }
     <div class="line <%= $linetype %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
