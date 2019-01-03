@@ -1,11 +1,12 @@
 <div class="container">
   <div style="text-align: center;">
-%=  $wr->train_type
-%=  $wr->train_no
+%=  join(' / ', map { $wr->train_type . ' ' . $_ } $wr->train_numbers )
   </div>
-<!--  <div style="text-align: center;">
-    ??? → ???
-  </div> -->
+  <div style="text-align: center;">
+%=  join( ' / ', $wr->origins )
+    →
+%=  join( ' / ', $wr->destinations )
+  </div>
   <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
   Zugtyp: <%= $wr->train_subtype // 'IC?' %>
 </div>
