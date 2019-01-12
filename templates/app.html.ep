@@ -71,7 +71,8 @@
 %     }
       </div>
 %   }
-    <div class="moreinfo collapsed-moreinfo">
+    <div class="moreinfo collapsed-moreinfo"
+      data-train="<%= ($departure->{train_type} // 'none') . ($departure->{train_no} // 0) %>">
     <div class="mheader">
     <div>
 %   if ($departure->{train_no} or $departure->{train_line}) {
@@ -164,18 +165,20 @@
 %         if ($first++) {
             <span class="separator">–</span>
 %         }
+          <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
 %         if ($stop->{isAdditional}) {
-            <span class="additional-stop"><%= $stop->{name} %></span>
+            additional-stop
 %         }
 %         elsif ($stop->{isCancelled}) {
-            <span class="cancelled-stop"><%= $stop->{name} %></span>
+            cancelled-stop
 %         }
 %         elsif ($self->is_important($stop->{name})) {
-            <span class="important-stop"><%= $stop->{name} %></span>
+            important-stop
 %         }
 %         else {
-            <span class="generic-stop"><%= $stop->{name} %></span>
+            generic-stop
 %         }
+          "><%= $stop->{name} %></a>
 %       }
       </div> <!-- mroute -->
 %   }
