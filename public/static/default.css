@@ -936,6 +936,28 @@ div.about a {
 	text-decoration: none;
 }
 
+.notice {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid #bce8f1;
+	border-radius: 4px;
+	color: #31708f;
+	background-color: #d9edf7;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.warning {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid #faebcc;
+	border-radius: 4px;
+	color: #8a6d3b;
+	background-color: #fcf8e3;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .error {
 	padding: 15px;
 	margin-bottom: 20px;
