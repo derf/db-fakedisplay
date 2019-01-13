@@ -22,7 +22,6 @@
     </div>
   </div>
 % }
-<div class=
 <div class="container">
   <div style="position: relative; width: 100%; height: 60ex;">
 %   for my $section ($wr->sections) {
