@@ -14,7 +14,12 @@ $(document).ready(function() {
 				if ($(this).hasClass('expanded-moreinfo')) {
 					$(this).removeClass('expanded-moreinfo');
 					$(this).addClass('collapsed-moreinfo');
+					// Setting an empty hash causes the browser to scroll back
+					// to the top -- we don't want that.
+					var posX = window.pageXOffset;
+					var posY = window.pageYOffset;
 					document.location.hash = '';
+					window.scrollTo(posX, posY);
 				}
 				else {
 					$('.moreinfo').each(function() {
