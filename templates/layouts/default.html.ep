@@ -8,7 +8,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v4'; # asset version
+	% my $av = 'v5'; # asset version
 	%= stylesheet "/static/${av}/default.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // -1;

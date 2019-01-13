@@ -27,6 +27,7 @@ div.app > ul > li {
 	display:block;
 	width:100%;
 	position:relative;
+	cursor: pointer;
 }
 
 div.appdark > ul > li {
@@ -171,6 +172,7 @@ div.app li .moreinfo {
 	bottom:0em;
 	z-index: 5;
 	overflow: auto;
+	cursor: default;
 }
 
 div.applight li .moreinfo {
