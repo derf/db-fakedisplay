@@ -797,6 +797,13 @@ sub handle_request {
 					train_no        => $result->train_no,
 					via             => [ $result->route_interesting(3) ],
 					scheduled_route => [ $result->sched_route ],
+					route_pre      => [ $result->route_pre ],
+					route_pre_diff => [
+						$self->json_route_diff(
+							[ $result->route_pre ],
+							[ $result->sched_route_pre ]
+						)
+					],
 					route_post      => [ $result->route_post ],
 					route_post_diff => [
 						$self->json_route_diff(
