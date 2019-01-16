@@ -157,7 +157,7 @@
 %     }
 
 %   }
-%   if ($departure->{route_post_diff} and @{$departure->{route_post_diff}}) {
+%   if ($departure->{route_pre_diff} and $departure->{route_post_diff}) {
 %     if (@{$departure->{route_pre_diff}}) {
         <div class="mroute">
           Von:
