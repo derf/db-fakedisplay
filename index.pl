@@ -765,7 +765,7 @@ sub handle_request {
 				@departures,
 				[
 					sprintf( '%5s %s%s',
-						$time,
+						$result->is_cancelled ? '--:--' : $time,
 						( $delay and $delay > 0 ) ? q{+} : q{},
 						$delay || q{} ),
 					$result->train,
