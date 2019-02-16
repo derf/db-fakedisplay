@@ -518,6 +518,10 @@ sub handle_request {
 		@results = grep { result_has_train_type( $_, @train_types ) } @results;
 	}
 
+	if ( $limit and $limit =~ m{ ^ \d+ $ }x ) {
+		splice( @results, $limit );
+	}
+
 	for my $result (@results) {
 		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
 		my $delay = $result->delay;
