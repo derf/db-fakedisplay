@@ -409,14 +409,11 @@ sub handle_request {
 	# (or used by) marudor.de, it was renamed to 'json'. Many clients won't
 	# notice this for year to come, so we make sure mode=marudor still works as
 	# intended.
-	if ($template eq 'marudor') {
+	if ( $template eq 'marudor' ) {
 		$template = 'json';
 	}
 
-	if (
-		not( $template ~~ [qw[app infoscreen json multi single text]] )
-	  )
-	{
+	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
 		$template = 'app';
 	}
 
@@ -836,8 +833,8 @@ sub handle_request {
 					train_no        => $result->train_no,
 					via             => [ $result->route_interesting(3) ],
 					scheduled_route => [ $result->sched_route ],
-					route_pre      => [ $result->route_pre ],
-					route_pre_diff => [
+					route_pre       => [ $result->route_pre ],
+					route_pre_diff  => [
 						$self->json_route_diff(
 							[ $result->route_pre ],
 							[ $result->sched_route_pre ]
