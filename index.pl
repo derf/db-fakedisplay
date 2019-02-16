@@ -24,6 +24,51 @@ my %default = (
 	admode  => 'deparr',
 );
 
+sub result_has_line {
+	my ( $result, @lines ) = @_;
+	my $line = $result->line;
+
+	if ( List::MoreUtils::any { $line =~ m{^$_} } @lines ) {
+		return 1;
+	}
+	return 0;
+}
+
+sub result_has_platform {
+	my ( $result, @platforms ) = @_;
+	my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
+
+	if ( List::MoreUtils::any { $_ eq $platform } @platforms ) {
+		return 1;
+	}
+	return 0;
+}
+
+sub result_has_train_type {
+	my ( $result, @train_types ) = @_;
+	my $train_type = $result->type;
+
+	if ( List::MoreUtils::any { $train_type =~ m{^$_} } @train_types ) {
+		return 1;
+	}
+	return 0;
+}
+
+sub result_has_via {
+	my ( $result, $via ) = @_;
+
+	if ( not $result->can('route_post') ) {
+		return 1;
+	}
+
+	my @route = $result->route_post;
+
+	if ( List::MoreUtils::any { m{$via}i } @route ) {
+		return 1;
+	}
+	return 0;
+}
+
 sub log_api_access {
 	my $counter = 1;
 	if ( -r $ENV{DBFAKEDISPLAY_STATS} ) {
@@ -322,6 +367,7 @@ sub handle_request {
 	my $callback       = $self->param('callback');
 	my $with_related   = !$self->param('no_related');
 	my $save_defaults  = $self->param('save_defaults') // 0;
+	my $limit          = $self->param('limit') // 0;
 	my @train_types    = split( /,/, $self->param('train_types') // q{} );
 	my %opt;
 
@@ -458,33 +504,26 @@ sub handle_request {
 		}
 	}
 
+	if (@lines) {
+		@results = grep { result_has_line( $_, @lines ) } @results;
+	}
+
+	if (@platforms) {
+		@results = grep { result_has_platform( $_, @platforms ) } @results;
+	}
+
+	if ($via) {
+		$via =~ s{ , \s* }{|}gx;
+		@results = grep { result_has_via( $_, $via ) } @results;
+	}
+
+	if (@train_types) {
+		@results = grep { result_has_train_type( $_, @train_types ) } @results;
+	}
+
 	for my $result (@results) {
-		my $platform   = ( split( qr{ }, $result->platform // '' ) )[0];
-		my $line       = $result->line;
-		my $train_type = $result->type;
-		my $delay      = $result->delay;
-		if ( $via and $result->can('route_post') ) {
-			$via =~ s{ , \s* }{|}gx;
-			my @route = $result->route_post;
-			if ( not( List::MoreUtils::any { m{$via}i } @route ) ) {
-				next;
-			}
-		}
-		if ( @platforms
-			and not( List::MoreUtils::any { $_ eq $platform } @platforms ) )
-		{
-			next;
-		}
-		if ( @lines and not( List::MoreUtils::any { $line =~ m{^$_} } @lines ) )
-		{
-			next;
-		}
-		if ( @train_types
-			and
-			not( List::MoreUtils::any { $train_type =~ m{^$_} } @train_types ) )
-		{
-			next;
-		}
+		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
+		my $delay = $result->delay;
 		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
 		{
 			next;
