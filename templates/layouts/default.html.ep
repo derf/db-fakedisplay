@@ -4,6 +4,8 @@
 	<title><%= stash('title') // 'db-infoscreen' %></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="Abfahrtsmonitor, Bahnhofstafel, Abfahrten, Abfahrtstafel, ICE, IC, RE, RB, S-Bahn">
+	<meta name="description" content="Inoffizieller Abfahrtsmonitor für Bahnhöfe der DB">
 % if ($self->stash('refresh_interval')) {
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
