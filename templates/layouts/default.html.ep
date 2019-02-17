@@ -214,6 +214,9 @@ Bitte eine Station aus der Liste auswählen</div>
 	bieten ein JSON-Interface. Die route-Elemente können zusätzlich
 	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
 	selbsterklärend sein. Dieses Interface nutzt ausschließlich das IRIS-Backend.</li>
+<li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
+	angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
+	<span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
 <li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
 	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
 	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
