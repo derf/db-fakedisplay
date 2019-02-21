@@ -16,10 +16,10 @@ $(document).ready(function() {
 					$(this).addClass('collapsed-moreinfo');
 					// Setting an empty hash causes the browser to scroll back
 					// to the top -- we don't want that.
-					var posX = window.pageXOffset;
-					var posY = window.pageYOffset;
-					document.location.hash = '';
-					window.scrollTo(posX, posY);
+					//var posX = window.pageXOffset;
+					//var posY = window.pageYOffset;
+					//document.location.hash = '';
+					//window.scrollTo(posX, posY);
 				}
 				else {
 					$('.moreinfo').each(function() {
@@ -30,7 +30,7 @@ $(document).ready(function() {
 					});
 					$(this).removeClass('collapsed-moreinfo');
 					$(this).addClass('expanded-moreinfo');
-					document.location.hash = $(this).data('train');
+					//document.location.hash = $(this).data('train');
 				}
 			});
 		});
