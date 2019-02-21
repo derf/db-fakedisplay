@@ -52,4 +52,21 @@ $(document).ready(function() {
 			}
 		});
 	});
+	$('.developers-header').each(function() {
+		$(this).click(function() {
+			var developers = $('.developers');
+			if ($(this).hasClass('developers-header-collapsed')) {
+				$(this).removeClass('developers-header-collapsed');
+				$(this).addClass('developers-header-expanded');
+				developers.removeClass('developers-collapsed');
+				developers.addClass('developers-expanded');
+			}
+			else {
+				$(this).removeClass('developers-header-expanded');
+				$(this).addClass('developers-header-collapsed');
+				developers.removeClass('developers-expanded');
+				developers.addClass('developers-collapsed');
+			}
+		});
+	});
 });

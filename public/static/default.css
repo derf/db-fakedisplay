@@ -1011,6 +1011,26 @@ span.notes {
 	display: block;
 }
 
+.developers-header {
+	cursor: pointer;
+}
+
+.developers-header-collapsed:before {
+	content: "▹ "
+}
+
+.developers-header-expanded:before {
+	content: "▿ "
+}
+
+.developers-collapsed {
+	display: none;
+}
+
+.developers-expanded {
+	display: block;
+}
+
 div.break {
 	height: 1em;
 }

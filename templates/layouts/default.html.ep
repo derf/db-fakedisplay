@@ -10,7 +10,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v6'; # asset version
+	% my $av = 'v7'; # asset version
 	%= stylesheet "/static/${av}/default.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // -1;
@@ -194,33 +194,36 @@ Bitte eine Station aus der Liste auswählen</div>
 </div> <!-- input-field -->
 
 <div class="notes">
+  <div class="developers-header developers-header-collapsed button button-light">API- und Entwickler-Hinweise</div>
+  <div class="developers developers-collapsed">
+    <ul>
+      <li>Diese Seite kann gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
+	Für eine kleine Ansicht (z.B. iframe in einer normalen Website) bitte das
+	"App"-Frontend verwenden (und vorerst den Parameter <span style="font-family: monospace;">force_mobile=1</span>
+	hinzufügen, das ist bald aber nicht mehr nötig). Für eine große Ansicht
+	(z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
+      <li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
+	bieten ein JSON-IRIS-Interface. Die route-Elemente können zusätzlich
+	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
+	selbsterklärend sein. Bitte nur eine Anfrage pro Station und Minute
+	– eine höhere Auflösung haben die Backenddaten ohnehin nicht.</li>
+      <li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
+	angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
+	<span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
+      <li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
+	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
+	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
+	betreiben.</li>
+    </ul>
+  </div> <!-- developers -->
+</div> <!-- notes -->
+
+<div class="notes">
 <span class="notes">Siehe auch:</span>
 <ul>
 <li><a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB Abfahrtsmonitor</a>
    (<a href="https://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
 <li>Für Nahverkehr: <a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
-</ul>
-</div> <!-- notes -->
-
-<div class="notes">
-<span class="notes">Developers Developers Developers Developers:</span>
-<ul>
-<li>Diese Seite kann gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
-	Für eine kleine Ansicht (z.B. iframe in einer normalen Website) bitte das
-	"App"-Frontend verwenden (und vorerst den Parameter <span style="font-family: monospace;">force_mobile=1</span>
-	hinzufügen, das ist bald aber nicht mehr nötig). Für eine große Ansicht
-	(z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
-<li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
-	bieten ein JSON-Interface. Die route-Elemente können zusätzlich
-	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
-	selbsterklärend sein. Dieses Interface nutzt ausschließlich das IRIS-Backend.</li>
-<li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
-	angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
-	<span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
-<li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
-	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
-	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
-	betreiben.</li>
 </ul>
 </div> <!-- notes -->
 
@@ -231,7 +234,7 @@ Bitte eine Station aus der Liste auswählen</div>
 <a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 v<%= stash('version') // '???' %><br/>
 Backends:<br/>
-<!--<a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">-->Travel::Status::DE::DBWagenreihung<!--</a>-->
+<a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 v<%= $Travel::Status::DE::DBWagenreihung::VERSION %><br/>
 <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
@@ -241,7 +244,8 @@ v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
 © DB Station&amp;Service AG,
 Europaplatz 1,
 10557 Berlin, lizensiert unter CC-BY 4.0<br/>
-<a href="_datenschutz" rel="nofollow">Datenschutzerklärung</a><br/>
+<a href="_datenschutz" rel="nofollow">Datenschutzerklärung</a>
+·
 <a href="_impressum" rel="nofollow">Impressum</a><br/>
 </div> <!-- about -->
 </div> <!-- container -->
