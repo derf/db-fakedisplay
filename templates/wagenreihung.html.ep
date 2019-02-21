@@ -15,10 +15,9 @@
   <div class="container">
     <div class="warning">
       <strong>⚠ Keine zuverlässigen Daten vorhanden.</strong>
-      IC/EC-Wagenreihungen werden vom Backend noch nicht offiziell unterstützt
-      und sind ggf. nur Solldaten oder Quatsch.
-      Maßgeblich sind die eingetragenen Meldungen sowie Anzeigen und Ansagen am
-      Bahnsteig.
+      IC/EC-Wagenreihungen werden vom Backend noch nicht offiziell unterstützt.
+      Sowohl die hier angegebenen Daten als auch die am Bahnsteig angezeigte
+      Wagenreihung können fehlerhaft sein.
     </div>
   </div>
 % }
