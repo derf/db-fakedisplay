@@ -397,6 +397,9 @@ sub handle_request {
 		$self->param( station => $station );
 		$self->stash( layout => 'text' );
 	}
+	elsif ( defined $station and $station =~ s{ [.] json $ }{}x ) {
+		$template = 'json';
+	}
 
 	# Historically, there were two JSON APIs: 'json' (undocumented, raw
 	# passthrough of serialized Travel::Status::DE::IRIS::Result /
