@@ -1076,9 +1076,11 @@ get '/*station'       => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		accepts  => 40,
+		accepts  => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
+		clients  => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
 		listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
-		pid_file => '/tmp/db-fakedisplay.pid',
+		pid_file => $ENV{DBFAKEDISPLAY_PID_FILE} // '/tmp/db-fakedisplay.pid',
+		spare    => $ENV{DBFAKEDISPLAY_SPARE} // 2,
 		workers  => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 	},
 );
