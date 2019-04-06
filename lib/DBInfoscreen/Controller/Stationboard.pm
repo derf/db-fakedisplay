@@ -36,7 +36,7 @@ sub result_has_line {
 
 sub result_has_platform {
 	my ( $result, @platforms ) = @_;
-	my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
+	my $platform = ( split( qr{ }, $result->platform // '' ) )[0] // '';
 
 	if ( List::MoreUtils::any { $_ eq $platform } @platforms ) {
 		return 1;
