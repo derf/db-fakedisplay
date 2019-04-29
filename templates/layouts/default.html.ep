@@ -13,8 +13,8 @@
 	% my $av = 'v8'; # asset version
 	%= stylesheet "/static/${av}/default.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
-% my $force_mobile = param('force_mobile') // -1;
-% if ($force_mobile == 1 or ($self->browser->mobile and $force_mobile != 0)) {
+% my $force_mobile = param('force_mobile') // stash('force_mobile');
+% if ($force_mobile) {
 	%= stylesheet "/static/${av}/mobile.css"
 % }
 	%if (stash('load_marquee')) {
@@ -199,8 +199,7 @@ Bitte eine Station aus der Liste auswählen</div>
     <ul>
       <li>Diese Seite kann gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
 	Für eine kleine Ansicht (z.B. iframe in einer normalen Website) bitte das
-	"App"-Frontend verwenden (und vorerst den Parameter <span style="font-family: monospace;">force_mobile=1</span>
-	hinzufügen, das ist bald aber nicht mehr nötig). Für eine große Ansicht
+	"App"-Frontend verwenden. Für eine große Ansicht
 	(z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
       <li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
 	(alternativ auch <span style="font-family:

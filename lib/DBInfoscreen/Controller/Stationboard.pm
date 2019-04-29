@@ -798,6 +798,7 @@ sub handle_request {
 				     $template eq 'single'
 				  or $template eq 'multi'
 			),
+			force_mobile => ( $template eq 'app' ),
 		);
 	}
 	return;

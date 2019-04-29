@@ -1,3 +1,7 @@
+body {
+	margin: 0;
+}
+
 html {
 	font-family: Sans-Serif;
 }
@@ -5,6 +9,19 @@ html {
 a {
 	color: #000099;
 	text-decoration: none;
+}
+
+p,
+div.about,
+div.input-field,
+div.notes {
+	max-width: 94%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+p {
+	text-align: justify;
 }
 
 div.app {

@@ -1,5 +1,7 @@
-body {
-	margin: 0;
+div.app {
+	max-width: 60em;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 div.app > ul > li {
@@ -8,16 +10,4 @@ div.app > ul > li {
 
 div.app li .moreinfo {
 	font-size: 2.6em;
-}
-
-p,
-div.input-field,
-div.notes {
-	max-width: 94%;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-p {
-	text-align: justify;
 }

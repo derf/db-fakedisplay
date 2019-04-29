@@ -242,7 +242,6 @@ sub startup {
 	);
 
 	$self->types->type( json => 'application/json; charset=utf-8' );
-	$self->plugin('browser_detect');
 
 }
 
