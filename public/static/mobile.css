@@ -8,6 +8,6 @@ div.app > ul > li {
 	font-size: 35%;
 }
 
-div.app li .moreinfo {
-	font-size: 2.6em;
+div.app .moreinfo {
+	font-size: 100%;
 }

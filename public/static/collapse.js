@@ -8,32 +8,31 @@ $(document).ready(function() {
 			}
 		});
 	}
-	$('div.app > ul > li, div.infoscreen > ul > li').each(function() {
-		$(this).click(function() {
-			$(this).children('.moreinfo').each(function() {
-				if ($(this).hasClass('expanded-moreinfo')) {
-					$(this).removeClass('expanded-moreinfo');
-					$(this).addClass('collapsed-moreinfo');
-					// Setting an empty hash causes the browser to scroll back
-					// to the top -- we don't want that.
-					//var posX = window.pageXOffset;
-					//var posY = window.pageYOffset;
-					//document.location.hash = '';
-					//window.scrollTo(posX, posY);
-				}
-				else {
-					$('.moreinfo').each(function() {
-						if ($(this).hasClass('expanded-moreinfo')) {
-							$(this).removeClass('expanded-moreinfo');
-							$(this).addClass('collapsed-moreinfo');
-						}
-					});
-					$(this).removeClass('collapsed-moreinfo');
-					$(this).addClass('expanded-moreinfo');
-					//document.location.hash = $(this).data('train');
-				}
+	$('div.app > ul > li').click(function() {
+		var trainElem = $(this);
+		$('.moreinfo').each(function() {
+			var infoElem = $(this);
+			$('.moreinfo .train-line').text(trainElem.data('train'));
+			$('.moreinfo .train-no').text('');
+			$('.moreinfo .train-origin').text(trainElem.data('from'));
+			$('.moreinfo .train-dest').text(trainElem.data('to'));
+			$('.moreinfo .minfo').text('');
+			$('.moreinfo .mfooter').html('<div style="text-align: center; width: 100%;">Lade Daten, bitte warten...</div>');
+			$('.moreinfo .verbose').html('');
+			$('.moreinfo .mroute').html('');
+			$('.moreinfo ul').html('');
+			$.get(window.location.href, {train: trainElem.data('train')}, function(data) {
+				$('.moreinfo').html(data);
+			}).fail(function() {
+				$('.moreinfo .mfooter').html('Der Zug ist abgefahren (Zug nicht gefunden)');
 			});
+			infoElem.removeClass('collapsed-moreinfo');
+			infoElem.addClass('expanded-moreinfo');
 		});
+	});
+	$('.moreinfo').click(function() {
+		$(this).removeClass('expanded-moreinfo');
+		$(this).addClass('collapsed-moreinfo');
 	});
 	$('.moresettings-header').each(function() {
 		$(this).click(function() {

@@ -5,6 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 # License: 2-Clause BSD
 
 use Cache::File;
+use DateTime;
 use File::Slurp qw(read_file write_file);
 use List::Util qw(max);
 use List::MoreUtils qw();
@@ -782,6 +783,45 @@ sub handle_request {
 			text   => $output,
 			format => 'text',
 		);
+	}
+	elsif ( my $train = $self->param('train') ) {
+		delete $self->stash->{layout};
+
+		my ($departure) = grep {
+			$train eq ( $_->{train_type} // '' ) . ' '
+			  . ( $_->{train_no} // $_->{train} // '' )
+		} @departures;
+
+		if ($departure) {
+
+			my $linetype = 'bahn';
+			if ( $departure->{train_type} eq 'S' ) {
+				$linetype = 'sbahn';
+			}
+			elsif ($departure->{train_type} eq 'IC'
+				or $departure->{train_type} eq 'ICE'
+				or $departure->{train_type} eq 'EC'
+				or $departure->{train_type} eq 'EN' )
+			{
+				$linetype = 'fern';
+			}
+			elsif ($departure->{train_type} eq 'THA'
+				or $departure->{train_type} eq 'FLX'
+				or $departure->{train_type} eq 'NJ' )
+			{
+				$linetype = 'ext';
+			}
+
+			$self->render(
+				'_train_details',
+				departure => $departure,
+				linetype  => $linetype,
+				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+			);
+		}
+		else {
+			$self->render('not_found');
+		}
 	}
 	else {
 		my $station_name = $data->{station_name} // $station;

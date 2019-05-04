@@ -101,50 +101,50 @@ div.app .replaced {
 	color: #660000;
 }
 
-div.app li .sbahn {
+div.app .sbahn {
 	font-weight:bold;
 	border-radius: 30px;
 	padding:3px 6px 2px 6px;
 }
 
-div.applight li .sbahn {
+div.applight .sbahn {
 	background-color:#95d79f;
 }
 
-div.appdark li .sbahn {
+div.appdark .sbahn {
 	background-color:#115511;
 }
 
-div.app li .bahn,
-div.app li .fern,
-div.app li .ext {
+div.app .bahn,
+div.app .fern,
+div.app .ext {
 	font-weight:bold;
 	border-radius: 5px;
 	padding:3px 5px 2px 5px;
 }
 
-div.applight li .bahn {
+div.applight .bahn {
 	background-color: #eeeeee;
 }
 
-div.appdark li .bahn {
+div.appdark .bahn {
 	background-color: #333333;
 }
 
-div.applight li .fern {
+div.applight .fern {
 	background-color: #ffdddd;
 }
 
-div.appdark li .fern {
+div.appdark .fern {
 	background-color: #551111;
 }
 
-div.applight li .ext {
+div.applight .ext {
 	background-color: #ffdddd;
 	border: 2px solid #ff6666;
 }
 
-div.appdark li .ext {
+div.appdark .ext {
 	background-color: #551111;
 	border: 2px solid #993333;
 }
@@ -180,7 +180,7 @@ div.app li .info {
 	overflow: hidden;
 }
 
-div.app li .moreinfo {
+div.app .moreinfo {
 	font-size:2.1em;
 	position:fixed;
 	top:0em;
@@ -192,23 +192,23 @@ div.app li .moreinfo {
 	cursor: default;
 }
 
-div.applight li .moreinfo {
+div.applight .moreinfo {
 	background-color: #ffffff;
 }
 
-div.appdark li .moreinfo {
+div.appdark .moreinfo {
 	background-color: #000000;
 }
 
-div.app li .collapsed-moreinfo {
+div.app .collapsed-moreinfo {
 	display: none;
 }
 
-div.app li .expanded-moreinfo {
+div.app .expanded-moreinfo {
 	display: block;
 }
 
-div.app li .moreinfo .mheader {
+div.app .moreinfo .mheader {
 	text-align: center;
 	font-size: 120%;
 	padding-top: 0.5em;
@@ -218,66 +218,66 @@ div.app li .moreinfo .mheader {
 	border-bottom: 0.1em dashed #cccccc;
 }
 
-div.app li .moreinfo .mfooter {
+div.app .moreinfo .mfooter {
 	padding-top: 1em;
 	padding-left: 1em;
 	padding-right: 1em;
 }
 
-div.app li .moreinfo .reason,
-div.app li .moreinfo .minfo {
+div.app .moreinfo .reason,
+div.app .moreinfo .minfo {
 	color: #ff0000;
 }
 
-div.app li .moreinfo .verbose {
+div.app .moreinfo .verbose {
 	margin-bottom: 0.6em;
 }
 
-div.app li .moreinfo .timeinfo {
+div.app .moreinfo .timeinfo {
 	margin-bottom: 0.6em;
 }
 
-div.app li .moreinfo .mroute {
+div.app .moreinfo .mroute {
 	margin-bottom: 0.6em;
 }
 
-div.applight li .moreinfo .mroute .separator {
+div.applight .moreinfo .mroute .separator {
 	color: #999999;
 }
 
-div.appdark li .moreinfo .mroute .separator {
+div.appdark .moreinfo .mroute .separator {
 	color: #999999;
 }
 
-div.applight li .moreinfo .mroute .important-stop {
+div.applight .moreinfo .mroute .important-stop {
 	color: #000000;
 }
 
-div.appdark li .moreinfo .mroute .important-stop {
+div.appdark .moreinfo .mroute .important-stop {
 	color: #ffffff;
 }
 
-div.applight li .moreinfo .mroute .generic-stop {
+div.applight .moreinfo .mroute .generic-stop {
 	color: #555555;
 }
 
-div.appdark li .moreinfo .mroute .generic-stop {
+div.appdark .moreinfo .mroute .generic-stop {
 	color: #999999;
 }
 
-div.applight li .moreinfo .mroute .additional-stop {
+div.applight .moreinfo .mroute .additional-stop {
 	color: #009900;
 }
 
-div.appdark li .moreinfo .mroute .additional-stop {
+div.appdark .moreinfo .mroute .additional-stop {
 	color: #009900;
 }
 
-div.applight li .moreinfo .mroute .cancelled-stop {
+div.applight .moreinfo .mroute .cancelled-stop {
 	color: #cc0000;
 }
 
-div.appdark li .moreinfo .mroute .cancelled-stop {
+div.appdark .moreinfo .mroute .cancelled-stop {
 	color: #cc0000;
 }
 
