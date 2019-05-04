@@ -32,18 +32,6 @@
 %     $via_cur++;
 %     $route_str .= $stop . ($via_cur < $via_max ? ' - ' : q{});
 %   }
-    <li
-      data-train="<%= ($departure->{train_type} // '') %> <%= ($departure->{train_no} // $departure->{train} // '') %>"
-      data-from="<%= $departure->{origin} // q{???} %>"
-      data-to="<%= $departure->{destination} // q{???} %>"
-%   my $extraclasses = q{};
-%   if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
-%     $extraclasses .= ' cancelled';
-      class="cancelled">
-%   }
-%   else {
-      >
-%   }
 %   my $linetype = 'bahn';
 %   if ( $departure->{train_type} eq 'S' ) {
 %     $linetype = 'sbahn';
@@ -59,7 +47,19 @@
 %          or $departure->{train_type} eq 'NJ') {
 %     $linetype = 'ext';
 %   }
-%
+    <li
+      data-train="<%= ($departure->{train_type} // '') %> <%= ($departure->{train_no} // $departure->{train} // '') %>"
+      data-linetype="<%= $linetype %>"
+      data-from="<%= $departure->{origin} // q{???} %>"
+      data-to="<%= $departure->{destination} // q{???} %>"
+%   my $extraclasses = q{};
+%   if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
+%     $extraclasses .= ' cancelled';
+      class="cancelled">
+%   }
+%   else {
+      >
+%   }
     <div class="line <%= $linetype %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}
