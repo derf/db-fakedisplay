@@ -10,7 +10,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v9'; # asset version
+	% my $av = 'v10'; # asset version
 	%= stylesheet "/static/${av}/default.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // stash('force_mobile');
@@ -18,7 +18,7 @@
 	%= stylesheet "/static/${av}/mobile.css"
 % }
 	%if (stash('load_marquee')) {
-	%= javascript '/static/jquery-1.10.2.min.js'
+	%= javascript '/static/jquery-3.4.1.min.js'
 	%= javascript "/static/${av}/jquery-ui.min.js"
 	%= javascript "/static/${av}/dbf.min.js"
 	%= javascript "/static/${av}/marquee.min.js"
@@ -26,7 +26,7 @@
 	$(function () {  $('marquee').marquee() });
 	% end
 	% } else {
-	%= javascript '/static/jquery-1.10.2.min.js', defer => undef
+	%= javascript '/static/jquery-3.4.1.min.js', defer => undef
 	%= javascript "/static/${av}/jquery-ui.min.js", defer => undef
 	%= javascript "/static/${av}/dbf.min.js", defer => undef
 	% }
