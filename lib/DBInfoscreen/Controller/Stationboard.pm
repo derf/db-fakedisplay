@@ -25,6 +25,26 @@ my %default = (
 	admode  => 'deparr',
 );
 
+sub result_is_train {
+	my ( $result, $train ) = @_;
+
+	if ( $result->can('train_id') ) {
+
+		# IRIS
+		if ( $train eq $result->type . ' ' . $result->train_no ) {
+			return 1;
+		}
+		return 0;
+	}
+	else {
+		# HAFAS
+		if ( $train eq $result->type . ' ' . $result->train ) {
+			return 1;
+		}
+		return 0;
+	}
+}
+
 sub result_has_line {
 	my ( $result, @lines ) = @_;
 	my $line = $result->line;
@@ -330,6 +350,10 @@ sub handle_request {
 				  <=> ( $b->departure // $b->arrival )
 			} @results;
 		}
+	}
+
+	if ( my $train = $self->param('train') ) {
+		@results = grep { result_is_train( $_, $train ) } @results;
 	}
 
 	if (@lines) {
@@ -662,26 +686,11 @@ sub handle_request {
 					departure => $result->departure
 					? $result->departure->strftime('%H:%M')
 					: undef,
-					train           => $result->train,
-					train_type      => $result->type,
-					train_line      => $result->line_no,
-					train_no        => $result->train_no,
-					via             => [ $result->route_interesting(3) ],
-					scheduled_route => [ $result->sched_route ],
-					route_pre       => [ $result->route_pre ],
-					route_pre_diff  => [
-						$self->json_route_diff(
-							[ $result->route_pre ],
-							[ $result->sched_route_pre ]
-						)
-					],
-					route_post      => [ $result->route_post ],
-					route_post_diff => [
-						$self->json_route_diff(
-							[ $result->route_post ],
-							[ $result->sched_route_post ]
-						)
-					],
+					train                  => $result->train,
+					train_type             => $result->type,
+					train_line             => $result->line_no,
+					train_no               => $result->train_no,
+					via                    => [ $result->route_interesting(3) ],
 					destination            => $result->destination,
 					origin                 => $result->origin,
 					platform               => $result->platform,
@@ -717,6 +726,23 @@ sub handle_request {
 					: undef,
 				}
 			);
+			if ( $self->param('train') ) {
+				$departures[-1]{scheduled_route} = [ $result->sched_route ];
+				$departures[-1]{route_pre}       = [ $result->route_pre ];
+				$departures[-1]{route_pre_diff}  = [
+					$self->json_route_diff(
+						[ $result->route_pre ],
+						[ $result->sched_route_pre ]
+					)
+				];
+				$departures[-1]{route_post}      = [ $result->route_post ];
+				$departures[-1]{route_post_diff} = [
+					$self->json_route_diff(
+						[ $result->route_post ],
+						[ $result->sched_route_post ]
+					)
+				];
+			}
 		}
 		else {
 			push(
@@ -787,10 +813,7 @@ sub handle_request {
 	elsif ( my $train = $self->param('train') ) {
 		delete $self->stash->{layout};
 
-		my ($departure) = grep {
-			$train eq ( $_->{train_type} // '' ) . ' '
-			  . ( $_->{train_no} // $_->{train} // '' )
-		} @departures;
+		my ($departure) = @departures;
 
 		if ($departure) {
 
