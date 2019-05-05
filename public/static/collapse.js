@@ -12,8 +12,9 @@ $(document).ready(function() {
 		var trainElem = $(this);
 		$('.moreinfo').each(function() {
 			var infoElem = $(this);
-			$('.moreinfo .train-line').text(trainElem.data('train'));
-			$('.moreinfo .train-no').text('');
+			$('.moreinfo .train-line').removeClass('bahn sbahn fern ext').addClass(trainElem.data('linetype'));
+			$('.moreinfo .train-line').text(trainElem.data('line'));
+			$('.moreinfo .train-no').text(trainElem.data('no'));
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
 			$('.moreinfo .train-dest').text(trainElem.data('to'));
 			$('.moreinfo .minfo').text('');

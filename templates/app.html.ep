@@ -48,7 +48,9 @@
 %     $linetype = 'ext';
 %   }
     <li
-      data-train="<%= ($departure->{train_type} // '') %> <%= ($departure->{train_no} // $departure->{train} // '') %>"
+      data-train="<%= ($departure->{train_type} // q{}) %> <%= ($departure->{train_no} // $departure->{train} // q{}) %>"
+      data-line="<%= $departure->{train_type} %> <%= $departure->{train_line} // $departure->{train_no} %>"
+      data-no="<%= $departure->{train_no} // q{} %>"
       data-linetype="<%= $linetype %>"
       data-from="<%= $departure->{origin} // q{???} %>"
       data-to="<%= $departure->{destination} // q{???} %>"
