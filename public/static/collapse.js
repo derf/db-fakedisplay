@@ -18,7 +18,7 @@ $(document).ready(function() {
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
 			$('.moreinfo .train-dest').text(trainElem.data('to'));
 			$('.moreinfo .minfo').text('');
-			$('.moreinfo .mfooter').html('<div style="text-align: center; width: 100%;">Lade Daten, bitte warten...</div>');
+			$('.moreinfo .mfooter').html('<div style="text-align: center; width: 100%; color: #888888;">Lade Daten, bitte warten...</div>');
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');

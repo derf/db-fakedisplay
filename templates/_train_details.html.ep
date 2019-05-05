@@ -3,9 +3,7 @@
 %   if ($departure->{train_no} or $departure->{train_line}) {
       <span class="train-line <%= $linetype %>"><%= $departure->{train_type} %>
       <%= $departure->{train_line} // $departure->{train_no} %></span>
-%     if ($departure->{train_line}) {
-        <span class="train-no"><%= $departure->{train_no} %></span>
-%     }
+      <span class="train-no"><%= $departure->{train_line} ? $departure->{train_no} : q{} %></span>
 %   }
 %   else {
       <span class="train-line"><%= $departure->{train} // q{???} %></span>
