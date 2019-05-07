@@ -773,6 +773,10 @@ sub handle_request {
 		}
 	}
 
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
+	}
+
 	if ( $template eq 'json' ) {
 		$self->res->headers->access_control_allow_origin(q{*});
 		my $json = $self->render_to_string(
@@ -811,7 +815,6 @@ sub handle_request {
 		);
 	}
 	elsif ( my $train = $self->param('train') ) {
-		delete $self->stash->{layout};
 
 		my ($departure) = @departures;
 
@@ -853,7 +856,7 @@ sub handle_request {
 			departures       => \@departures,
 			version          => $dbf_version,
 			title            => "Abfahrtsmonitor $station_name",
-			refresh_interval => 120,
+			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,

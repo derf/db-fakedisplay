@@ -1,13 +1,14 @@
-$(document).ready(function() {
-	if (document.location.hash.length > 1) {
-		var wanted = document.location.hash.replace('#', '');
-		$('div.app > ul > li > .moreinfo, div.infoscreen > ul > li > .moreinfo').each(function() {
-			if ($(this).data('train') == wanted) {
-				$(this).removeClass('collapsed-moreinfo');
-				$(this).addClass('expanded-moreinfo');
-			}
-		});
-	}
+function reload_app() {
+	$.get(window.location.href, {ajax: 1}, function(data) {
+		$('div.app > ul').html(data);
+		dbf_reg_handlers();
+		setTimeout(reload_app, 30000);
+	}).fail(function() {
+		setTimeout(reload_app, 10000);
+	});
+}
+
+function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function() {
 		var trainElem = $(this);
 		$('.moreinfo').each(function() {
@@ -22,7 +23,7 @@ $(document).ready(function() {
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');
-			$.get(window.location.href, {train: trainElem.data('train')}, function(data) {
+			$.get(window.location.href, {train: trainElem.data('train'), ajax: 1}, function(data) {
 				$('.moreinfo').html(data);
 			}).fail(function() {
 				$('.moreinfo .mfooter').html('Der Zug ist abgefahren (Zug nicht gefunden)');
@@ -31,10 +32,18 @@ $(document).ready(function() {
 			infoElem.addClass('expanded-moreinfo');
 		});
 	});
-	$('.moreinfo').click(function() {
-		$(this).removeClass('expanded-moreinfo');
-		$(this).addClass('collapsed-moreinfo');
-	});
+}
+
+$(document).ready(function() {
+	if (document.location.hash.length > 1) {
+		var wanted = document.location.hash.replace('#', '');
+		$('div.app > ul > li > .moreinfo, div.infoscreen > ul > li > .moreinfo').each(function() {
+			if ($(this).data('train') == wanted) {
+				$(this).removeClass('collapsed-moreinfo');
+				$(this).addClass('expanded-moreinfo');
+			}
+		});
+	}
 	$('.moresettings-header').each(function() {
 		$(this).click(function() {
 			var moresettings = $('.moresettings');
@@ -69,4 +78,12 @@ $(document).ready(function() {
 			}
 		});
 	});
+	$('.moreinfo').click(function() {
+		$(this).removeClass('expanded-moreinfo');
+		$(this).addClass('collapsed-moreinfo');
+	});
+	dbf_reg_handlers();
+	if ($('.content .app').length) {
+		setTimeout(reload_app, 30000);
+	}
 });

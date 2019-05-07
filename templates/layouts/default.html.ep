@@ -17,7 +17,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v11'; # asset version
+	% my $av = 'v12'; # asset version
 	%= stylesheet "/static/${av}/default.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // stash('force_mobile');
@@ -58,7 +58,9 @@ Bitte eine Station aus der Liste auswählen</div>
 % }
 </div>
 
+<div class="content">
 %= content
+</div>
 
 % if (not stash('hide_opts')) {
 <div class="container">

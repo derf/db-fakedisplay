@@ -1,5 +1,6 @@
 % if (@{$departures}) {
 
+% if (not param('ajax')) {
 % if (param('dark')) {
 <div class="app appdark">
 % }
@@ -21,6 +22,7 @@
 	<div class="mfooter"></div>
 </div>
 <ul>
+% } # not param('ajax')
 % my $i = 0;
 % my $dt_now = DateTime->now;
 % for my $departure (@{$departures}) {
@@ -158,12 +160,14 @@
     </li>
 
 % }
+% if (not param('ajax')) {
 
   </ul>
   </div> <!-- app -->
+% }
 
 % }
-% else {
+% elsif (not param('ajax')) {
 
 <div class="container">
 <div class="error"><strong>Keine Abfahrten gefunden.</strong>
