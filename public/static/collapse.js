@@ -2,7 +2,7 @@ function reload_app() {
 	$.get(window.location.href, {ajax: 1}, function(data) {
 		$('div.app > ul').html(data);
 		dbf_reg_handlers();
-		setTimeout(reload_app, 30000);
+		setTimeout(reload_app, 60000);
 	}).fail(function() {
 		setTimeout(reload_app, 10000);
 	});
