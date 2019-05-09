@@ -146,6 +146,10 @@ sub get_results_for {
 				realtime_cache => $cache_iris_rt,
 				log_dir        => $ENV{DBFAKEDISPLAY_XMLDUMP_DIR},
 				lookbehind     => 20,
+				lwp_options    => {
+					timeout => 10,
+					agent   => 'dbf.finalrewind.org/2'
+				},
 				%opt
 			);
 			$data = {
@@ -177,6 +181,10 @@ sub get_results_for {
 			my $status = Travel::Status::DE::HAFAS->new(
 				station       => $station,
 				excluded_mots => [qw[bus ferry ondemand tram u]],
+				lwp_options   => {
+					timeout => 10,
+					agent   => 'dbf.finalrewind.org/2'
+				},
 				%opt
 			);
 			$data = {
