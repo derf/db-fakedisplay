@@ -34,7 +34,7 @@ function dbf_reg_handlers() {
 	});
 }
 
-$(document).ready(function() {
+$(function() {
 	if (document.location.hash.length > 1) {
 		var wanted = document.location.hash.replace('#', '');
 		$('div.app > ul > li > .moreinfo, div.infoscreen > ul > li > .moreinfo').each(function() {

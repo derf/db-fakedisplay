@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	var removeStatus = function() {
 		$('div.candidatestatus').remove();
 	};
