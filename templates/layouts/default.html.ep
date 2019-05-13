@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-	<title><%= stash('title') // 'db-infoscreen' %></title>
+	<title><%= stash('title') // 'DBF' %></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Abfahrtsmonitor, Bahnhofstafel, Abfahrten, Abfahrtstafel, ICE, IC, RE, RB, S-Bahn">

@@ -245,7 +245,7 @@ sub handle_request {
 	}
 
 	$self->stash( departures => [] );
-	$self->stash( title      => 'db-infoscreen' );
+	$self->stash( title      => 'DBF' );
 	$self->stash( version    => $dbf_version );
 
 	if ( defined $station and $station =~ s{ [.] txt $ }{}x ) {
@@ -863,7 +863,7 @@ sub handle_request {
 			$template,
 			departures       => \@departures,
 			version          => $dbf_version,
-			title            => "Abfahrtsmonitor $station_name",
+			title            => $station_name,
 			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
