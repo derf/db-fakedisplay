@@ -863,7 +863,7 @@ sub handle_request {
 			$template,
 			departures       => \@departures,
 			version          => $dbf_version,
-			title            => $station_name,
+			title            => $via ? "$station_name → $via" : $station_name,
 			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
