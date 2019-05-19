@@ -32,11 +32,13 @@
 %   }
   <div class="container">
     <div style="position: relative; width: 100%; height: 60ex;">
-%     for my $section ($wr->sections) {
-        <div style="position: absolute; left: 1em; width: 2em;
-        top: <%= $section->{start_percent} %>%; bottom: <%= 100 - $section->{end_percent} %>%; text-align: center;">
-%=        $section->{name}
-        </div>
+%     if (not $wr->has_bad_wagons) {
+%       for my $section ($wr->sections) {
+          <div style="position: absolute; left: 1em; width: 2em;
+          top: <%= $section->{start_percent} %>%; bottom: <%= 100 - $section->{end_percent} %>%; text-align: center;">
+%=          $section->{name}
+          </div>
+%       }
 %     }
 %     for my $wagon ($wr->wagons) {
 %       my $bg = '';
@@ -48,7 +50,9 @@
 %       }
         <div style="position: absolute; left: 6em;
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
-%         if ($wr->direction == 100) {
+%         if ($wr->has_bad_wagons) {
+%         }
+%         elsif ($wr->direction == 100) {
             ↓
 %         }
 %         else {
