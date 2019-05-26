@@ -6,9 +6,11 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Cache::File;
 use DateTime;
+use Encode qw(decode encode);
 use File::Slurp qw(read_file write_file);
 use List::Util qw(max);
 use List::MoreUtils qw();
+use Mojo::JSON qw(decode_json);
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
@@ -97,6 +99,94 @@ sub log_api_access {
 	}
 	write_file( $ENV{DBFAKEDISPLAY_STATS}, $counter );
 	return;
+}
+
+sub hafas_json_req {
+	my ( $ua, $cache, $url ) = @_;
+
+	if ( my $content = $cache->thaw($url) ) {
+		return decode_json( ${$content} );
+	}
+
+	my $res = $ua->get($url)->result;
+
+	if ( $res->is_error ) {
+		return;
+	}
+
+	my $body = encode( 'utf-8', decode( 'ISO-8859-15', $res->body ) );
+
+	$body =~ s{^TSLs[.]sls = }{};
+	$body =~ s{;$}{};
+	$body =~ s{&#x0028;}{(}g;
+	$body =~ s{&#x0029;}{)}g;
+
+	$cache->freeze( $url, \$body );
+
+	return decode_json($body);
+}
+
+# quick&dirty, will be cleaned up later
+sub get_route_timestamps {
+	my ( $ua, $train ) = @_;
+
+	my $cache_iris_main = Cache::File->new(
+		cache_root => $ENV{DBFAKEDISPLAY_IRIS_CACHE} // '/tmp/dbf-iris-main',
+		default_expires => '6 hours',
+		lock_level      => Cache::File::LOCK_LOCAL(),
+	);
+
+	$ua->request_timeout(3);
+
+	my $base
+	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json.vs_hap&start=yes&rt=1';
+	my $date_yy   = $train->start->strftime('%d.%m.%y');
+	my $date_yyyy = $train->start->strftime('%d.%m.%Y');
+	my $train_no  = $train->type . ' ' . $train->train_no;
+
+	my $trainsearch = hafas_json_req( $ua, $cache_iris_main,
+		"${base}&date=&${date_yy}&trainname=${train_no}" );
+
+	if ( not $trainsearch ) {
+		return;
+	}
+
+	# Fallback: Take first result
+	my $trainlink = $trainsearch->{suggestions}[0]{trainLink};
+
+	# Try finding a result for the current date
+	for my $suggestion ( @{ $trainsearch->{suggestions} // [] } ) {
+
+       # Drunken API, sail with care. Both date formats are used interchangeably
+		if (   $suggestion->{depDate} eq $date_yy
+			or $suggestion->{depDate} eq $date_yyyy )
+		{
+			$trainlink = $suggestion->{trainLink};
+			last;
+		}
+	}
+
+	if ( not $trainlink ) {
+		return;
+	}
+
+	$base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
+
+	my $traininfo = hafas_json_req( $ua, $cache_iris_main,
+		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json.vs_hap" );
+
+	if ( not $traininfo or $traininfo->{error} ) {
+		return;
+	}
+
+	my $ret = {};
+
+	for my $station ( @{ $traininfo->{suggestions}[0]{locations} // [] } ) {
+		$ret->{ $station->{name} }
+		  = [ $station->{arrTime}, $station->{depTime} ];
+	}
+
+	return $ret;
 }
 
 sub get_results_for {
@@ -735,9 +825,8 @@ sub handle_request {
 				}
 			);
 			if ( $self->param('train') ) {
-				$departures[-1]{scheduled_route} = [ $result->sched_route ];
-				$departures[-1]{route_pre}       = [ $result->route_pre ];
-				$departures[-1]{route_pre_diff}  = [
+				$departures[-1]{route_pre}      = [ $result->route_pre ];
+				$departures[-1]{route_pre_diff} = [
 					$self->json_route_diff(
 						[ $result->route_pre ],
 						[ $result->sched_route_pre ]
@@ -750,6 +839,19 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
+				my $route_ts = get_route_timestamps( $self->ua, $result );
+				if ($route_ts) {
+					for my $elem (
+						@{ $departures[-1]{route_pre_diff} },
+						@{ $departures[-1]{route_post_diff} }
+					  )
+					{
+						if ( exists $route_ts->{ $elem->{name} } ) {
+							$elem->{arr} = $route_ts->{ $elem->{name} }[0];
+							$elem->{dep} = $route_ts->{ $elem->{name} }[1];
+						}
+					}
+				}
 			}
 		}
 		else {

@@ -242,18 +242,6 @@ div.app .moreinfo .timeinfo {
 	margin-bottom: 0.6em;
 }
 
-div.app .moreinfo .mroute {
-	margin-bottom: 0.6em;
-}
-
-div.applight .moreinfo .mroute .separator {
-	color: #999999;
-}
-
-div.appdark .moreinfo .mroute .separator {
-	color: #999999;
-}
-
 div.applight .moreinfo .mroute .important-stop {
 	color: #000000;
 }
