@@ -145,7 +145,7 @@ sub get_route_timestamps {
 	my $train_no  = $train->type . ' ' . $train->train_no;
 
 	my $trainsearch = hafas_json_req( $ua, $cache_iris_main,
-		"${base}&date=&${date_yy}&trainname=${train_no}" );
+		"${base}&date=${date_yy}&trainname=${train_no}" );
 
 	if ( not $trainsearch ) {
 		return;
