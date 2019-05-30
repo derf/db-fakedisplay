@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Cache::File;
 use DateTime;
+use DateTime::Format::Strptime;
 use Encode qw(decode encode);
 use File::Slurp qw(read_file write_file);
 use List::Util qw(max);
@@ -14,6 +15,7 @@ use Mojo::JSON qw(decode_json);
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
+use XML::LibXML;
 
 use utf8;
 
@@ -128,6 +130,65 @@ sub hafas_json_req {
 	return $json;
 }
 
+sub hafas_xml_req {
+	my ( $ua, $cache, $url ) = @_;
+
+	if ( my $content = $cache->thaw($url) ) {
+		return $content;
+	}
+
+	my $res = $ua->get($url)->result;
+
+	if ( $res->is_error ) {
+		$cache->freeze( $url, {} );
+		return;
+	}
+
+	my $body = decode( 'ISO-8859-15', $res->body );
+
+	my $tree;
+
+	eval { $tree = XML::LibXML->load_xml( string => $body ) };
+
+	if ($@) {
+		$cache->freeze( $url, {} );
+		return;
+	}
+
+	my $ret = {
+		stations => {},
+		messages => [],
+	};
+
+	for my $station ( $tree->findnodes('/Journey/St') ) {
+		my $name   = $station->getAttribute('name');
+		my $adelay = $station->getAttribute('adelay');
+		my $ddelay = $station->getAttribute('ddelay');
+		$ret->{stations}{$name} = {
+			adelay => $adelay,
+			ddelay => $ddelay,
+		};
+	}
+
+	for my $message ( $tree->findnodes('/Journey/HIMMessage') ) {
+		my $header  = $message->getAttribute('header');
+		my $lead    = $message->getAttribute('lead');
+		my $display = $message->getAttribute('display');
+		push(
+			@{ $ret->{messages} },
+			{
+				header  => $header,
+				lead    => $lead,
+				display => $display
+			}
+		);
+	}
+
+	$cache->freeze( $url, $ret );
+
+	return $ret;
+}
+
 # quick&dirty, will be cleaned up later
 sub get_route_timestamps {
 	my ( $ua, $train ) = @_;
@@ -138,10 +199,17 @@ sub get_route_timestamps {
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
+	my $cache_iris_rt = Cache::File->new(
+		cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
+		  // '/tmp/dbf-iris-realtime',
+		default_expires => '70 seconds',
+		lock_level      => Cache::File::LOCK_LOCAL(),
+	);
+
 	$ua->request_timeout(3);
 
 	my $base
-	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json.vs_hap&start=yes&rt=1';
+	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json&start=yes&rt=1';
 	my $date_yy   = $train->start->strftime('%d.%m.%y');
 	my $date_yyyy = $train->start->strftime('%d.%m.%Y');
 	my $train_no  = $train->type . ' ' . $train->train_no;
@@ -175,20 +243,44 @@ sub get_route_timestamps {
 	$base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
 
 	my $traininfo = hafas_json_req( $ua, $cache_iris_main,
-		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json.vs_hap" );
+		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json" );
 
 	if ( not $traininfo or $traininfo->{error} ) {
 		return;
 	}
 
+	my $traindelay = hafas_xml_req( $ua, $cache_iris_rt,
+		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_java3" );
+
 	my $ret = {};
 
+	my $strp = DateTime::Format::Strptime->new(
+		pattern   => '%d.%m.%y %H:%M',
+		time_zone => 'Europe/Berlin',
+	);
+
 	for my $station ( @{ $traininfo->{suggestions}[0]{locations} // [] } ) {
-		$ret->{ $station->{name} }
-		  = [ $station->{arrTime}, $station->{depTime} ];
+		my $name = $station->{name};
+		my $arr  = $station->{arrDate} . ' ' . $station->{arrTime};
+		my $dep  = $station->{depDate} . ' ' . $station->{depTime};
+		$ret->{$name} = {
+			sched_arr => scalar $strp->parse_datetime($arr),
+			sched_dep => scalar $strp->parse_datetime($dep),
+		};
+		if ( exists $traindelay->{stations}{$name} ) {
+			my $delay = $traindelay->{stations}{$name};
+			if ( $ret->{$name}{sched_arr} and $delay->{adelay} ) {
+				$ret->{$name}{rt_arr} = $ret->{$name}{sched_arr}
+				  ->clone->add( minutes => $delay->{adelay} );
+			}
+			if ( $ret->{$name}{sched_dep} and $delay->{ddelay} ) {
+				$ret->{$name}{rt_dep} = $ret->{$name}{sched_dep}
+				  ->clone->add( minutes => $delay->{ddelay} );
+			}
+		}
 	}
 
-	return $ret;
+	return ( $ret, $traindelay ? $traindelay->{messages} : [] );
 }
 
 sub get_results_for {
@@ -841,16 +933,18 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
-				my $route_ts = get_route_timestamps( $self->ua, $result );
+				my ( $route_ts, $him )
+				  = get_route_timestamps( $self->ua, $result );
 				if ($route_ts) {
 					for my $elem (
 						@{ $departures[-1]{route_pre_diff} },
 						@{ $departures[-1]{route_post_diff} }
 					  )
 					{
-						if ( exists $route_ts->{ $elem->{name} } ) {
-							$elem->{arr} = $route_ts->{ $elem->{name} }[0];
-							$elem->{dep} = $route_ts->{ $elem->{name} }[1];
+						for my $key (
+							keys %{ $route_ts->{ $elem->{name} } // {} } )
+						{
+							$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
 						}
 					}
 				}

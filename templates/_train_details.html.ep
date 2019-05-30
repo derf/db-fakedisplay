@@ -127,7 +127,12 @@
 %           else {
               generic-stop
 %           }
-            "><%= $stop->{dep} // q{} %> <%= $stop->{name} %></a>
+%           if ($stop->{rt_dep}) {
+              "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%           }
+%           else {
+              "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+%           }
             </li>
 %         }
         </ul> <!-- mroute -->
@@ -150,7 +155,12 @@
 %           else {
               generic-stop
 %           }
-            "><%= $stop->{arr} // q{} %> <%= $stop->{name} %></a>
+%           if ($stop->{rt_arr}) {
+              "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%           }
+%           else {
+              "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+%           }
             </li>
 %         }
         </ul> <!-- mroute -->
