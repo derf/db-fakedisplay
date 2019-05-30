@@ -146,6 +146,10 @@ sub hafas_xml_req {
 
 	my $body = decode( 'ISO-8859-15', $res->body );
 
+	# <SDay text="... &gt; ..."> is invalid HTML, but present
+	# regardless. As it is the last tag, we just throw it away.
+	$body =~ s{<SDay .*}{</Journey>}s;
+
 	my $tree;
 
 	eval { $tree = XML::LibXML->load_xml( string => $body ) };
