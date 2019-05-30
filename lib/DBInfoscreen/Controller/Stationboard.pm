@@ -105,7 +105,7 @@ sub hafas_json_req {
 	my ( $ua, $cache, $url ) = @_;
 
 	if ( my $content = $cache->thaw($url) ) {
-		return decode_json( ${$content} );
+		return $content;
 	}
 
 	my $res = $ua->get($url)->result;
@@ -121,9 +121,11 @@ sub hafas_json_req {
 	$body =~ s{&#x0028;}{(}g;
 	$body =~ s{&#x0029;}{)}g;
 
-	$cache->freeze( $url, \$body );
+	my $json = decode_json($body);
 
-	return decode_json($body);
+	$cache->freeze( $url, $json );
+
+	return $json;
 }
 
 # quick&dirty, will be cleaned up later
