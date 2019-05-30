@@ -273,11 +273,17 @@ sub get_route_timestamps {
 		};
 		if ( exists $traindelay->{stations}{$name} ) {
 			my $delay = $traindelay->{stations}{$name};
-			if ( $ret->{$name}{sched_arr} and $delay->{adelay} ) {
+			if (    $ret->{$name}{sched_arr}
+				and $delay->{adelay}
+				and $delay->{adelay} =~ m{^\d+$} )
+			{
 				$ret->{$name}{rt_arr} = $ret->{$name}{sched_arr}
 				  ->clone->add( minutes => $delay->{adelay} );
 			}
-			if ( $ret->{$name}{sched_dep} and $delay->{ddelay} ) {
+			if (    $ret->{$name}{sched_dep}
+				and $delay->{ddelay}
+				and $delay->{ddelay} =~ m{^\d+$} )
+			{
 				$ret->{$name}{rt_dep} = $ret->{$name}{sched_dep}
 				  ->clone->add( minutes => $delay->{ddelay} );
 			}
