@@ -189,12 +189,19 @@ div.app .moreinfo {
 	font-size:2.1em;
 	position:fixed;
 	top:0em;
-	left:0em;
-	right:0em;
+	left:0;
+	right:0;
 	bottom:0em;
 	z-index: 5;
 	overflow: auto;
 	cursor: default;
+}
+
+div.app .moreinfo .mheader,
+div.app .moreinfo .mfooter {
+	max-width: 50em;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 div.applight .moreinfo {
