@@ -97,7 +97,6 @@
 %       else {
 %=        $pair->[0]
 %       }
-        :
         <span class="reason">
 %=      $pair->[1]
         </span>

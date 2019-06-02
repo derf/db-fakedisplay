@@ -148,7 +148,7 @@ sub hafas_xml_req {
 
 	# <SDay text="... &gt; ..."> is invalid HTML, but present
 	# regardless. As it is the last tag, we just throw it away.
-	$body =~ s{<SDay .*}{</Journey>}s;
+	$body =~ s{<SDay [^>]*/>}{}s;
 
 	my $tree;
 
@@ -955,6 +955,17 @@ sub handle_request {
 							keys %{ $route_ts->{ $elem->{name} } // {} } )
 						{
 							$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+						}
+					}
+				}
+				if ( $him and @{$him} ) {
+					$departures[-1]{messages}{him} = $him;
+					for my $message ( @{$him} ) {
+						if ( $message->{display} ) {
+							unshift(
+								@{ $departures[-1]{moreinfo} },
+								[ $message->{header}, $message->{lead} ]
+							);
 						}
 					}
 				}
