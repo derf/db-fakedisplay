@@ -1,0 +1,32 @@
+<div class="container">
+	<p>
+		<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
+		v<%= stash('version') // '???' %><br/>
+		Entwickelt von <a href="https://twitter.com/derfnull">@derfnull</a><br/>
+		Backends:<br/>
+		<a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
+		<a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
+		<a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
+		© DB Station&amp;Service AG,
+		Europaplatz 1,
+		10557 Berlin, lizensiert unter CC-BY 4.0<br/>
+	</p>
+</div>
+
+<div class="container">
+	<p>
+		<a href="https://twitter.com/derfnull">Kontakt</a>
+		·
+		<a href="https://github.com/derf/db-fakedisplay/issues">Bugs?</a>
+	</p>
+</div>
+
+% if (-e 'templates/imprint.html.ep') {
+%= include 'imprint'
+% }
+
+% if (-e 'templates/privacy.html.ep') {
+%= include 'privacy'
+% }

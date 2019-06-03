@@ -43,6 +43,12 @@ sub geolocation {
 	);
 }
 
+sub about {
+	my ($self) = @_;
+
+	$self->render( 'about', hide_opts => 1 );
+}
+
 sub privacy {
 	my ($self) = @_;
 

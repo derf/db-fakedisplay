@@ -218,6 +218,8 @@ sub startup {
 
 	$r->post('/_geolocation')->to('stationboard#stations_by_coordinates');
 
+	$r->get('/_about')->to('static#about');
+
 	$r->get('/_impressum')->to('static#imprint');
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
