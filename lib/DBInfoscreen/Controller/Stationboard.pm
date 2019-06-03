@@ -959,15 +959,15 @@ sub handle_request {
 					}
 				}
 				if ( $him and @{$him} ) {
+					my @him_messages;
 					$departures[-1]{messages}{him} = $him;
 					for my $message ( @{$him} ) {
 						if ( $message->{display} ) {
-							unshift(
-								@{ $departures[-1]{moreinfo} },
-								[ $message->{header}, $message->{lead} ]
-							);
+							push( @him_messages,
+								[ $message->{header}, $message->{lead} ] );
 						}
 					}
+					unshift( @{ $departures[-1]{moreinfo} }, @him_messages );
 				}
 			}
 		}
