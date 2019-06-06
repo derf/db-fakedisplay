@@ -19,6 +19,7 @@
 
 	% my $av = 'v15'; # asset version
 	%= stylesheet "/static/${av}/default.css"
+	%= stylesheet "/static/${av}/material-icons.css"
 	%= stylesheet "/static/${av}/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // stash('force_mobile');
 % if ($force_mobile) {
