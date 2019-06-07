@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 # Copyright (C) 2011-2019 Daniel Friesel <derf+dbf@finalrewind.org>
 # License: 2-Clause BSD
 
-use Cache::File;
 use DateTime;
 use DateTime::Format::Strptime;
 use Encode qw(decode encode);
@@ -195,20 +194,7 @@ sub hafas_xml_req {
 
 # quick&dirty, will be cleaned up later
 sub get_route_timestamps {
-	my ( $ua, $train ) = @_;
-
-	my $cache_iris_main = Cache::File->new(
-		cache_root => $ENV{DBFAKEDISPLAY_IRIS_CACHE} // '/tmp/dbf-iris-main',
-		default_expires => '6 hours',
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
-
-	my $cache_iris_rt = Cache::File->new(
-		cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
-		  // '/tmp/dbf-iris-realtime',
-		default_expires => '70 seconds',
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
+	my ( $ua, $cache_main, $cache_rt, $train ) = @_;
 
 	$ua->request_timeout(3);
 
@@ -218,7 +204,7 @@ sub get_route_timestamps {
 	my $date_yyyy = $train->start->strftime('%d.%m.%Y');
 	my $train_no  = $train->type . ' ' . $train->train_no;
 
-	my $trainsearch = hafas_json_req( $ua, $cache_iris_main,
+	my $trainsearch = hafas_json_req( $ua, $cache_main,
 		"${base}&date=${date_yy}&trainname=${train_no}" );
 
 	if ( not $trainsearch ) {
@@ -246,14 +232,14 @@ sub get_route_timestamps {
 
 	$base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
 
-	my $traininfo = hafas_json_req( $ua, $cache_iris_main,
+	my $traininfo = hafas_json_req( $ua, $cache_main,
 		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json" );
 
 	if ( not $traininfo or $traininfo->{error} ) {
 		return;
 	}
 
-	my $traindelay = hafas_xml_req( $ua, $cache_iris_rt,
+	my $traindelay = hafas_xml_req( $ua, $cache_rt,
 		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_java3" );
 
 	my $ret = {};
@@ -297,25 +283,6 @@ sub get_results_for {
 	my ( $backend, $station, %opt ) = @_;
 	my $data;
 
-	my $cache_hafas = Cache::File->new(
-		cache_root      => $ENV{DBFAKEDISPLAY_HAFAS_CACHE} // '/tmp/dbf-hafas',
-		default_expires => '180 seconds',
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
-
-	my $cache_iris_main = Cache::File->new(
-		cache_root => $ENV{DBFAKEDISPLAY_IRIS_CACHE} // '/tmp/dbf-iris-main',
-		default_expires => '6 hours',
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
-
-	my $cache_iris_rt = Cache::File->new(
-		cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
-		  // '/tmp/dbf-iris-realtime',
-		default_expires => '70 seconds',
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
-
 	# Cache::File has UTF-8 problems, so strip it (and any other potentially
 	# problematic chars).
 	my $cache_str = $station;
@@ -336,8 +303,8 @@ sub get_results_for {
 			$station = $station_matches[0][0];
 			my $status = Travel::Status::DE::IRIS->new(
 				station        => $station,
-				main_cache     => $cache_iris_main,
-				realtime_cache => $cache_iris_rt,
+				main_cache     => $opt{cache_iris_main},
+				realtime_cache => $opt{cache_iris_rt},
 				log_dir        => $ENV{DBFAKEDISPLAY_XMLDUMP_DIR},
 				lookbehind     => 20,
 				lwp_options    => {
@@ -367,7 +334,7 @@ sub get_results_for {
 		}
 	}
 	elsif ( $backend eq 'ris' ) {
-		$data = $cache_hafas->thaw($cache_str);
+		$data = $opt{cache_hafas}->thaw($cache_str);
 		if ( not $data ) {
 			if ( $ENV{DBFAKEDISPLAY_STATS} ) {
 				log_api_access();
@@ -385,7 +352,7 @@ sub get_results_for {
 				results => [ $status->results ],
 				errstr  => $status->errstr,
 			};
-			$cache_hafas->freeze( $cache_str, $data );
+			$opt{cache_hafas}->freeze( $cache_str, $data );
 		}
 	}
 	else {
@@ -419,7 +386,11 @@ sub handle_request {
 	my $save_defaults  = $self->param('save_defaults') // 0;
 	my $limit          = $self->param('limit') // 0;
 	my @train_types    = split( /,/, $self->param('train_types') // q{} );
-	my %opt;
+	my %opt            = (
+		cache_hafas     => $self->app->cache_hafas,
+		cache_iris_main => $self->app->cache_iris_main,
+		cache_iris_rt   => $self->app->cache_iris_rt,
+	);
 
 	my $api_version
 	  = $backend eq 'iris'
@@ -943,8 +914,11 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
-				my ( $route_ts, $him )
-				  = get_route_timestamps( $self->ua, $result );
+				my ( $route_ts, $him ) = get_route_timestamps(
+					$self->ua,
+					$self->app->cache_iris_main,
+					$self->app->cache_iris_rt, $result
+				);
 				if ($route_ts) {
 					for my $elem (
 						@{ $departures[-1]{route_pre_diff} },

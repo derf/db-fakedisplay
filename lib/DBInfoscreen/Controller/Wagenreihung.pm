@@ -12,6 +12,7 @@ sub wagenreihung {
 	my $departure = $self->stash('departure');
 
 	my $wr = Travel::Status::DE::DBWagenreihung->new(
+		cache        => $self->app->cache_iris_rt,
 		departure    => $departure,
 		train_number => $train,
 	);

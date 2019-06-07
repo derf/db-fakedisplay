@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious';
 # Copyright (C) 2011-2019 Daniel Friesel <derf+dbf@finalrewind.org>
 # License: 2-Clause BSD
 
+use Cache::File;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS::Stations;
@@ -22,6 +23,42 @@ my %default = (
 
 sub startup {
 	my ($self) = @_;
+
+	$self->attr(
+		cache_hafas => sub {
+			my ($self) = @_;
+			return Cache::File->new(
+				cache_root => $ENV{DBFAKEDISPLAY_HAFAS_CACHE}
+				  // '/tmp/dbf-hafas',
+				default_expires => '180 seconds',
+				lock_level      => Cache::File::LOCK_LOCAL(),
+			);
+		}
+	);
+
+	$self->attr(
+		cache_iris_main => sub {
+			my ($self) = @_;
+			return Cache::File->new(
+				cache_root => $ENV{DBFAKEDISPLAY_IRIS_CACHE}
+				  // '/tmp/dbf-iris-main',
+				default_expires => '6 hours',
+				lock_level      => Cache::File::LOCK_LOCAL(),
+			);
+		}
+	);
+
+	$self->attr(
+		cache_iris_rt => sub {
+			my ($self) = @_;
+			return Cache::File->new(
+				cache_root => $ENV{DBFAKEDISPLAY_IRISRT_CACHE}
+				  // '/tmp/dbf-iris-realtime',
+				default_expires => '70 seconds',
+				lock_level      => Cache::File::LOCK_LOCAL(),
+			);
+		}
+	);
 
 	$self->helper(
 		'handle_no_results' => sub {
