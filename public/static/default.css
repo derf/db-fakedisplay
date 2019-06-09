@@ -1059,7 +1059,7 @@ div.field {
 
 input, select, .button {
 	display: inline-block;
-	width: 50em;
+	width: 60em;
 	max-width: 100%;
 	min-height: 1.8em;
 	border-radius: 4px;
@@ -1073,7 +1073,7 @@ input, select, .button {
 }
 
 input[type="text"] {
-	width: 49em;
+	width: 59em;
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	text-align: left;
