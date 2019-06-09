@@ -159,7 +159,8 @@ sub hafas_xml_req {
 	}
 
 	my $ret = {
-		stations => {},
+		station  => {},
+		stations => [],
 		messages => [],
 	};
 
@@ -167,7 +168,8 @@ sub hafas_xml_req {
 		my $name   = $station->getAttribute('name');
 		my $adelay = $station->getAttribute('adelay');
 		my $ddelay = $station->getAttribute('ddelay');
-		$ret->{stations}{$name} = {
+		push( @{ $ret->{stations} }, $name );
+		$ret->{station}{$name} = {
 			adelay => $adelay,
 			ddelay => $ddelay,
 		};
@@ -257,8 +259,8 @@ sub get_route_timestamps {
 			sched_arr => scalar $strp->parse_datetime($arr),
 			sched_dep => scalar $strp->parse_datetime($dep),
 		};
-		if ( exists $traindelay->{stations}{$name} ) {
-			my $delay = $traindelay->{stations}{$name};
+		if ( exists $traindelay->{station}{$name} ) {
+			my $delay = $traindelay->{station}{$name};
 			if (    $ret->{$name}{sched_arr}
 				and $delay->{adelay}
 				and $delay->{adelay} =~ m{^\d+$} )
@@ -276,7 +278,7 @@ sub get_route_timestamps {
 		}
 	}
 
-	return ( $ret, $traindelay ? $traindelay->{messages} : [] );
+	return ( $ret, $traindelay // {} );
 }
 
 sub get_results_for {
@@ -914,11 +916,68 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
-				my ( $route_ts, $him ) = get_route_timestamps(
+				my ( $route_ts, $route_info ) = get_route_timestamps(
 					$self->ua,
 					$self->app->cache_iris_main,
 					$self->app->cache_iris_rt, $result
 				);
+
+             # If a train number changes on the way, IRIS routes are incomplete,
+             # whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
+             # stops. This is a rare case, one point where it can be observed is
+             # the TGV service at Frankfurt/Karlsruhe/Mannheim.
+				if ( my @hafas_stations = @{ $route_info->{stations} } ) {
+					if ( my @iris_stations
+						= @{ $departures[-1]{route_pre_diff} } )
+					{
+						my @missing_pre;
+						for my $station (@hafas_stations) {
+							if (
+								List::MoreUtils::any { $_->{name} eq $station }
+								@iris_stations
+							  )
+							{
+								last;
+							}
+							push(
+								@missing_pre,
+								{
+									name  => $station,
+									hafas => 1
+								}
+							);
+						}
+						unshift(
+							@{ $departures[-1]{route_pre_diff} },
+							@missing_pre
+						);
+					}
+					if ( my @iris_stations
+						= @{ $departures[-1]{route_post_diff} } )
+					{
+						my @missing_post;
+						for my $station ( reverse @hafas_stations ) {
+							if (
+								List::MoreUtils::any { $_->{name} eq $station }
+								@iris_stations
+							  )
+							{
+								last;
+							}
+							unshift(
+								@missing_post,
+								{
+									name  => $station,
+									hafas => 1
+								}
+							);
+						}
+						push(
+							@{ $departures[-1]{route_post_diff} },
+							@missing_post
+						);
+					}
+				}
 				if ($route_ts) {
 					for my $elem (
 						@{ $departures[-1]{route_pre_diff} },
@@ -932,7 +991,8 @@ sub handle_request {
 						}
 					}
 				}
-				if ( $him and @{$him} ) {
+				if ( @{ $route_info->{messages} } ) {
+					my $him = $route_info->{messages};
 					my @him_messages;
 					$departures[-1]{messages}{him} = $him;
 					for my $message ( @{$him} ) {
