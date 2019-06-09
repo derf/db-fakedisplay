@@ -18,28 +18,28 @@
 % }
 
 	% my $av = 'v15'; # asset version
-	%= stylesheet "/static/${av}/default.css"
-	%= stylesheet "/static/${av}/material-icons.css"
-	%= stylesheet "/static/${av}/jquery-ui.min.css"
+	%= stylesheet "/static/${av}/css/default.css"
+	%= stylesheet "/static/${av}/css/material-icons.css"
+	%= stylesheet "/static/${av}/css/jquery-ui.min.css"
 % my $force_mobile = param('force_mobile') // stash('force_mobile');
 % if ($force_mobile) {
-	%= stylesheet "/static/${av}/mobile.css"
+	%= stylesheet "/static/${av}/css/mobile.css"
 % }
 	%if (stash('load_marquee')) {
-	%= javascript '/static/jquery-3.4.1.min.js'
-	%= javascript "/static/${av}/jquery-ui.min.js"
-	%= javascript "/static/${av}/dbf.min.js"
-	%= javascript "/static/${av}/marquee.min.js"
+	%= javascript '/static/js/jquery-3.4.1.min.js'
+	%= javascript "/static/${av}/js/jquery-ui.min.js"
+	%= javascript "/static/${av}/js/dbf.min.js"
+	%= javascript "/static/${av}/js/marquee.min.js"
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
 	% end
 	% } else {
-	%= javascript '/static/jquery-3.4.1.min.js', defer => undef
-	%= javascript "/static/${av}/jquery-ui.min.js", defer => undef
-	%= javascript "/static/${av}/dbf.min.js", defer => undef
+	%= javascript '/static/js/jquery-3.4.1.min.js', defer => undef
+	%= javascript "/static/${av}/js/jquery-ui.min.js", defer => undef
+	%= javascript "/static/${av}/js/dbf.min.js", defer => undef
 	% }
 	% if (stash('with_geolocation')) {
-	%= javascript "/static/${av}/geolocation.min.js", defer => undef
+	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
 	% }
 </head>
 <body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>
