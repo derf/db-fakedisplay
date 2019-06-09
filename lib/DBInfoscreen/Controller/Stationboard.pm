@@ -1088,11 +1088,13 @@ sub handle_request {
 			elsif ($departure->{train_type} eq 'IC'
 				or $departure->{train_type} eq 'ICE'
 				or $departure->{train_type} eq 'EC'
+				or $departure->{train_type} eq 'ECE'
 				or $departure->{train_type} eq 'EN' )
 			{
 				$linetype = 'fern';
 			}
 			elsif ($departure->{train_type} eq 'THA'
+				or $departure->{train_type} eq 'TGV'
 				or $departure->{train_type} eq 'FLX'
 				or $departure->{train_type} eq 'NJ' )
 			{
