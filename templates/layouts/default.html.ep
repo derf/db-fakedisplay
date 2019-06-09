@@ -42,8 +42,7 @@
 	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
 	% }
 </head>
-<body style="<%= (stash('hide_opts') ? 'margin: 0; padding: 0;' : q{}) %>
-<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
+<body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
 
 <div class="container">
 % if (my $error = stash 'error') {
