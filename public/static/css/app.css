@@ -188,7 +188,6 @@ div.app li .info {
 div.app .moreinfo {
 	font-size:2.1em;
 	position:fixed;
-	top:64px;
 	left:0;
 	right:0;
 	bottom:0em;
@@ -719,6 +718,9 @@ nav ul a {
 	}
 	div.navbar-fixed {
 		height: 64px;
+	}
+	.moreinfo {
+		top: 64px;
 	}
 	nav {
 		height: 64px;
