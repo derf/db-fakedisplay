@@ -38,7 +38,12 @@
 				%= stash('title') || 'DBF'
 			</span>
 			<ul id="nav-mobile" style="float: right;">
-				<li><a href="#stationinput"><i class="material-icons">edit</i></a></li>
+				% if (stash('hide_opts')) {
+					<li><a href="/"><i class="material-icons">edit</i></a></li>
+				% }
+				% else {
+					<li><a href="#stationinput"><i class="material-icons">edit</i></a></li>
+				% }
 				<li><a href="/_auto"><i class="material-icons">my_location</i></a></li>
 			</ul>
 		</div>

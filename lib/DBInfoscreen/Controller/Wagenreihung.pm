@@ -30,6 +30,8 @@ sub wagenreihung {
 
 	$self->render(
 		'wagenreihung',
+		title =>
+		  join( ' / ', map { $wr->train_type . ' ' . $_ } $wr->train_numbers ),
 		wr        => $wr,
 		hide_opts => 1,
 	);
