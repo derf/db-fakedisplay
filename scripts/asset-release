@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -ex
+
+current="$(find public/static/v* | tail -n 1 | grep -o '..$')"
+prev=$((current - 1))
+next=$((current + 1))
+
+git mv public/static/v${prev} public/static/v${next}
+
+perl -pi -e "s!/v${current}/!/v${next}/!g" \
+	public/static/css/material-icons.css
+
+perl -pi -e "s!av = 'v${current}'!av = 'v${next}'!" \
+	templates/layouts/app.html.ep templates/layouts/legacy.html.ep
