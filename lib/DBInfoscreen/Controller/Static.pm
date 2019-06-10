@@ -10,6 +10,8 @@ my %default = (
 	admode  => 'deparr',
 );
 
+my $dbf_version = qx{git describe --dirty} || 'experimental';
+
 sub redirect {
 	my ($self)  = @_;
 	my $station = $self->param('station');
@@ -46,7 +48,11 @@ sub geolocation {
 sub about {
 	my ($self) = @_;
 
-	$self->render( 'about', hide_opts => 1 );
+	$self->render(
+		'about',
+		hide_opts => 1,
+		version   => $dbf_version
+	);
 }
 
 sub privacy {
