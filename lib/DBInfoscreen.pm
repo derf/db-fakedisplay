@@ -261,7 +261,7 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 
-	$self->defaults( layout => 'default' );
+	$self->defaults( layout => 'app' );
 	$self->sessions->default_expiration( 3600 * 24 * 28 );
 
 	$r->get('/')->to('stationboard#handle_request');
@@ -270,12 +270,12 @@ sub startup {
 
 	$self->config(
 		hypnotoad => {
-			accepts  => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
-			clients  => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
+			accepts => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
+			clients => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
 			listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
 			pid_file => $ENV{DBFAKEDISPLAY_PID_FILE}
 			  // '/tmp/db-fakedisplay.pid',
-			spare   => $ENV{DBFAKEDISPLAY_SPARE} // 2,
+			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
 			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 		},
 	);

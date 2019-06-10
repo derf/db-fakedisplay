@@ -373,22 +373,22 @@ sub handle_request {
 	my $via     = $self->param('via');
 
 	my @platforms = split( /,/, $self->param('platforms') // q{} );
-	my @lines     = split( /,/, $self->param('lines') // q{} );
-	my $template  = $self->param('mode') // 'app';
-	my $hide_low_delay = $self->param('hidelowdelay') // 0;
-	my $hide_opts      = $self->param('hide_opts') // 0;
+	my @lines     = split( /,/, $self->param('lines')     // q{} );
+	my $template       = $self->param('mode')          // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
+	my $hide_opts      = $self->param('hide_opts')     // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $show_details   = $self->param('detailed') // 0;
-	my $backend        = $self->param('backend') // 'iris';
-	my $admode         = $self->param('admode') // 'deparr';
-	my $dark_layout    = $self->param('dark') // 0;
-	my $apiver         = $self->param('version') // 0;
+	my $show_details   = $self->param('detailed')      // 0;
+	my $backend        = $self->param('backend')       // 'iris';
+	my $admode         = $self->param('admode')        // 'deparr';
+	my $dark_layout    = $self->param('dark')          // 0;
+	my $apiver         = $self->param('version')       // 0;
 	my $callback       = $self->param('callback');
 	my $with_related   = !$self->param('no_related');
 	my $save_defaults  = $self->param('save_defaults') // 0;
-	my $limit          = $self->param('limit') // 0;
-	my @train_types    = split( /,/, $self->param('train_types') // q{} );
-	my %opt            = (
+	my $limit          = $self->param('limit')         // 0;
+	my @train_types = split( /,/, $self->param('train_types') // q{} );
+	my %opt         = (
 		cache_hafas     => $self->app->cache_hafas,
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
@@ -423,6 +423,9 @@ sub handle_request {
 	elsif ( defined $station and $station =~ s{ [.] json $ }{}x ) {
 		$template = 'json';
 	}
+	elsif ( $template ne 'app' ) {
+		$self->stash( layout => 'legacy' );
+	}
 
 	# Historically, there were two JSON APIs: 'json' (undocumented, raw
 	# passthrough of serialized Travel::Status::DE::IRIS::Result /
@@ -452,11 +455,7 @@ sub handle_request {
 				$self->param( $param => $self->session($param) );
 			}
 		}
-		$self->render(
-			'landingpage',
-			hide_opts  => 0,
-			show_intro => 1
-		);
+		$self->render( 'landingpage', show_intro => 1 );
 		return;
 	}
 
@@ -554,7 +553,7 @@ sub handle_request {
 
 	for my $result (@results) {
 		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
-		my $delay = $result->delay;
+		my $delay    = $result->delay;
 		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
 		{
 			next;
