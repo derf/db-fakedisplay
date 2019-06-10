@@ -665,7 +665,6 @@ nav i, nav i.material-icons {
 nav .brand-logo {
 	position: absolute;
 	display: inline-block;
-	font-size: 2.1rem;
 	padding-left: 0.5rem;
 }
 
@@ -705,6 +704,9 @@ nav ul a {
 		height: 56px;
 		line-height: 56px;
 	}
+	nav .brand-logo {
+		font-size: 1.5rem;
+	}
 	nav .nav-wrapper i {
 		height: 56px;
 		line-height: 56px;
@@ -721,6 +723,9 @@ nav ul a {
 	nav {
 		height: 64px;
 		line-height: 64px;
+	}
+	nav .brand-logo {
+		font-size: 2.1rem;
 	}
 	nav .nav-wrapper i {
 		height: 64px;
