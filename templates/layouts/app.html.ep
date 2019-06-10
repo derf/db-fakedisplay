@@ -29,7 +29,7 @@
 	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
 	% }
 </head>
-<body>
+<body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
 
 <div class="navbar-fixed">
 	<nav style="color: #ffffff; background-color: #00838f;">
