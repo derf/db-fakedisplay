@@ -9,9 +9,6 @@
 % else {
   <div class="container">
     <div style="text-align: center;">
-%=    join(' / ', map { $wr->train_type . ' ' . $_ } $wr->train_numbers )
-    </div>
-    <div style="text-align: center;">
 %=    join( ' / ', $wr->origins )
       →
 %=    join( ' / ', map { $_->{name} } $wr->destinations )
