@@ -936,6 +936,10 @@ sub handle_request {
 								@iris_stations
 							  )
 							{
+								unshift(
+									@{ $departures[-1]{route_pre_diff} },
+									@missing_pre
+								);
 								last;
 							}
 							push(
@@ -946,10 +950,6 @@ sub handle_request {
 								}
 							);
 						}
-						unshift(
-							@{ $departures[-1]{route_pre_diff} },
-							@missing_pre
-						);
 					}
 					if ( my @iris_stations
 						= @{ $departures[-1]{route_post_diff} } )
@@ -961,6 +961,10 @@ sub handle_request {
 								@iris_stations
 							  )
 							{
+								push(
+									@{ $departures[-1]{route_post_diff} },
+									@missing_post
+								);
 								last;
 							}
 							unshift(
@@ -971,10 +975,6 @@ sub handle_request {
 								}
 							);
 						}
-						push(
-							@{ $departures[-1]{route_post_diff} },
-							@missing_post
-						);
 					}
 				}
 				if ($route_ts) {
