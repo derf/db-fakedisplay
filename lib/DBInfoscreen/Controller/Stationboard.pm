@@ -196,15 +196,26 @@ sub hafas_xml_req {
 
 # quick&dirty, will be cleaned up later
 sub get_route_timestamps {
-	my ( $ua, $cache_main, $cache_rt, $train ) = @_;
+	my ( $ua, $cache_main, $cache_rt, $opt ) = @_;
 
 	$ua->request_timeout(3);
 
 	my $base
 	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json&start=yes&rt=1';
-	my $date_yy   = $train->start->strftime('%d.%m.%y');
-	my $date_yyyy = $train->start->strftime('%d.%m.%Y');
-	my $train_no  = $train->type . ' ' . $train->train_no;
+	my ( $date_yy, $date_yyyy, $train_no, $train_origin );
+
+	if ( $opt->{train} ) {
+		$date_yy      = $opt->{train}->start->strftime('%d.%m.%y');
+		$date_yyyy    = $opt->{train}->start->strftime('%d.%m.%Y');
+		$train_no     = $opt->{train}->type . ' ' . $opt->{train}->train_no;
+		$train_origin = $opt->{train}->origin;
+	}
+	else {
+		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+		$date_yy   = $now->strftime('%d.%m.%y');
+		$date_yyyy = $now->strftime('%d.%m.%Y');
+		$train_no  = $opt->{train_no};
+	}
 
 	my $trainsearch = hafas_json_req( $ua, $cache_main,
 		"${base}&date=${date_yy}&trainname=${train_no}" );
@@ -223,8 +234,16 @@ sub get_route_timestamps {
 		if (   $suggestion->{depDate} eq $date_yy
 			or $suggestion->{depDate} eq $date_yyyy )
 		{
-			$trainlink = $suggestion->{trainLink};
-			last;
+			# Train numbers are not unique, e.g. IC 149 refers both to the
+			# InterCity service Amsterdam -> Berlin and to the InterCity service
+			# Koebenhavns Lufthavn st -> Aarhus.  One workaround is making
+			# requests with the stationFilter=80 parameter.  Checking the origin
+			# station seems to be the more generic solution, so we do that
+			# instead.
+			if ( $train_origin and $suggestion->{dep} eq $train_origin ) {
+				$trainlink = $suggestion->{trainLink};
+				last;
+			}
 		}
 	}
 
@@ -918,7 +937,8 @@ sub handle_request {
 				my ( $route_ts, $route_info ) = get_route_timestamps(
 					$self->ua,
 					$self->app->cache_iris_main,
-					$self->app->cache_iris_rt, $result
+					$self->app->cache_iris_rt,
+					{ train => $result }
 				);
 
              # If a train number changes on the way, IRIS routes are incomplete,
