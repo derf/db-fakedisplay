@@ -219,7 +219,7 @@ sub startup {
 					$sched_idx++;
 				}
 			}
-			while ( $route_idx < $#route ) {
+			while ( $route_idx <= $#route ) {
 				push(
 					@json_route,
 					{
@@ -230,7 +230,7 @@ sub startup {
 				);
 				$route_idx++;
 			}
-			while ( $sched_idx < $#sched_route ) {
+			while ( $sched_idx <= $#sched_route ) {
 				push(
 					@json_route,
 					{
