@@ -253,7 +253,7 @@ sub get_route_timestamps {
 
 	$base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
 
-	my $traininfo = hafas_json_req( $ua, $cache_main,
+	my $traininfo = hafas_json_req( $ua, $cache_rt,
 		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json" );
 
 	if ( not $traininfo or $traininfo->{error} ) {
