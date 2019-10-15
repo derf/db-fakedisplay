@@ -13,6 +13,7 @@ function dbf_reg_handlers() {
 		var trainElem = $(this);
 		var routeprev = trainElem.data('routeprev').split('|');
 		var routenext = trainElem.data('routenext').split('|');
+		var moreinfo = trainElem.data('moreinfo').split('|');
 		$('.moreinfo').each(function() {
 			var infoElem = $(this);
 			$('.moreinfo .train-line').removeClass('bahn sbahn fern ext').addClass(trainElem.data('linetype'));
@@ -21,29 +22,37 @@ function dbf_reg_handlers() {
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
 			$('.moreinfo .train-dest').text(trainElem.data('to'));
 			$('.moreinfo .minfo').text('');
-			$('.moreinfo .mfooter').html('<div style="text-align: center; width: 100%; color: #888888;">Lade Daten, bitte warten...</div>');
+			$('.moreinfo .mheader').append('<div style="text-align: center; width: 100%; color: #888888;">Lade Daten, bitte warten...</div>');
+			$('.moreinfo .mfooter').html('');
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');
-			if (trainElem.data('platform').length > 0) {
-				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + '</div>')
+			if (trainElem.data('platform') != '') {
+				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + '</div>');
 			}
 			var timebuf = '';
-			if (trainElem.data('arrival').length > 0) {
+			if (trainElem.data('arrival') != '') {
 				timebuf += 'Ankunft: ' + trainElem.data('arrival') + '<br/>';
 			}
-			if (trainElem.data('departure').length > 0) {
+			if (trainElem.data('departure') != '') {
 				timebuf += 'Abfahrt: ' + trainElem.data('departure');
 			}
 			$('.moreinfo .mfooter').append('<div class="timeinfo">' + timebuf + '</div>');
-			if (trainElem.data('routeprev').length > 0) {
+			if (trainElem.data('moreinfo') != '') {
+				var ibuf = '';
+				for (var key in moreinfo) {
+					ibuf += '<li>' + moreinfo[key] + '</li>';
+				}
+				$('.moreinfo .mfooter').append('Meldungen: <ul>' + ibuf + '</ul>');
+			}
+			if (trainElem.data('routeprev') != '') {
 				var routebuf = '';
 				for (var key in routeprev) {
 					routebuf += '<li>' + routeprev[key] + '</li>';
 				}
 				$('.moreinfo .mfooter').append('Von: <ul class="mroute">' + routebuf + '</ul>');
 			}
-			if (trainElem.data('routenext').length > 0) {
+			if (trainElem.data('routenext') != '') {
 				var routebuf = '';
 				for (var key in routenext) {
 					routebuf += '<li>' + routenext[key] + '</li>';

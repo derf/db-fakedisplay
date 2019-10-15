@@ -61,6 +61,7 @@
       data-platform="<%= $departure->{scheduled_platform} // $departure->{platform} // '' %>"
       data-arrival="<%= $departure->{sched_arrival} // '' %>"
       data-departure="<%= $departure->{sched_departure} // '' %>"
+      data-moreinfo="<%= join(q{|}, map { ($_->[0]->isa('DateTime') ? $_->[0]->strftime('%H:%M') : $_->[0]) . ' ' . $_->[1] } @{ $departure->{moreinfo} // [] } ) %>"
       data-routeprev="<%= join(q{|}, @{ $departure->{route_pre} // [] } ) %>"
       data-routenext="<%= join(q{|}, @{ $departure->{route_post} // [] } ) %>"
 %   my $extraclasses = q{};
