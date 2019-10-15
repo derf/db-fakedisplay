@@ -853,8 +853,8 @@ sub handle_request {
 				@departures,
 				[
 					sprintf( '%5s %s%s',
-						$result->is_cancelled ? '--:--' : $time,
-						( $delay and $delay > 0 ) ? q{+} : q{},
+						$result->is_cancelled     ? '--:--' : $time,
+						( $delay and $delay > 0 ) ? q{+}    : q{},
 						$delay || q{} ),
 					$result->train,
 					$result->destination,
@@ -904,6 +904,8 @@ sub handle_request {
 					},
 					moreinfo         => $moreinfo,
 					delay            => $delay,
+					route_pre        => [ $result->route_pre ],
+					route_post       => [ $result->route_post ],
 					additional_stops => [ $result->additional_stops ],
 					canceled_stops   => [ $result->canceled_stops ],
 					replaced_by      => [
@@ -920,14 +922,12 @@ sub handle_request {
 				}
 			);
 			if ( $self->param('train') ) {
-				$departures[-1]{route_pre}      = [ $result->route_pre ];
 				$departures[-1]{route_pre_diff} = [
 					$self->json_route_diff(
 						[ $result->route_pre ],
 						[ $result->sched_route_pre ]
 					)
 				];
-				$departures[-1]{route_post}      = [ $result->route_post ];
 				$departures[-1]{route_post_diff} = [
 					$self->json_route_diff(
 						[ $result->route_post ],

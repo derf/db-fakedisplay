@@ -58,6 +58,11 @@
       data-linetype="<%= $linetype %>"
       data-from="<%= $departure->{origin} // q{???} %>"
       data-to="<%= $departure->{destination} // q{???} %>"
+      data-platform="<%= $departure->{scheduled_platform} // $departure->{platform} // '' %>"
+      data-arrival="<%= $departure->{sched_arrival} // '' %>"
+      data-departure="<%= $departure->{sched_departure} // '' %>"
+      data-routeprev="<%= join(q{|}, @{ $departure->{route_pre} // [] } ) %>"
+      data-routenext="<%= join(q{|}, @{ $departure->{route_post} // [] } ) %>"
 %   my $extraclasses = q{};
 %   if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
 %     $extraclasses .= ' cancelled';

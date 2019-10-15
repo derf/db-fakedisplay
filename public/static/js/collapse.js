@@ -11,6 +11,8 @@ function reload_app() {
 function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function() {
 		var trainElem = $(this);
+		var routeprev = trainElem.data('routeprev').split('|');
+		var routenext = trainElem.data('routenext').split('|');
 		$('.moreinfo').each(function() {
 			var infoElem = $(this);
 			$('.moreinfo .train-line').removeClass('bahn sbahn fern ext').addClass(trainElem.data('linetype'));
@@ -23,10 +25,35 @@ function dbf_reg_handlers() {
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');
+			if (trainElem.data('platform').length > 0) {
+				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + '</div>')
+			}
+			var timebuf = '';
+			if (trainElem.data('arrival').length > 0) {
+				timebuf += 'Ankunft: ' + trainElem.data('arrival') + '<br/>';
+			}
+			if (trainElem.data('departure').length > 0) {
+				timebuf += 'Abfahrt: ' + trainElem.data('departure');
+			}
+			$('.moreinfo .mfooter').append('<div class="timeinfo">' + timebuf + '</div>');
+			if (trainElem.data('routeprev').length > 0) {
+				var routebuf = '';
+				for (var key in routeprev) {
+					routebuf += '<li>' + routeprev[key] + '</li>';
+				}
+				$('.moreinfo .mfooter').append('Von: <ul class="mroute">' + routebuf + '</ul>');
+			}
+			if (trainElem.data('routenext').length > 0) {
+				var routebuf = '';
+				for (var key in routenext) {
+					routebuf += '<li>' + routenext[key] + '</li>';
+				}
+				$('.moreinfo .mfooter').append('Nach: <ul class="mroute">' + routebuf + '</ul>');
+			}
 			$.get(window.location.href, {train: trainElem.data('train'), ajax: 1}, function(data) {
 				$('.moreinfo').html(data);
 			}).fail(function() {
-				$('.moreinfo .mfooter').html('Der Zug ist abgefahren (Zug nicht gefunden)');
+				$('.moreinfo .mfooter').append('Der Zug ist abgefahren (Zug nicht gefunden)');
 			});
 			infoElem.removeClass('collapsed-moreinfo');
 			infoElem.addClass('expanded-moreinfo');
