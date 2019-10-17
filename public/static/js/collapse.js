@@ -21,8 +21,10 @@ function dbf_reg_handlers() {
 			$('.moreinfo .train-no').text(trainElem.data('no'));
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
 			$('.moreinfo .train-dest').text(trainElem.data('to'));
+			if ($('.moreinfo .loading').length == 0) {
+				$('.moreinfo .mheader').append('<div class="loading">Lade Daten, bitte warten...</div>');
+			}
 			$('.moreinfo .minfo').text('');
-			$('.moreinfo .mheader').append('<div style="text-align: center; width: 100%; color: #888888;">Lade Daten, bitte warten...</div>');
 			$('.moreinfo .mfooter').html('');
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');

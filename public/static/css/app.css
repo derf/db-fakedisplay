@@ -235,6 +235,12 @@ div.app .moreinfo .mfooter {
 	padding-right: 1em;
 }
 
+div.app .moreinfo .loading {
+	text-align: center;
+	width: 100%;
+	color: #888888;
+}
+
 div.app .moreinfo .reason,
 div.app .moreinfo .minfo {
 	color: #ff0000;
