@@ -519,15 +519,24 @@ sub handle_request {
 	if ( $template eq 'single' ) {
 		if ( not @platforms ) {
 			for my $result (@results) {
-				if ( not( $result->platform ~~ \@platforms ) ) {
-					push( @platforms, $result->platform );
+				if (
+					not( $self->numeric_platform_part( $result->platform ) ~~
+						\@platforms )
+				  )
+				{
+					push( @platforms,
+						$self->numeric_platform_part( $result->platform ) );
 				}
 			}
 			@platforms = sort { $a <=> $b } @platforms;
 		}
 		my %pcnt;
-		@results = grep { $pcnt{ $_->platform }++ < 1 } @results;
-		@results = sort { $a->platform <=> $b->platform } @results;
+		@results
+		  = grep { $pcnt{ $self->numeric_platform_part( $_->platform ) }++ < 1 }
+		  @results;
+		@results = map { $_->[1] }
+		  sort { $a->[0] <=> $b->[0] }
+		  map { [ $self->numeric_platform_part( $_->platform ), $_ ] } @results;
 	}
 
 	if ( $backend eq 'iris' and $show_realtime ) {

@@ -245,6 +245,26 @@ sub startup {
 		}
 	);
 
+	$self->helper(
+		'numeric_platform_part' => sub {
+			my ( $self, $platform ) = @_;
+
+			if ( not defined $platform ) {
+				return 0;
+			}
+
+			if ( $platform =~ m{ ^ \d+ $ }x ) {
+				return $platform;
+			}
+
+			if ( $platform =~ m{ (\d+) }x ) {
+				return $1;
+			}
+
+			return 0;
+		}
+	);
+
 	my $r = $self->routes;
 
 	$r->get('/_redirect')->to('static#redirect');

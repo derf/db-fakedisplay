@@ -6,7 +6,7 @@
 % $i++;
 <div class="display">
 <div class="platform">
-%= $departure->{platform}
+%= numeric_platform_part($departure->{platform})
 </div>
 <div class="time">
 %= $departure->{time}
