@@ -231,8 +231,11 @@ sub get_route_timestamps {
 	for my $suggestion ( @{ $trainsearch->{suggestions} // [] } ) {
 
        # Drunken API, sail with care. Both date formats are used interchangeably
-		if (   $suggestion->{depDate} eq $date_yy
-			or $suggestion->{depDate} eq $date_yyyy )
+		if (
+			exists $suggestion->{depDate}
+			and (  $suggestion->{depDate} eq $date_yy
+				or $suggestion->{depDate} eq $date_yyyy )
+		  )
 		{
 			# Train numbers are not unique, e.g. IC 149 refers both to the
 			# InterCity service Amsterdam -> Berlin and to the InterCity service
@@ -954,7 +957,9 @@ sub handle_request {
              # whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
              # stops. This is a rare case, one point where it can be observed is
              # the TGV service at Frankfurt/Karlsruhe/Mannheim.
-				if ( my @hafas_stations = @{ $route_info->{stations} } ) {
+				if ( $route_info
+					and my @hafas_stations = @{ $route_info->{stations} } )
+				{
 					if ( my @iris_stations
 						= @{ $departures[-1]{route_pre_diff} } )
 					{
