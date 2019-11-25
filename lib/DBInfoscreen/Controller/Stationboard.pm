@@ -1024,7 +1024,7 @@ sub handle_request {
 						}
 					}
 				}
-				if ( @{ $route_info->{messages} } ) {
+				if ( $route_info and @{ $route_info->{messages} } ) {
 					my $him = $route_info->{messages};
 					my @him_messages;
 					$departures[-1]{messages}{him} = $him;
