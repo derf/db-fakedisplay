@@ -1034,6 +1034,12 @@ sub handle_request {
 								[ $message->{header}, $message->{lead} ] );
 						}
 					}
+					for my $message ( @{ $departures[-1]{moreinfo} // [] } ) {
+						my $m = $message->[1];
+						@him_messages
+						  = grep { $_->[0] !~ m{Information\. $m\.$} }
+						  @him_messages;
+					}
 					unshift( @{ $departures[-1]{moreinfo} }, @him_messages );
 				}
 			}
