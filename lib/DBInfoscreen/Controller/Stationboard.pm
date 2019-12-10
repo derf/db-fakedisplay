@@ -102,6 +102,29 @@ sub log_api_access {
 	return;
 }
 
+sub check_wagonorder {
+	my ( $ua, $cache, $train, $wr_link ) = @_;
+
+	my $url
+	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train}/${wr_link}";
+
+	if ( my $content = $cache->get($url) ) {
+		return $content eq 'y' ? 1 : undef;
+	}
+
+	$ua->request_timeout(2);
+	my $res = $ua->head($url)->result;
+
+	if ( $res->is_error ) {
+		$cache->set( $url, 'n' );
+		return;
+	}
+	else {
+		$cache->set( $url, 'y' );
+		return 1;
+	}
+}
+
 sub hafas_json_req {
 	my ( $ua, $cache, $url ) = @_;
 
@@ -946,6 +969,18 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
+
+				if (
+					$departures[-1]{wr_link}
+					and not check_wagonorder(
+						$self->ua,         $self->app->cache_iris_main,
+						$result->train_no, $departures[-1]{wr_link}
+					)
+				  )
+				{
+					$departures[-1]{wr_link} = undef;
+				}
+
 				my ( $route_ts, $route_info ) = get_route_timestamps(
 					$self->ua,
 					$self->app->cache_iris_main,
