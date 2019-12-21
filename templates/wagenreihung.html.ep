@@ -20,11 +20,11 @@
   </div>
   </div>
   <div class="container">
-    <div style="position: relative; width: 100%; height: 100ex;">
+    <div class="wagonorder">
 %     if (not $wr->has_bad_wagons) {
 %       for my $section ($wr->sections) {
-          <div style="position: absolute; left: 1em; width: 2em;
-          top: <%= $section->{start_percent} %>%; bottom: <%= 100 - $section->{end_percent} %>%; text-align: center;">
+          <div class="section" style="
+          top: <%= $section->{start_percent} %>%; bottom: <%= 100 - $section->{end_percent} %>%;">
 %=          $section->{name}
           </div>
 %       }
@@ -37,7 +37,7 @@
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         $bg = 'background-color: #cccccc;';
 %       }
-        <div style="position: absolute; left: 10em;
+        <div class="direction" style="
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %         if ($wr->has_bad_wagons) {
 %         }
@@ -48,12 +48,9 @@
             ↑
 %         }
         </div>
-        <div style="position: absolute; left: 3em;
-        top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;
-        min-width: 6em;
-        border: 1px solid #999999; padding-left: 0.2em; padding-right: 0.2em; <%= $bg %>">
+        <div class="wagon" style="
+        top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%; <%= $bg %>">
 %         if ($wagon->is_locomotive or $wagon->is_powercar) {
-            LOK
 %         }
 %         else {
 %=          $wagon->number // '?'
@@ -80,18 +77,18 @@
 %           }
 %         }
         </div>
-        <div style="position: absolute; left: 11em; right: 0em;
+        <div class="details" style="
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %         if ($wagon->is_first_class) {
-            <span style="display: inline-block; width: 0.8em; text-align: center; color: #ffffff; background-color: #666666; border: 1px solid #666666;">1</span>
+            <span class="firstclass">1</span>
 %         }
 %         elsif ($wagon->is_second_class) {
-            <span style="display: inline-block; width: 0.8em; text-align: center; color: #666666; border: 1px solid #666666;">2</span>
+            <span class="secondclass">2</span>
 %         }
 %         else {
-            <span style="display: inline-block; width: 0.8em;"></span>
+            <span class="noclass"></span>
 %         }
-          <span style="display: inline-block; width: 5em; color: #666666;">
+          <span class="type">
 %=          $wagon->type
           </span>
 %         my $uic_id = $wagon->uic_id;
