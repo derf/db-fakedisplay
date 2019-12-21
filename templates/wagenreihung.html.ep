@@ -20,7 +20,7 @@
   </div>
   </div>
   <div class="container">
-    <div style="position: relative; width: 100%; height: 70ex;">
+    <div style="position: relative; width: 100%; height: 100ex;">
 %     if (not $wr->has_bad_wagons) {
 %       for my $section ($wr->sections) {
           <div style="position: absolute; left: 1em; width: 2em;
