@@ -37,7 +37,7 @@
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         $bg = 'background-color: #cccccc;';
 %       }
-        <div style="position: absolute; left: 6em;
+        <div style="position: absolute; left: 10em;
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %         if ($wr->has_bad_wagons) {
 %         }
@@ -50,50 +50,60 @@
         </div>
         <div style="position: absolute; left: 3em;
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;
-        min-width: 2em; text-align: right;
-        border: 1px solid black; padding-left: 0.2em; padding-right: 0.2em; <%= $bg %>">
+        min-width: 6em;
+        border: 1px solid #999999; padding-left: 0.2em; padding-right: 0.2em; <%= $bg %>">
 %         if ($wagon->is_locomotive or $wagon->is_powercar) {
             LOK
 %         }
 %         else {
 %=          $wagon->number // '?'
+%           if ($wagon->has_accessibility) {
+              <i class="material-icons" style="font-size: 20px;">accessible</i>
+%           }
+%           if ($wagon->has_bistro) {
+              <i class="material-icons">restaurant</i>
+%           }
+%           if ($wagon->has_compartments) {
+              <!--<i class="material-icons">folder</i>-->
+%           }
+%           if ($wagon->has_quiet_area) {
+              <i class="tiny material-icons">volume_off</i>
+%           }
+%           if ($wagon->has_phone_area) {
+              <i class="material-icons">smartphone</i>
+%           }
+%           if ($wagon->has_family_area) {
+              <i class="material-icons">people</i>
+%           }
+%           if ($wagon->has_bahn_comfort) {
+              <i class="material-icons">star</i>
+%           }
 %         }
         </div>
-        <div style="position: absolute; left: 7em; right: 0em;
+        <div style="position: absolute; left: 11em; right: 0em;
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %         if ($wagon->is_first_class) {
             <span style="display: inline-block; width: 0.8em; text-align: center; color: #ffffff; background-color: #666666; border: 1px solid #666666;">1</span>
 %         }
-%         if ($wagon->is_second_class) {
+%         elsif ($wagon->is_second_class) {
             <span style="display: inline-block; width: 0.8em; text-align: center; color: #666666; border: 1px solid #666666;">2</span>
 %         }
-%         if ($wagon->has_accessibility) {
-            <i class="material-icons">accessible</i>
+%         else {
+            <span style="display: inline-block; width: 0.8em;"></span>
 %         }
-%         if ($wagon->has_bistro) {
-            <i class="material-icons">restaurant</i>
-%         }
-%         if ($wagon->has_compartments) {
-            <!--<i class="material-icons">folder</i>-->
-%         }
-%         if ($wagon->has_quiet_area) {
-            <i class="material-icons">volume_off</i>
-%         }
-%         if ($wagon->has_phone_area) {
-            <i class="material-icons">smartphone</i>
-%         }
-%         if ($wagon->has_family_area) {
-            <i class="material-icons">people</i>
-%         }
-%         if ($wagon->has_bahn_comfort) {
-            <i class="material-icons">star</i>
-%         }
-%         if ($wagon->is_interregio) {
-            
-%         }
-          <span style="color: #999999;">
+          <span style="display: inline-block; width: 5em; color: #666666;">
 %=          $wagon->type
           </span>
+%         my $uic_id = $wagon->uic_id;
+%         if (length($uic_id) != 12) {
+            <span style="color: #666666;"><%= $uic_id %></span>
+%         }
+%         elsif ($wr->train_type eq 'ICE') {
+            <span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 0, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 2, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 4, 1) %></span><span style="margin-right: 0.2em; font-weight: bold;"><%= substr($uic_id, 5, 3) %></span><span><%= substr($uic_id, 8, 3) %></span><span style="color: #999999;">-<%= substr($uic_id, 11) %></span>
+%         }
+%         else {
+            <span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 0, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 2, 2) %></span><span style="font-weight: bold;"><%= substr($uic_id, 4, 2) %></span>-<span style="margin-right: 0.2em; font-weight: bold;"><%= substr($uic_id, 6, 2) %></span><span><%= substr($uic_id, 8, 3) %></span><span style="color: #999999;">-<%= substr($uic_id, 11) %></span>
+%         }
         </div>
 %     }
       </div>
