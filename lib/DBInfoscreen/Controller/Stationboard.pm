@@ -993,7 +993,8 @@ sub handle_request {
              # stops. This is a rare case, one point where it can be observed is
              # the TGV service at Frankfurt/Karlsruhe/Mannheim.
 				if ( $route_info
-					and my @hafas_stations = @{ $route_info->{stations} } )
+					and my @hafas_stations
+					= @{ $route_info->{stations} // [] } )
 				{
 					if ( my @iris_stations
 						= @{ $departures[-1]{route_pre_diff} } )
@@ -1059,7 +1060,7 @@ sub handle_request {
 						}
 					}
 				}
-				if ( $route_info and @{ $route_info->{messages} } ) {
+				if ( $route_info and @{ $route_info->{messages} // [] } ) {
 					my $him = $route_info->{messages};
 					my @him_messages;
 					$departures[-1]{messages}{him} = $him;
@@ -1173,6 +1174,11 @@ sub handle_request {
 				or $departure->{train_type} eq 'NJ' )
 			{
 				$linetype = 'ext';
+			}
+			elsif ( $departure->{train_line}
+				and $departure->{train_line} =~ m{^S\d} )
+			{
+				$linetype = 'sbahn';
 			}
 
 			$self->render(

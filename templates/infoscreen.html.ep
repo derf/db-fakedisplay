@@ -43,6 +43,9 @@
 %          or $departure->{train_type} eq 'NJ') {
 %     $linetype = 'ext';
 %   }
+%   elsif ( $departure->{train_line} and $departure->{train_line} =~ m{^S\d} ) {
+%     $linetype = 'sbahn';
+%   }
     <div class="line <%= $linetype %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}

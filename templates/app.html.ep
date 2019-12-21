@@ -51,6 +51,9 @@
 %          or $departure->{train_type} eq 'NJ') {
 %     $linetype = 'ext';
 %   }
+%   elsif ( $departure->{train_line} and $departure->{train_line} =~ m{^S\d} ) {
+%     $linetype = 'sbahn';
+%   }
     <li
       data-train="<%= ($departure->{train_type} // q{}) %> <%= ($departure->{train_no} // $departure->{train} // q{}) %>"
       data-line="<%= $departure->{train_type} %> <%= $departure->{train_line} // $departure->{train_no} %>"
