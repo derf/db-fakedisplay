@@ -42,11 +42,6 @@ div.content {
 	text-align: center;
 }
 
-.wagonorder .direction {
-	position: absolute;
-	left: 10em;
-}
-
 .wagonorder .wagon {
 	position: absolute;
 	left: 3em;
@@ -60,38 +55,78 @@ div.content {
 	border-top: none;
 }
 
-.wagonorder .details {
+.wagonorder .wagon .direction {
 	position: absolute;
-	left: 11em;
-	right: 0em;
-}
-
-.wagonorder .details .firstclass {
-	display: inline-block;
-	width: 0.8em;
-	text-align: center;
-	color: #ffffff;
-	background-color: #666666;
-	border: 1px solid #666666;
-}
-
-.wagonorder .details .secondclass {
-	display: inline-block;
-	width: 0.8em;
+	left: 0.2em;
+	bottom: 0;
+	right: 0;
 	text-align: center;
 	color: #666666;
-	border: 1px solid #666666;
 }
 
-.wagonorder .details .noclass {
-	display: inline-block;
-	width: 0.8em;
+.wagonorder .details {
+	position: absolute;
+	padding-top: 0.5ex;
+	left: 10em;
+	right: 0em;
 }
 
 .wagonorder .details .type {
 	display: inline-block;
 	width: 5em;
 	color: #666666;
+}
+
+.wagonorder .details .uicunknown {
+	color: #999999;
+}
+
+.wagonorder .details .uicexchange {
+	margin-right: 0.2em;
+	color: #999999;
+}
+
+.wagonorder .details .uiccountry {
+	margin-right: 0.2em;
+	color: #999999;
+}
+
+.wagonorder .details .uic5 {
+	margin-right: 0.2em;
+	color: #999999;
+}
+
+.wagonorder .details .uic56 {
+	color: #666666;
+	font-weight: bold;
+}
+
+.wagonorder .details .uic78 {
+	margin-right: 0.2em;
+	color: #666666;
+	font-weight: bold;
+}
+
+.wagonorder .details .uic78::before {
+	content: "-";
+}
+
+.wagonorder .details .uictype {
+	margin-right: 0.2em;
+	color: #666666;
+	font-weight: bold;
+}
+
+.wagonorder .details .uicno {
+	color: #666666;
+}
+
+.wagonorder .details .uiccheck {
+	color: #999999;
+}
+
+.wagonorder .details .uiccheck::before {
+	content: "-";
 }
 
 div.app {

@@ -37,17 +37,6 @@
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         $bg = 'background-color: #cccccc;';
 %       }
-        <div class="direction" style="
-        top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
-%         if ($wr->has_bad_wagons) {
-%         }
-%         elsif ($wr->direction == 100) {
-            ↓
-%         }
-%         else {
-            ↑
-%         }
-        </div>
         <div class="wagon" style="
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%; <%= $bg %>">
 %         if ($wagon->is_locomotive or $wagon->is_powercar) {
@@ -76,30 +65,31 @@
               <i class="material-icons">star</i>
 %           }
 %         }
+        <div class="direction">
+%         if ($wr->has_bad_wagons) {
+%         }
+%         elsif ($wr->direction == 100) {
+            <i class="material-icons">arrow_downward</i>
+%         }
+%         else {
+            <i class="material-icons">arrow_upward</i>
+%         }
+        </div>
         </div>
         <div class="details" style="
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
-%         if ($wagon->is_first_class) {
-            <span class="firstclass">1</span>
-%         }
-%         elsif ($wagon->is_second_class) {
-            <span class="secondclass">2</span>
-%         }
-%         else {
-            <span class="noclass"></span>
-%         }
           <span class="type">
 %=          $wagon->type
           </span>
 %         my $uic_id = $wagon->uic_id;
 %         if (length($uic_id) != 12) {
-            <span style="color: #666666;"><%= $uic_id %></span>
+            <span class="uicunknown"><%= $uic_id %></span>
 %         }
 %         elsif ($wr->train_type eq 'ICE') {
-            <span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 0, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 2, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 4, 1) %></span><span style="margin-right: 0.2em; font-weight: bold;"><%= substr($uic_id, 5, 3) %></span><span><%= substr($uic_id, 8, 3) %></span><span style="color: #999999;">-<%= substr($uic_id, 11) %></span>
+            <span class="uicexchange"><%= substr($uic_id, 0, 2) %></span><span class="uiccountry"><%= substr($uic_id, 2, 2) %></span><span class="uic5"><%= substr($uic_id, 4, 1) %></span><span class="uictype"><%= substr($uic_id, 5, 3) %></span><span class="uicno"><%= substr($uic_id, 8, 3) %></span><span class="uiccheck"><%= substr($uic_id, 11) %></span>
 %         }
 %         else {
-            <span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 0, 2) %></span><span style="margin-right: 0.2em; color: #999999;"><%= substr($uic_id, 2, 2) %></span><span style="font-weight: bold;"><%= substr($uic_id, 4, 2) %></span>-<span style="margin-right: 0.2em; font-weight: bold;"><%= substr($uic_id, 6, 2) %></span><span><%= substr($uic_id, 8, 3) %></span><span style="color: #999999;">-<%= substr($uic_id, 11) %></span>
+            <span class="uicexchange"><%= substr($uic_id, 0, 2) %></span><span class="uiccountry"><%= substr($uic_id, 2, 2) %></span><span class="uic56"><%= substr($uic_id, 4, 2) %></span><span class="uic78"><%= substr($uic_id, 6, 2) %></span><span class="uicno"><%= substr($uic_id, 8, 3) %></span><span class="uiccheck"><%= substr($uic_id, 11) %></span>
 %         }
         </div>
 %     }
