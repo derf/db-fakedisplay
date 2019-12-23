@@ -32,6 +32,7 @@ sub wagenreihung {
 		'wagenreihung',
 		title =>
 		  join( ' / ', map { $wr->train_type . ' ' . $_ } $wr->train_numbers ),
+		train_no  => $train,
 		wr        => $wr,
 		hide_opts => 1,
 	);

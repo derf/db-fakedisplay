@@ -55,6 +55,10 @@ div.content {
 	border-top: none;
 }
 
+.wagonorder .wagon .material-icons {
+	color: #666666;
+}
+
 .wagonorder .wagon .direction {
 	position: absolute;
 	left: 0.2em;
@@ -62,6 +66,10 @@ div.content {
 	right: 0;
 	text-align: center;
 	color: #666666;
+}
+
+.wagonorder .nondestwagon {
+	border-style: dashed;
 }
 
 .wagonorder .details {

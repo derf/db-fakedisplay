@@ -7,12 +7,23 @@
   </div>
 % }
 % else {
+  % my $has_multi_dest = 0;
+  % if (scalar $wr->destinations > 1) {
+    % $has_multi_dest = 1;
+  % }
   <div class="container">
     <div style="text-align: center;">
 %=    join( ' / ', $wr->origins )
       →
 %=    join( ' / ', map { $_->{name} } $wr->destinations )
     </div>
+    % if ($has_multi_dest) {
+      <div style="text-align: center;">
+        % for my $destination ($wr->destinations) {
+          Nach <%= $destination->{name} %> in Abschnitt <%= join(q{}, sort @{$destination->{sections} // []}) %><br/>
+       % }
+      </div>
+    % }
     <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
     % if ($wr->train_type =~ m{^IC|EC}) {
       Zugtyp: <%= $wr->train_subtype // 'IC?' %>
@@ -51,13 +62,17 @@
 %     }
 %     for my $wagon ($wr->wagons) {
 %       my $bg = '';
+%       my $extra_class = '';
 %       if ($wagon->is_first_class) {
 %         $bg = 'background-color: #ffff99;';
 %       }
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         $bg = 'background-color: #cccccc;';
 %       }
-        <div class="wagon" style="
+%       if ($has_multi_dest and $wagon->train_no ne $train_no) {
+%         $extra_class .= ' nondestwagon';
+%       }
+        <div class="wagon <%= $extra_class %>" style="
         top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%; <%= $bg %>">
 %         if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         }
