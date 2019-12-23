@@ -17,6 +17,26 @@
     % if ($wr->train_type =~ m{^IC|EC}) {
       Zugtyp: <%= $wr->train_subtype // 'IC?' %>
     % }
+	 % elsif ($wr->train_powertype) {
+      %= $wr->train_type
+	 % }
+	 % my %translation = (
+	 %   90 => 'mit sonstigem Antrieb',
+	 %   91 => 'mit elektrischer Lokomotive',
+	 %   92 => 'mit Diesellokomotive',
+	 %   93 => 'Hochgeschwindigkeitszug',
+	 %   94 => 'Elektrischer Triebzug',
+	 %   95 => 'Diesel-Triebzug',
+	 %   96 => 'mit speziellen Beiwagen',
+	 %   97 => 'mit elektrischer Rangierlok',
+	 %   98 => 'mit Diesel-Rangierlok',
+	 %   99 => 'Sonderfahrzeug',
+	 % );
+	 % if (not $wr->train_powertype) {
+	 % }
+	 % else {
+      %= $translation{$wr->train_powertype};
+	 % }
   </div>
   </div>
   <div class="container">
