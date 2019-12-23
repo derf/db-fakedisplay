@@ -69,7 +69,7 @@
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
 %         $bg = 'background-color: #cccccc;';
 %       }
-%       if ($has_multi_dest and $wagon->train_no ne $train_no) {
+%       if ($wagon->train_no ne $train_no) {
 %         $extra_class .= ' nondestwagon';
 %       }
         <div class="wagon <%= $extra_class %>" style="
