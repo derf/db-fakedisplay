@@ -102,11 +102,26 @@ sub log_api_access {
 	return;
 }
 
-sub check_wagonorder {
+sub check_wagonorder_with_wings {
 	my ( $ua, $cache, $train, $wr_link ) = @_;
 
+	if ( check_wagonorder( $ua, $cache, $train->train_no, $wr_link ) ) {
+		return 1;
+	}
+	elsif ( $train->is_wing ) {
+		my $wing = $train->wing_of;
+		if ( check_wagonorder( $ua, $cache, $wing->train_no, $wr_link ) ) {
+			return 1;
+		}
+	}
+	return;
+}
+
+sub check_wagonorder {
+	my ( $ua, $cache, $train_no, $wr_link ) = @_;
+
 	my $url
-	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train}/${wr_link}";
+	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}";
 
 	if ( my $content = $cache->get($url) ) {
 		return $content eq 'y' ? 1 : undef;
@@ -972,9 +987,9 @@ sub handle_request {
 
 				if (
 					$departures[-1]{wr_link}
-					and not check_wagonorder(
-						$self->ua,         $self->app->cache_iris_main,
-						$result->train_no, $departures[-1]{wr_link}
+					and not check_wagonorder_with_wings(
+						$self->ua, $self->app->cache_iris_main,
+						$result,   $departures[-1]{wr_link}
 					)
 				  )
 				{
