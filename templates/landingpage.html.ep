@@ -2,8 +2,10 @@
 <div class="container">
 <p>
   Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
-  der DB. Sie kann wahlweise die vor Ort montierten Anzeigen nachahmen oder
-  einen Handy- und Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
+  der DB. In den Standardeinstellungen bietet sie eine Handy- und
+  Desktop-geeigneten Abfahrtstafel. Sie kann ebenfalls für großformatige
+  Infobildschirme genutzt werden oder die in Schalterhallen und an Gleisen
+  montierten Anzeigen nachhahmen.
 </p>
 <p>
 Alle Angaben ohne Gewähr.
