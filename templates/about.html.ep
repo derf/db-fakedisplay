@@ -3,12 +3,17 @@
 		<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 		v<%= stash('version') // '???' %><br/>
 		Entwickelt von <a href="https://twitter.com/derfnull">@derfnull</a><br/>
+		<br/>
 		Backends:<br/>
-		<a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
-		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
-		<a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		Abfahrtstafel: <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		<a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
+		Abfahrtstafel (Legacy): <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
+		Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS<br/>
+		Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a> unreleased<br/>
+		Karte: <a href="https://2.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
+		<br/>
+		Grundlage der <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
 		© DB Station&amp;Service AG,
 		Europaplatz 1,
 		10557 Berlin, lizensiert unter CC-BY 4.0<br/>
