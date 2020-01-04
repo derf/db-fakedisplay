@@ -124,15 +124,18 @@ sub get_hafas_trip_id {
 
 	my $eva    = $train->station_uic;
 	my $dep_ts = DateTime->now( time_zone => 'Europe/Berlin' );
+	my $url
+	  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
 	if ( $train->sched_departure ) {
 		$dep_ts = $train->sched_departure->epoch;
+		$url
+		  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
 	}
 	elsif ( $train->sched_arrival ) {
 		$dep_ts = $train->sched_arrival->epoch;
+		$url
+		  = "https://2.db.transport.rest/stations/${eva}/arrivals?duration=5&when=$dep_ts";
 	}
-
-	my $url
-	  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
 
 	if ( my $content = $cache->get($url) ) {
 		return $content;
@@ -141,8 +144,8 @@ sub get_hafas_trip_id {
 	$ua->request_timeout(2);
 	my $res
 	  = $ua->get(
-"https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts"
-		  => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )->result;
+		$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
+	  ->result;
 	if ( $res->is_error ) {
 		return;
 	}

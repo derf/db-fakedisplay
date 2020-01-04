@@ -21,8 +21,8 @@ sub get_hafas_polyline {
 	#say $url;
 	my $res
 	  = $ua->get(
-"https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true"
-		  => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )->result;
+		$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
+	  ->result;
 	if ( $res->is_error ) {
 		return;
 	}
