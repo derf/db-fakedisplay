@@ -78,6 +78,11 @@
           <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
         </div>
 %     }
+%     if ($departure->{trip_id}) {
+        <div class="verbose">
+          <a href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>">Karte</a>
+        </div>
+%     }
 
 %   }
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {

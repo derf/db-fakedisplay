@@ -28,6 +28,10 @@
 	% if (stash('with_geolocation')) {
 	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
 	% }
+	% if (stash('with_map')) {
+	%= stylesheet "/static/${av}/leaflet/leaflet.css"
+	%= javascript "/static/${av}/leaflet/leaflet.js"
+	% }
 </head>
 <body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
 

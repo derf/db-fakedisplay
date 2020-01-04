@@ -117,6 +117,46 @@ sub check_wagonorder_with_wings {
 	return;
 }
 
+sub get_hafas_trip_id {
+	my ( $ua, $cache, $train ) = @_;
+
+	my $eva    = $train->station_uic;
+	my $dep_ts = DateTime->now( time_zone => 'Europe/Berlin' );
+	if ( $train->sched_departure ) {
+		$dep_ts = $train->sched_departure->epoch;
+	}
+	elsif ( $train->sched_arrival ) {
+		$dep_ts = $train->sched_arrival->epoch;
+	}
+
+	$ua->request_timeout(2);
+	my $res
+	  = $ua->get(
+"https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts"
+	)->result;
+	if ( $res->is_error ) {
+		return;
+	}
+
+	my $json = decode_json( $res->body );
+
+	#say "looking for " . $train->train_no;
+	for my $result ( @{$json} ) {
+		my $trip_id = $result->{tripId};
+		my $fahrt   = $result->{line}{fahrtNr};
+		#say "checking $fahrt";
+		if ( $result->{line} and $result->{line}{fahrtNr} == $train->train_no )
+		{
+			#say "Trip ID is $trip_id";
+			return $trip_id;
+		}
+		else {
+			#say "unmatched Trip ID $trip_id";
+		}
+	}
+	return;
+}
+
 sub check_wagonorder {
 	my ( $ua, $cache, $train_no, $wr_link ) = @_;
 
@@ -984,6 +1024,10 @@ sub handle_request {
 						[ $result->sched_route_post ]
 					)
 				];
+
+				$departures[-1]{trip_id}
+				  = get_hafas_trip_id( $self->ua, $self->app->cache_iris_main,
+					$result );
 
 				if (
 					$departures[-1]{wr_link}

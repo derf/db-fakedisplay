@@ -281,6 +281,8 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 
+	$r->get('/map/:tripid/:lineno')->to('map#route');
+
 	$self->defaults( layout => 'app' );
 	$self->sessions->default_expiration( 3600 * 24 * 28 );
 
