@@ -22,6 +22,8 @@ no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 my $dbf_version = qx{git describe --dirty} || 'experimental';
 
+chomp $dbf_version;
+
 my %default = (
 	backend => 'iris',
 	mode    => 'app',
@@ -129,11 +131,18 @@ sub get_hafas_trip_id {
 		$dep_ts = $train->sched_arrival->epoch;
 	}
 
+	my $url
+	  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
+
+	if ( my $content = $cache->get($url) ) {
+		return $content;
+	}
+
 	$ua->request_timeout(2);
 	my $res
 	  = $ua->get(
 "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts"
-	)->result;
+		  => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )->result;
 	if ( $res->is_error ) {
 		return;
 	}
@@ -144,10 +153,12 @@ sub get_hafas_trip_id {
 	for my $result ( @{$json} ) {
 		my $trip_id = $result->{tripId};
 		my $fahrt   = $result->{line}{fahrtNr};
+
 		#say "checking $fahrt";
 		if ( $result->{line} and $result->{line}{fahrtNr} == $train->train_no )
 		{
 			#say "Trip ID is $trip_id";
+			$cache->set( $url, $trip_id );
 			return $trip_id;
 		}
 		else {

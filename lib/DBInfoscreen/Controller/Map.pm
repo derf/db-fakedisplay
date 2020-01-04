@@ -9,8 +9,16 @@ chomp $dbf_version;
 sub get_hafas_polyline {
 	my ( $ua, $cache, $trip_id, $line ) = @_;
 
+	my $url
+	  = "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
+
+	if ( my $content = $cache->thaw($url) ) {
+		return $content;
+	}
+
 	$ua->request_timeout(2);
-	#say "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
+
+	#say $url;
 	my $res
 	  = $ua->get(
 "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true"
@@ -32,11 +40,14 @@ sub get_hafas_polyline {
 		#}
 	}
 
-	return {
+	my $ret = {
 		name      => $json->{line}{name} // '?',
 		polyline  => [@coordinate_list],
 		stopovers => $json->{stopovers},
 	};
+
+	$cache->freeze( $url, $ret );
+	return $ret;
 }
 
 sub route {
