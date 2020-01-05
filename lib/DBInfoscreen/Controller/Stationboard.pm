@@ -984,7 +984,7 @@ sub handle_request {
 					? $result->departure->strftime('%H:%M')
 					: undef,
 					train                  => $result->train,
-					train_type             => $result->type,
+					train_type             => $result->type // '',
 					train_line             => $result->line_no,
 					train_no               => $result->train_no,
 					via                    => [ $result->route_interesting(3) ],
