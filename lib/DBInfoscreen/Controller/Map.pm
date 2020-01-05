@@ -4,7 +4,9 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 
+use DateTime;
 use DateTime::Format::Strptime;
+use Geo::Distance;
 
 my $dbf_version = qx{git describe --dirty} || 'experimental';
 
@@ -75,7 +77,11 @@ sub route {
 			my @polyline = @{ $pl->{polyline} };
 			my @line_pairs;
 			my @station_coordinates;
+			my @route;
 
+			my @markers;
+
+			my $now  = DateTime->now( time_zone => 'Europe/Berlin' );
 			my $strp = DateTime::Format::Strptime->new(
 				pattern   => '%Y-%m-%dT%H:%M:%S.000%z',
 				time_zone => 'Europe/Berlin',
@@ -93,30 +99,28 @@ sub route {
 
 			for my $stop ( @{ $pl->{raw}{stopovers} // [] } ) {
 				my @stop_lines = ( $stop->{stop}{name} );
-				my $platform;
+				my ( $platform, $arr, $dep, $arr_delay, $dep_delay );
 
-				if ( $stop->{arrival}
-					and my $arrival
-					= $strp->parse_datetime( $stop->{arrival} ) )
+				if (    $stop->{arrival}
+					and $arr = $strp->parse_datetime( $stop->{arrival} ) )
 				{
-					my $delay = $stop->{arrivalDelay} // 0;
+					$arr_delay = ( $stop->{arrivalDelay} // 0 ) / 60;
 					$platform //= $stop->{arrivalPlatform};
-					my $arr_line = $arrival->strftime('Ankunft: %H:%M');
-					if ($delay) {
-						$arr_line .= sprintf( ' (%+d)', $delay / 60 );
+					my $arr_line = $arr->strftime('Ankunft: %H:%M');
+					if ($arr_delay) {
+						$arr_line .= sprintf( ' (%+d)', $arr_delay );
 					}
 					push( @stop_lines, $arr_line );
 				}
 
-				if ( $stop->{departure}
-					and my $departure
-					= $strp->parse_datetime( $stop->{departure} ) )
+				if (    $stop->{departure}
+					and $dep = $strp->parse_datetime( $stop->{departure} ) )
 				{
-					my $delay = $stop->{departureDelay} // 0;
+					$dep_delay = ( $stop->{departureDelay} // 0 ) / 60;
 					$platform //= $stop->{departurePlatform};
-					my $dep_line = $departure->strftime('Abfahrt: %H:%M');
-					if ($delay) {
-						$dep_line .= sprintf( ' (%+d)', $delay / 60 );
+					my $dep_line = $dep->strftime('Abfahrt: %H:%M');
+					if ($dep_delay) {
+						$dep_line .= sprintf( ' (%+d)', $dep_delay );
 					}
 					push( @stop_lines, $dep_line );
 				}
@@ -134,6 +138,147 @@ sub route {
 						],
 						[@stop_lines],
 					]
+				);
+				push(
+					@route,
+					{
+						lat       => $stop->{stop}{location}{latitude},
+						lon       => $stop->{stop}{location}{longitude},
+						name      => $stop->{stop}{name},
+						arr       => $arr,
+						dep       => $dep,
+						arr_delay => $arr_delay,
+						dep_delay => $dep_delay,
+					}
+				);
+
+			}
+
+			for my $i ( 1 .. $#route ) {
+				if (    $route[$i]{arr}
+					and $route[ $i - 1 ]{dep}
+					and $now > $route[ $i - 1 ]{dep}
+					and $now < $route[$i]{arr} )
+				{
+					my $from_dt   = $route[ $i - 1 ]{dep};
+					my $to_dt     = $route[$i]{arr};
+					my $from_name = $route[ $i - 1 ]{name};
+					my $to_name   = $route[$i]{name};
+
+					my $route_part_completion_ratio
+					  = ( $now->epoch - $from_dt->epoch )
+					  / ( $to_dt->epoch - $from_dt->epoch );
+
+					my $title = $pl->{name};
+					if ( $route[$i]{arr_delay} ) {
+						$title .= sprintf( ' (%+d)', $route[$i]{arr_delay} );
+					}
+
+					my $geo = Geo::Distance->new;
+					my ( $from_index, $to_index );
+
+					for my $i ( 0 .. $#{ $pl->{raw}{polyline}{features} } ) {
+						my $this_point = $pl->{raw}{polyline}{features}[$i];
+						if (    not defined $from_index
+							and $this_point->{properties}{type}
+							and $this_point->{properties}{type} eq 'stop'
+							and $this_point->{properties}{name} eq $from_name )
+						{
+							$from_index = $i;
+						}
+						elsif ( $this_point->{properties}{type}
+							and $this_point->{properties}{type} eq 'stop'
+							and $this_point->{properties}{name} eq $to_name )
+						{
+							$to_index = $i;
+							last;
+						}
+					}
+					if ( $from_index and $to_index ) {
+						my $total_distance = 0;
+						for my $i ( $from_index + 1 .. $to_index ) {
+							my $prev = $pl->{raw}{polyline}{features}[ $i - 1 ]
+							  {geometry}{coordinates};
+							my $this
+							  = $pl->{raw}{polyline}{features}[$i]{geometry}
+							  {coordinates};
+							if ( $prev and $this ) {
+								$total_distance += $geo->distance(
+									'kilometer', $prev->[0], $prev->[1],
+									$this->[0],  $this->[1]
+								);
+							}
+						}
+						my $marker_distance
+						  = $total_distance * $route_part_completion_ratio;
+						$total_distance = 0;
+						for my $i ( $from_index + 1 .. $to_index ) {
+							my $prev = $pl->{raw}{polyline}{features}[ $i - 1 ]
+							  {geometry}{coordinates};
+							my $this
+							  = $pl->{raw}{polyline}{features}[$i]{geometry}
+							  {coordinates};
+							if ( $prev and $this ) {
+								$total_distance += $geo->distance(
+									'kilometer', $prev->[0], $prev->[1],
+									$this->[0],  $this->[1]
+								);
+							}
+							if ( $total_distance > $marker_distance ) {
+								push(
+									@markers,
+									{
+										lon   => $this->[0],
+										lat   => $this->[1],
+										title => $title
+									}
+								);
+								last;
+							}
+						}
+					}
+					else {
+						push(
+							@markers,
+							{
+								lat => $route[ $i - 1 ]{lat} + (
+									( $route[$i]{lat} - $route[ $i - 1 ]{lat} )
+									* $route_part_completion_ratio
+								),
+								lon => $route[ $i - 1 ]{lon} + (
+									( $route[$i]{lon} - $route[ $i - 1 ]{lon} )
+									* $route_part_completion_ratio
+								),
+								title => $title
+							}
+						);
+					}
+					last;
+				}
+				if ( $route[ $i - 1 ]{dep} and $now <= $route[ $i - 1 ]{dep} ) {
+					my $title = $pl->{name};
+					if ( $route[$i]{arr_delay} ) {
+						$title .= sprintf( ' (%+d)', $route[$i]{arr_delay} );
+					}
+					push(
+						@markers,
+						{
+							lat   => $route[ $i - 1 ]{lat},
+							lon   => $route[ $i - 1 ]{lon},
+							title => $title
+						}
+					);
+					last;
+				}
+			}
+			if ( not @markers ) {
+				push(
+					@markers,
+					{
+						lat   => $route[-1]{lat},
+						lon   => $route[-1]{lon},
+						title => $route[-1]{name} . ' - Endstation',
+					}
 				);
 			}
 
@@ -163,6 +308,7 @@ sub route {
 					}
 				],
 				station_coordinates => [@station_coordinates],
+				markers             => [@markers],
 			);
 		}
 	)->catch(

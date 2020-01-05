@@ -46,4 +46,19 @@ for (var station_id in stations) {
 	}).bindPopup(stations[station_id][1].join('<br/>')).addTo(map);
 }
 
+var marker;
+% for my $marker (@{stash('markers') // [] } ) {
+	marker = L.marker([<%= $marker->{lat} %>,<%= $marker->{lon} %>]).addTo(map);
+	% if ($marker->{title}) {
+		marker.bindPopup('<%= $marker->{title} %>');
+	% }
+% }
+
 </script>
+
+<div class="container" style="margin-top: 1ex; margin-bottom: 1ex; color: #555;">
+Die Zugposition auf der Karte ist eine Schätzung und kann erheblich von der
+tatsächlichen Position des Zugs abweichen.
+Live-Tracking mit automatischer Kartenaktualisierung wird noch nicht
+unterstützt.
+</div>
