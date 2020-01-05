@@ -80,6 +80,7 @@ sub route {
 			my @route;
 
 			my @markers;
+			my $next_stop;
 
 			my $now  = DateTime->now( time_zone => 'Europe/Berlin' );
 			my $strp = DateTime::Format::Strptime->new(
@@ -149,6 +150,7 @@ sub route {
 						dep       => $dep,
 						arr_delay => $arr_delay,
 						dep_delay => $dep_delay,
+						platform  => $platform,
 					}
 				);
 
@@ -177,30 +179,30 @@ sub route {
 					my $geo = Geo::Distance->new;
 					my ( $from_index, $to_index );
 
-					for my $i ( 0 .. $#{ $pl->{raw}{polyline}{features} } ) {
-						my $this_point = $pl->{raw}{polyline}{features}[$i];
+					for my $j ( 0 .. $#{ $pl->{raw}{polyline}{features} } ) {
+						my $this_point = $pl->{raw}{polyline}{features}[$j];
 						if (    not defined $from_index
 							and $this_point->{properties}{type}
 							and $this_point->{properties}{type} eq 'stop'
 							and $this_point->{properties}{name} eq $from_name )
 						{
-							$from_index = $i;
+							$from_index = $j;
 						}
 						elsif ( $this_point->{properties}{type}
 							and $this_point->{properties}{type} eq 'stop'
 							and $this_point->{properties}{name} eq $to_name )
 						{
-							$to_index = $i;
+							$to_index = $j;
 							last;
 						}
 					}
 					if ( $from_index and $to_index ) {
 						my $total_distance = 0;
-						for my $i ( $from_index + 1 .. $to_index ) {
-							my $prev = $pl->{raw}{polyline}{features}[ $i - 1 ]
+						for my $j ( $from_index + 1 .. $to_index ) {
+							my $prev = $pl->{raw}{polyline}{features}[ $j - 1 ]
 							  {geometry}{coordinates};
 							my $this
-							  = $pl->{raw}{polyline}{features}[$i]{geometry}
+							  = $pl->{raw}{polyline}{features}[$j]{geometry}
 							  {coordinates};
 							if ( $prev and $this ) {
 								$total_distance += $geo->distance(
@@ -212,11 +214,11 @@ sub route {
 						my $marker_distance
 						  = $total_distance * $route_part_completion_ratio;
 						$total_distance = 0;
-						for my $i ( $from_index + 1 .. $to_index ) {
-							my $prev = $pl->{raw}{polyline}{features}[ $i - 1 ]
+						for my $j ( $from_index + 1 .. $to_index ) {
+							my $prev = $pl->{raw}{polyline}{features}[ $j - 1 ]
 							  {geometry}{coordinates};
 							my $this
-							  = $pl->{raw}{polyline}{features}[$i]{geometry}
+							  = $pl->{raw}{polyline}{features}[$j]{geometry}
 							  {coordinates};
 							if ( $prev and $this ) {
 								$total_distance += $geo->distance(
@@ -233,6 +235,10 @@ sub route {
 										title => $title
 									}
 								);
+								$next_stop = {
+									type    => 'next',
+									station => $route[$i],
+								};
 								last;
 							}
 						}
@@ -252,6 +258,10 @@ sub route {
 								title => $title
 							}
 						);
+						$next_stop = {
+							type    => 'next',
+							station => $route[$i],
+						};
 					}
 					last;
 				}
@@ -268,6 +278,10 @@ sub route {
 							title => $title
 						}
 					);
+					$next_stop = {
+						type    => 'present',
+						station => $route[ $i - 1 ],
+					};
 					last;
 				}
 			}
@@ -280,6 +294,10 @@ sub route {
 						title => $route[-1]{name} . ' - Endstation',
 					}
 				);
+				$next_stop = {
+					type    => 'present',
+					station => $route[-1]
+				};
 			}
 
 			$self->render(
@@ -299,6 +317,8 @@ sub route {
 					? scalar $strp->parse_datetime( $pl->{raw}{arrival} )
 					: undef,
 				},
+				train_no        => scalar $pl->{raw}{line}{additionalName},
+				next_stop       => $next_stop,
 				polyline_groups => [
 					{
 						polylines  => [@line_pairs],
@@ -316,10 +336,12 @@ sub route {
 			my ($err) = @_;
 			$self->render(
 				'route_map',
-				title     => "DBF",
-				hide_opts => 1,
-				with_map  => 1,
-				error     => $err,
+				title       => "DBF",
+				hide_opts   => 1,
+				with_map    => 1,
+				error       => $err,
+				origin      => undef,
+				destination => undef,
 			);
 
 		}
