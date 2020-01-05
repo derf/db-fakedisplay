@@ -16,7 +16,7 @@
 				%= sprintf('(%+d)', $next->{station}{dep_delay})
 			% }
 		% }
-		% if ($next->{type} eq 'present' and $next->{station}{dep}) {
+		% elsif ($next->{type} eq 'present' and $next->{station}{dep}) {
 			Abfahrt in <strong><%= $next->{station}{name} %></strong>
 			von Gleis <strong><%= $next->{station}{platform} %></strong>
 			um <strong><%= $next->{station}{dep}->strftime('%H:%M') %></strong>
