@@ -15,7 +15,7 @@ sub get_hafas_polyline_p {
 
 	my $url
 	  = "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
-	my $cache   = $self->app->cache_iris_main;
+	my $cache   = $self->app->cache_iris_rt;
 	my $promise = Mojo::Promise->new;
 
 	if ( my $content = $cache->thaw($url) ) {
