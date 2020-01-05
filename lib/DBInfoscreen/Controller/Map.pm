@@ -18,8 +18,6 @@ sub get_hafas_polyline_p {
 	my $cache   = $self->app->cache_iris_main;
 	my $promise = Mojo::Promise->new;
 
-	say $url;
-
 	if ( my $content = $cache->thaw($url) ) {
 		$promise->resolve($content);
 		return $promise;
@@ -146,15 +144,19 @@ sub route {
 				with_map  => 1,
 				origin    => {
 					name => $pl->{raw}{origin}{name},
-					ts   => $strp->parse_datetime( $pl->{raw}{departure} ),
+					ts   => $pl->{raw}{dep_line}
+					? scalar $strp->parse_datetime( $pl->{raw}{departure} )
+					: undef,
 				},
 				destination => {
 					name => $pl->{raw}{destination}{name},
-					ts   => $strp->parse_datetime( $pl->{raw}{arrival} ),
+					ts   => $pl->{raw}{arrival}
+					? scalar $strp->parse_datetime( $pl->{raw}{arrival} )
+					: undef,
 				},
 				polyline_groups => [
 					{
-						polylines  => \@line_pairs,
+						polylines  => [@line_pairs],
 						color      => '#00838f',
 						opacity    => 0.6,
 						fit_bounds => 1,
