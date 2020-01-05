@@ -19,6 +19,7 @@ Dependencies
 
  * perl >= 5.10
  * Cache::File (part of the Cache module)
+ * Geo::Distance
  * Mojolicious
  * Travel::Status::DE::DBWagenreihung >= 0.00
  * Travel::Status::DE::DeutscheBahn >= 2.03
