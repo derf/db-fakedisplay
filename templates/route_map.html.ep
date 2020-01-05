@@ -1,4 +1,9 @@
-  <div class="container">
+<div class="container" style="margin-top: 1ex; margin-bottom: 1ex;">
+Fahrt von <strong><%= $origin->{name} %></strong>
+nach <strong><%= $destination->{name} %></strong>
+</div>
+
+<div class="container">
 		<div id="map" style="height: 500px;">
 		</div>
 	</div>
@@ -11,7 +16,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 var stations = [
 % for my $station ( @{stash('station_coordinates') // [] } ) {
-[[<%= $station->[0][0] %>,<%= $station->[0][1] %>],'<%= $station->[1] %>'],
+[[<%= $station->[0][0] %>,<%= $station->[0][1] %>],['<%== join("','", map { Mojo::Util::xml_escape($_) } @{$station->[1]}) %>']],
 % }
 ];
 
@@ -38,7 +43,7 @@ for (var station_id in stations) {
 		fillColor: '#f03',
 		fillOpacity: 0.5,
 		radius: 250
-	}).bindPopup(stations[station_id][1]).addTo(map);
+	}).bindPopup(stations[station_id][1].join('<br/>')).addTo(map);
 }
 
 </script>

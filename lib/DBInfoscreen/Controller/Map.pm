@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 
-use Encode qw(decode);
+use DateTime::Format::Strptime;
 
 my $dbf_version = qx{git describe --dirty} || 'experimental';
 
@@ -31,8 +31,7 @@ sub get_hafas_polyline_p {
 	  ->then(
 		sub {
 			my ($tx) = @_;
-			my $body = decode( 'utf-8', $tx->res->body );
-			my $json = decode_json($body);
+			my $json = decode_json( $tx->res->body );
 			my @coordinate_list;
 
 			for my $feature ( @{ $json->{polyline}{features} } ) {
@@ -46,9 +45,9 @@ sub get_hafas_polyline_p {
 			}
 
 			my $ret = {
-				name      => $json->{line}{name} // '?',
-				polyline  => [@coordinate_list],
-				stopovers => $json->{stopovers},
+				name     => $json->{line}{name} // '?',
+				polyline => [@coordinate_list],
+				raw      => $json,
 			};
 
 			$cache->freeze( $url, $ret );
@@ -79,6 +78,11 @@ sub route {
 			my @line_pairs;
 			my @station_coordinates;
 
+			my $strp = DateTime::Format::Strptime->new(
+				pattern   => '%Y-%m-%dT%H:%M:%S.000%z',
+				time_zone => 'Europe/Berlin',
+			);
+
 			for my $i ( 1 .. $#polyline ) {
 				push(
 					@line_pairs,
@@ -89,7 +93,40 @@ sub route {
 				);
 			}
 
-			for my $stop ( @{ $pl->{stopovers} // [] } ) {
+			for my $stop ( @{ $pl->{raw}{stopovers} // [] } ) {
+				my @stop_lines = ( $stop->{stop}{name} );
+				my $platform;
+
+				if ( $stop->{arrival}
+					and my $arrival
+					= $strp->parse_datetime( $stop->{arrival} ) )
+				{
+					my $delay = $stop->{arrivalDelay} // 0;
+					$platform //= $stop->{arrivalPlatform};
+					my $arr_line = $arrival->strftime('Ankunft: %H:%M');
+					if ($delay) {
+						$arr_line .= sprintf( ' (%+d)', $delay / 60 );
+					}
+					push( @stop_lines, $arr_line );
+				}
+
+				if ( $stop->{departure}
+					and my $departure
+					= $strp->parse_datetime( $stop->{departure} ) )
+				{
+					my $delay = $stop->{departureDelay} // 0;
+					$platform //= $stop->{departurePlatform};
+					my $dep_line = $departure->strftime('Abfahrt: %H:%M');
+					if ($delay) {
+						$dep_line .= sprintf( ' (%+d)', $delay / 60 );
+					}
+					push( @stop_lines, $dep_line );
+				}
+
+				if ($platform) {
+					splice( @stop_lines, 1, 0, "Gleis $platform" );
+				}
+
 				push(
 					@station_coordinates,
 					[
@@ -97,16 +134,24 @@ sub route {
 							$stop->{stop}{location}{latitude},
 							$stop->{stop}{location}{longitude}
 						],
-						$stop->{stop}{name}
+						[@stop_lines],
 					]
 				);
 			}
 
 			$self->render(
 				'route_map',
-				title           => $pl->{name},
-				hide_opts       => 1,
-				with_map        => 1,
+				title     => $pl->{name},
+				hide_opts => 1,
+				with_map  => 1,
+				origin    => {
+					name => $pl->{raw}{origin}{name},
+					ts   => $strp->parse_datetime( $pl->{raw}{departure} ),
+				},
+				destination => {
+					name => $pl->{raw}{destination}{name},
+					ts   => $strp->parse_datetime( $pl->{raw}{arrival} ),
+				},
 				polyline_groups => [
 					{
 						polylines  => \@line_pairs,
