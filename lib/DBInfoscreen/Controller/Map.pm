@@ -123,8 +123,10 @@ sub route {
 			my ($err) = @_;
 			$self->render(
 				'route_map',
-				title     => "Fehler",
+				title     => "DBF",
 				hide_opts => 1,
+				with_map  => 1,
+				error     => $err,
 			);
 
 		}
