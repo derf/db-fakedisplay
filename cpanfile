@@ -4,6 +4,8 @@ requires 'DateTime::Format::Strptime';
 requires 'File::Slurp';
 requires 'Geo::Distance';
 requires 'Geo::Distance::XS';
+requires 'JSON';
+requires 'JSON::XS';
 requires 'Mojolicious';
 requires 'Travel::Status::DE::DBWagenreihung';
 requires 'Travel::Status::DE::DeutscheBahn';

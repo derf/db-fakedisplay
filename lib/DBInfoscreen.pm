@@ -5,6 +5,8 @@ use Mojo::Base 'Mojolicious';
 # License: 2-Clause BSD
 
 use Cache::File;
+use File::Slurp qw(read_file);
+use JSON;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS::Stations;
@@ -57,6 +59,20 @@ sub startup {
 				default_expires => '70 seconds',
 				lock_level      => Cache::File::LOCK_LOCAL(),
 			);
+		}
+	);
+
+	$self->attr(
+		ice_type_map => sub {
+			my $ice_type_map = JSON->new->utf8->decode(
+				scalar read_file('share/ice_type.json') );
+			my $ret;
+			while ( my ( $k, $v ) = each %{$ice_type_map} ) {
+				if ( $v->{short} ) {
+					$ret->{$k} = $v->{short};
+				}
+			}
+			return $ret;
 		}
 	);
 
