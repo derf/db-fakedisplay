@@ -183,7 +183,10 @@ div.app li .line {
 div.app li .line .trainsubtype {
 	font-weight: normal;
 	font-size: 70%;
-	margin-left: -0.5ex;
+	position: relative;
+	vertical-align: baseline;
+	top: -0.6ex;
+	left: -0.5ex;
 }
 
 div.app li .line .trainno {
