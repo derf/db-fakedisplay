@@ -142,10 +142,14 @@ sub get_hafas_trip_id {
 	}
 
 	$ua->request_timeout(2);
-	my $res
-	  = $ua->get(
-		$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
-	  ->result;
+	my $res = eval {
+		$ua->get(
+			$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
+		  ->result;
+	};
+	if ($@) {
+		return;
+	}
 	if ( $res->is_error ) {
 		return;
 	}
@@ -182,8 +186,11 @@ sub check_wagonorder {
 	}
 
 	$ua->request_timeout(2);
-	my $res = $ua->head($url)->result;
+	my $res = eval { $ua->head($url)->result };
 
+	if ($@) {
+		return;
+	}
 	if ( $res->is_error ) {
 		$cache->set( $url, 'n' );
 		return;
@@ -201,8 +208,11 @@ sub hafas_json_req {
 		return $content;
 	}
 
-	my $res = $ua->get($url)->result;
+	my $res = eval { $ua->get($url)->result };
 
+	if ($@) {
+		return;
+	}
 	if ( $res->is_error ) {
 		return;
 	}
@@ -228,8 +238,11 @@ sub hafas_xml_req {
 		return $content;
 	}
 
-	my $res = $ua->get($url)->result;
+	my $res = eval { $ua->get($url)->result };
 
+	if ($@) {
+		return;
+	}
 	if ( $res->is_error ) {
 		$cache->freeze( $url, {} );
 		return;
