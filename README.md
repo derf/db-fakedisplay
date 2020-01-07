@@ -41,7 +41,8 @@ db-infoscreen respects the following environment variables:
 
 Set these as needed, create `templates/imprint.html.ep` (imprint) and
 `templates/privacy.html.ep` (privacy policy), and configure your web server to
-pass requests for db-infoscreen to the appropriate port.
+pass requests for db-infoscreen to the appropriate port. See the
+`examples` directory for imprint and privacy policy samples.
 
 You can run the app using a Mojo::Server of your choice, e.g.  **perl
 index.pl daemon -m production** (quick&dirty, does not respect all variables)
