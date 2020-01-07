@@ -73,9 +73,14 @@
 %       }
 %     }
       </div> <!-- timeinfo -->
-%     if ($departure->{wr_link}) {
+%     if ($departure->{wr_link} or ($icetype and $icetype->[1])) {
         <div class="verbose">
-          <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
+%         if ($departure->{wr_link}) {
+            <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
+%         }
+%         if ($icetype and $icetype->[1]) {
+            (Plan: <%= $icetype->[0] %>)<br/>
+%         }
         </div>
 %     }
 %     if ($departure->{trip_id}) {

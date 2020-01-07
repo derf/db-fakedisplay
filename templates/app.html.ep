@@ -83,8 +83,8 @@
 %=    $departure->{train_line}
 %   }
 %   elsif ($departure->{train_no}) {
-%     if (exists $ice_type->{$departure->{train_no}}) {
-        <span class="trainsubtype"><%= $ice_type->{$departure->{train_no}} %></span>
+%     if (exists $ice_type->{$departure->{train_no}} and $ice_type->{$departure->{train_no}}[1]) {
+        <span class="trainsubtype"><%= $ice_type->{$departure->{train_no}}[1] %></span>
 %     }
       <span class="trainno"><%= $departure->{train_no} %></span>
 %   }

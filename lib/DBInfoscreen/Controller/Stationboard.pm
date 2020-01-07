@@ -1258,7 +1258,8 @@ sub handle_request {
 				'_train_details',
 				departure => $departure,
 				linetype  => $linetype,
-				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
+				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
 			);
 		}
 		else {

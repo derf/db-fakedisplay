@@ -68,8 +68,8 @@ sub startup {
 				scalar read_file('share/ice_type.json') );
 			my $ret;
 			while ( my ( $k, $v ) = each %{$ice_type_map} ) {
-				if ( $v->{short} ) {
-					$ret->{$k} = $v->{short};
+				if ( $v->{type} ) {
+					$ret->{$k} = [ $v->{type}, $v->{short} ];
 				}
 			}
 			return $ret;
