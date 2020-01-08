@@ -68,6 +68,9 @@ sub route {
 	my $trip_id = $self->stash('tripid');
 	my $line_no = $self->stash('lineno');
 
+	my $from_name = $self->param('from');
+	my $to_name   = $self->param('to');
+
 	$self->render_later;
 
 	$self->get_hafas_polyline_p( $trip_id, $line_no )->then(
@@ -101,6 +104,29 @@ sub route {
 			for my $stop ( @{ $pl->{raw}{stopovers} // [] } ) {
 				my @stop_lines = ( $stop->{stop}{name} );
 				my ( $platform, $arr, $dep, $arr_delay, $dep_delay );
+
+				if ( $from_name and $stop->{stop}{name} eq $from_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->{stop}{location}{longitude},
+							lat   => $stop->{stop}{location}{latitude},
+							title => $stop->{stop}{name},
+							icon  => 'greenIcon',
+						}
+					);
+				}
+				if ( $to_name and $stop->{stop}{name} eq $to_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->{stop}{location}{longitude},
+							lat   => $stop->{stop}{location}{latitude},
+							title => $stop->{stop}{name},
+							icon  => 'goldIcon',
+						}
+					);
+				}
 
 				if (    $stop->{arrival}
 					and $arr = $strp->parse_datetime( $stop->{arrival} ) )

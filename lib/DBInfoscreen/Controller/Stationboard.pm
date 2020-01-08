@@ -1273,6 +1273,7 @@ sub handle_request {
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
 				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
+				station_name => $data->{station_name} // $station,
 			);
 		}
 		else {

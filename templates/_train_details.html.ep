@@ -85,7 +85,7 @@
 %     }
 %     if ($departure->{trip_id}) {
         <div class="verbose">
-          <a href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>">Karte</a>
+          <a href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>">Karte</a>
         </div>
 %     }
 
