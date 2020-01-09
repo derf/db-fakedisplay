@@ -112,7 +112,7 @@ sub route {
 							lon   => $stop->{stop}{location}{longitude},
 							lat   => $stop->{stop}{location}{latitude},
 							title => $stop->{stop}{name},
-							icon  => 'greenIcon',
+							icon  => 'goldIcon',
 						}
 					);
 				}
@@ -123,7 +123,7 @@ sub route {
 							lon   => $stop->{stop}{location}{longitude},
 							lat   => $stop->{stop}{location}{latitude},
 							title => $stop->{stop}{name},
-							icon  => 'goldIcon',
+							icon  => 'greenIcon',
 						}
 					);
 				}
