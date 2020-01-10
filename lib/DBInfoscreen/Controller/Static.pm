@@ -5,9 +5,8 @@ use Mojo::Base 'Mojolicious::Controller';
 # License: 2-Clause BSD
 
 my %default = (
-	backend => 'iris',
-	mode    => 'app',
-	admode  => 'deparr',
+	mode   => 'app',
+	admode => 'deparr',
 );
 
 my $dbf_version = qx{git describe --dirty} || 'experimental';
@@ -19,7 +18,7 @@ sub redirect {
 
 	$params->remove('station');
 
-	for my $param (qw(platforms backend mode admode via)) {
+	for my $param (qw(platforms mode admode via)) {
 		if (
 			not $params->param($param)
 			or ( exists $default{$param}

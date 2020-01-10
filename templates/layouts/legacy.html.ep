@@ -105,14 +105,6 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        Backend
-      </div>
-      <div>
-        %= select_field backend => [ ['IRIS' => 'iris'], ['HAFAS' => 'ris'] ]
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
         Nur Züge über
       </div>
       <div>
@@ -151,8 +143,6 @@ Bitte eine Station aus der Liste auswählen</div>
         </label>
       </div>
     </div>
-    <div class="break"></div>
-    <span class="optional">Nur für IRIS-Backend:</span>
     <div class="field">
       <div class="desc">
         Ankunfts- oder Abfahrtszeit anzeigen?
