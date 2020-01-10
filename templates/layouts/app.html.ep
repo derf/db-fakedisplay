@@ -141,7 +141,7 @@ Bitte eine Station aus der Liste auswählen</div>
       <div class="desc">
         %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
         <label for="id_hidelowdelay">
-          Nur Verspätungen &gt;5 Min. anzeigen
+          Verspätungen erst ab 5 Minuten anzeigen
         </label>
       </div>
     </div>
