@@ -344,6 +344,7 @@ sub route {
 					: undef,
 				},
 				train_no        => scalar $pl->{raw}{line}{additionalName},
+				operator        => scalar $pl->{raw}{line}{operator}{name},
 				next_stop       => $next_stop,
 				polyline_groups => [
 					{
