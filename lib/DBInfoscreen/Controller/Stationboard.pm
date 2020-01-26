@@ -820,7 +820,7 @@ sub handle_request {
 			my @json_route = $self->json_route_diff( [ $result->route ],
 				[ $result->sched_route ] );
 
-			if ( $apiver == 1 ) {
+			if ( $apiver eq '1' ) {
 				push(
 					@departures,
 					{
@@ -856,7 +856,7 @@ sub handle_request {
 					}
 				);
 			}
-			elsif ( $apiver == 2 ) {
+			elsif ( $apiver eq '2' ) {
 				my ( $delay_arr, $delay_dep, $sched_arr, $sched_dep );
 				if ( $result->arrival ) {
 					$delay_arr = $result->arrival->subtract_datetime(
