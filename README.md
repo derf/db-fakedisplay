@@ -17,13 +17,45 @@ instance if you like, see the Setup notes below.
 Dependencies
 ---
 
- * perl >= 5.10
- * Cache::File (part of the Cache module)
- * Geo::Distance
- * Mojolicious
- * Travel::Status::DE::DBWagenreihung >= 0.00
- * Travel::Status::DE::DeutscheBahn >= 2.03
- * Travel::Status::DE::IRIS >= 1.21
+ * perl >= 5.20
+ * carton or cpanminus
+ * build-essential
+ * git
+
+Installation
+---
+
+After installing the dependencies, clone the repository using git, e.g.
+
+```
+git clone https://git.finalrewind.org/db-fakedisplay
+```
+
+Make sure that all files (including `.git`, which is used to determine the
+software version) are readable by your www user, and follow the steps in the
+next sections.
+
+Perl Dependencies
+---
+
+db-infoscreen depends on a set of Perl modules which are documented in
+`cpanfile`. After installing the dependencies mentioned above, you can use
+carton or cpanminus to install Perl depenencies locally.
+
+In the project root directory (where `cpanfile` resides), run either
+
+```
+carton install
+```
+
+or
+
+```
+cpanm --installdeps .
+```
+
+and set `PERL5LIB=.../local/lib/perl5` before running index.pl or wrap it
+with `carton exec hypnotoad index.pl`.
 
 Setup
 ---
@@ -57,6 +89,6 @@ System requirements
 ---
 
 Resource requirements depend on usage. For a few requests per second, about
-50MB (150k inodes) cache and one or two CPU cores should be sufficient.
+200MB (600k inodes) cache and one or two CPU cores should be sufficient.
 db-infoscreen typically needs 50MB RAM per worker process, though calculating
 with 100MB per worker is recommended to leave a safety margin.
