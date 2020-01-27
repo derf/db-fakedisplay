@@ -101,7 +101,7 @@
 %           }
 %         }
         <div class="direction">
-%         if ($wr->has_bad_wagons) {
+%         if ($wr->has_bad_wagons or not defined $wr->direction) {
 %         }
 %         elsif ($wr->direction == 100) {
             <i class="material-icons">arrow_downward</i>
