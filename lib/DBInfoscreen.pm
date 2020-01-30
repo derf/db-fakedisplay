@@ -300,7 +300,6 @@ sub startup {
 	$r->get('/map/:tripid/:lineno')->to('map#route');
 
 	$self->defaults( layout => 'app' );
-	$self->sessions->default_expiration( 3600 * 24 * 28 );
 
 	$r->get('/')->to('stationboard#handle_request');
 	$r->get('/multi/*station')->to('stationboard#handle_request');
