@@ -50,21 +50,26 @@
       (Gleiswechsel)
 %   }
     </div> <!-- platforminfo -->
+%   my ($arr_time, $dep_time);
+%   if ($departure->{sched_arrival}) {
+%     $arr_time = $departure->{sched_arrival};
+%     if ($departure->{arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
+%       $arr_time .= ' (heute ' . $departure->{arrival} . ')';
+%     }
+%   }
+%   if ($departure->{sched_departure}) {
+%     $dep_time = $departure->{sched_departure};
+%     if ($departure->{departure} and $departure->{departure} ne $departure->{sched_departure}) {
+%       $dep_time .= ' (heute ' . $departure->{departure} . ')';
+%     }
+%   }
 %   if (not $departure->{is_cancelled}) {
       <div class="timeinfo">
 %     if ($departure->{sched_arrival}) {
-        Ankunft: <%= $departure->{sched_arrival} %>
-%       if ($departure->{arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
-          (heute <%= $departure->{arrival} %>)
-%       }
-        <br/>
+        Ankunft: <%= $arr_time %><br/>
 %     }
 %     if ($departure->{sched_departure}) {
-        Abfahrt: <%= $departure->{sched_departure} %>
-%       if ($departure->{departure} and $departure->{departure} ne $departure->{sched_departure}) {
-          (heute <%= $departure->{departure} %>)
-%       }
-        <br/>
+        Abfahrt: <%= $dep_time %><br/>
 %     }
 %     if (not ($departure->{sched_arrival} or $departure->{sched_departure})) {
         Abfahrt: <%= $departure->{time} %>
@@ -73,7 +78,7 @@
 %       }
 %     }
       </div> <!-- timeinfo -->
-%     if ($departure->{wr_link} or ($icetype and $icetype->[1])) {
+%     if ($departure->{wr_link} or ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus')) {
         <div class="verbose">
 %         if ($departure->{wr_link}) {
             <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
@@ -118,61 +123,55 @@
       </ul>
 %   }
 %   if ($departure->{route_pre_diff} and $departure->{route_post_diff}) {
-%     if (@{$departure->{route_pre_diff}}) {
-        Von:
-        <ul class="mroute">
-%         for my $stop (@{$departure->{route_pre_diff}}) {
-            <li>
-            <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
-%           if ($stop->{isAdditional}) {
-              additional-stop
-%           }
-%           elsif ($stop->{isCancelled}) {
-              cancelled-stop
-%           }
-%           elsif ($self->is_important($stop->{name})) {
-              important-stop
-%           }
-%           else {
-              generic-stop
-%           }
-%           if ($stop->{rt_dep}) {
-              "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
-%           }
-%           else {
-              "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
-%           }
-            </li>
+      Fahrtverlauf:
+      <ul class="mroute">
+%       for my $stop (@{$departure->{route_pre_diff}}) {
+          <li>
+          <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
+%         if ($stop->{isAdditional}) {
+            additional-stop
 %         }
-        </ul> <!-- mroute -->
-%     }
-%     if (@{$departure->{route_post_diff}}) {
-        Nach:
-        <ul class="mroute">
-%         for my $stop (@{$departure->{route_post_diff}}) {
-            <li>
-            <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
-%           if ($stop->{isAdditional}) {
-              additional-stop
-%           }
-%           elsif ($stop->{isCancelled}) {
-              cancelled-stop
-%           }
-%           elsif ($self->is_important($stop->{name})) {
-              important-stop
-%           }
-%           else {
-              generic-stop
-%           }
-%           if ($stop->{rt_arr}) {
-              "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
-%           }
-%           else {
-              "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
-%           }
-            </li>
+%         elsif ($stop->{isCancelled}) {
+            cancelled-stop
 %         }
-        </ul> <!-- mroute -->
-%     }
+%         elsif ($self->is_important($stop->{name})) {
+            important-stop
+%         }
+%         else {
+            generic-stop
+%         }
+%         if ($stop->{rt_dep}) {
+            "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%         }
+%         else {
+            "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+%         }
+          </li>
+%       }
+        <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %>"><%= $dep_time // $arr_time // q{} %> <strong><%= $station_name %></strong></li>
+%       for my $stop (@{$departure->{route_post_diff}}) {
+          <li>
+          <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
+%         if ($stop->{isAdditional}) {
+            additional-stop
+%         }
+%         elsif ($stop->{isCancelled}) {
+            cancelled-stop
+%         }
+%         elsif ($self->is_important($stop->{name})) {
+            important-stop
+%         }
+%         else {
+            generic-stop
+%         }
+%         if ($stop->{rt_arr}) {
+            "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%         }
+%         else {
+            "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+%         }
+          </li>
+%       }
+      </ul> <!-- mroute -->
 %   }
     </div> <!-- mfooter -->

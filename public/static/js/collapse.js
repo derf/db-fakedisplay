@@ -47,20 +47,19 @@ function dbf_reg_handlers() {
 				}
 				$('.moreinfo .mfooter').append('Meldungen: <ul>' + ibuf + '</ul>');
 			}
+			var routebuf = '';
 			if (trainElem.data('routeprev') != '') {
-				var routebuf = '';
 				for (var key in routeprev) {
 					routebuf += '<li>' + routeprev[key] + '</li>';
 				}
-				$('.moreinfo .mfooter').append('Von: <ul class="mroute">' + routebuf + '</ul>');
 			}
+			routebuf += '<li><strong>' + document.title + '</strong></li>';
 			if (trainElem.data('routenext') != '') {
-				var routebuf = '';
 				for (var key in routenext) {
 					routebuf += '<li>' + routenext[key] + '</li>';
 				}
-				$('.moreinfo .mfooter').append('Nach: <ul class="mroute">' + routebuf + '</ul>');
 			}
+			$('.moreinfo .mfooter').append('Fahrtverlauf: <ul class="mroute">' + routebuf + '</ul>');
 			$.get(window.location.href, {train: trainElem.data('train'), ajax: 1}, function(data) {
 				$('.moreinfo').html(data);
 			}).fail(function() {
