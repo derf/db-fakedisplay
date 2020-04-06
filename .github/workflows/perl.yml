@@ -1,0 +1,33 @@
+name: linux
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  perl:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        perl-version:
+          - '5.20'
+          - 'latest'
+          - 'threaded'
+
+    container:
+      image: perl:${{ matrix.perl-version }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: perl -V
+        run: perl -V
+      - name: Install Dependencies
+        run: curl -sL https://git.io/cpm | perl - install -g --show-build-log-on-failure
+      - name: Run Tests
+        run: prove -l t
