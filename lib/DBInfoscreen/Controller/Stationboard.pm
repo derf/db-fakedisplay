@@ -137,27 +137,10 @@ sub get_hafas_trip_id {
 		  = "https://2.db.transport.rest/stations/${eva}/arrivals?duration=5&when=$dep_ts";
 	}
 
-	if ( my $content = $cache->get($url) ) {
-		return $content;
-	}
+	my $json = hafas_rest_req( $ua, $cache, $url );
 
-	$ua->request_timeout(2);
-	my $res = eval {
-		$ua->get(
-			$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
-		  ->result;
-	};
-	if ($@) {
-		return;
-	}
-	if ( $res->is_error ) {
-		return;
-	}
-
-	my $json = decode_json( $res->body );
-
-	#say "looking for " . $train->train_no;
-	for my $result ( @{$json} ) {
+	#say "looking for " . $train->train_no . " in $url";
+	for my $result ( @{ $json // [] } ) {
 		my $trip_id = $result->{tripId};
 		my $fahrt   = $result->{line}{fahrtNr};
 
@@ -165,7 +148,6 @@ sub get_hafas_trip_id {
 		if ( $result->{line} and $result->{line}{fahrtNr} == $train->train_no )
 		{
 			#say "Trip ID is $trip_id";
-			$cache->set( $url, $trip_id );
 			return $trip_id;
 		}
 		else {
@@ -199,6 +181,33 @@ sub check_wagonorder {
 		$cache->set( $url, 'y' );
 		return 1;
 	}
+}
+
+sub hafas_rest_req {
+	my ( $ua, $cache, $url ) = @_;
+
+	if ( my $content = $cache->thaw($url) ) {
+		return $content;
+	}
+
+	my $res = eval {
+		$ua->get(
+			$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
+		  ->result;
+	};
+
+	if ($@) {
+		return;
+	}
+	if ( $res->is_error ) {
+		return;
+	}
+
+	my $json = decode_json( $res->body );
+
+	$cache->freeze( $url, $json );
+
+	return $json;
 }
 
 sub hafas_json_req {
