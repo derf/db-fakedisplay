@@ -1,12 +1,7 @@
 % if (@{$departures}) {
 
 % if (not param('ajax')) {
-% if (param('dark')) {
-<div class="app appdark">
-% }
-% else {
-<div class="app applight">
-% }
+<div class="app">
 <div class="moreinfo collapsed-moreinfo">
 	<div class="mheader">
 		<div>

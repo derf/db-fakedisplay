@@ -64,10 +64,10 @@
 %       my $bg = '';
 %       my $extra_class = '';
 %       if ($wagon->is_first_class) {
-%         $bg = 'background-color: #ffff99;';
+%         $extra_class .= ' firstclass';
 %       }
 %       if ($wagon->is_locomotive or $wagon->is_powercar) {
-%         $bg = 'background-color: #cccccc;';
+%         $extra_class .= ' powercar';
 %       }
 %       if ($wagon->train_no ne $train_no) {
 %         $extra_class .= ' nondestwagon';

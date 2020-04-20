@@ -19,7 +19,37 @@
 % }
 
 	% my $av = 'v28'; # asset version
-	%= stylesheet "/static/${av}/css/app.css"
+	% if (session('theme') and session('theme') eq 'dark' or param('dark')) {
+		%= stylesheet "/static/${av}/css/dark.min.css", id => 'theme'
+	% }
+	% else {
+		%= stylesheet "/static/${av}/css/light.min.css", id => 'theme'
+	% }
+	<script>
+		function addStyleSheet(name, id) {
+			var path = '/static/<%=$av%>/css/' + name + '.min.css';
+			var old = document.getElementById(id);
+			if (old && (old.href != path)) {
+				old.href = path;
+				document.cookie = 'theme=' + name;
+			}
+		}
+		var otherTheme = {
+			'dark': 'light',
+			'light': 'dark',
+		};
+		var currentTheme = localStorage.getItem('theme');
+		if (!otherTheme.hasOwnProperty(currentTheme)) {
+			currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+		}
+		addStyleSheet(currentTheme, 'theme');
+
+		function toggleTheme() {
+			currentTheme = otherTheme[currentTheme] || 'light';
+			localStorage.setItem('theme', currentTheme);
+			addStyleSheet(currentTheme, 'theme');
+		}
+	</script>
 	%= stylesheet "/static/${av}/css/material-icons.css"
 	%= stylesheet "/static/${av}/css/jquery-ui.min.css"
 	%= javascript '/static/js/jquery-3.4.1.min.js', defer => undef
@@ -33,7 +63,7 @@
 	%= javascript "/static/${av}/leaflet/leaflet.js"
 	% }
 </head>
-<body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
+<body>
 
 <div class="navbar-fixed">
 	<nav style="color: #ffffff; background-color: #00838f;">
@@ -42,6 +72,9 @@
 				%= stash('title') || 'DBF'
 			</span>
 			<ul id="nav-mobile" style="float: right;">
+				<li class="waves-effect waves-light">
+					<a onClick="javascript:toggleTheme()"><i class="material-icons" aria-label="Farbschema invertieren">invert_colors</i></a>
+				</li>
 				% if (stash('hide_opts')) {
 					<li><a href="/"><i class="material-icons">edit</i></a></li>
 				% }
@@ -134,14 +167,6 @@ Bitte eine Station aus der Liste auswählen</div>
         %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
         <label for="id_hidelowdelay">
           Verspätungen erst ab 5 Minuten anzeigen
-        </label>
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
-        %= check_box 'dark' => 1, id => 'id_dark'
-        <label for="id_dark">
-          Dunkles Layout (experimentell)
         </label>
       </div>
     </div>
