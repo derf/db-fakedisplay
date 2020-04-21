@@ -79,7 +79,7 @@
 %   }
 %   elsif ($departure->{train_no}) {
 %     if (exists $ice_type->{$departure->{train_no}} and $ice_type->{$departure->{train_no}}[1]) {
-        <span class="trainsubtype"><%= $ice_type->{$departure->{train_no}}[1] %></span>
+        <span class="trainsubtype" aria-hidden="true"><%= $ice_type->{$departure->{train_no}}[1] %></span>
 %     }
       <span class="trainno"><%= $departure->{train_no} %></span>
 %   }
@@ -102,48 +102,8 @@
 %     }
       </div>
 %   }
-%   if ($departure->{info} and length $departure->{info}) {
-      <span class="info">
-%=    $departure->{info}
-      </span>
-%   }
-%   else {
-      <span class="route">
-%=    $route_str
-      </span>
-%   }
-    <span class="dest <%= $extraclasses %>">
+    <span class="dest <%= $extraclasses %>" aria-label="nach <%= $departure->{destination} %>">
 %=  $departure->{destination}
-    </span>
-    <span class="countdown <%= $extraclasses %>">
-%   if ($departure->{delay} and not $departure->{is_cancelled}) {
-%     if ($show_realtime) {
-%       if ($departure->{delay} > 0) {
-          <span class="delaynorm">(+<%= $departure->{delay} %>)</span>
-%       }
-%       else {
-          <span class="undelaynorm">(<%= $departure->{delay} %>)</span>
-%       }
-%     }
-%     else {
-%       if ($departure->{delay} > 0) {
-          <span class="delay">(+<%= $departure->{delay} %>)</span>
-%       }
-%       else {
-          <span class="undelay">(<%= $departure->{delay} %>)</span>
-%       }
-%     }
-%   }
-%   if (($departure->{scheduled_platform} and $departure->{platform} and
-%       $departure->{scheduled_platform} ne $departure->{platform})
-%       or $departure->{changed_platform}) {
-      <span class="platform changed-platform">
-%   }
-%   else {
-      <span class="platform">
-%   }
-%=  $departure->{platform}
-    </span>
     </span>
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
@@ -166,6 +126,47 @@
 %=    $departure->{time}
 %   }
     </span>
+    <span class="countdown <%= $extraclasses %>">
+%   if ($departure->{delay} and not $departure->{is_cancelled}) {
+%     my $aria_delay = sprintf("Verspätung %d Minuten", $departure->{delay});
+%     if ($show_realtime) {
+%       if ($departure->{delay} > 0) {
+          <span class="delaynorm" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+%       }
+%       else {
+          <span class="undelaynorm" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+%       }
+%     }
+%     else {
+%       if ($departure->{delay} > 0) {
+          <span class="delay" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+%       }
+%       else {
+          <span class="undelay" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+%       }
+%     }
+%   }
+%   if (($departure->{scheduled_platform} and $departure->{platform} and
+%       $departure->{scheduled_platform} ne $departure->{platform})
+%       or $departure->{changed_platform}) {
+      <span class="platform changed-platform" aria-label="Gleis <%= $departure->{platform} %>">
+%   }
+%   else {
+      <span class="platform" aria-label="Gleis <%= $departure->{platform} %>">
+%   }
+%=  $departure->{platform}
+    </span>
+    </span>
+%   if ($departure->{info} and length $departure->{info}) {
+      <span class="info">
+%=    $departure->{info}
+      </span>
+%   }
+%   else {
+      <span class="route" aria-label="Über <%= $route_str %>">
+%=    $route_str
+      </span>
+%   }
     </li>
 
 % }
