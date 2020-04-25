@@ -6,6 +6,8 @@ requires 'Geo::Distance';
 requires 'Geo::Distance::XS';
 requires 'JSON';
 requires 'JSON::XS';
+requires 'LWP::UserAgent';
+requires 'LWP::Protocol::https';
 requires 'Mojolicious';
 requires 'Travel::Status::DE::DBWagenreihung';
 requires 'Travel::Status::DE::DeutscheBahn';
