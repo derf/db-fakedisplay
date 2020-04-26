@@ -16,6 +16,9 @@ RUN apt-get update \
 
 COPY . /app
 
+RUN ln -sf ../ext-templates/imprint.html.ep templates/imprint.html.ep \
+	&& ln -sf ../ext-templates/privacy.html.ep templates/privacy.html.ep
+
 EXPOSE 8092
 
 CMD ["hypnotoad", "-f", "index.pl"]

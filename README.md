@@ -11,7 +11,7 @@ information about delay reasons and service limitations.
 
 There's a public [db-infoscreen service on
 finalrewind.org](https://dbf.finalrewind.org/). You can also host your own
-instance if you like, see the Setup notes below.
+instance via carton/cpanminus or Docker if you like, see the Setup notes below.
 
 
 Dependencies
@@ -57,6 +57,27 @@ cpanm --installdeps .
 and set `PERL5LIB=.../local/lib/perl5` before running index.pl or wrap it
 with `carton exec hypnotoad index.pl`.
 
+Note that you should provide imprint and privacy policy pages. Depending on
+traffic volume, you may also want to increase the amount of worker processes.
+See the Setup notes below.
+
+Installation with Docker
+---
+
+A db-infoscreen image is available on Docker Hub. You can install and run it
+as follows:
+
+```
+docker pull derfnull/db-fakedisplay:latest
+docker run --rm -p 8000:8092 -v "$(pwd)/templates:/app/ext-templates:ro" db-fakedisplay:latest
+```
+
+This will make the web service available on port 8000.  Note that you should
+provide imprint and privacy policy pages, see the Setup notes below.
+
+Use `docker run -e DBFAKEDISPLAY_WORKERS=4 ...` and similar to pass environment
+variables to the db-infoscreen service.
+
 Setup
 ---
 
@@ -69,7 +90,7 @@ db-infoscreen respects the following environment variables:
 | DBFAKEDISPLAY\_HAFAS\_CACHE | `/tmp/dbf-hafas` | Directory for HAFAS cache |
 | DBFAKEDISPLAY\_IRIS\_CACHE | `/tmp/dbf-iris-mian` | Directory for IRIS schedule cache |
 | DBFAKEDISPLAY\_IRISRT\_CACHE | `/tmp/dbf-iris-realtime` | Directory for IRIS realtime cache |
-| DBFAKEDISPLAY\_WORKERS | 2 | Number of concurrent worker processes |
+| DBFAKEDISPLAY\_WORKERS | 2 | Number of worker processes (i.e., maximum amount of concurrent requests) |
 
 Set these as needed, create `templates/imprint.html.ep` (imprint) and
 `templates/privacy.html.ep` (privacy policy), and configure your web server to
