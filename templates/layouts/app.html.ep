@@ -224,25 +224,25 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="developers developers-collapsed">
     <ul>
       <li>Diese Seite kann gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
-	Für eine kleine Ansicht (z.B. iframe in einer normalen Website) bitte das
-	"App"-Frontend verwenden. Für eine große Ansicht
-	(z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
+        Für eine kleine Ansicht (z.B. iframe in einer normalen Website) bitte das
+        "App"-Frontend verwenden. Für eine große Ansicht
+        (z.B. als alleinstehender Infoscreen) gibt es das "Infoscreen"-Frontend.</li>
       <li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
-	(alternativ auch <span style="font-family:
-	monospace;">https://dbf.finalrewind.org/Bahnhofsname.json?version=3</span>)
-	bieten ein JSON-IRIS-Interface. Die route-Elemente können zusätzlich
-	die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
-	selbsterklärend sein. Im Fehlerfall fehlt das "departures"-Element,
-	stattdessen wird ein "error"-Element mit Fehlermeldung zurückgegeben.
-	Bitte nur eine Anfrage pro Station und Minute
-	– eine höhere Auflösung haben die Backenddaten ohnehin nicht.</li>
+        (alternativ auch <span style="font-family:
+        monospace;">https://dbf.finalrewind.org/Bahnhofsname.json?version=3</span>)
+        bieten ein JSON-IRIS-Interface. Die route-Elemente können zusätzlich
+        die Felder "isAdditional" oder "isCancelled" enthalten, der Rest sollte
+        selbsterklärend sein. Im Fehlerfall fehlt das "departures"-Element,
+        stattdessen wird ein "error"-Element mit Fehlermeldung zurückgegeben.
+        Bitte nur eine Anfrage pro Station und Minute
+        – eine höhere Auflösung haben die Backenddaten ohnehin nicht.</li>
       <li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
-	angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
-	<span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
-      <li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann auch
-	auf eigenen Servern installiert werden. Automatisierte Crawler, die mehrere
-	Dutzend Stationen pro Minute abfragen, bitte nur auf eigenen Instanzen
-	betreiben.</li>
+        angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
+        <span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
+      <li>Dieser Dienst ist Open Source-Software (Links siehe unten) und kann
+        mittels carton/cpanminus oder Docker auf eigenen Servern installiert
+        werden. Automatisierte Crawler, die mehrere Dutzend Stationen pro Minute
+        abfragen, bitte nur auf eigenen Instanzen betreiben.</li>
     </ul>
   </div> <!-- developers -->
 </div> <!-- notes -->
