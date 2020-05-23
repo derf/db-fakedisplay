@@ -63,6 +63,80 @@ sub get_hafas_polyline_p {
 	return $promise;
 }
 
+sub estimate_train_position {
+	my (%opt) = @_;
+
+	my $now = $opt{now};
+
+	my $from_dt   = $opt{from}{dep};
+	my $to_dt     = $opt{to}{arr};
+	my $from_name = $opt{from}{name};
+	my $to_name   = $opt{to}{name};
+	my $features  = $opt{features};
+
+	my $route_part_completion_ratio
+	  = ( $now->epoch - $from_dt->epoch ) / ( $to_dt->epoch - $from_dt->epoch );
+
+	my $geo = Geo::Distance->new;
+	my ( $from_index, $to_index );
+
+	for my $j ( 0 .. $#{$features} ) {
+		my $this_point = $features->[$j];
+		if (    not defined $from_index
+			and $this_point->{properties}{type}
+			and $this_point->{properties}{type} eq 'stop'
+			and $this_point->{properties}{name} eq $from_name )
+		{
+			$from_index = $j;
+		}
+		elsif ( $this_point->{properties}{type}
+			and $this_point->{properties}{type} eq 'stop'
+			and $this_point->{properties}{name} eq $to_name )
+		{
+			$to_index = $j;
+			last;
+		}
+	}
+	if ( $from_index and $to_index ) {
+		my $total_distance = 0;
+		for my $j ( $from_index + 1 .. $to_index ) {
+			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
+			my $this = $features->[$j]{geometry}{coordinates};
+			if ( $prev and $this ) {
+				$total_distance += $geo->distance(
+					'kilometer', $prev->[0], $prev->[1],
+					$this->[0],  $this->[1]
+				);
+			}
+		}
+		my $marker_distance = $total_distance * $route_part_completion_ratio;
+		$total_distance = 0;
+		for my $j ( $from_index + 1 .. $to_index ) {
+			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
+			my $this = $features->[$j]{geometry}{coordinates};
+			if ( $prev and $this ) {
+				$total_distance += $geo->distance(
+					'kilometer', $prev->[0], $prev->[1],
+					$this->[0],  $this->[1]
+				);
+			}
+			if ( $total_distance > $marker_distance ) {
+
+				# return (lat, lon)
+				return ( $this->[1], $this->[0] );
+			}
+		}
+	}
+	else {
+		my $lat = $opt{from}{lat}
+		  + ( $opt{to}{lat} - $opt{from}{lat} ) * $route_part_completion_ratio;
+		my $lon = $opt{from}{lon}
+		  + ( $opt{to}{lon} - $opt{from}{lon} ) * $route_part_completion_ratio;
+		return ( $lat, $lon );
+	}
+	return ( $opt{to}{lat}, $opt{to}{lon} );
+}
+
 sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -188,107 +262,32 @@ sub route {
 					and $now > $route[ $i - 1 ]{dep}
 					and $now < $route[$i]{arr} )
 				{
-					my $from_dt   = $route[ $i - 1 ]{dep};
-					my $to_dt     = $route[$i]{arr};
-					my $from_name = $route[ $i - 1 ]{name};
-					my $to_name   = $route[$i]{name};
-
-					my $route_part_completion_ratio
-					  = ( $now->epoch - $from_dt->epoch )
-					  / ( $to_dt->epoch - $from_dt->epoch );
 
 					my $title = $pl->{name};
 					if ( $route[$i]{arr_delay} ) {
 						$title .= sprintf( ' (%+d)', $route[$i]{arr_delay} );
 					}
 
-					my $geo = Geo::Distance->new;
-					my ( $from_index, $to_index );
+					my ( $train_lat, $train_lon ) = estimate_train_position(
+						from     => $route[ $i - 1 ],
+						to       => $route[$i],
+						now      => $now,
+						features => $pl->{raw}{polyline}{features},
+					);
 
-					for my $j ( 0 .. $#{ $pl->{raw}{polyline}{features} } ) {
-						my $this_point = $pl->{raw}{polyline}{features}[$j];
-						if (    not defined $from_index
-							and $this_point->{properties}{type}
-							and $this_point->{properties}{type} eq 'stop'
-							and $this_point->{properties}{name} eq $from_name )
+					push(
+						@markers,
 						{
-							$from_index = $j;
+							lat   => $train_lat,
+							lon   => $train_lon,
+							title => $title
 						}
-						elsif ( $this_point->{properties}{type}
-							and $this_point->{properties}{type} eq 'stop'
-							and $this_point->{properties}{name} eq $to_name )
-						{
-							$to_index = $j;
-							last;
-						}
-					}
-					if ( $from_index and $to_index ) {
-						my $total_distance = 0;
-						for my $j ( $from_index + 1 .. $to_index ) {
-							my $prev = $pl->{raw}{polyline}{features}[ $j - 1 ]
-							  {geometry}{coordinates};
-							my $this
-							  = $pl->{raw}{polyline}{features}[$j]{geometry}
-							  {coordinates};
-							if ( $prev and $this ) {
-								$total_distance += $geo->distance(
-									'kilometer', $prev->[0], $prev->[1],
-									$this->[0],  $this->[1]
-								);
-							}
-						}
-						my $marker_distance
-						  = $total_distance * $route_part_completion_ratio;
-						$total_distance = 0;
-						for my $j ( $from_index + 1 .. $to_index ) {
-							my $prev = $pl->{raw}{polyline}{features}[ $j - 1 ]
-							  {geometry}{coordinates};
-							my $this
-							  = $pl->{raw}{polyline}{features}[$j]{geometry}
-							  {coordinates};
-							if ( $prev and $this ) {
-								$total_distance += $geo->distance(
-									'kilometer', $prev->[0], $prev->[1],
-									$this->[0],  $this->[1]
-								);
-							}
-							if ( $total_distance > $marker_distance ) {
-								push(
-									@markers,
-									{
-										lon   => $this->[0],
-										lat   => $this->[1],
-										title => $title
-									}
-								);
-								$next_stop = {
-									type    => 'next',
-									station => $route[$i],
-								};
-								last;
-							}
-						}
-					}
-					else {
-						push(
-							@markers,
-							{
-								lat => $route[ $i - 1 ]{lat} + (
-									( $route[$i]{lat} - $route[ $i - 1 ]{lat} )
-									* $route_part_completion_ratio
-								),
-								lon => $route[ $i - 1 ]{lon} + (
-									( $route[$i]{lon} - $route[ $i - 1 ]{lon} )
-									* $route_part_completion_ratio
-								),
-								title => $title
-							}
-						);
-						$next_stop = {
-							type    => 'next',
-							station => $route[$i],
-						};
-					}
+					);
+
+					$next_stop = {
+						type    => 'next',
+						station => $route[$i],
+					};
 					last;
 				}
 				if ( $route[ $i - 1 ]{dep} and $now <= $route[ $i - 1 ]{dep} ) {
