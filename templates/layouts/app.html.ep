@@ -61,6 +61,7 @@
 	% if (stash('with_map')) {
 	%= stylesheet "/static/${av}/leaflet/leaflet.css"
 	%= javascript "/static/${av}/leaflet/leaflet.js"
+	%= javascript "/static/${av}/js/map-refresh.min.js", defer => undef
 	% }
 </head>
 <body>

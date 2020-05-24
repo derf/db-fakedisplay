@@ -315,6 +315,7 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 
+	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
 
 	$self->defaults( layout => 'app' );

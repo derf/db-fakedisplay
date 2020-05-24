@@ -1,0 +1,61 @@
+<div class="container" id="infobox" style="margin-top: 1ex; margin-bottom: 1ex;">
+<div class="journey" id="jdata"
+data-req="<%= stash('ajax_req') %>"
+data-route="<%= stash('ajax_route') %>"
+data-poly="<%= stash('ajax_polyline') %>"
+>
+	Fahrt
+	% if (stash('train_no')) {
+		<strong><%= stash('train_no') %></strong>
+	% }
+	von <strong><%= stash('origin')->{name} %></strong>
+	nach <strong><%= stash('destination')->{name} %></strong>
+</div>
+% if (my $next = stash('next_stop')) {
+	<div class="nextstop">
+	% if ($next->{type} eq 'present' and $next->{station}{dep} and $next->{station}{arr}) {
+		Aufenthalt in <strong><%= $next->{station}{name} %></strong>
+		an Gleis <strong><%= $next->{station}{platform} %></strong>
+		bis <strong><%= $next->{station}{dep}->strftime('%H:%M') %></strong>
+		% if ($next->{station}{dep_delay}) {
+			%= sprintf('(%+d)', $next->{station}{dep_delay})
+		% }
+	% }
+	% elsif ($next->{type} eq 'present' and $next->{station}{dep}) {
+		Abfahrt in <strong><%= $next->{station}{name} %></strong>
+		von Gleis <strong><%= $next->{station}{platform} %></strong>
+		um <strong><%= $next->{station}{dep}->strftime('%H:%M') %></strong>
+		% if ($next->{station}{dep_delay}) {
+			%= sprintf('(%+d)', $next->{station}{dep_delay})
+		% }
+	% }
+	% elsif ($next->{type} eq 'present' and $next->{station}{arr}) {
+		Endstation erreicht um
+		<strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
+		auf Gleis <strong><%= $next->{station}{platform} %></strong>
+		% if ($next->{station}{arr_delay}) {
+			%= sprintf('(%+d)', $next->{station}{arr_delay})
+		% }
+	% }
+	% elsif ($next->{type} eq 'present') {
+		Zug steht in
+		<strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
+		auf Gleis <strong><%= $next->{station}{platform} %></strong>
+	% }
+	% elsif ($next->{type} eq 'next' and $next->{station}{arr}) {
+		Nächster Halt:
+		<strong><%= $next->{station}{name} %></strong>
+		um <strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
+		% if ($next->{station}{arr_delay}) {
+			%= sprintf('(%+d)', $next->{station}{arr_delay})
+		% }
+		auf Gleis <strong><%= $next->{station}{platform} %></strong>
+	% }
+	% elsif ($next->{type} eq 'next') {
+		Nächster Halt:
+		<strong><%= $next->{station}{name} %></strong>
+		auf Gleis <strong><%= $next->{station}{platform} %></strong>
+	% }
+	</div>
+% }
+</div>

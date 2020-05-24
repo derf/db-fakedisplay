@@ -1,0 +1,5 @@
+<div class="error"><strong>Fehler:</strong>
+<pre>
+%= $error
+</pre>
+</div>
