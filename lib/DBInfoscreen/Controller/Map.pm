@@ -123,7 +123,7 @@ sub estimate_train_positions {
 			last;
 		}
 	}
-	if ( $from_index and $to_index ) {
+	if ( defined $from_index and defined $to_index ) {
 		my $total_distance = 0;
 		for my $j ( $from_index + 1 .. $to_index ) {
 			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
