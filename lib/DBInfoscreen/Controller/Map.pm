@@ -31,6 +31,7 @@ sub get_hafas_polyline_p {
 
 	if ( my $content = $cache->thaw($url) ) {
 		$promise->resolve($content);
+		$self->app->log->debug("GET $url (cached)");
 		return $promise;
 	}
 
@@ -40,6 +41,7 @@ sub get_hafas_polyline_p {
 	  ->then(
 		sub {
 			my ($tx) = @_;
+			$self->app->log->debug("GET $url (OK)");
 			my $json = decode_json( $tx->res->body );
 			my @coordinate_list;
 
@@ -65,6 +67,7 @@ sub get_hafas_polyline_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
+			$self->app->log->debug("GET $url (error: $err)");
 			$promise->reject($err);
 		}
 	)->wait;
