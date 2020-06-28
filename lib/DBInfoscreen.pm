@@ -317,6 +317,7 @@ sub startup {
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
+	$r->get('/intersection/:trips')->to('map#intersection');
 
 	$self->defaults( layout => 'app' );
 

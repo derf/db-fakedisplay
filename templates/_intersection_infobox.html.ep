@@ -1,0 +1,22 @@
+<div class="container" id="infobox2" style="margin-top: 1ex; margin-bottom: 1ex;">
+<div class="journey" id="jdata"
+data-req="<%= stash('ajax_req') %>"
+data-route="<%= stash('ajax_route') %>"
+data-poly="<%= stash('ajax_polyline') %>"
+>
+	<strong><%= stash('train1_no') %></strong>
+	und
+	<strong><%= stash('train2_no') %></strong>
+	werden sich wahrscheinlich
+	% if (my $t = stash('time')) {
+		gegen <strong><%= $t->strftime('%H:%M') %> Uhr</strong>
+	% }
+	% if (my $p = stash('likely_pair')) {
+		zwischen <strong><%= $p->[0] %></strong> und <strong><%= $p->[1] %></strong>
+	% }
+	% if (not stash('time')) {
+		nicht
+	% }
+	begegnen.
+</div>
+</div>

@@ -1,5 +1,8 @@
-% if ($origin and $destination) {
+% if (stash('origin') and stash('destination')) {
 	%= include '_map_infobox'
+% }
+% elsif (stash('intersection')) {
+	%= include '_intersection_infobox'
 % }
 
 <div class="container">
