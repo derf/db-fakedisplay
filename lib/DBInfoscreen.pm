@@ -142,8 +142,9 @@ sub startup {
 
 	$self->helper(
 		'handle_no_results_json' => sub {
-			my ( $self, $backend, $station, $errstr, $api_version, $callback )
-			  = @_;
+			my ( $self, $backend, $station, $errstr, $api_version ) = @_;
+
+			my $callback = $self->param('callback');
 
 			$self->res->headers->access_control_allow_origin(q{*});
 			my $json;
@@ -315,7 +316,9 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 
+	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
+	$r->get('/intersection/:trips')->to('map#intersection');
 
 	$self->defaults( layout => 'app' );
 

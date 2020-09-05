@@ -25,6 +25,7 @@ sub get_wagenreihung_p {
 
 	if ( my $content = $cache->thaw($url) ) {
 		$promise->resolve($content);
+		$self->app->log->debug("GET $url (cached)");
 		return $promise;
 	}
 
@@ -33,6 +34,7 @@ sub get_wagenreihung_p {
 	  ->then(
 		sub {
 			my ($tx) = @_;
+			$self->app->log->debug("GET $url (OK)");
 			my $body = decode( 'utf-8', $tx->res->body );
 			my $json = JSON->new->decode($body);
 
@@ -42,6 +44,7 @@ sub get_wagenreihung_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
+			$self->app->log->debug("GET $url (error: $err)");
 			$promise->reject($err);
 		}
 	)->wait;

@@ -1,58 +1,8 @@
-% if ($origin and $destination) {
-	<div class="container" style="margin-top: 1ex; margin-bottom: 1ex;">
-	Fahrt
-	% if (stash('train_no')) {
-		<strong><%= stash('train_no') %></strong>
-	% }
-	von <strong><%= $origin->{name} %></strong>
-	nach <strong><%= $destination->{name} %></strong>
-	% if (my $next = stash('next_stop')) {
-		<br/>
-		% if ($next->{type} eq 'present' and $next->{station}{dep} and $next->{station}{arr}) {
-			Aufenthalt in <strong><%= $next->{station}{name} %></strong>
-			an Gleis <strong><%= $next->{station}{platform} %></strong>
-			bis <strong><%= $next->{station}{dep}->strftime('%H:%M') %></strong>
-			% if ($next->{station}{dep_delay}) {
-				%= sprintf('(%+d)', $next->{station}{dep_delay})
-			% }
-		% }
-		% elsif ($next->{type} eq 'present' and $next->{station}{dep}) {
-			Abfahrt in <strong><%= $next->{station}{name} %></strong>
-			von Gleis <strong><%= $next->{station}{platform} %></strong>
-			um <strong><%= $next->{station}{dep}->strftime('%H:%M') %></strong>
-			% if ($next->{station}{dep_delay}) {
-				%= sprintf('(%+d)', $next->{station}{dep_delay})
-			% }
-		% }
-		% elsif ($next->{type} eq 'present' and $next->{station}{arr}) {
-			Endstation erreicht um
-			<strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
-			auf Gleis <strong><%= $next->{station}{platform} %></strong>
-			% if ($next->{station}{arr_delay}) {
-				%= sprintf('(%+d)', $next->{station}{arr_delay})
-			% }
-		% }
-		% elsif ($next->{type} eq 'present') {
-			Zug steht in
-			<strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
-			auf Gleis <strong><%= $next->{station}{platform} %></strong>
-		% }
-		% elsif ($next->{type} eq 'next' and $next->{station}{arr}) {
-			Nächster Halt:
-			<strong><%= $next->{station}{name} %></strong>
-			um <strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
-			% if ($next->{station}{arr_delay}) {
-				%= sprintf('(%+d)', $next->{station}{arr_delay})
-			% }
-			auf Gleis <strong><%= $next->{station}{platform} %></strong>
-		% }
-		% elsif ($next->{type} eq 'next') {
-			Nächster Halt:
-			<strong><%= $next->{station}{name} %></strong>
-			auf Gleis <strong><%= $next->{station}{platform} %></strong>
-		% }
-	% }
-	</div>
+% if (stash('origin') and stash('destination')) {
+	%= include '_map_infobox'
+% }
+% elsif (stash('intersection')) {
+	%= include '_intersection_infobox'
 % }
 
 <div class="container">
@@ -135,9 +85,7 @@ var marker;
 Die eingezeichnete Route stammt aus dem HAFAS und ist im Detail oft
 fehlerbehaftet.<br/>
 Die Zugposition auf der Karte ist eine DBF-eigene Schätzung und kann erheblich
-von der tatsächlichen Position des Zugs abweichen.<br/>
-Live-Tracking mit automatischer Kartenaktualisierung wird noch nicht
-unterstützt.
+von den tatsächlichen Gegebenheiten abweichen.
 </div>
 
 % if (my $op = stash('operator')) {

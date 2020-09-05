@@ -11,6 +11,7 @@ use File::Slurp qw(read_file write_file);
 use List::Util qw(max);
 use List::MoreUtils qw();
 use Mojo::JSON qw(decode_json);
+use Mojo::Promise;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
@@ -504,25 +505,13 @@ sub get_results_for {
 }
 
 sub handle_request {
-	my ($self)  = @_;
+	my ($self) = @_;
 	my $station = $self->stash('station');
-	my $via     = $self->param('via');
 
-	my @platforms = split( /,/, $self->param('platforms') // q{} );
-	my @lines     = split( /,/, $self->param('lines')     // q{} );
-	my $template       = $self->param('mode')          // 'app';
-	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
-	my $hide_opts      = $self->param('hide_opts')     // 0;
-	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $show_details   = $self->param('detailed')      // 0;
-	my $backend        = $self->param('backend')       // 'iris';
-	my $admode         = $self->param('admode')        // 'deparr';
-	my $apiver         = $self->param('version')       // 0;
-	my $callback       = $self->param('callback');
-	my $with_related   = !$self->param('no_related');
-	my $limit       = $self->param('limit') // 0;
-	my @train_types = split( /,/, $self->param('train_types') // q{} );
-	my %opt         = (
+	my $template = $self->param('mode')    // 'app';
+	my $backend  = $self->param('backend') // 'iris';
+	my $with_related = !$self->param('no_related');
+	my %opt          = (
 		cache_hafas     => $self->app->cache_hafas,
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
@@ -568,6 +557,8 @@ sub handle_request {
 		$template = 'app';
 	}
 
+	$self->param( mode => $template );
+
 	if ( not $station ) {
 		$self->render( 'landingpage', show_intro => 1 );
 		return;
@@ -582,33 +573,310 @@ sub handle_request {
 		$opt{with_related} = 1;
 	}
 
-	my @departures;
-	my $data        = get_results_for( $backend, $station, %opt );
-	my $results_ref = $data->{results};
-	my $errstr      = $data->{errstr};
-	my @results     = @{$results_ref};
+	my $data   = get_results_for( $backend, $station, %opt );
+	my $errstr = $data->{errstr};
 
-	if ( not @results and $template eq 'json' ) {
+	if ( not @{ $data->{results} } and $template eq 'json' ) {
 		$self->handle_no_results_json( $backend, $station, $errstr,
-			$api_version, $callback );
+			$api_version );
 		return;
 	}
 
-	# foo/bar used to mean "departures for foo via bar". This is now
-	# deprecated, but most of these cases are handled here.
-	if ( not @results and $station =~ m{/} ) {
-		( $station, $via ) = split( qr{/}, $station );
-		$self->param( station => $station );
-		$self->param( via     => $via );
-		$data        = get_results_for( $backend, $station, %opt );
-		$results_ref = $data->{results};
-		$errstr      = $data->{errstr};
-		@results     = @{$results_ref};
-	}
-
-	if ( not @results ) {
+	if ( not @{ $data->{results} } ) {
 		$self->handle_no_results( $backend, $station, $errstr );
 		return;
+	}
+
+	$self->handle_result($data);
+}
+
+sub filter_results {
+	my ( $self, @results ) = @_;
+
+	if ( my $train = $self->param('train') ) {
+		@results = grep { result_is_train( $_, $train ) } @results;
+	}
+
+	if ( my @lines = split( /,/, $self->param('lines') // q{} ) ) {
+		@results = grep { result_has_line( $_, @lines ) } @results;
+	}
+
+	if ( my @platforms = split( /,/, $self->param('platforms') // q{} ) ) {
+		@results = grep { result_has_platform( $_, @platforms ) } @results;
+	}
+
+	if ( my $via = $self->param('via') ) {
+		$via =~ s{ , \s* }{|}gx;
+		@results = grep { result_has_via( $_, $via ) } @results;
+	}
+
+	if ( my @train_types = split( /,/, $self->param('train_types') // q{} ) ) {
+		@results = grep { result_has_train_type( $_, @train_types ) } @results;
+	}
+
+	if ( my $limit = $self->param('limit') ) {
+		if ( $limit =~ m{ ^ \d+ $ }x ) {
+			splice( @results, $limit );
+		}
+	}
+
+	return @results;
+}
+
+sub format_iris_result_info {
+	my ( $self, $template, $result ) = @_;
+	my ( $info, $moreinfo );
+
+	my $delaymsg
+	  = join( ', ', map { $_->[1] } $result->delay_messages );
+	my $qosmsg = join( ' +++ ', map { $_->[1] } $result->qos_messages );
+	if ( $result->is_cancelled ) {
+		$info = "Fahrt fällt aus: ${delaymsg}";
+	}
+	elsif ( $result->departure_is_cancelled ) {
+		$info = "Zug endet hier: ${delaymsg}";
+	}
+	elsif ( $result->delay and $result->delay > 0 ) {
+		if ( $template eq 'app' or $template eq 'infoscreen' ) {
+			$info = $delaymsg;
+		}
+		else {
+			$info = sprintf( 'ca. +%d%s%s',
+				$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
+		}
+	}
+	if (    $result->replacement_for
+		and $template ne 'app'
+		and $template ne 'infoscreen' )
+	{
+		for my $rep ( $result->replacement_for ) {
+			$info = sprintf(
+				'Ersatzzug für %s %s %s%s',
+				$rep->type, $rep->train_no,
+				$info ? '+++ ' : q{}, $info // q{}
+			);
+		}
+	}
+	if ( $info and $qosmsg ) {
+		$info .= ' +++ ';
+	}
+	$info .= $qosmsg;
+
+	if ( $result->additional_stops and not $result->is_cancelled ) {
+		my $additional_line = join( q{, }, $result->additional_stops );
+		$info
+		  = 'Zusätzliche Halte: '
+		  . $additional_line
+		  . ( $info ? ' +++ ' : q{} )
+		  . $info;
+		if ( $template ne 'json' ) {
+			push( @{$moreinfo}, [ 'Zusätzliche Halte', $additional_line ] );
+		}
+	}
+
+	if ( $result->canceled_stops and not $result->is_cancelled ) {
+		my $cancel_line = join( q{, }, $result->canceled_stops );
+		$info
+		  = 'Ohne Halt in: ' . $cancel_line . ( $info ? ' +++ ' : q{} ) . $info;
+		if ( $template ne 'json' ) {
+			push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
+		}
+	}
+
+	push( @{$moreinfo}, $result->messages );
+
+	return ( $info, $moreinfo );
+}
+
+sub format_hafas_result_info {
+	my ( $self, $result ) = @_;
+	my ( $info, $moreinfo );
+
+	$info = $result->info;
+	if ($info) {
+		$moreinfo = [ [ 'HAFAS', $info ] ];
+	}
+	if ( $result->delay and $result->delay > 0 ) {
+		if ($info) {
+			$info = 'ca. +' . $result->delay . ': ' . $info;
+		}
+		else {
+			$info = 'ca. +' . $result->delay;
+		}
+	}
+	push( @{$moreinfo}, map { [ 'HAFAS', $_ ] } $result->messages );
+
+	return ( $info, $moreinfo );
+}
+
+sub render_train {
+	my ( $self, $result, $departure, $station_name ) = @_;
+
+	$departure->{route_pre_diff} = [
+		$self->json_route_diff(
+			[ $result->route_pre ],
+			[ $result->sched_route_pre ]
+		)
+	];
+	$departure->{route_post_diff} = [
+		$self->json_route_diff(
+			[ $result->route_post ],
+			[ $result->sched_route_post ]
+		)
+	];
+
+	$departure->{trip_id}
+	  = get_hafas_trip_id( $self->ua, $self->app->cache_iris_main, $result );
+
+	if (
+		$departure->{wr_link}
+		and not check_wagonorder_with_wings(
+			$self->ua, $self->app->cache_iris_main,
+			$result,   $departure->{wr_link}
+		)
+	  )
+	{
+		$departure->{wr_link} = undef;
+	}
+
+	my ( $route_ts, $route_info ) = get_route_timestamps(
+		$self->ua,
+		$self->app->cache_iris_main,
+		$self->app->cache_iris_rt,
+		{ train => $result }
+	);
+
+	# If a train number changes on the way, IRIS routes are incomplete,
+	# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
+	# stops. This is a rare case, one point where it can be observed is
+	# the TGV service at Frankfurt/Karlsruhe/Mannheim.
+	if ( $route_info
+		and my @hafas_stations = @{ $route_info->{stations} // [] } )
+	{
+		if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
+			my @missing_pre;
+			for my $station (@hafas_stations) {
+				if (
+					List::MoreUtils::any { $_->{name} eq $station }
+					@iris_stations
+				  )
+				{
+					unshift( @{ $departure->{route_pre_diff} }, @missing_pre );
+					last;
+				}
+				push(
+					@missing_pre,
+					{
+						name  => $station,
+						hafas => 1
+					}
+				);
+			}
+		}
+		if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
+			my @missing_post;
+			for my $station ( reverse @hafas_stations ) {
+				if (
+					List::MoreUtils::any { $_->{name} eq $station }
+					@iris_stations
+				  )
+				{
+					push( @{ $departure->{route_post_diff} }, @missing_post );
+					last;
+				}
+				unshift(
+					@missing_post,
+					{
+						name  => $station,
+						hafas => 1
+					}
+				);
+			}
+		}
+	}
+	if ($route_ts) {
+		for my $elem (
+			@{ $departure->{route_pre_diff} },
+			@{ $departure->{route_post_diff} }
+		  )
+		{
+			for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
+				$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+			}
+		}
+	}
+	if ( $route_info and @{ $route_info->{messages} // [] } ) {
+		my $him = $route_info->{messages};
+		my @him_messages;
+		$departure->{messages}{him} = $him;
+		for my $message ( @{$him} ) {
+			if ( $message->{display} ) {
+				push( @him_messages, [ $message->{header}, $message->{lead} ] );
+			}
+		}
+		for my $message ( @{ $departure->{moreinfo} // [] } ) {
+			my $m = $message->[1];
+			@him_messages
+			  = grep { $_->[0] !~ m{Information\. $m\.$} } @him_messages;
+		}
+		unshift( @{ $departure->{moreinfo} }, @him_messages );
+	}
+
+	my $linetype = 'bahn';
+	if ( $departure->{train_type} eq 'S' ) {
+		$linetype = 'sbahn';
+	}
+	elsif ($departure->{train_type} eq 'IC'
+		or $departure->{train_type} eq 'ICE'
+		or $departure->{train_type} eq 'EC'
+		or $departure->{train_type} eq 'ECE'
+		or $departure->{train_type} eq 'EN' )
+	{
+		$linetype = 'fern';
+	}
+	elsif ($departure->{train_type} eq 'THA'
+		or $departure->{train_type} eq 'TGV'
+		or $departure->{train_type} eq 'FLX'
+		or $departure->{train_type} eq 'NJ' )
+	{
+		$linetype = 'ext';
+	}
+	elsif ( $departure->{train_line}
+		and $departure->{train_line} =~ m{^S\d} )
+	{
+		$linetype = 'sbahn';
+	}
+
+	$self->render(
+		'_train_details',
+		departure    => $departure,
+		linetype     => $linetype,
+		icetype      => $self->app->ice_type_map->{ $departure->{train_no} },
+		dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
+		station_name => $station_name,
+	);
+}
+
+sub handle_result {
+	my ( $self, $data ) = @_;
+
+	my @results = @{ $data->{results} };
+	my @departures;
+
+	my @platforms      = split( /,/, $self->param('platforms') // q{} );
+	my $template       = $self->param('mode') // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts') // 0;
+	my $show_realtime  = $self->param('show_realtime') // 0;
+	my $show_details   = $self->param('detailed') // 0;
+	my $backend        = $self->param('backend') // 'iris';
+	my $admode         = $self->param('admode') // 'deparr';
+	my $apiver         = $self->param('version') // 0;
+	my $callback       = $self->param('callback');
+	my $via            = $self->param('via');
+
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
 	}
 
 	if ( $template eq 'single' ) {
@@ -649,30 +917,7 @@ sub handle_request {
 		}
 	}
 
-	if ( my $train = $self->param('train') ) {
-		@results = grep { result_is_train( $_, $train ) } @results;
-	}
-
-	if (@lines) {
-		@results = grep { result_has_line( $_, @lines ) } @results;
-	}
-
-	if (@platforms) {
-		@results = grep { result_has_platform( $_, @platforms ) } @results;
-	}
-
-	if ($via) {
-		$via =~ s{ , \s* }{|}gx;
-		@results = grep { result_has_via( $_, $via ) } @results;
-	}
-
-	if (@train_types) {
-		@results = grep { result_has_train_type( $_, @train_types ) } @results;
-	}
-
-	if ( $limit and $limit =~ m{ ^ \d+ $ }x ) {
-		splice( @results, $limit );
-	}
+	@results = $self->filter_results(@results);
 
 	for my $result (@results) {
 		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
@@ -689,84 +934,11 @@ sub handle_request {
 		}
 		my ( $info, $moreinfo );
 		if ( $backend eq 'iris' ) {
-			my $delaymsg
-			  = join( ', ', map { $_->[1] } $result->delay_messages );
-			my $qosmsg = join( ' +++ ', map { $_->[1] } $result->qos_messages );
-			if ( $result->is_cancelled ) {
-				$info = "Fahrt fällt aus: ${delaymsg}";
-			}
-			elsif ( $result->departure_is_cancelled ) {
-				$info = "Zug endet hier: ${delaymsg}";
-			}
-			elsif ( $result->delay and $result->delay > 0 ) {
-				if ( $template eq 'app' or $template eq 'infoscreen' ) {
-					$info = $delaymsg;
-				}
-				else {
-					$info = sprintf( 'ca. +%d%s%s',
-						$result->delay, $delaymsg ? q{: } : q{}, $delaymsg );
-				}
-			}
-			if (    $result->replacement_for
-				and $template ne 'app'
-				and $template ne 'infoscreen' )
-			{
-				for my $rep ( $result->replacement_for ) {
-					$info = sprintf(
-						'Ersatzzug für %s %s %s%s',
-						$rep->type, $rep->train_no,
-						$info ? '+++ ' : q{}, $info // q{}
-					);
-				}
-			}
-			if ( $info and $qosmsg ) {
-				$info .= ' +++ ';
-			}
-			$info .= $qosmsg;
-
-			if ( $result->additional_stops and not $result->is_cancelled ) {
-				my $additional_line = join( q{, }, $result->additional_stops );
-				$info
-				  = 'Zusätzliche Halte: '
-				  . $additional_line
-				  . ( $info ? ' +++ ' : q{} )
-				  . $info;
-				if ( $template ne 'json' ) {
-					push(
-						@{$moreinfo},
-						[ 'Zusätzliche Halte', $additional_line ]
-					);
-				}
-			}
-
-			if ( $result->canceled_stops and not $result->is_cancelled ) {
-				my $cancel_line = join( q{, }, $result->canceled_stops );
-				$info
-				  = 'Ohne Halt in: '
-				  . $cancel_line
-				  . ( $info ? ' +++ ' : q{} )
-				  . $info;
-				if ( $template ne 'json' ) {
-					push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
-				}
-			}
-
-			push( @{$moreinfo}, $result->messages );
+			( $info, $moreinfo )
+			  = $self->format_iris_result_info( $template, $result );
 		}
 		else {
-			$info = $result->info;
-			if ($info) {
-				$moreinfo = [ [ 'HAFAS', $info ] ];
-			}
-			if ( $result->delay and $result->delay > 0 ) {
-				if ($info) {
-					$info = 'ca. +' . $result->delay . ': ' . $info;
-				}
-				else {
-					$info = 'ca. +' . $result->delay;
-				}
-			}
-			push( @{$moreinfo}, map { [ 'HAFAS', $_ ] } $result->messages );
+			( $info, $moreinfo ) = $self->format_hafas_result_info($result);
 		}
 
 		my $time = $result->time;
@@ -1026,131 +1198,9 @@ sub handle_request {
 				}
 			);
 			if ( $self->param('train') ) {
-				$departures[-1]{route_pre_diff} = [
-					$self->json_route_diff(
-						[ $result->route_pre ],
-						[ $result->sched_route_pre ]
-					)
-				];
-				$departures[-1]{route_post_diff} = [
-					$self->json_route_diff(
-						[ $result->route_post ],
-						[ $result->sched_route_post ]
-					)
-				];
-
-				$departures[-1]{trip_id}
-				  = get_hafas_trip_id( $self->ua, $self->app->cache_iris_main,
-					$result );
-
-				if (
-					$departures[-1]{wr_link}
-					and not check_wagonorder_with_wings(
-						$self->ua, $self->app->cache_iris_main,
-						$result,   $departures[-1]{wr_link}
-					)
-				  )
-				{
-					$departures[-1]{wr_link} = undef;
-				}
-
-				my ( $route_ts, $route_info ) = get_route_timestamps(
-					$self->ua,
-					$self->app->cache_iris_main,
-					$self->app->cache_iris_rt,
-					{ train => $result }
-				);
-
-             # If a train number changes on the way, IRIS routes are incomplete,
-             # whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
-             # stops. This is a rare case, one point where it can be observed is
-             # the TGV service at Frankfurt/Karlsruhe/Mannheim.
-				if ( $route_info
-					and my @hafas_stations
-					= @{ $route_info->{stations} // [] } )
-				{
-					if ( my @iris_stations
-						= @{ $departures[-1]{route_pre_diff} } )
-					{
-						my @missing_pre;
-						for my $station (@hafas_stations) {
-							if (
-								List::MoreUtils::any { $_->{name} eq $station }
-								@iris_stations
-							  )
-							{
-								unshift(
-									@{ $departures[-1]{route_pre_diff} },
-									@missing_pre
-								);
-								last;
-							}
-							push(
-								@missing_pre,
-								{
-									name  => $station,
-									hafas => 1
-								}
-							);
-						}
-					}
-					if ( my @iris_stations
-						= @{ $departures[-1]{route_post_diff} } )
-					{
-						my @missing_post;
-						for my $station ( reverse @hafas_stations ) {
-							if (
-								List::MoreUtils::any { $_->{name} eq $station }
-								@iris_stations
-							  )
-							{
-								push(
-									@{ $departures[-1]{route_post_diff} },
-									@missing_post
-								);
-								last;
-							}
-							unshift(
-								@missing_post,
-								{
-									name  => $station,
-									hafas => 1
-								}
-							);
-						}
-					}
-				}
-				if ($route_ts) {
-					for my $elem (
-						@{ $departures[-1]{route_pre_diff} },
-						@{ $departures[-1]{route_post_diff} }
-					  )
-					{
-						for my $key (
-							keys %{ $route_ts->{ $elem->{name} } // {} } )
-						{
-							$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
-						}
-					}
-				}
-				if ( $route_info and @{ $route_info->{messages} // [] } ) {
-					my $him = $route_info->{messages};
-					my @him_messages;
-					$departures[-1]{messages}{him} = $him;
-					for my $message ( @{$him} ) {
-						if ( $message->{display} ) {
-							push( @him_messages,
-								[ $message->{header}, $message->{lead} ] );
-						}
-					}
-					for my $message ( @{ $departures[-1]{moreinfo} // [] } ) {
-						my $m = $message->[1];
-						@him_messages
-						  = grep { $_->[0] !~ m{Information\. $m\.$} }
-						  @him_messages;
-					}
-					unshift( @{ $departures[-1]{moreinfo} }, @him_messages );
-				}
+				$self->render_train( $result, $departures[-1],
+					$data->{station_name} // $self->stash('station') );
+				return;
 			}
 		}
 		else {
@@ -1180,10 +1230,6 @@ sub handle_request {
 				}
 			);
 		}
-	}
-
-	if ( $self->param('ajax') ) {
-		delete $self->stash->{layout};
 	}
 
 	if ( $template eq 'json' ) {
@@ -1223,52 +1269,8 @@ sub handle_request {
 			format => 'text',
 		);
 	}
-	elsif ( my $train = $self->param('train') ) {
-
-		my ($departure) = @departures;
-
-		if ($departure) {
-
-			my $linetype = 'bahn';
-			if ( $departure->{train_type} eq 'S' ) {
-				$linetype = 'sbahn';
-			}
-			elsif ($departure->{train_type} eq 'IC'
-				or $departure->{train_type} eq 'ICE'
-				or $departure->{train_type} eq 'EC'
-				or $departure->{train_type} eq 'ECE'
-				or $departure->{train_type} eq 'EN' )
-			{
-				$linetype = 'fern';
-			}
-			elsif ($departure->{train_type} eq 'THA'
-				or $departure->{train_type} eq 'TGV'
-				or $departure->{train_type} eq 'FLX'
-				or $departure->{train_type} eq 'NJ' )
-			{
-				$linetype = 'ext';
-			}
-			elsif ( $departure->{train_line}
-				and $departure->{train_line} =~ m{^S\d} )
-			{
-				$linetype = 'sbahn';
-			}
-
-			$self->render(
-				'_train_details',
-				departure => $departure,
-				linetype  => $linetype,
-				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
-				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
-				station_name => $data->{station_name} // $station,
-			);
-		}
-		else {
-			$self->render('not_found');
-		}
-	}
 	else {
-		my $station_name = $data->{station_name} // $station;
+		my $station_name = $data->{station_name} // $self->stash('station');
 		$self->render(
 			$template,
 			departures       => \@departures,
