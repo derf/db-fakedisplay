@@ -1,8 +1,8 @@
-% if ($wr->errstr) {
+% if (not $wr or $wr->errstr) {
   <div class="container">
     <div class="error">
       <strong>Fehler bei der Abfrage der Wagenreihung:</strong>
-      <%= $wr->errstr %>
+      <%= $wr ? $wr->errstr : $wr_error %>
     </div>
   </div>
 % }
