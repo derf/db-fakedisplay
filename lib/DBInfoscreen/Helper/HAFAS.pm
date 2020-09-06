@@ -7,6 +7,7 @@ use 5.020;
 use DateTime;
 use Encode qw(decode encode);
 use Mojo::JSON qw(decode_json);
+use Mojo::Promise;
 use XML::LibXML;
 
 sub new {
@@ -295,6 +296,62 @@ sub get_tripid {
 		}
 	}
 	return;
+}
+
+# Input: (HAFAS TripID, line number)
+# Output: Promise returning a
+# https://github.com/public-transport/hafas-client/blob/4/docs/trip.md instance
+# on success
+sub get_polyline_p {
+	my ( $self, $trip_id, $line ) = @_;
+
+	my $url
+	  = "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
+	my $cache   = $self->{realtime_cache};
+	my $promise = Mojo::Promise->new;
+
+	if ( my $content = $cache->thaw($url) ) {
+		$promise->resolve($content);
+		$self->{log}->debug("GET $url (cached)");
+		return $promise;
+	}
+
+	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+			$self->{log}->debug("GET $url (OK)");
+			my $json = decode_json( $tx->res->body );
+			my @coordinate_list;
+
+			for my $feature ( @{ $json->{polyline}{features} } ) {
+				if ( exists $feature->{geometry}{coordinates} ) {
+					push( @coordinate_list, $feature->{geometry}{coordinates} );
+				}
+
+				#if ($feature->{type} eq 'Feature') {
+				#	say "Feature " . $feature->{properties}{name};
+				#}
+			}
+
+			my $ret = {
+				name     => $json->{line}{name} // '?',
+				polyline => [@coordinate_list],
+				raw      => $json,
+			};
+
+			$cache->freeze( $url, $ret );
+			$promise->resolve($ret);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->{log}->debug("GET $url (error: $err)");
+			$promise->reject($err);
+		}
+	)->wait;
+
+	return $promise;
 }
 
 1;

@@ -18,64 +18,6 @@ my $strp = DateTime::Format::Strptime->new(
 
 chomp $dbf_version;
 
-# Input: (HAFAS TripID, line number)
-# Output: Promise returning a
-# https://github.com/public-transport/hafas-client/blob/4/docs/trip.md instance
-# on success
-sub get_hafas_polyline_p {
-	my ( $self, $trip_id, $line ) = @_;
-
-	my $url
-	  = "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
-	my $cache   = $self->app->cache_iris_rt;
-	my $promise = Mojo::Promise->new;
-
-	if ( my $content = $cache->thaw($url) ) {
-		$promise->resolve($content);
-		$self->app->log->debug("GET $url (cached)");
-		return $promise;
-	}
-
-	$self->ua->request_timeout(5)
-	  ->get_p(
-		$url => { 'User-Agent' => "dbf.finalrewind.org/${dbf_version}" } )
-	  ->then(
-		sub {
-			my ($tx) = @_;
-			$self->app->log->debug("GET $url (OK)");
-			my $json = decode_json( $tx->res->body );
-			my @coordinate_list;
-
-			for my $feature ( @{ $json->{polyline}{features} } ) {
-				if ( exists $feature->{geometry}{coordinates} ) {
-					push( @coordinate_list, $feature->{geometry}{coordinates} );
-				}
-
-				#if ($feature->{type} eq 'Feature') {
-				#	say "Feature " . $feature->{properties}{name};
-				#}
-			}
-
-			my $ret = {
-				name     => $json->{line}{name} // '?',
-				polyline => [@coordinate_list],
-				raw      => $json,
-			};
-
-			$cache->freeze( $url, $ret );
-			$promise->resolve($ret);
-		}
-	)->catch(
-		sub {
-			my ($err) = @_;
-			$self->app->log->debug("GET $url (error: $err)");
-			$promise->reject($err);
-		}
-	)->wait;
-
-	return $promise;
-}
-
 sub get_route_indexes {
 	my ( $features, $from_name, $to_name ) = @_;
 	my ( $from_index, $to_index );
@@ -601,7 +543,7 @@ sub intersection {
 	$self->render_later;
 
 	my @polyline_requests
-	  = map { $self->get_hafas_polyline_p( @{$_} ) } @trip_ids;
+	  = map { $self->hafas->get_polyline_p( @{$_} ) } @trip_ids;
 	Mojo::Promise->all(@polyline_requests)->then(
 		sub {
 			my ( $pl1, $pl2 ) = map { $_->[0] } @_;
@@ -726,7 +668,7 @@ sub route {
 
 	$self->render_later;
 
-	$self->get_hafas_polyline_p( $trip_id, $line_no )->then(
+	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
 		sub {
 			my ($pl) = @_;
 
@@ -868,7 +810,7 @@ sub ajax_route {
 
 	$self->render_later;
 
-	$self->get_hafas_polyline_p( $trip_id, $line_no )->then(
+	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
 		sub {
 			my ($pl) = @_;
 
