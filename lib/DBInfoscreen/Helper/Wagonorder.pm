@@ -16,7 +16,8 @@ sub new {
 
 	$opt{header}
 	  = { 'User-Agent' =>
-		  "dbf/${version} +https://finalrewind.org/projects/db-fakedisplay" };
+"dbf/${version} on $opt{root_url} +https://finalrewind.org/projects/db-fakedisplay"
+	  };
 
 	return bless( \%opt, $class );
 
