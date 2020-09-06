@@ -29,9 +29,11 @@ sub hafas_rest_req {
 		return $content;
 	}
 
-	my $res = eval { $self->{user_agent}->get($url)->result; };
+	my $res
+	  = eval { $self->{user_agent}->get( $url => $self->{header} )->result; };
 
 	if ($@) {
+		$self->{log}->debug("hafas_rest_req($url): $@");
 		return;
 	}
 	if ( $res->is_error ) {
@@ -52,9 +54,11 @@ sub hafas_json_req {
 		return $content;
 	}
 
-	my $res = eval { $self->{user_agent}->get($url)->result };
+	my $res
+	  = eval { $self->{user_agent}->get( $url => $self->{header} )->result };
 
 	if ($@) {
+		$self->{log}->debug("hafas_json_req($url): $@");
 		return;
 	}
 	if ( $res->is_error ) {
@@ -82,9 +86,11 @@ sub hafas_xml_req {
 		return $content;
 	}
 
-	my $res = eval { $self->{user_agent}->get($url)->result };
+	my $res
+	  = eval { $self->{user_agent}->get( $url => $self->{header} )->result };
 
 	if ($@) {
+		$self->{log}->debug("hafas_xml_req($url): $@");
 		return;
 	}
 	if ( $res->is_error ) {

@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious';
 
 use Cache::File;
 use DBInfoscreen::Helper::HAFAS;
+use DBInfoscreen::Helper::Wagonorder;
 use File::Slurp qw(read_file);
 use JSON;
 use Travel::Status::DE::HAFAS;
@@ -17,6 +18,8 @@ use utf8;
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 our $VERSION = qx{git describe --dirty} || '0.05';
+
+chomp $VERSION;
 
 my %default = (
 	backend => 'iris',
@@ -104,6 +107,18 @@ sub startup {
 				realtime_cache => $self->app->cache_iris_rt,
 				user_agent     => $self->ua,
 				version        => $VERSION,
+			);
+		}
+	);
+
+	$self->helper(
+		wagonorder => sub {
+			my ($self) = @_;
+			state $hafas = DBInfoscreen::Helper::Wagonorder->new(
+				log        => $self->app->log,
+				cache      => $self->app->cache_iris_main,
+				user_agent => $self->ua,
+				version    => $VERSION,
 			);
 		}
 	);

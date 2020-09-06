@@ -105,47 +105,6 @@ sub log_api_access {
 	return;
 }
 
-sub check_wagonorder_with_wings {
-	my ( $ua, $cache, $train, $wr_link ) = @_;
-
-	if ( check_wagonorder( $ua, $cache, $train->train_no, $wr_link ) ) {
-		return 1;
-	}
-	elsif ( $train->is_wing ) {
-		my $wing = $train->wing_of;
-		if ( check_wagonorder( $ua, $cache, $wing->train_no, $wr_link ) ) {
-			return 1;
-		}
-	}
-	return;
-}
-
-sub check_wagonorder {
-	my ( $ua, $cache, $train_no, $wr_link ) = @_;
-
-	my $url
-	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}";
-
-	if ( my $content = $cache->get($url) ) {
-		return $content eq 'y' ? 1 : undef;
-	}
-
-	$ua->request_timeout(2);
-	my $res = eval { $ua->head($url)->result };
-
-	if ($@) {
-		return;
-	}
-	if ( $res->is_error ) {
-		$cache->set( $url, 'n' );
-		return;
-	}
-	else {
-		$cache->set( $url, 'y' );
-		return 1;
-	}
-}
-
 sub get_results_for {
 	my ( $backend, $station, %opt ) = @_;
 	my $data;
@@ -455,13 +414,9 @@ sub render_train {
 
 	$departure->{trip_id} = $self->hafas->get_tripid($result);
 
-	if (
-		$departure->{wr_link}
-		and not check_wagonorder_with_wings(
-			$self->ua, $self->app->cache_iris_main,
-			$result,   $departure->{wr_link}
-		)
-	  )
+	if ( $departure->{wr_link}
+		and
+		not $self->wagonorder->is_available( $result, $departure->{wr_link} ) )
 	{
 		$departure->{wr_link} = undef;
 	}
