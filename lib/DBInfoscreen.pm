@@ -5,6 +5,7 @@ use Mojo::Base 'Mojolicious';
 # License: 2-Clause BSD
 
 use Cache::File;
+use DBInfoscreen::Helper::HAFAS;
 use File::Slurp qw(read_file);
 use JSON;
 use Travel::Status::DE::HAFAS;
@@ -91,6 +92,19 @@ sub startup {
 				}
 			}
 			return $ret;
+		}
+	);
+
+	$self->helper(
+		hafas => sub {
+			my ($self) = @_;
+			state $hafas = DBInfoscreen::Helper::HAFAS->new(
+				log            => $self->app->log,
+				main_cache     => $self->app->cache_iris_main,
+				realtime_cache => $self->app->cache_iris_rt,
+				user_agent     => $self->ua,
+				version        => $VERSION,
+			);
 		}
 	);
 
