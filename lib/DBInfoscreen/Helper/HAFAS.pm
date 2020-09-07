@@ -163,7 +163,7 @@ sub trainsearch {
 		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
-	my $trainsearch = $self->hafas_json_req( $self->{main_cache},
+	my $trainsearch = $self->hafas_json_req( $self->{realtime_cache},
 		"${base}&date=$opt{date_yy}&trainname=$opt{train_no}" );
 
 	if ( not $trainsearch ) {
