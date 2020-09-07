@@ -351,6 +351,9 @@ sub startup {
 	$r->get('/map/:tripid/:lineno')->to('map#route');
 	$r->get('/intersection/:trips')->to('map#intersection');
 
+	$r->get('/map')->to('map#search_form');
+	$r->get('/_trainsearch')->to('map#search');
+
 	$self->defaults( layout => 'app' );
 
 	$r->get('/')->to('stationboard#handle_request');

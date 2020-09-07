@@ -86,6 +86,10 @@ Die eingezeichnete Route stammt aus dem HAFAS und ist im Detail oft
 fehlerbehaftet.<br/>
 Die Zugposition auf der Karte ist eine DBF-eigene Schätzung und kann erheblich
 von den tatsächlichen Gegebenheiten abweichen.
+% if (stash('intersection')) {
+<br/>In dieser Ansicht sind Live-Updates der Zug- und Begegnungspositionen noch
+nicht implementiert.
+% }
 </div>
 
 % if (my $op = stash('operator')) {

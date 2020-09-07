@@ -151,35 +151,27 @@ sub hafas_xml_req {
 	return $ret;
 }
 
-sub get_route_timestamps {
+sub trainsearch {
 	my ( $self, %opt ) = @_;
 
 	my $base
 	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json&start=yes&rt=1';
-	my ( $date_yy, $date_yyyy, $train_no, $train_origin );
 
-	if ( $opt{train} ) {
-		$date_yy      = $opt{train}->start->strftime('%d.%m.%y');
-		$date_yyyy    = $opt{train}->start->strftime('%d.%m.%Y');
-		$train_no     = $opt{train}->type . ' ' . $opt{train}->train_no;
-		$train_origin = $opt{train}->origin;
-	}
-	else {
+	if ( not $opt{date_yy} ) {
 		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
-		$date_yy   = $now->strftime('%d.%m.%y');
-		$date_yyyy = $now->strftime('%d.%m.%Y');
-		$train_no  = $opt{train_no};
+		$opt{date_yy}   = $now->strftime('%d.%m.%y');
+		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
 	my $trainsearch = $self->hafas_json_req( $self->{main_cache},
-		"${base}&date=${date_yy}&trainname=${train_no}" );
+		"${base}&date=$opt{date_yy}&trainname=$opt{train_no}" );
 
 	if ( not $trainsearch ) {
 		return;
 	}
 
 	# Fallback: Take first result
-	my $trainlink = $trainsearch->{suggestions}[0]{trainLink};
+	my $result = $trainsearch->{suggestions}[0];
 
 	# Try finding a result for the current date
 	for my $suggestion ( @{ $trainsearch->{suggestions} // [] } ) {
@@ -187,8 +179,8 @@ sub get_route_timestamps {
        # Drunken API, sail with care. Both date formats are used interchangeably
 		if (
 			exists $suggestion->{depDate}
-			and (  $suggestion->{depDate} eq $date_yy
-				or $suggestion->{depDate} eq $date_yyyy )
+			and (  $suggestion->{depDate} eq $opt{date_yy}
+				or $suggestion->{depDate} eq $opt{date_yyyy} )
 		  )
 		{
 			# Train numbers are not unique, e.g. IC 149 refers both to the
@@ -197,28 +189,52 @@ sub get_route_timestamps {
 			# requests with the stationFilter=80 parameter.  Checking the origin
 			# station seems to be the more generic solution, so we do that
 			# instead.
-			if ( $train_origin and $suggestion->{dep} eq $train_origin ) {
-				$trainlink = $suggestion->{trainLink};
+			if (    $opt{train_origin}
+				and $suggestion->{dep} eq $opt{train_origin} )
+			{
+				$result = $suggestion;
 				last;
 			}
 		}
 	}
 
-	if ( not $trainlink ) {
+	return $result;
+}
+
+sub get_route_timestamps {
+	my ( $self, %opt ) = @_;
+
+	if ( $opt{train} ) {
+		$opt{date_yy}      = $opt{train}->start->strftime('%d.%m.%y');
+		$opt{date_yyyy}    = $opt{train}->start->strftime('%d.%m.%Y');
+		$opt{train_no}     = $opt{train}->type . ' ' . $opt{train}->train_no;
+		$opt{train_origin} = $opt{train}->origin;
+	}
+	else {
+		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+		$opt{date_yy}   = $now->strftime('%d.%m.%y');
+		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
+	}
+
+	my $trainsearch_result = $self->trainsearch(%opt);
+
+	if ( not $trainsearch_result ) {
 		return;
 	}
 
-	$base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
+	my $trainlink = $trainsearch_result->{trainLink};
+
+	my $base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
 
 	my $traininfo = $self->hafas_json_req( $self->{realtime_cache},
-		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_json" );
+		"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_json" );
 
 	if ( not $traininfo or $traininfo->{error} ) {
 		return;
 	}
 
 	my $traindelay = $self->hafas_xml_req( $self->{realtime_cache},
-		"${base}/${trainlink}?rt=1&date=${date_yy}&L=vs_java3" );
+		"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_java3" );
 
 	my $ret = {};
 

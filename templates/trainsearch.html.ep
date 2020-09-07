@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="input-field">
+    %= form_for _trainsearch => begin
+      <div>
+        <div class="field">
+          <div class="desc">Zug</div>
+          <div>
+            %= text_field 'train1', placeholder => 'RE 1234', id => 'train1_input', autofocus => 'autofocus'
+          </div>
+        </div>
+        <div class="field">
+          %= submit_button 'Strecke zeigen'
+        </div>
+        <div class="break"></div>
+        <div class="field">
+          <div class="desc">
+            Zweiter Zug (optional)
+          </div>
+          <div>
+            %= text_field 'train2', placeholder => 'S 5678', id => 'train2_input'
+          </div>
+        </div>
+        <div class="field">
+          %= submit_button 'Begegnungen suchen (beta)'
+        </div>
+      </div>
+    % end
+  </div>
+</div>

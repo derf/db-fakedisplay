@@ -274,7 +274,7 @@ sub estimate_train_positions2 {
 		}
 	}
 
-	if ( not $next_stop ) {
+	if ( @route and not $next_stop ) {
 		@train_positions = ( [ $route[-1]{lat}, $route[-1]{lon} ] );
 		$next_stop       = {
 			type    => 'present',
@@ -313,13 +313,15 @@ sub estimate_train_intersection {
 		my $arr2 = $route2[ $i2 + 1 ]{arr};
 
 		if ( not( $dep1 and $arr1 ) ) {
-			say "skip 1 $route1[$i1]{name}";
+
+			#say "skip 1 $route1[$i1]{name}";
 			$i1++;
 			next;
 		}
 
 		if ( not( $dep2 and $arr2 ) ) {
-			say "skip 2 $route2[$i2]{name}";
+
+			#say "skip 2 $route2[$i2]{name}";
 			$i2++;
 			next;
 		}
@@ -855,6 +857,115 @@ sub ajax_route {
 			);
 		}
 	)->wait;
+}
+
+sub search {
+	my ($self) = @_;
+
+	my $t1 = $self->param('train1');
+	my $t2 = $self->param('train2');
+
+	my $t1_data;
+	my $t2_data;
+
+	my $now       = DateTime->now( time_zone => 'Europe/Berlin' );
+	my $date_yy   = $now->strftime('%d.%m.%y');
+	my $date_yyyy = $now->strftime('%d.%m.%Y');
+
+	# Doesn't seem to matter -- so far, HAFAS is happy as long as the date part
+	# starts with a number. HAFAS-internal tripIDs use this format (withouth
+	# leading zero for day of month < 10) though, so let's stick with it.
+	my $date_map = $now->strftime('%d%m%Y');
+
+	if ( $t1 and $t1 =~ m{^\S+\s+\d+$} ) {
+		$t1_data = $self->hafas->trainsearch(
+			train_no  => $t1,
+			date_yy   => $date_yy,
+			date_yyyy => $date_yyyy
+		);
+	}
+	else {
+		$self->render(
+			'trainsearch',
+			title     => 'Fahrtverlauf',
+			hide_opts => 1,
+			error     => $t1
+			? "Züge müssen im Format 'Zugtyp Nummer' angegeben werden, z.B. 'RE 1234'"
+			: undef,
+		);
+		return;
+	}
+
+	if ( $t2 and $t2 =~ m{^\S+\s+\d+$} ) {
+		$t2_data = $self->hafas->trainsearch( train_no => $t2 );
+	}
+	elsif ($t2) {
+		$self->render(
+			'trainsearch',
+			title     => 'Fahrtverlauf',
+			hide_opts => 1,
+			error =>
+"Züge müssen im Format 'Zugtyp Nummer' angegeben werden, z.B. 'RE 1234'",
+		);
+		return;
+	}
+
+	if ( not $t1_data ) {
+		$self->render(
+			'trainsearch',
+			title     => 'Fahrtverlauf',
+			hide_opts => 1,
+			error     => "Zug $t1 nicht gefunden"
+		);
+		return;
+	}
+
+	if ( $t2 and not $t2_data ) {
+		$self->render(
+			'trainsearch',
+			title     => 'Fahrtverlauf',
+			hide_opts => 1,
+			error     => "Zug $t2 nicht gefunden"
+		);
+		return;
+	}
+
+	if ( $t1 and not $t2 ) {
+		$self->redirect_to(
+			sprintf(
+				"/map/1|%d|%d|%d|%s/0",
+				$t1_data->{id},   $t1_data->{cycle},
+				$t1_data->{pool}, $date_map
+			)
+		);
+	}
+	elsif ( $t1 and $t2 ) {
+		$self->redirect_to(
+			sprintf(
+				"/intersection/1|%d|%d|%d|%s,0;1|%d|%d|%d|%s,0",
+				$t1_data->{id},   $t1_data->{cycle}, $t1_data->{pool},
+				$date_map,        $t2_data->{id},    $t2_data->{cycle},
+				$t2_data->{pool}, $date_map
+			)
+		);
+	}
+	else {
+		$self->render(
+			'trainsearch',
+			title     => 'Fahrtverlauf',
+			hide_opts => 1,
+		);
+	}
+}
+
+sub search_form {
+	my ($self) = @_;
+
+	$self->render(
+		'trainsearch',
+		title     => 'Fahrtverlauf',
+		hide_opts => 1,
+	);
 }
 
 1;
