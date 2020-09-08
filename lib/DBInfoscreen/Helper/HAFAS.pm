@@ -198,6 +198,18 @@ sub trainsearch {
 		}
 	}
 
+	if ($result) {
+
+		# The trip_id's date part doesn't seem to matter -- so far, HAFAS is
+		# happy as long as the date part starts with a number. HAFAS-internal
+		# tripIDs use this format (withouth leading zero for day of month < 10)
+		# though, so let's stick with it.
+		my $date_map = $opt{date_yyyy};
+		$date_map =~ tr{.}{}d;
+		$result->{trip_id} = sprintf( '1|%d|%d|%d|%s',
+			$result->{id}, $result->{cycle}, $result->{pool}, $date_map );
+	}
+
 	return $result;
 }
 

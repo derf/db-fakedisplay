@@ -868,20 +868,9 @@ sub search {
 	my $t1_data;
 	my $t2_data;
 
-	my $now       = DateTime->now( time_zone => 'Europe/Berlin' );
-	my $date_yy   = $now->strftime('%d.%m.%y');
-	my $date_yyyy = $now->strftime('%d.%m.%Y');
-
-	# Doesn't seem to matter -- so far, HAFAS is happy as long as the date part
-	# starts with a number. HAFAS-internal tripIDs use this format (withouth
-	# leading zero for day of month < 10) though, so let's stick with it.
-	my $date_map = $now->strftime('%d%m%Y');
-
 	if ( $t1 and $t1 =~ m{^\S+\s+\d+$} ) {
 		$t1_data = $self->hafas->trainsearch(
-			train_no  => $t1,
-			date_yy   => $date_yy,
-			date_yyyy => $date_yyyy
+			train_no => $t1,
 		);
 	}
 	else {
@@ -931,21 +920,13 @@ sub search {
 	}
 
 	if ( $t1 and not $t2 ) {
-		$self->redirect_to(
-			sprintf(
-				"/map/1|%d|%d|%d|%s/0",
-				$t1_data->{id},   $t1_data->{cycle},
-				$t1_data->{pool}, $date_map
-			)
-		);
+		$self->redirect_to( sprintf( "/map/%s/0", $t1_data->{trip_id}, ) );
 	}
 	elsif ( $t1 and $t2 ) {
 		$self->redirect_to(
 			sprintf(
-				"/intersection/1|%d|%d|%d|%s,0;1|%d|%d|%d|%s,0",
-				$t1_data->{id},   $t1_data->{cycle}, $t1_data->{pool},
-				$date_map,        $t2_data->{id},    $t2_data->{cycle},
-				$t2_data->{pool}, $date_map
+				"/intersection/%s,0;%s,0",
+				$t1_data->{trip_id}, $t2_data->{trip_id},
 			)
 		);
 	}
