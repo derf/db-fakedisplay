@@ -412,8 +412,6 @@ sub render_train {
 		)
 	];
 
-	$departure->{trip_id} = $self->hafas->get_tripid($result);
-
 	if ( $departure->{wr_link}
 		and
 		not $self->wagonorder->is_available( $result, $departure->{wr_link} ) )
@@ -421,8 +419,10 @@ sub render_train {
 		$departure->{wr_link} = undef;
 	}
 
-	my ( $route_ts, $route_info )
+	my ( $route_ts, $route_info, $trainsearch )
 	  = $self->hafas->get_route_timestamps( train => $result );
+
+	$departure->{trip_id} = $trainsearch->{trip_id};
 
 	# If a train number changes on the way, IRIS routes are incomplete,
 	# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS

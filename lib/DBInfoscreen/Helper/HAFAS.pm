@@ -24,31 +24,6 @@ sub new {
 
 }
 
-sub hafas_rest_req {
-	my ( $self, $cache, $url ) = @_;
-
-	if ( my $content = $cache->thaw($url) ) {
-		return $content;
-	}
-
-	my $res
-	  = eval { $self->{user_agent}->get( $url => $self->{header} )->result; };
-
-	if ($@) {
-		$self->{log}->debug("hafas_rest_req($url): $@");
-		return;
-	}
-	if ( $res->is_error ) {
-		return;
-	}
-
-	my $json = decode_json( $res->body );
-
-	$cache->freeze( $url, $json );
-
-	return $json;
-}
-
 sub hafas_json_req {
 	my ( $self, $cache, $url ) = @_;
 
@@ -282,48 +257,7 @@ sub get_route_timestamps {
 		}
 	}
 
-	return ( $ret, $traindelay // {} );
-}
-
-sub get_tripid {
-	my ( $self, $train ) = @_;
-
-	my $cache = $self->{main_cache};
-	my $eva   = $train->station_uic;
-
-	my $dep_ts = DateTime->now( time_zone => 'Europe/Berlin' );
-	my $url
-	  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
-
-	if ( $train->sched_departure ) {
-		$dep_ts = $train->sched_departure->epoch;
-		$url
-		  = "https://2.db.transport.rest/stations/${eva}/departures?duration=5&when=$dep_ts";
-	}
-	elsif ( $train->sched_arrival ) {
-		$dep_ts = $train->sched_arrival->epoch;
-		$url
-		  = "https://2.db.transport.rest/stations/${eva}/arrivals?duration=5&when=$dep_ts";
-	}
-
-	my $json = $self->hafas_rest_req( $cache, $url );
-
-	#say "looking for " . $train->train_no . " in $url";
-	for my $result ( @{ $json // [] } ) {
-		my $trip_id = $result->{tripId};
-		my $fahrt   = $result->{line}{fahrtNr};
-
-		#say "checking $fahrt";
-		if ( $result->{line} and $result->{line}{fahrtNr} == $train->train_no )
-		{
-			#say "Trip ID is $trip_id";
-			return $trip_id;
-		}
-		else {
-			#say "unmatched Trip ID $trip_id";
-		}
-	}
-	return;
+	return ( $ret, $traindelay // {}, $trainsearch_result );
 }
 
 # Input: (HAFAS TripID, line number)
