@@ -92,12 +92,14 @@ sub get_json_p {
 			$cache->freeze( $url, $json );
 
 			$promise->resolve($json);
+			return;
 		}
 	)->catch(
 		sub {
 			my ($err) = @_;
 			$self->{log}->warn("get($url): $err");
 			$promise->reject($err);
+			return;
 		}
 	)->wait;
 
@@ -299,11 +301,19 @@ sub trainsearch_p {
 			else {
 				$promise->reject("Zug $opt{train_no} nicht gefunden");
 			}
+
+           # do not propagate $promise->reject's return value to this promise.
+           # Perl implicitly returns the last statement, so we explicitly return
+           # nothing to avoid this.
+			return;
 		}
 	)->catch(
 		sub {
 			my ($err) = @_;
 			$promise->reject($err);
+
+			# do not propagate $promise->reject's return value to this promise
+			return;
 		}
 	)->wait;
 
@@ -426,12 +436,14 @@ sub get_polyline_p {
 
 			$cache->freeze( $url, $ret );
 			$promise->resolve($ret);
+			return;
 		}
 	)->catch(
 		sub {
 			my ($err) = @_;
 			$self->{log}->debug("GET $url (error: $err)");
 			$promise->reject($err);
+			return;
 		}
 	)->wait;
 
