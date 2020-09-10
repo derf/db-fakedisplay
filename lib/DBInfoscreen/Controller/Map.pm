@@ -868,12 +868,11 @@ sub search {
 	my $t1_data;
 	my $t2_data;
 
-	if ( $t1 and $t1 =~ m{^\S+\s+\d+$} ) {
-		$t1_data = $self->hafas->trainsearch(
-			train_no => $t1,
-		);
-	}
-	else {
+	my @requests;
+
+	if ( not( $t1 and $t1 =~ m{^\S+\s+\d+$} )
+		or ( $t2 and not $t2 =~ m{^\S+\s+\d+$} ) )
+	{
 		$self->render(
 			'trainsearch',
 			title     => 'Fahrtverlauf',
@@ -885,58 +884,43 @@ sub search {
 		return;
 	}
 
-	if ( $t2 and $t2 =~ m{^\S+\s+\d+$} ) {
-		$t2_data = $self->hafas->trainsearch( train_no => $t2 );
-	}
-	elsif ($t2) {
-		$self->render(
-			'trainsearch',
-			title     => 'Fahrtverlauf',
-			hide_opts => 1,
-			error =>
-"Züge müssen im Format 'Zugtyp Nummer' angegeben werden, z.B. 'RE 1234'",
-		);
-		return;
+	$self->render_later;
+
+	push( @requests, $self->hafas->trainsearch_p( train_no => $t1 ) );
+
+	if ($t2) {
+		push( @requests, $self->hafas->trainsearch_p( train_no => $t2 ) );
 	}
 
-	if ( not $t1_data ) {
-		$self->render(
-			'trainsearch',
-			title     => 'Fahrtverlauf',
-			hide_opts => 1,
-			error     => "Zug $t1 nicht gefunden"
-		);
-		return;
-	}
+	Mojo::Promise->all(@requests)->then(
+		sub {
+			my ( $t1_data, $t2_data ) = @_;
 
-	if ( $t2 and not $t2_data ) {
-		$self->render(
-			'trainsearch',
-			title     => 'Fahrtverlauf',
-			hide_opts => 1,
-			error     => "Zug $t2 nicht gefunden"
-		);
-		return;
-	}
-
-	if ( $t1 and not $t2 ) {
-		$self->redirect_to( sprintf( "/map/%s/0", $t1_data->{trip_id}, ) );
-	}
-	elsif ( $t1 and $t2 ) {
-		$self->redirect_to(
-			sprintf(
-				"/intersection/%s,0;%s,0",
-				$t1_data->{trip_id}, $t2_data->{trip_id},
-			)
-		);
-	}
-	else {
-		$self->render(
-			'trainsearch',
-			title     => 'Fahrtverlauf',
-			hide_opts => 1,
-		);
-	}
+			if ($t2_data) {
+				$self->redirect_to(
+					sprintf(
+						"/intersection/%s,0;%s,0",
+						$t1_data->[0]{trip_id},
+						$t2_data->[0]{trip_id},
+					)
+				);
+			}
+			else {
+				$self->redirect_to(
+					sprintf( "/map/%s/0", $t1_data->[0]{trip_id}, ) );
+			}
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'trainsearch',
+				title     => 'Fahrtverlauf',
+				hide_opts => 1,
+				error     => $err
+			);
+		}
+	)->wait;
 }
 
 sub search_form {
