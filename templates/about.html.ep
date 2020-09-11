@@ -14,6 +14,8 @@
 		v<%= $Travel::Status::DE::DBWagenreihung::VERSION %><br/>
 		Karte: <a href="https://2.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
 		<br/>
+		Grundlage der <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Wagengattungsdaten</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
+		<br/>
 		Grundlage der <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
 		© DB Station&amp;Service AG,
 		Europaplatz 1,
