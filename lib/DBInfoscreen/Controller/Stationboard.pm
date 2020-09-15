@@ -419,87 +419,6 @@ sub render_train {
 		$departure->{wr_link} = undef;
 	}
 
-	my ( $route_ts, $route_info, $trainsearch )
-	  = $self->hafas->get_route_timestamps( train => $result );
-
-	$departure->{trip_id} = $trainsearch->{trip_id};
-
-	# If a train number changes on the way, IRIS routes are incomplete,
-	# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
-	# stops. This is a rare case, one point where it can be observed is
-	# the TGV service at Frankfurt/Karlsruhe/Mannheim.
-	if ( $route_info
-		and my @hafas_stations = @{ $route_info->{stations} // [] } )
-	{
-		if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
-			my @missing_pre;
-			for my $station (@hafas_stations) {
-				if (
-					List::MoreUtils::any { $_->{name} eq $station }
-					@iris_stations
-				  )
-				{
-					unshift( @{ $departure->{route_pre_diff} }, @missing_pre );
-					last;
-				}
-				push(
-					@missing_pre,
-					{
-						name  => $station,
-						hafas => 1
-					}
-				);
-			}
-		}
-		if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
-			my @missing_post;
-			for my $station ( reverse @hafas_stations ) {
-				if (
-					List::MoreUtils::any { $_->{name} eq $station }
-					@iris_stations
-				  )
-				{
-					push( @{ $departure->{route_post_diff} }, @missing_post );
-					last;
-				}
-				unshift(
-					@missing_post,
-					{
-						name  => $station,
-						hafas => 1
-					}
-				);
-			}
-		}
-	}
-	if ($route_ts) {
-		for my $elem (
-			@{ $departure->{route_pre_diff} },
-			@{ $departure->{route_post_diff} }
-		  )
-		{
-			for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
-				$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
-			}
-		}
-	}
-	if ( $route_info and @{ $route_info->{messages} // [] } ) {
-		my $him = $route_info->{messages};
-		my @him_messages;
-		$departure->{messages}{him} = $him;
-		for my $message ( @{$him} ) {
-			if ( $message->{display} ) {
-				push( @him_messages, [ $message->{header}, $message->{lead} ] );
-			}
-		}
-		for my $message ( @{ $departure->{moreinfo} // [] } ) {
-			my $m = $message->[1];
-			@him_messages
-			  = grep { $_->[0] !~ m{Information\. $m\.$} } @him_messages;
-		}
-		unshift( @{ $departure->{moreinfo} }, @him_messages );
-	}
-
 	my $linetype = 'bahn';
 	if ( $departure->{train_type} eq 'S' ) {
 		$linetype = 'sbahn';
@@ -525,14 +444,115 @@ sub render_train {
 		$linetype = 'sbahn';
 	}
 
-	$self->render(
-		'_train_details',
-		departure    => $departure,
-		linetype     => $linetype,
-		icetype      => $self->app->ice_type_map->{ $departure->{train_no} },
-		dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
-		station_name => $station_name,
-	);
+	$self->render_later;
+
+	$self->hafas->get_route_timestamps_p( train => $result )->then(
+		sub {
+			my ( $route_ts, $route_info, $trainsearch ) = @_;
+
+			$departure->{trip_id} = $trainsearch->{trip_id};
+
+			# If a train number changes on the way, IRIS routes are incomplete,
+			# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
+			# stops. This is a rare case, one point where it can be observed is
+			# the TGV service at Frankfurt/Karlsruhe/Mannheim.
+			if ( $route_info
+				and my @hafas_stations = @{ $route_info->{stations} // [] } )
+			{
+				if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
+					my @missing_pre;
+					for my $station (@hafas_stations) {
+						if (
+							List::MoreUtils::any { $_->{name} eq $station }
+							@iris_stations
+						  )
+						{
+							unshift(
+								@{ $departure->{route_pre_diff} },
+								@missing_pre
+							);
+							last;
+						}
+						push(
+							@missing_pre,
+							{
+								name  => $station,
+								hafas => 1
+							}
+						);
+					}
+				}
+				if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
+					my @missing_post;
+					for my $station ( reverse @hafas_stations ) {
+						if (
+							List::MoreUtils::any { $_->{name} eq $station }
+							@iris_stations
+						  )
+						{
+							push(
+								@{ $departure->{route_post_diff} },
+								@missing_post
+							);
+							last;
+						}
+						unshift(
+							@missing_post,
+							{
+								name  => $station,
+								hafas => 1
+							}
+						);
+					}
+				}
+			}
+			if ($route_ts) {
+				for my $elem (
+					@{ $departure->{route_pre_diff} },
+					@{ $departure->{route_post_diff} }
+				  )
+				{
+					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
+					{
+						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+					}
+				}
+			}
+			if ( $route_info and @{ $route_info->{messages} // [] } ) {
+				my $him = $route_info->{messages};
+				my @him_messages;
+				$departure->{messages}{him} = $him;
+				for my $message ( @{$him} ) {
+					if ( $message->{display} ) {
+						push( @him_messages,
+							[ $message->{header}, $message->{lead} ] );
+					}
+				}
+				for my $message ( @{ $departure->{moreinfo} // [] } ) {
+					my $m = $message->[1];
+					@him_messages
+					  = grep { $_->[0] !~ m{Information\. $m\.$} }
+					  @him_messages;
+				}
+				unshift( @{ $departure->{moreinfo} }, @him_messages );
+			}
+		}
+	)->catch(
+		sub {
+			# nop
+		}
+	)->finally(
+		sub {
+			$self->render(
+				'_train_details',
+				departure => $departure,
+				linetype  => $linetype,
+				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
+				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
+				station_name => $station_name,
+			);
+		}
+	)->wait;
 }
 
 sub handle_result {
