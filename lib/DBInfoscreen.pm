@@ -1,7 +1,7 @@
 package DBInfoscreen;
 use Mojo::Base 'Mojolicious';
 
-# Copyright (C) 2011-2019 Daniel Friesel <derf+dbf@finalrewind.org>
+# Copyright (C) 2011-2020 Daniel Friesel <derf+dbf@finalrewind.org>
 # License: 2-Clause BSD
 
 use Cache::File;
