@@ -4,10 +4,7 @@ use strict;
 use warnings;
 use 5.020;
 
-use DateTime;
-use Encode qw(decode encode);
-use Mojo::JSON qw(decode_json);
-use XML::LibXML;
+use Mojo::Promise;
 
 sub new {
 	my ( $class, %opt ) = @_;
@@ -23,48 +20,126 @@ sub new {
 
 }
 
-sub is_available {
+sub is_available_p {
 	my ( $self, $train, $wr_link ) = @_;
+	my $promise = Mojo::Promise->new;
 
-	if ( $self->check_wagonorder( $train->train_no, $wr_link ) ) {
-		return 1;
-	}
-	elsif ( $train->is_wing ) {
-		my $wing = $train->wing_of;
-		if ( $self->check_wagonorder( $wing->train_no, $wr_link ) ) {
-			return 1;
+	$self->check_wagonorder_p( $train->train_no, $wr_link )->then(
+		sub {
+			$promise->resolve;
+			return;
+		},
+		sub {
+			if ( $train->is_wing ) {
+				my $wing = $train->wing_of;
+				return $self->check_wagonorder_p( $wing->train_no, $wr_link );
+			}
+			else {
+				$promise->reject;
+				return;
+			}
 		}
-	}
-	return;
+	)->then(
+		sub {
+			$promise->resolve;
+			return;
+		},
+		sub {
+			$promise->reject;
+			return;
+		}
+	)->wait;
+
+	return $promise;
 }
 
-sub check_wagonorder {
+sub check_wagonorder_p {
 	my ( $self, $train_no, $wr_link ) = @_;
+
+	my $promise = Mojo::Promise->new;
 
 	my $url
 	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}";
-	my $cache = $self->{cache};
+	my $cache = $self->{main_cache};
 
-	if ( my $content = $self->{cache}->get($url) ) {
-		return $content eq 'y' ? 1 : undef;
+	if ( my $content = $cache->get($url) ) {
+		if ( $content eq 'y' ) {
+			return $promise->resolve;
+		}
+		else {
+			return $promise->reject;
+		}
 	}
 
-	my $ua = $self->{user_agent}->request_timeout(2);
+	$self->{user_agent}->request_timeout(5)->head_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+			if ( $tx->result->is_success ) {
+				$cache->set( $url, 'y' );
+				$promise->resolve;
+			}
+			else {
+				$cache->set( $url, 'n' );
+				$promise->reject;
+			}
+			return;
+		}
+	)->catch(
+		sub {
+			$cache->set( $url, 'n' );
+			$promise->reject;
+			return;
+		}
+	)->wait;
+	return $promise;
+}
 
-	my $res = eval { $ua->head( $url => $self->{header} )->result };
+sub get_p {
+	my ( $self, $train_no, $api_ts ) = @_;
 
-	if ($@) {
-		$self->{log}->debug("check_wagonorder($url): $@");
-		return;
+	my $url
+	  = "https://www.apps-bahn.de/wr/wagenreihung/1.0/${train_no}/${api_ts}";
+
+	my $cache = $self->{realtime_cache};
+
+	my $promise = Mojo::Promise->new;
+
+	if ( my $content = $cache->thaw($url) ) {
+		$self->{log}->debug("GET $url (cached)");
+		return $promise->resolve($content);
 	}
-	if ( $res->is_error ) {
-		$cache->set( $url, 'n' );
-		return;
-	}
-	else {
-		$cache->set( $url, 'y' );
-		return 1;
-	}
+
+	$self->{user_agent}->request_timeout(10)->get_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+
+			if ( my $err = $tx->error ) {
+				$self->{log}->warn(
+					"wagonorder->get_p($url): HTTP $err->{code} $err->{message}"
+				);
+				$promise->reject(
+					"GET $url returned HTTP $err->{code} $err->{message}");
+				return;
+			}
+
+			$self->{log}->debug("GET $url (OK)");
+			my $json = $tx->res->json;
+
+			$cache->freeze( $url, $json );
+			$promise->resolve($json);
+			return;
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->{log}->warn("GET $url: $err");
+			$promise->reject("GET $url: $err");
+			return;
+		}
+	)->wait;
+	return $promise;
 }
 
 1;

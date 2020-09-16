@@ -116,11 +116,12 @@ sub startup {
 		wagonorder => sub {
 			my ($self) = @_;
 			state $hafas = DBInfoscreen::Helper::Wagonorder->new(
-				log        => $self->app->log,
-				cache      => $self->app->cache_iris_main,
-				root_url   => $self->url_for('/')->to_abs,
-				user_agent => $self->ua,
-				version    => $VERSION,
+				log            => $self->app->log,
+				main_cache     => $self->app->cache_iris_main,
+				realtime_cache => $self->app->cache_iris_rt,
+				root_url       => $self->url_for('/')->to_abs,
+				user_agent     => $self->ua,
+				version        => $VERSION,
 			);
 		}
 	);

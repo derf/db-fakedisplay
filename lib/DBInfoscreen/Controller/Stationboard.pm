@@ -412,13 +412,6 @@ sub render_train {
 		)
 	];
 
-	if ( $departure->{wr_link}
-		and
-		not $self->wagonorder->is_available( $result, $departure->{wr_link} ) )
-	{
-		$departure->{wr_link} = undef;
-	}
-
 	my $linetype = 'bahn';
 	if ( $departure->{train_type} eq 'S' ) {
 		$linetype = 'sbahn';
@@ -445,6 +438,22 @@ sub render_train {
 	}
 
 	$self->render_later;
+
+	# if wagonorder->is_available_p takes longer than get_route_timestamps_p,
+	# we'll have a useless (non-working) wagonorder link. That's okay.
+	if ( $departure->{wr_link} ) {
+		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
+		  ->then(
+			sub {
+				# great!
+				return;
+			},
+			sub {
+				$departure->{wr_link} = undef;
+				return;
+			}
+		)->wait;
+	}
 
 	$self->hafas->get_route_timestamps_p( train => $result )->then(
 		sub {
