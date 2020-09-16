@@ -255,28 +255,32 @@ sub get_route_timestamps_p {
 	}
 
 	my $base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
-	my ( $trainsearch_result, $trainlink, $traininfo );
+	my ( $trainsearch_result, $trainlink );
 
 	$self->trainsearch_p(%opt)->then(
 		sub {
 			($trainsearch_result) = @_;
 			$trainlink = $trainsearch_result->{trainLink};
-			return $self->get_json_p( $self->{realtime_cache},
-				"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_json" );
+			return Mojo::Promise->all(
+				$self->get_json_p(
+					$self->{realtime_cache},
+					"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_json"
+				),
+				$self->get_xml_p(
+					$self->{realtime_cache},
+					"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_java3"
+				)
+			);
 		}
 	)->then(
 		sub {
-			($traininfo) = @_;
+			my ( $traininfo, $traindelay ) = @_;
+			$traininfo  = $traininfo->[0];
+			$traindelay = $traindelay->[0];
 			if ( not $traininfo or $traininfo->{error} ) {
 				$promise->reject;
 				return;
 			}
-			return $self->get_xml_p( $self->{realtime_cache},
-				"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_java3" );
-		}
-	)->then(
-		sub {
-			my ($traindelay) = @_;
 			my $ret = {};
 
 			my $strp = DateTime::Format::Strptime->new(
