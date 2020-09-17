@@ -153,6 +153,8 @@ sub get_xml_p {
 		sub {
 		}
 	)->wait;
+
+	return $promise;
 }
 
 sub trainsearch_p {
