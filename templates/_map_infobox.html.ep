@@ -37,7 +37,7 @@ data-poly="<%= stash('ajax_polyline') %>"
 			%= sprintf('(%+d)', $next->{station}{arr_delay})
 		% }
 	% }
-	% elsif ($next->{type} eq 'present') {
+	% elsif ($next->{type} eq 'present' and $next->{station}{arr}) {
 		Zug steht in
 		<strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
 		auf Gleis <strong><%= $next->{station}{platform} %></strong>
