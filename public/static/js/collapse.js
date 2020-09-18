@@ -21,25 +21,24 @@ function dbf_reg_handlers() {
 			$('.moreinfo .train-no').text(trainElem.data('no'));
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
 			$('.moreinfo .train-dest').text(trainElem.data('to'));
-			if ($('.moreinfo .loading').length == 0) {
-				$('.moreinfo .mheader').append('<div class="loading">Lade Daten, bitte warten...</div>');
-			}
 			$('.moreinfo .minfo').text('');
 			$('.moreinfo .mfooter').html('');
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');
-			if (trainElem.data('platform') != '') {
-				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + '</div>');
-			}
 			var timebuf = '';
 			if (trainElem.data('arrival') != '') {
-				timebuf += 'Ankunft: ' + trainElem.data('arrival') + '<br/>';
+				timebuf += '<div class="arrival">An: ' + trainElem.data('arrival') + '</div>';
 			}
 			if (trainElem.data('departure') != '') {
-				timebuf += 'Abfahrt: ' + trainElem.data('departure');
+				timebuf += '<div class="departure">Ab: ' + trainElem.data('departure') + '</div>';
 			}
-			$('.moreinfo .mfooter').append('<div class="timeinfo">' + timebuf + '</div>');
+			if (trainElem.data('platform') != '') {
+				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + timebuf + '</div>');
+			}
+			if ($('.moreinfo .loading').length == 0) {
+				$('.moreinfo .mfooter').append('<div class="loading">Lade Daten, bitte warten...</div>');
+			}
 			if (trainElem.data('moreinfo') != '') {
 				var ibuf = '';
 				for (var key in moreinfo) {
