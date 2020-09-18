@@ -315,9 +315,24 @@ div.app .moreinfo .mheader {
 }
 
 div.app .moreinfo .mfooter {
-	padding-top: 1em;
+	padding-top: 0.5em;
 	padding-left: 1em;
 	padding-right: 1em;
+}
+
+div.app .moreinfo .platforminfo {
+	text-align: center;
+	font-size: 120%;
+}
+
+div.app .moreinfo .departure {
+	float: right;
+	text-align: right;
+}
+
+div.app .moreinfo .arrival {
+	float: left;
+	text-align: right;
 }
 
 div.app .moreinfo .loading {
@@ -332,10 +347,7 @@ div.app .moreinfo .minfo {
 }
 
 div.app .moreinfo .verbose {
-	margin-bottom: 0.6em;
-}
-
-div.app .moreinfo .timeinfo {
+	margin-top: 0.6em;
 	margin-bottom: 0.6em;
 }
 
