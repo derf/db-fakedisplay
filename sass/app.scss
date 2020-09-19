@@ -325,6 +325,7 @@ div.app .moreinfo .dataline {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 1em;
 }
 
 div.app .moreinfo .dataline > div {
@@ -355,7 +356,6 @@ div.app .moreinfo .minfo {
 }
 
 div.app .moreinfo .verbose {
-	margin-top: 0.6em;
 	margin-bottom: 0.6em;
 }
 
@@ -613,6 +613,22 @@ div.field {
 	margin-bottom: 0.6em;
 }
 
+.smallbutton {
+	display: inline-block;
+	border-radius: 4px;
+	border: 1px solid #2e6da4;
+	transition: background-color .3s;
+	color: #fff;
+	background-color: #337ab7;
+	cursor: pointer;
+	box-shadow: none;
+	padding: 0.9ex;
+}
+
+.smallbutton .material-icons {
+	margin-bottom: -0.5ex;
+}
+
 input, select, .button {
 	display: inline-block;
 	width: 60em;
@@ -666,14 +682,17 @@ input[type="submit"]:focus,
 input[type="submit"]:hover,
 .button:active,
 .button:focus,
-.button:hover {
+.button:hover,
+.smallbutton:active,
+.smallbutton:focus,
+.smallbutton:hover {
 	color: #fff;
 	background-color: #286090;
 	border-color: #204d74;
 }
 
 input[type="submit"]:active,
-.button.active {
+.button:active {
 	box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
 }
 

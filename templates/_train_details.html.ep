@@ -96,21 +96,20 @@
     </div>
     </div>
     </div> <!-- dataline -->
-%   if ($departure->{wr_link} or ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus')) {
-      <div class="verbose">
+    <div class="verbose">
+%     if ($departure->{trip_id}) {
+        <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+%     }
+%     if ($departure->{wr_link} or ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus')) {
 %       if ($departure->{wr_link}) {
-          <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>">Wagenreihung</a>
+          <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">compare_arrows</i> Wagenreihung
+%           if ($icetype and $icetype->[1]) {
+              (Plan: <%= $icetype->[0] %>)<br/>
+%           }
+          </a>
 %       }
-%       if ($icetype and $icetype->[1]) {
-          (Plan: <%= $icetype->[0] %>)<br/>
-%       }
-      </div>
-%   }
-%   if ($departure->{trip_id}) {
-      <div class="verbose">
-        <a href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>">Karte</a>
-      </div>
-%   }
+%     }
+    </div>
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
       Meldungen:
