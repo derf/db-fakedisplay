@@ -357,7 +357,10 @@ sub format_iris_result_info {
 		  . ( $info ? ' +++ ' : q{} )
 		  . $info;
 		if ( $template ne 'json' ) {
-			push( @{$moreinfo}, [ 'Zusätzliche Halte', $additional_line ] );
+			push(
+				@{$moreinfo},
+				[ 'Außerplanmäßiger Halt in', $additional_line ]
+			);
 		}
 	}
 
