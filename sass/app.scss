@@ -320,18 +320,27 @@ div.app .moreinfo .mfooter {
 	padding-right: 1em;
 }
 
-div.app .moreinfo .platforminfo {
-	text-align: center;
+div.app .moreinfo .dataline {
 	font-size: 120%;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+div.app .moreinfo .dataline > div {
+	width: 33%;
 }
 
 div.app .moreinfo .departure {
-	float: right;
 	text-align: right;
 }
 
+div.app .moreinfo .platform {
+	text-align: center;
+}
+
 div.app .moreinfo .arrival {
-	float: left;
+	display: inline-block;
 	text-align: right;
 }
 
@@ -341,7 +350,6 @@ div.app .moreinfo .loading {
 	color: #888888;
 }
 
-div.app .moreinfo .reason,
 div.app .moreinfo .minfo {
 	color: $info-color;
 }

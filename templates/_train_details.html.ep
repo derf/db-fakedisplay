@@ -40,19 +40,8 @@
 -->
     </div> <!-- mheader -->
     <div class="mfooter">
-    <div class="platforminfo">
-%   if ($departure->{arrival_is_cancelled} and $departure->{departure_is_cancelled}) {
-      <span class="minfo">Fahrt fällt aus</span>
-%   }
-%   else {
-%     if ($departure->{scheduled_platform} and $departure->{platform}
-%         and $departure->{scheduled_platform} ne $departure->{platform}) {
-        <span class="minfo">Gleis <%= $departure->{platform} %></span>
-%     }
-%     elsif ($departure->{scheduled_platform} or $departure->{platform}) {
-        Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %>
-%     }
-%   }
+    <div class="dataline">
+    <div>
     <div class="arrival">
 %     if ($departure->{is_cancelled} and $departure->{sched_arrival}) {
         <span class="minfo">An: ––:––</span><br/>Plan: <%= $departure->{sched_arrival} %>
@@ -70,6 +59,24 @@
 %       }
 %     }
     </div>
+    </div>
+    <div>
+    <div class="platform">
+%   if ($departure->{arrival_is_cancelled} and $departure->{departure_is_cancelled}) {
+      <span class="minfo">Fahrt fällt aus</span>
+%   }
+%   else {
+%     if ($departure->{scheduled_platform} and $departure->{platform}
+%         and $departure->{scheduled_platform} ne $departure->{platform}) {
+        <span class="minfo">Gleis <%= $departure->{platform} %></span>
+%     }
+%     elsif ($departure->{scheduled_platform} or $departure->{platform}) {
+        Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %>
+%     }
+%   }
+    </div>
+    </div>
+    <div>
     <div class="departure">
 %     if ($departure->{is_cancelled} and $departure->{sched_departure}) {
         <span class="minfo">Ab: ––:––</span><br/>Plan: <%= $departure->{sched_departure} %>
@@ -87,8 +94,8 @@
 %       }
 %     }
     </div>
-    </div> <!-- platforminfo -->
-    <div style="clear: both;"></div>
+    </div>
+    </div> <!-- dataline -->
 %   if ($departure->{wr_link} or ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus')) {
       <div class="verbose">
 %       if ($departure->{wr_link}) {

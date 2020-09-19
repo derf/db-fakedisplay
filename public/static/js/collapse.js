@@ -26,16 +26,23 @@ function dbf_reg_handlers() {
 			$('.moreinfo .verbose').html('');
 			$('.moreinfo .mroute').html('');
 			$('.moreinfo ul').html('');
-			var timebuf = '';
+			var dataline = '';
 			if (trainElem.data('arrival') != '') {
-				timebuf += '<div class="arrival">An: ' + trainElem.data('arrival') + '</div>';
-			}
-			if (trainElem.data('departure') != '') {
-				timebuf += '<div class="departure">Ab: ' + trainElem.data('departure') + '</div>';
+				dataline += '<div><div class="arrival">An: ' + trainElem.data('arrival') + '</div></div>';
+			} else {
+				dataline += '<div><div class="arrival"></div></div>';
 			}
 			if (trainElem.data('platform') != '') {
-				$('.moreinfo .mfooter').append('<div class="platforminfo">Gleis ' + trainElem.data('platform') + timebuf + '</div>');
+				dataline += '<div><div class="platform">Gleis ' + trainElem.data('platform') + '</div></div>';
+			} else {
+				dataline += '<div><div class="platform"></div></div>';
 			}
+			if (trainElem.data('departure') != '') {
+				dataline += '<div><div class="departure">Ab: ' + trainElem.data('departure') + '</div></div>';
+			} else {
+				dataline += '<div><div class="departure"></div></div>';
+			}
+			$('.moreinfo .mfooter').append('<div class="dataline">' + dataline + '</div>');
 			if ($('.moreinfo .loading').length == 0) {
 				$('.moreinfo .mfooter').append('<div class="loading">Lade Daten, bitte warten...</div>');
 			}
