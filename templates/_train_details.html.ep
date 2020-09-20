@@ -100,14 +100,12 @@
 %     if ($departure->{trip_id}) {
         <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %     }
-%     if ($departure->{wr_link} or ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus')) {
-%       if ($departure->{wr_link}) {
-          <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">compare_arrows</i> Wagenreihung
-%           if ($icetype and $icetype->[1]) {
-              (Plan: <%= $icetype->[0] %>)<br/>
-%           }
-          </a>
-%       }
+%     if ($departure->{wr_link}) {
+        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">compare_arrows</i> Wagenreihung
+        </a>
+%     }
+%     elsif ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus') {
+        <span class="disabledbutton"><i class="material-icons" aria-hidden="true">compare_arrows</i> Plan: <%= $icetype->[0] %></span>
 %     }
     </div>
 

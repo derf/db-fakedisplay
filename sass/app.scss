@@ -356,7 +356,7 @@ div.app .moreinfo .minfo {
 }
 
 div.app .moreinfo .verbose {
-	margin-bottom: 0.6em;
+	margin-bottom: 1em;
 }
 
 div.app .moreinfo .mroute .important-stop {
@@ -613,8 +613,19 @@ div.field {
 	margin-bottom: 0.6em;
 }
 
+.disabledbutton {
+	display: inline-block;
+	vertical-align: baseline;
+	border-radius: 4px;
+	border: 1px solid #cccccc;
+	box-shadow: none;
+	padding: 0.9ex;
+	margin-right: 1em;
+}
+
 .smallbutton {
 	display: inline-block;
+	vertical-align: baseline;
 	border-radius: 4px;
 	border: 1px solid #2e6da4;
 	transition: background-color .3s;
@@ -623,10 +634,14 @@ div.field {
 	cursor: pointer;
 	box-shadow: none;
 	padding: 0.9ex;
+	margin-right: 1em;
 }
 
-.smallbutton .material-icons {
-	margin-bottom: -0.5ex;
+.smallbutton .material-icons,
+.disabledbutton .material-icons {
+	display: block;
+	float: left;
+	margin-right: 0.5ex;
 }
 
 input, select, .button {
