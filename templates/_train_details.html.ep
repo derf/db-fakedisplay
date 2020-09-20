@@ -66,12 +66,20 @@
       <span class="minfo">Fahrt fällt aus</span>
 %   }
 %   else {
+%     my $left = '';
+%     my $right = '';
+%     if ($departure->{direction} and $departure->{direction} eq 'l') {
+%       $left = '◀ ';
+%     }
+%     elsif ($departure->{direction} and $departure->{direction} eq 'r') {
+%       $right = ' ▶';
+%     }
 %     if ($departure->{scheduled_platform} and $departure->{platform}
 %         and $departure->{scheduled_platform} ne $departure->{platform}) {
-        <span class="minfo">Gleis <%= $departure->{platform} %></span>
+        <span class="minfo"><%= $left %>Gleis <%= $departure->{platform} %><%= $right %></span>
 %     }
 %     elsif ($departure->{scheduled_platform} or $departure->{platform}) {
-        Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %>
+        <%= $left %>Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %><%= $right %>
 %     }
 %   }
     </div>

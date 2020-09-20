@@ -458,6 +458,55 @@ sub render_train {
 		)->wait;
 	}
 
+	# Same for stationinfo (direction of travel). If it's too late and
+	# therefore missing, that's okay.
+	$self->wagonorder->get_stationinfo_p( $result->station_uic )->then(
+		sub {
+			my ($station_info)    = @_;
+			my ($platform_number) = ( $result->platform =~ m{(\d+)} );
+			if ( not defined $platform_number ) {
+				return;
+			}
+			my $platform_info = $station_info->{$platform_number};
+			if ( not $platform_info ) {
+				return;
+			}
+			my $prev_stop = ( $result->route_pre )[-1];
+			my $next_stop = ( $result->route_post )[0];
+			my $direction;
+
+			if ( $platform_info->{kopfgleis} and $next_stop ) {
+				$direction = $platform_info->{direction} eq 'r' ? 'l' : 'r';
+			}
+			elsif ( $platform_info->{kopfgleis} ) {
+				$direction = $platform_info->{direction};
+			}
+			elsif ( $prev_stop
+				and exists $platform_info->{direction_from}{$prev_stop} )
+			{
+				$direction = $platform_info->{direction_from}{$prev_stop};
+			}
+			elsif ( $next_stop
+				and exists $platform_info->{direction_from}{$next_stop} )
+			{
+				$direction
+				  = $platform_info->{direction_from}{$next_stop} eq 'r'
+				  ? 'l'
+				  : 'r';
+			}
+
+			if ($direction) {
+				$departure->{direction} = $direction;
+			}
+
+			return;
+		},
+		sub {
+			# errors don't matter here
+			return;
+		}
+	)->wait;
+
 	$self->hafas->get_route_timestamps_p( train => $result )->then(
 		sub {
 			my ( $route_ts, $route_info, $trainsearch ) = @_;

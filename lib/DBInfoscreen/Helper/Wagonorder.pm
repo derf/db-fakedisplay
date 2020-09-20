@@ -142,4 +142,43 @@ sub get_p {
 	return $promise;
 }
 
+sub get_stationinfo_p {
+	my ( $self, $eva ) = @_;
+
+	my $url = "https://lib.finalrewind.org/dbdb/s/${eva}.json";
+
+	my $cache   = $self->{main_cache};
+	my $promise = Mojo::Promise->new;
+
+	if ( my $content = $cache->thaw($url) ) {
+		return $promise->resolve($content);
+	}
+
+	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+
+			if ( my $err = $tx->error ) {
+				$cache->freeze( $url, {} );
+				$promise->reject("HTTP $err->{code} $err->{message}");
+				return;
+			}
+
+			my $json = $tx->result->json;
+			$cache->freeze( $url, $json );
+			$promise->resolve($json);
+			return;
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$cache->freeze( $url, {} );
+			$promise->reject($err);
+			return;
+		}
+	)->wait;
+	return $promise;
+}
+
 1;
