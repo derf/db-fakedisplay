@@ -173,7 +173,19 @@
 %         }
           </li>
 %       }
-        <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %>"><%= $departure->{departure} // $departure->{arrival} // q{} %> <strong><%= $station_name %></strong></li>
+        <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %>"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %>
+%         if ($departure->{sched_departure}) {
+%           if ($departure->{departure} ne $departure->{sched_departure}) {
+              (heute <%= $departure->{departure} %>)
+%           }
+%         }
+%         elsif ($departure->{arrival}) {
+%           if ($departure->{arrival} ne $departure->{sched_arrival}) {
+              (heute <%= $departure->{arrival} %>)
+%           }
+%         }
+          <strong><%= $station_name %></strong>
+        </li>
 %       for my $stop (@{$departure->{route_post_diff}}) {
           <li>
           <a href="/<%= $stop->{name} %>#<%= $departure->{train_type} . $departure->{train_no} %>" class="
