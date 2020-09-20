@@ -442,8 +442,10 @@ sub render_train {
 
 	$self->render_later;
 
-	# if wagonorder->is_available_p takes longer than get_route_timestamps_p,
-	# we'll have a useless (non-working) wagonorder link. That's okay.
+	my $wagonorder_req  = Mojo::Promise->new;
+	my $stationinfo_req = Mojo::Promise->new;
+	my $route_req       = Mojo::Promise->new;
+
 	if ( $departure->{wr_link} ) {
 		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
 		  ->then(
@@ -455,11 +457,14 @@ sub render_train {
 				$departure->{wr_link} = undef;
 				return;
 			}
+		)->finally(
+			sub {
+				$wagonorder_req->resolve;
+				return;
+			}
 		)->wait;
 	}
 
-	# Same for stationinfo (direction of travel). If it's too late and
-	# therefore missing, that's okay.
 	$self->wagonorder->get_stationinfo_p( $result->station_uic )->then(
 		sub {
 			my ($station_info)    = @_;
@@ -503,6 +508,11 @@ sub render_train {
 		},
 		sub {
 			# errors don't matter here
+			return;
+		}
+	)->finally(
+		sub {
+			$stationinfo_req->resolve;
 			return;
 		}
 	)->wait;
@@ -603,6 +613,14 @@ sub render_train {
 			# nop
 		}
 	)->finally(
+		sub {
+			$route_req->resolve;
+			return;
+		}
+	)->wait;
+
+	# Defer rendering until all requests have completed
+	Mojo::Promise->all( $wagonorder_req, $stationinfo_req, $route_req )->then(
 		sub {
 			$self->render(
 				'_train_details',
