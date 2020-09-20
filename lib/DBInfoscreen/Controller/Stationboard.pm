@@ -464,6 +464,9 @@ sub render_train {
 			}
 		)->wait;
 	}
+	else {
+		$wagonorder_req->resolve;
+	}
 
 	$self->wagonorder->get_stationinfo_p( $result->station_uic )->then(
 		sub {
