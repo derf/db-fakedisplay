@@ -400,7 +400,7 @@ sub format_hafas_result_info {
 }
 
 sub render_train {
-	my ( $self, $result, $departure, $station_name ) = @_;
+	my ( $self, $result, $departure, $station_name, $template ) = @_;
 
 	$departure->{route_pre_diff} = [
 		$self->json_route_diff(
@@ -626,7 +626,7 @@ sub render_train {
 	Mojo::Promise->all( $wagonorder_req, $stationinfo_req, $route_req )->then(
 		sub {
 			$self->render(
-				'_train_details',
+				$template // '_train_details',
 				departure => $departure,
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
@@ -635,6 +635,98 @@ sub render_train {
 			);
 		}
 	)->wait;
+}
+
+sub train_details {
+	my ($self)   = @_;
+	my $train_no = $self->stash('train');
+	my $station  = $self->stash('station');
+
+	my %opt = (
+		cache_hafas     => $self->app->cache_hafas,
+		cache_iris_main => $self->app->cache_iris_main,
+		cache_iris_rt   => $self->app->cache_iris_rt,
+	);
+
+	my $api_version = $Travel::Status::DE::IRIS::VERSION;
+
+	$self->stash( departures => [] );
+	$self->stash( title      => 'DBF' );
+	$self->stash( version    => $dbf_version );
+
+	my $data   = get_results_for( 'iris', $station, %opt );
+	my $errstr = $data->{errstr};
+
+	if ( not @{ $data->{results} } ) {
+		$self->handle_no_results( 'iris', $station, $errstr );
+		return;
+	}
+
+	my ($result)
+	  = grep { result_is_train( $_, $train_no ) } @{ $data->{results} };
+
+	if ( not $result ) {
+		$self->handle_no_results( 'iris', $station,
+			"Zug $train_no nicht gefunden" );
+		return;
+	}
+
+	my ( $info, $moreinfo ) = $self->format_iris_result_info( 'app', $result );
+
+	my $result_info = {
+		sched_arrival => $result->sched_arrival
+		? $result->sched_arrival->strftime('%H:%M')
+		: undef,
+		sched_departure => $result->sched_departure
+		? $result->sched_departure->strftime('%H:%M')
+		: undef,
+		arrival => $result->arrival ? $result->arrival->strftime('%H:%M')
+		: undef,
+		departure => $result->departure ? $result->departure->strftime('%H:%M')
+		: undef,
+		train                  => $result->train,
+		train_type             => $result->type // '',
+		train_line             => $result->line_no,
+		train_no               => $result->train_no,
+		via                    => [ $result->route_interesting(3) ],
+		destination            => $result->destination,
+		origin                 => $result->origin,
+		platform               => $result->platform,
+		scheduled_platform     => $result->sched_platform,
+		is_cancelled           => $result->is_cancelled,
+		departure_is_cancelled => $result->departure_is_cancelled,
+		arrival_is_cancelled   => $result->arrival_is_cancelled,
+		messages               => {
+			delay => [
+				map { { timestamp => $_->[0], text => $_->[1] } }
+				  $result->delay_messages
+			],
+			qos => [
+				map { { timestamp => $_->[0], text => $_->[1] } }
+				  $result->qos_messages
+			],
+		},
+		moreinfo         => $moreinfo,
+		delay            => $result->delay,
+		route_pre        => [ $result->route_pre ],
+		route_post       => [ $result->route_post ],
+		additional_stops => [ $result->additional_stops ],
+		canceled_stops   => [ $result->canceled_stops ],
+		replaced_by =>
+		  [ map { $_->type . q{ } . $_->train_no } $result->replaced_by ],
+		replacement_for =>
+		  [ map { $_->type . q{ } . $_->train_no } $result->replacement_for ],
+		wr_link => $result->sched_departure
+		? $result->sched_departure->strftime('%Y%m%d%H%M')
+		: undef,
+	};
+
+	$self->stash( title => $data->{station_name} // $self->stash('station') );
+	$self->stash( hide_opts => 1 );
+
+	$self->render_train( $result, $result_info,
+		$data->{station_name} // $self->stash('station'),
+		'train_details' );
 }
 
 sub handle_result {

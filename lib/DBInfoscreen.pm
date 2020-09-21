@@ -351,6 +351,7 @@ sub startup {
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
 	$r->get('/intersection/:trips')->to('map#intersection');
+	$r->get('/z/:train/:station')->to('stationboard#train_details');
 
 	$r->get('/map')->to('map#search_form');
 	$r->get('/_trainsearch')->to('map#search');

@@ -122,8 +122,10 @@ $(function() {
 		});
 	});
 	$('.moreinfo').click(function() {
-		$(this).removeClass('expanded-moreinfo');
-		$(this).addClass('collapsed-moreinfo');
+		if (!$(this).data('static')) {
+			$(this).removeClass('expanded-moreinfo');
+			$(this).addClass('collapsed-moreinfo');
+		}
 	});
 	dbf_reg_handlers();
 	if ($('.content .app').length) {
