@@ -1,0 +1,5 @@
+<div class="app">
+<div class="moreinfo" data-static="1">
+	%= include '_train_details'
+</div>
+</div>
