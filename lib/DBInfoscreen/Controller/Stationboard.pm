@@ -260,6 +260,13 @@ sub handle_request {
 		$opt{with_related} = 1;
 	}
 
+	if ($self->param('train')) {
+		# request results from five minutes ago to avoid train details suddenly
+		# becoming unavailable when its scheduled departure is reached.
+		$opt{datetime} = DateTime->now(time_zone => 'Europe/Berlin')->subtract(minutes => 20);
+		$opt{lookahead} = 200;
+	}
+
 	my $data   = get_results_for( $backend, $station, %opt );
 	my $errstr = $data->{errstr};
 
@@ -653,6 +660,9 @@ sub train_details {
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
 	$self->stash( version    => $dbf_version );
+
+	$opt{datetime} = DateTime->now(time_zone => 'Europe/Berlin')->subtract(minutes => 20);
+	$opt{lookahead} = 200;
 
 	my $data   = get_results_for( 'iris', $station, %opt );
 	my $errstr = $data->{errstr};
