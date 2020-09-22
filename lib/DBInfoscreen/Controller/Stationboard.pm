@@ -260,10 +260,12 @@ sub handle_request {
 		$opt{with_related} = 1;
 	}
 
-	if ($self->param('train')) {
+	if ( $self->param('train') ) {
+
 		# request results from five minutes ago to avoid train details suddenly
 		# becoming unavailable when its scheduled departure is reached.
-		$opt{datetime} = DateTime->now(time_zone => 'Europe/Berlin')->subtract(minutes => 20);
+		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
+		  ->subtract( minutes => 20 );
 		$opt{lookahead} = 200;
 	}
 
@@ -661,14 +663,18 @@ sub train_details {
 	$self->stash( title      => 'DBF' );
 	$self->stash( version    => $dbf_version );
 
-	$opt{datetime} = DateTime->now(time_zone => 'Europe/Berlin')->subtract(minutes => 20);
+	$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
+	  ->subtract( minutes => 20 );
 	$opt{lookahead} = 200;
 
 	my $data   = get_results_for( 'iris', $station, %opt );
 	my $errstr = $data->{errstr};
 
 	if ( not @{ $data->{results} } ) {
-		$self->handle_no_results( 'iris', $station, $errstr );
+		$self->render(
+			'landingpage',
+			error => "Keine Abfahrt von $train_no in $station gefunden",
+		);
 		return;
 	}
 
@@ -676,8 +682,10 @@ sub train_details {
 	  = grep { result_is_train( $_, $train_no ) } @{ $data->{results} };
 
 	if ( not $result ) {
-		$self->handle_no_results( 'iris', $station,
-			"Zug $train_no nicht gefunden" );
+		$self->render(
+			'landingpage',
+			error => "Keine Abfahrt von $train_no in $station gefunden",
+		);
 		return;
 	}
 
