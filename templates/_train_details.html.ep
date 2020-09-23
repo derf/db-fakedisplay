@@ -115,6 +115,9 @@
 %     elsif ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus') {
         <span class="disabledbutton"><i class="material-icons" aria-hidden="true">compare_arrows</i> Plan: <%= $icetype->[0] %></span>
 %     }
+%     for my $link (@{$departure->{links}}) {
+        <a class="smallbutton" href="<%= $link->[1] %>"><i class="material-icons" aria-hidden="true">warning</i> <%= $link->[0] %></a>
+%     }
     </div>
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {

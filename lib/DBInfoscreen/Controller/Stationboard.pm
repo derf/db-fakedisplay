@@ -411,6 +411,7 @@ sub format_hafas_result_info {
 sub render_train {
 	my ( $self, $result, $departure, $station_name, $template ) = @_;
 
+	$departure->{links}          = [];
 	$departure->{route_pre_diff} = [
 		$self->json_route_diff(
 			[ $result->route_pre ],
@@ -609,6 +610,15 @@ sub render_train {
 					if ( $message->{display} ) {
 						push( @him_messages,
 							[ $message->{header}, $message->{lead} ] );
+						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
+							push(
+								@{ $departure->{links} },
+								[
+									"Großstörung",
+									"https://zuginfo.nrw/?msg=$1"
+								]
+							);
+						}
 					}
 				}
 				for my $message ( @{ $departure->{moreinfo} // [] } ) {
