@@ -1,14 +1,12 @@
 % if (stash 'show_intro') {
 <div class="container">
 <p>
-  Diese Seite ist ein inoffizielles Frontend zum Abfahrtsmonitor
-  der DB. In den Standardeinstellungen bietet sie eine Handy- und
-  Desktop-geeignete Abfahrtstafel. Sie kann ebenfalls für großformatige
-  Infobildschirme genutzt werden oder die in Schalterhallen und an Gleisen
-  montierten Anzeigen nachhahmen.
+  DBF ist ein inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten mit
+  dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
 </p>
 <p>
-Alle Angaben ohne Gewähr.
+  Diese Seite ist ein kostenfreies, privat betriebenes Projekt ohne
+  Verfügbarkeitsgarantie. Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
 <a class="button" href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
