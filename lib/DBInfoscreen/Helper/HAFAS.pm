@@ -64,7 +64,7 @@ sub get_json_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->warn("get($url): $err");
+			$self->{log}->warn("hafas->get_json_p($url): $err");
 			$promise->reject($err);
 			return;
 		}
@@ -151,6 +151,10 @@ sub get_xml_p {
 		}
 	)->catch(
 		sub {
+			my ($err) = @_;
+			$self->{log}->warn("hafas->get_json_p($url): $err");
+			$promise->reject($err);
+			return;
 		}
 	)->wait;
 
