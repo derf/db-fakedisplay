@@ -426,28 +426,15 @@ sub render_train {
 	];
 
 	my $linetype = 'bahn';
-	if ( $departure->{train_type} eq 'S' ) {
-		$linetype = 'sbahn';
-	}
-	elsif ($departure->{train_type} eq 'IC'
-		or $departure->{train_type} eq 'ICE'
-		or $departure->{train_type} eq 'EC'
-		or $departure->{train_type} eq 'ECE'
-		or $departure->{train_type} eq 'EN' )
-	{
-		$linetype = 'fern';
-	}
-	elsif ($departure->{train_type} eq 'THA'
-		or $departure->{train_type} eq 'TGV'
-		or $departure->{train_type} eq 'FLX'
-		or $departure->{train_type} eq 'NJ' )
-	{
+	my @classes  = $result->classes;
+	if ( @classes == 0 ) {
 		$linetype = 'ext';
 	}
-	elsif ( $departure->{train_line}
-		and $departure->{train_line} =~ m{^S\d} )
-	{
+	elsif ( grep { $_ eq 'S' } @classes ) {
 		$linetype = 'sbahn';
+	}
+	elsif ( grep { $_ eq 'F' } @classes ) {
+		$linetype = 'fern';
 	}
 
 	$self->render_later;
@@ -841,9 +828,21 @@ sub handle_result {
 			( $info, $moreinfo ) = $self->format_hafas_result_info($result);
 		}
 
-		my $time = $result->time;
+		my $time     = $result->time;
+		my $linetype = 'bahn';
 
 		if ( $backend eq 'iris' ) {
+
+			my @classes = $result->classes;
+			if ( @classes == 0 ) {
+				$linetype = 'ext';
+			}
+			elsif ( grep { $_ eq 'S' } @classes ) {
+				$linetype = 'sbahn';
+			}
+			elsif ( grep { $_ eq 'F' } @classes ) {
+				$linetype = 'fern';
+			}
 
 			# ->time defaults to dep, so we only need to overwrite $time
 			# if we want arrival times
@@ -1068,6 +1067,7 @@ sub handle_result {
 					is_cancelled           => $result->is_cancelled,
 					departure_is_cancelled => $result->departure_is_cancelled,
 					arrival_is_cancelled   => $result->arrival_is_cancelled,
+					linetype               => $linetype,
 					messages               => {
 						delay => [
 							map { { timestamp => $_->[0], text => $_->[1] } }
