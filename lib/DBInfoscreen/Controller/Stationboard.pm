@@ -1175,6 +1175,7 @@ sub handle_result {
 			$template,
 			departures       => \@departures,
 			ice_type         => $self->app->ice_type_map,
+			station          => $station_name,
 			version          => $dbf_version,
 			title            => $via ? "$station_name → $via" : $station_name,
 			refresh_interval => $template eq 'app' ? 0 : 120,

@@ -1,7 +1,7 @@
 % if (@{$departures}) {
 
 % if (not param('ajax')) {
-<div class="app">
+<div class="app" data-station="<%= $station %>">
 <div class="moreinfo collapsed-moreinfo">
 	<div class="mheader">
 		<div>

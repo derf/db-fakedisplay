@@ -10,10 +10,14 @@ function reload_app() {
 
 function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function() {
-		var trainElem = $(this);
-		var routeprev = trainElem.data('routeprev').split('|');
-		var routenext = trainElem.data('routenext').split('|');
-		var moreinfo = trainElem.data('moreinfo').split('|');
+		const trainElem = $(this);
+		const routeprev = trainElem.data('routeprev').split('|');
+		const routenext = trainElem.data('routenext').split('|');
+		const moreinfo = trainElem.data('moreinfo').split('|');
+		const this_href = window.location.href;
+		const station = $('div.app').data('station');
+		// TODO get station name...
+		history.pushState({'page':'traindetail','train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + station);
 		$('.moreinfo').each(function() {
 			var infoElem = $(this);
 			$('.moreinfo .train-line').removeClass('bahn sbahn fern ext').addClass(trainElem.data('linetype'));
@@ -66,7 +70,7 @@ function dbf_reg_handlers() {
 				}
 			}
 			$('.moreinfo .mfooter').append('Fahrtverlauf: <ul class="mroute">' + routebuf + '</ul>');
-			$.get(window.location.href, {train: trainElem.data('train'), ajax: 1}, function(data) {
+			$.get(this_href, {train: trainElem.data('train'), ajax: 1}, function(data) {
 				$('.moreinfo').html(data);
 			}).fail(function() {
 				$('.moreinfo .mfooter').append('Der Zug ist abgefahren (Zug nicht gefunden)');
@@ -78,15 +82,6 @@ function dbf_reg_handlers() {
 }
 
 $(function() {
-	if (document.location.hash.length > 1) {
-		var wanted = document.location.hash.replace('#', '');
-		$('div.app > ul > li > .moreinfo, div.infoscreen > ul > li > .moreinfo').each(function() {
-			if ($(this).data('train') == wanted) {
-				$(this).removeClass('collapsed-moreinfo');
-				$(this).addClass('expanded-moreinfo');
-			}
-		});
-	}
 	$('.moresettings-header').each(function() {
 		$(this).click(function() {
 			var moresettings = $('.moresettings');
@@ -121,14 +116,22 @@ $(function() {
 			}
 		});
 	});
-	$('.moreinfo').click(function() {
-		if (!$(this).data('static')) {
-			$(this).removeClass('expanded-moreinfo');
-			$(this).addClass('collapsed-moreinfo');
-		}
-	});
 	dbf_reg_handlers();
 	if ($('.content .app').length) {
 		setTimeout(reload_app, 30000);
+		history.replaceState({'page':'station'}, document.title, '');
 	}
+	window.onpopstate = function(event) {
+		console.log('pop ' + document.location + ' ' + JSON.stringify(event.state));
+		if ((event.state != null) && (event.state['page'] == 'station')) {
+			$('.moreinfo').each(function() {
+				$(this).removeClass('expanded-moreinfo');
+				$(this).addClass('collapsed-moreinfo');
+			});
+			if (!$('div.app > ul').length) {
+				$('div.app').append('<ul></ul>');
+				reload_app();
+			}
+		}
+	};
 });
