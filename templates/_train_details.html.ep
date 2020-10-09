@@ -214,9 +214,4 @@
 %       }
       </ul> <!-- mroute -->
 %   }
-%   if (param('ajax')) {
-      <div style="margin-top: 1em;">
-        <a class="smallbutton" href="/z/<%= $departure->{train_type} %>%20<%= $departure->{train_no} %>/<%= $station_name %>"><i class="material-icons" aria-hidden="true">share</i> Link</a>
-      </div>
-%   }
     </div> <!-- mfooter -->

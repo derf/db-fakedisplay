@@ -16,7 +16,6 @@ function dbf_reg_handlers() {
 		const moreinfo = trainElem.data('moreinfo').split('|');
 		const this_href = window.location.href;
 		const station = $('div.app').data('station');
-		// TODO get station name...
 		history.pushState({'page':'traindetail','train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + station);
 		$('.moreinfo').each(function() {
 			var infoElem = $(this);
@@ -122,7 +121,6 @@ $(function() {
 		history.replaceState({'page':'station'}, document.title, '');
 	}
 	window.onpopstate = function(event) {
-		console.log('pop ' + document.location + ' ' + JSON.stringify(event.state));
 		if ((event.state != null) && (event.state['page'] == 'station')) {
 			$('.moreinfo').each(function() {
 				$(this).removeClass('expanded-moreinfo');
@@ -132,6 +130,8 @@ $(function() {
 				$('div.app').append('<ul></ul>');
 				reload_app();
 			}
+		} else {
+			console.log("unhandled popstate! " + document.location);
 		}
 	};
 });
