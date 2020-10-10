@@ -1,11 +1,18 @@
 function reload_app() {
-	$.get(window.location.href, {ajax: 1}, function(data) {
-		$('div.app > ul').html(data);
-		dbf_reg_handlers();
-		setTimeout(reload_app, 60000);
-	}).fail(function() {
-		setTimeout(reload_app, 10000);
-	});
+	// TODO use a variable instead of window.location.href, as
+	// window.locatin.href may be /z/...
+	// Until then, we guard it by only reloading whin moreinfo is not expanded.
+	if ($('.expanded-moreinfo').length == 0) {
+		$.get(window.location.href, {ajax: 1}, function(data) {
+			$('div.app > ul').html(data);
+			dbf_reg_handlers();
+			setTimeout(reload_app, 60000);
+		}).fail(function() {
+			setTimeout(reload_app, 10000);
+		});
+	} else {
+		setTimeout(reload_app, 30000);
+	}
 }
 
 function dbf_reg_handlers() {

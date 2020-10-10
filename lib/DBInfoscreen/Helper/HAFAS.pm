@@ -152,7 +152,7 @@ sub get_xml_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->warn("hafas->get_json_p($url): $err");
+			$self->{log}->warn("hafas->get_xml_p($url): $err");
 			$promise->reject($err);
 			return;
 		}
@@ -222,6 +222,7 @@ sub trainsearch_p {
 				$promise->resolve($result);
 			}
 			else {
+				$self->{log}->warn("hafas->trainsearch_p($opt{train_no}): train not found");
 				$promise->reject("Zug $opt{train_no} nicht gefunden");
 			}
 
@@ -233,6 +234,7 @@ sub trainsearch_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
+			$self->{log}->warn("hafas->trainsearch_p($opt{train_no}): $err");
 			$promise->reject($err);
 
 			# do not propagate $promise->reject's return value to this promise
