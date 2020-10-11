@@ -12,7 +12,7 @@ use List::Util qw();
 my $dbf_version = qx{git describe --dirty} || 'experimental';
 
 my $strp = DateTime::Format::Strptime->new(
-	pattern   => '%Y-%m-%dT%H:%M:%S.000%z',
+	pattern   => '%Y-%m-%dT%H:%M:%S%z',
 	time_zone => 'Europe/Berlin',
 );
 

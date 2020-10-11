@@ -222,7 +222,8 @@ sub trainsearch_p {
 				$promise->resolve($result);
 			}
 			else {
-				$self->{log}->warn("hafas->trainsearch_p($opt{train_no}): train not found");
+				$self->{log}->warn(
+					"hafas->trainsearch_p($opt{train_no}): train not found");
 				$promise->reject("Zug $opt{train_no} nicht gefunden");
 			}
 
@@ -346,7 +347,7 @@ sub get_polyline_p {
 	my ( $self, $trip_id, $line ) = @_;
 
 	my $url
-	  = "https://2.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
+	  = "https://v5.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
 	my $cache   = $self->{realtime_cache};
 	my $promise = Mojo::Promise->new;
 

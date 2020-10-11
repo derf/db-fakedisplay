@@ -12,7 +12,7 @@
 		Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS<br/>
 		Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		v<%= $Travel::Status::DE::DBWagenreihung::VERSION %><br/>
-		Karte: <a href="https://2.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
+		Karte: <a href="https://v5.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
 		<br/>
 		Grundlage der <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Wagengattungsdaten</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
 		<br/>
