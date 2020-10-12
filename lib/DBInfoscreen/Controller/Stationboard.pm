@@ -213,6 +213,10 @@ sub handle_request {
 	$self->stash( title      => 'DBF' );
 	$self->stash( version    => $dbf_version );
 
+	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
+		$template = 'app';
+	}
+
 	if ( defined $station and $station =~ s{ [.] txt $ }{}x ) {
 		$template = 'text';
 		$self->param( station => $station );
@@ -238,10 +242,6 @@ sub handle_request {
 	# intended.
 	if ( $template eq 'marudor' ) {
 		$template = 'json';
-	}
-
-	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
-		$template = 'app';
 	}
 
 	$self->param( mode => $template );
