@@ -648,6 +648,10 @@ sub train_details {
 	my $train_no = $self->stash('train');
 	my $station  = $self->stash('station');
 
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
+	}
+
 	my %opt = (
 		cache_hafas     => $self->app->cache_hafas,
 		cache_iris_main => $self->app->cache_iris_main,
@@ -739,9 +743,11 @@ sub train_details {
 	$self->stash( title => $data->{station_name} // $self->stash('station') );
 	$self->stash( hide_opts => 1 );
 
-	$self->render_train( $result, $result_info,
+	$self->render_train(
+		$result, $result_info,
 		$data->{station_name} // $self->stash('station'),
-		'train_details' );
+		$self->param('ajax') ? '_train_details' : 'train_details'
+	);
 }
 
 sub handle_result {
