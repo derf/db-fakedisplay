@@ -113,8 +113,8 @@ sub get_xml_p {
 			eval { $tree = XML::LibXML->load_xml( string => $body ) };
 
 			if ($@) {
+				$self->{log}->debug("hafas->get_xml_p($url): $@");
 				$cache->freeze( $url, {} );
-				$self->{log}->debug("hafas->get_xml_p($url): Parse Error: $@");
 				$promise->reject;
 				return;
 			}
