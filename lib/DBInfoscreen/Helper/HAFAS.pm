@@ -99,9 +99,14 @@ sub get_xml_p {
 
 			my $body = decode( 'ISO-8859-15', $tx->res->body );
 
-			# <SDay text="... &gt; ..."> is invalid HTML, but present
+			# <SDay text="... &gt; ..."> is invalid XML, but present
 			# regardless. As it is the last tag, we just throw it away.
 			$body =~ s{<SDay [^>]*/>}{}s;
+
+           # <Attribute [...] text="[...] "[...]"" prio="800" /> is invalid XML.
+           # Work around it.
+			$body
+			  =~ s{<Attribute text="([^"]*)"([^"=]*)""}{<Attribute text="$1&#042;$2&#042;"}s;
 
 			my $tree;
 
@@ -109,6 +114,7 @@ sub get_xml_p {
 
 			if ($@) {
 				$cache->freeze( $url, {} );
+				$self->{log}->debug("hafas->get_xml_p($url): Parse Error: $@");
 				$promise->reject;
 				return;
 			}
