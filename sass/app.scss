@@ -756,6 +756,10 @@ nav {
 	overflow: hidden;
 }
 
+nav a {
+	color: #fff;
+}
+
 nav .nav-wrapper {
 	position: relative;
 	height: 100%;
@@ -770,7 +774,6 @@ nav .brand-logo {
 	position: absolute;
 	display: inline-block;
 	padding-left: 0.5rem;
-	z-index: -1;
 }
 
 nav ul {

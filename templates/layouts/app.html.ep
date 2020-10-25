@@ -69,9 +69,16 @@
 <div class="navbar-fixed">
 	<nav style="color: #ffffff; background-color: #00838f;">
 		<div class="nav-wrapper container">
-			<span class="brand-logo">
-				%= stash('title') || 'DBF'
-			</span>
+			% if (my $nav_link = stash('nav_link')) {
+				<a class="brand-logo" style="float: left;" href="<%= $nav_link %>">
+					%= stash('title') || 'DBF'
+				</a>
+			% }
+			% else {
+				<span class="brand-logo">
+					%= stash('title') || 'DBF'
+				</span>
+			% }
 			<ul id="nav-mobile" style="float: right;">
 				<li class="waves-effect waves-light">
 					<a onClick="javascript:toggleTheme()"><i class="material-icons" aria-label="Farbschema invertieren">invert_colors</i></a>

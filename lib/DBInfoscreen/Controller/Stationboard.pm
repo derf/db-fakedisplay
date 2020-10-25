@@ -638,6 +638,7 @@ sub render_train {
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
 				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
+				nav_link     => '/' . $station_name,
 			);
 		}
 	)->wait;
@@ -1193,6 +1194,7 @@ sub handle_result {
 				  or $template eq 'multi'
 			),
 			force_mobile => ( $template eq 'app' ),
+			nav_link     => '/' . $station_name,
 		);
 	}
 	return;
