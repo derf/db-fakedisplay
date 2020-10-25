@@ -144,7 +144,8 @@ sub startup {
 					$self->render(
 						'landingpage',
 						stationlist => \@candidates,
-						hide_opts   => 0
+						hide_opts   => 0,
+						status      => 300,
 					);
 					return;
 				}
@@ -158,7 +159,8 @@ sub startup {
 					$self->render(
 						'landingpage',
 						stationlist => \@candidates,
-						hide_opts   => 0
+						hide_opts   => 0,
+						status      => 300,
 					);
 					return;
 				}

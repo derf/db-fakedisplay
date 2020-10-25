@@ -675,7 +675,8 @@ sub train_details {
 	if ( not @{ $data->{results} } ) {
 		$self->render(
 			'landingpage',
-			error => "Keine Abfahrt von $train_no in $station gefunden",
+			error  => "Keine Abfahrt von $train_no in $station gefunden",
+			status => 404,
 		);
 		return;
 	}
@@ -686,7 +687,8 @@ sub train_details {
 	if ( not $result ) {
 		$self->render(
 			'landingpage',
-			error => "Keine Abfahrt von $train_no in $station gefunden",
+			error  => "Keine Abfahrt von $train_no in $station gefunden",
+			status => 404,
 		);
 		return;
 	}
