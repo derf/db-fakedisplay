@@ -106,7 +106,7 @@ sub get_xml_p {
            # <Attribute [...] text="[...] "[...]"" prio="800" /> is invalid XML.
            # Work around it.
 			$body
-			  =~ s{<Attribute text="([^"]*)"([^"=]*)""}{<Attribute text="$1&#042;$2&#042;"}s;
+			  =~ s{<Attribute([^>]+)text="([^"]*)"([^"=]*)""}{<Attribute$1text="$2&#042;$3&#042;"}s;
 
 			my $tree;
 
