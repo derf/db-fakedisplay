@@ -112,7 +112,7 @@
         <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">train</i> Wagenreihung
         </a>
 %     }
-%     elsif ($icetype and $icetype->[1] and $departure->{train_type} ne 'Bus') {
+%     elsif ($icetype and $icetype->[1] and $linetype eq 'fern') {
         <span class="disabledbutton"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></span>
 %     }
 %     for my $link (@{$departure->{links}}) {
