@@ -90,10 +90,26 @@ sub result_has_via {
 
 	my @route = $result->route_post;
 
-	if ( List::MoreUtils::any { m{$via}i } @route ) {
+	my $eq_result = List::MoreUtils::any { lc eq lc($via) } @route;
+
+	if ($eq_result) {
 		return 1;
 	}
-	return 0;
+
+	my ( $re1_result, $re2_result );
+
+	eval {
+		$re2_result = List::MoreUtils::any { m{\Q$via\E}i } @route;
+	};
+	eval {
+		$re1_result = List::MoreUtils::any { m{$via}i } @route;
+	};
+
+	if ($@) {
+		return $re2_result || $eq_result;
+	}
+
+	return $re1_result || $re2_result || $eq_result;
 }
 
 sub log_api_access {
