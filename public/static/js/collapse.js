@@ -1,6 +1,6 @@
 function reload_app() {
 	// TODO use a variable instead of window.location.href, as
-	// window.locatin.href may be /z/...
+	// window.location.href may be /z/...
 	// Until then, we guard it by only reloading whin moreinfo is not expanded.
 	if ($('.expanded-moreinfo').length == 0) {
 		$.get(window.location.href, {ajax: 1}, function(data) {
@@ -88,7 +88,7 @@ function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function() {
 		const trainElem = $(this);
 		const station = $('div.app').data('station');
-		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + station);
+		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station'));
 		dbf_show_moreinfo(trainElem, false);
 	});
 }

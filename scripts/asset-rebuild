@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -ex
+
+uglifyjs public/static/js/autocomplete.js public/static/js/collapse.js -c -m > public/static/js/dbf.min.js
+uglifyjs public/static/js/geolocation.js -c -m > public/static/js/geolocation.min.js
+uglifyjs public/static/js/map-refresh.js -c -m > public/static/js/map-refresh.min.js
+uglifyjs public/static/js/marquee.js -c -m > public/static/js/marquee.min.js

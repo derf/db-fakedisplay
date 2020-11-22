@@ -1103,6 +1103,7 @@ sub handle_result {
 							  $result->qos_messages
 						],
 					},
+					station          => $result->station,
 					moreinfo         => $moreinfo,
 					delay            => $delay,
 					route_pre        => [ $result->route_pre ],
