@@ -1,3 +1,7 @@
+# Copyright (C) 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 # docker build -t db-fakedisplay:latest --build-arg=dbf_version=$(git describe --dirty) .
 
 FROM debian:buster-slim as files

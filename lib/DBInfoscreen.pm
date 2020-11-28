@@ -1,8 +1,9 @@
 package DBInfoscreen;
-use Mojo::Base 'Mojolicious';
+# Copyright (C) 2011-2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
-# Copyright (C) 2011-2020 Daniel Friesel <derf+dbf@finalrewind.org>
-# License: 2-Clause BSD
+use Mojo::Base 'Mojolicious';
 
 use Cache::File;
 use DBInfoscreen::Helper::HAFAS;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 function reload_app() {
 	// TODO use a variable instead of window.location.href, as
 	// window.location.href may be /z/...

@@ -1,4 +1,7 @@
 package DBInfoscreen::Controller::Map;
+# Copyright (C) 2011-2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw(decode_json);

@@ -1,4 +1,8 @@
 #!/usr/bin/env perl
+# Copyright (C) 2020 Daniel Friesel
+#
+# SPDX-License-Identifier: CC0-1.0
+
 use strict;
 use warnings;
 use 5.014;

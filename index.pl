@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
-# Copyright (C) 2011-2020 Daniel Friesel <derf+dbf@finalrewind.org>
-# License: 2-Clause BSD
+# Copyright (C) 2011-2020 Daniel Friesel
+#
+# SPDX-License-Identifier: BSD-2-Clause
 
 use strict;
 use warnings;

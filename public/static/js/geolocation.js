@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2020 Daniel Friesel
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 $(function() {
 	var removeStatus = function() {
 		$('div.candidatestatus').remove();
