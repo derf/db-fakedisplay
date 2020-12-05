@@ -1,4 +1,5 @@
 package DBInfoscreen::Helper::HAFAS;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
@@ -35,6 +36,8 @@ sub get_json_p {
 	if ( my $content = $cache->thaw($url) ) {
 		return $promise->resolve($content);
 	}
+
+	$self->{log}->debug("get_json_p($url)");
 
 	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
 	  ->then(
@@ -84,6 +87,8 @@ sub get_xml_p {
 	if ( my $content = $cache->thaw($url) ) {
 		return $promise->resolve($content);
 	}
+
+	$self->{log}->debug("get_xml_p($url)");
 
 	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
 	  ->then(

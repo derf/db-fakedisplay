@@ -1,4 +1,5 @@
 package DBInfoscreen::Controller::Stationboard;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
@@ -457,6 +458,7 @@ sub render_train {
 	$self->render_later;
 
 	my $wagonorder_req  = Mojo::Promise->new;
+	my $utilization_req = Mojo::Promise->new;
 	my $stationinfo_req = Mojo::Promise->new;
 	my $route_req       = Mojo::Promise->new;
 
@@ -477,9 +479,26 @@ sub render_train {
 				return;
 			}
 		)->wait;
+		$self->marudor->get_train_utilization( train => $result )->then(
+			sub {
+				my ( $first, $second ) = @_;
+				$departure->{utilization} = [ $first, $second ];
+				return;
+			},
+			sub {
+				$departure->{utilization} = undef;
+				return;
+			}
+		)->finally(
+			sub {
+				$utilization_req->resolve;
+				return;
+			}
+		)->wait;
 	}
 	else {
 		$wagonorder_req->resolve;
+		$utilization_req->resolve;
 	}
 
 	$self->wagonorder->get_stationinfo_p( $result->station_uic )->then(
@@ -646,7 +665,8 @@ sub render_train {
 	)->wait;
 
 	# Defer rendering until all requests have completed
-	Mojo::Promise->all( $wagonorder_req, $stationinfo_req, $route_req )->then(
+	Mojo::Promise->all( $wagonorder_req, $utilization_req, $stationinfo_req,
+		$route_req )->then(
 		sub {
 			$self->render(
 				$template // '_train_details',

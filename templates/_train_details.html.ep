@@ -120,6 +120,13 @@
 %     }
     </div>
 
+%   if (my $u = $departure->{utilization}) {
+      <div class="verbose">
+%       my ($text, $icon1, $icon2) = utilization_icon($u);
+        <%= $text %><span style="padding-right: 0.5em;">.</span> 1. <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon1 %></i> 2. <i class="material-icons" aria-hidden="true" style="vertical-align: bottom;"><%= $icon2 %></i>
+      </div>
+%   }
+
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
       Meldungen:
       <ul>

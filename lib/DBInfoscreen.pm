@@ -1,4 +1,5 @@
 package DBInfoscreen;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
@@ -7,6 +8,7 @@ use Mojo::Base 'Mojolicious';
 
 use Cache::File;
 use DBInfoscreen::Helper::HAFAS;
+use DBInfoscreen::Helper::Marudor;
 use DBInfoscreen::Helper::Wagonorder;
 use File::Slurp qw(read_file);
 use JSON;
@@ -103,6 +105,20 @@ sub startup {
 		hafas => sub {
 			my ($self) = @_;
 			state $hafas = DBInfoscreen::Helper::HAFAS->new(
+				log            => $self->app->log,
+				main_cache     => $self->app->cache_iris_main,
+				realtime_cache => $self->app->cache_iris_rt,
+				root_url       => $self->url_for('/')->to_abs,
+				user_agent     => $self->ua,
+				version        => $VERSION,
+			);
+		}
+	);
+
+	$self->helper(
+		marudor => sub {
+			my ($self) = @_;
+			state $hafas = DBInfoscreen::Helper::Marudor->new(
 				log            => $self->app->log,
 				main_cache     => $self->app->cache_iris_main,
 				realtime_cache => $self->app->cache_iris_rt,
@@ -312,6 +328,35 @@ sub startup {
 				$sched_idx++;
 			}
 			return @json_route;
+		}
+	);
+
+	$self->helper(
+		'utilization_icon' => sub {
+			my ( $self,  $utilization ) = @_;
+			my ( $first, $second )      = @{ $utilization // [ 0, 0 ] };
+			my $sum = ( $first + $second ) / 2;
+
+			my @symbols
+			  = (
+				qw(hourglass_empty person_outline people priority_high not_interested)
+			  );
+			my $text = 'Auslastung unbekannt';
+
+			if ( $sum > 3.5 ) {
+				$text = 'Zug ist ausgebucht';
+			}
+			elsif ( $sum >= 2.5 ) {
+				$text = 'Sehr hohe Auslastung';
+			}
+			elsif ( $sum >= 1.5 ) {
+				$text = 'Hohe Auslastung';
+			}
+			elsif ( $sum >= 1 ) {
+				$text = 'Geringe Auslastung';
+			}
+
+			return ( $text, $symbols[$first], $symbols[$second] );
 		}
 	);
 
