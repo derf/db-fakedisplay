@@ -479,6 +479,10 @@ sub render_train {
 				return;
 			}
 		)->wait;
+
+		# Looks like utilization data is only available for long-distance trains
+		# – and the few regional trains which also have wagon order data (e.g.
+		# around Stuttgart). Funky.
 		$self->marudor->get_train_utilization( train => $result )->then(
 			sub {
 				my ( $first, $second ) = @_;
