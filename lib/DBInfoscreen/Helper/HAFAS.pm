@@ -378,6 +378,16 @@ sub get_polyline_p {
 	  ->then(
 		sub {
 			my ($tx) = @_;
+
+			if ( my $err = $tx->error ) {
+				$self->{log}->warn(
+"hafas->get_polyline_p($url): HTTP $err->{code} $err->{message}"
+				);
+				$promise->reject(
+					"GET $url returned HTTP $err->{code} $err->{message}");
+				return;
+			}
+
 			$self->{log}->debug("GET $url (OK)");
 			my $json = decode_json( $tx->res->body );
 			my @coordinate_list;
