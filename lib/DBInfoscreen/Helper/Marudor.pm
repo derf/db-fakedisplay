@@ -88,7 +88,7 @@ sub get_train_utilization {
 	my $this_station = $train->station;
 	my @route        = $train->route_post;
 	my $next_station;
-	my $dep = $train->sched_departure->epoch . '000';
+	my $dep = $train->sched_departure->iso8601;
 
 	if ( @route > 1 ) {
 		$next_station = $route[1];
@@ -98,7 +98,7 @@ sub get_train_utilization {
 	}
 
 	$self->get_json_p( $self->{realtime_cache},
-"https://marudor.de/api/hafas/v1/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
+"https://marudor.de/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
 	)->then(
 		sub {
 			my ($utilization_json) = @_;
