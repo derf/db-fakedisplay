@@ -391,6 +391,22 @@ div.app li .dest {
 	color: $fg;
 }
 
+div.app li .origin {
+	background-color: transparent;
+	font-size:4em;
+	position:absolute;
+	top:0.62em;
+	left:4em;
+	bottom:0px;
+	width: 70%;
+	overflow: hidden;
+	color: $fg2;
+
+	&:before {
+		content: "von ";
+	}
+}
+
 div.app li.cancelled {
 	background-color: $cancelled-bg-color;
 }

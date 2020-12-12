@@ -83,9 +83,16 @@
 %     }
       </div>
 %   }
-    <span class="dest <%= $extraclasses %>" aria-label="nach <%= $departure->{destination} %>">
-%=  $departure->{destination}
-    </span>
+%   if (@{$departure->{route_post} // [] }) {
+      <span class="dest <%= $extraclasses %>" aria-label="nach <%= $departure->{destination} %>">
+%=      $departure->{destination}
+      </span>
+%   }
+%   else {
+      <span class="origin <%= $extraclasses %>" aria-label="von <%= $departure->{origin} %>">
+%=      $departure->{origin}
+      </span>
+%   }
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
 %   if (param('detailed')) {
