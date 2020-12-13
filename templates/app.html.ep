@@ -83,7 +83,7 @@
 %     }
       </div>
 %   }
-%   if (@{$departure->{route_post} // [] }) {
+%   if ($departure->{sched_departure}) {
       <span class="dest <%= $extraclasses %>" aria-label="nach <%= $departure->{destination} %>">
 %=      $departure->{destination}
       </span>
