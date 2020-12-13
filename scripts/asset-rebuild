@@ -5,6 +5,11 @@
 
 set -ex
 
+sassc -t compressed sass/dark.scss public/static/css/dark.min.css
+sassc -t compressed sass/light.scss public/static/css/light.min.css
+
+scripts/update-autocomplete
+
 uglifyjs public/static/js/autocomplete.js public/static/js/collapse.js -c -m > public/static/js/dbf.min.js
 uglifyjs public/static/js/geolocation.js -c -m > public/static/js/geolocation.min.js
 uglifyjs public/static/js/map-refresh.js -c -m > public/static/js/map-refresh.min.js
