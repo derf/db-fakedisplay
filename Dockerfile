@@ -28,7 +28,7 @@ FROM perl:5.30-slim
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_LISTCHANGES_FRONTEND=none
 
-COPY cpanfile /app/cpanfile
+COPY cpanfile* /app/
 WORKDIR /app
 
 RUN apt-get update \
