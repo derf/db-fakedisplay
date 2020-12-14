@@ -61,72 +61,7 @@
 %       }
 %     }
 %     for my $wagon ($wr->wagons) {
-%       my $bg = '';
-%       my $extra_class = '';
-%       if ($wagon->is_first_class) {
-%         $extra_class .= ' firstclass';
-%       }
-%       if ($wagon->is_locomotive or $wagon->is_powercar) {
-%         $extra_class .= ' powercar';
-%       }
-%       if ($wagon->train_no ne $train_no) {
-%         $extra_class .= ' nondestwagon';
-%       }
-        <div class="wagon <%= $extra_class %>" style="
-        top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%; <%= $bg %>">
-%         if ($wagon->is_locomotive or $wagon->is_powercar) {
-%         }
-%         else {
-%=          $wagon->number // '?'
-%           if ($wagon->has_accessibility) {
-              <i class="material-icons" style="font-size: 20px;">accessible</i>
-%           }
-%           if ($wagon->has_bistro) {
-              <i class="material-icons">restaurant</i>
-%           }
-%           if ($wagon->has_compartments) {
-              <!--<i class="material-icons">folder</i>-->
-%           }
-%           if ($wagon->has_quiet_area) {
-              <i class="tiny material-icons">volume_off</i>
-%           }
-%           if ($wagon->has_phone_area) {
-              <i class="material-icons">smartphone</i>
-%           }
-%           if ($wagon->has_family_area) {
-              <i class="material-icons">people</i>
-%           }
-%           if ($wagon->has_bahn_comfort) {
-              <i class="material-icons">star</i>
-%           }
-%         }
-        <div class="direction">
-%         if ($wr->has_bad_wagons or not defined $wr->direction) {
-%         }
-%         elsif ($wr->direction == 100) {
-            <i class="material-icons">arrow_downward</i>
-%         }
-%         else {
-            <i class="material-icons">arrow_upward</i>
-%         }
-        </div>
-        </div>
-        <div class="details" style="
-        top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
-          <span class="type">
-%=          $wagon->type
-          </span>
-%         my $uic_id = $wagon->uic_id;
-%         if (length($uic_id) != 12) {
-            <span class="uicunknown"><%= $uic_id %></span>
-%         }
-%         elsif (substr($uic_id, 0, 2) >= 90) {
-            <span class="uicexchange"><%= substr($uic_id, 0, 2) %></span><span class="uiccountry"><%= substr($uic_id, 2, 2) %></span><span class="uic5"><%= substr($uic_id, 4, 1) %></span><span class="uictype"><%= substr($uic_id, 5, 3) %></span><span class="uicno"><%= substr($uic_id, 8, 3) %></span><span class="uiccheck"><%= substr($uic_id, 11) %></span>
-%         }
-%         else {
-            <span class="uicexchange"><%= substr($uic_id, 0, 2) %></span><span class="uiccountry"><%= substr($uic_id, 2, 2) %></span><span class="uic56"><%= substr($uic_id, 4, 2) %></span><span class="uic78"><%= substr($uic_id, 6, 2) %></span><span class="uicno"><%= substr($uic_id, 8, 3) %></span><span class="uiccheck"><%= substr($uic_id, 11) %></span>
-%         }
-        </div>
+%=      include '_wagon', direction => $wr->direction, wagon => $wagon;
 %     }
       </div>
 <!--  <div>
