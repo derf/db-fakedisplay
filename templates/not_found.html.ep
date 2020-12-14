@@ -1,7 +1,12 @@
 <div class="container">
 <div class="error">
 <strong>404 Page Not Found:</strong>
+% if (my $e = stash('message')) {
+%= $e
+% }
+% else {
 Die aufgerufene URL existiert nicht und ist keine gültige Abbildung auf einen
 Bahnhofsnamen.
+% }
 </div>
 </div>

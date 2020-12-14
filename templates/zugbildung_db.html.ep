@@ -1,0 +1,26 @@
+% if ($wr_error) {
+  <div class="container">
+    <div class="error">
+      <strong>Fehler bei der Abfrage der Wagenreihung:</strong>
+      <%= $wr_error %>
+    </div>
+  </div>
+% }
+<div class="container">
+  <div style="text-align: center;">
+%=  $zb->{route}
+  </div>
+  Vorgesehener Zugtyp: <%= $zb->{type} %>
+</div>
+<div class="container">
+  <div class="wagonorder">
+%   for my $wagon (@{$wagons // []}) {
+%=    include '_wagon', direction => undef, wagon => $wagon;
+%   }
+    </div>
+    <div>
+      Die Angaben wurden automatisch aus den Solldaten gemäß Zugbildungsplan extrahiert.
+      Fehler sind möglich. © 2020 DB Fernverkehr AG und Daniel Friesel, CC-BY 4.0.
+    </div>
+
+  </div>

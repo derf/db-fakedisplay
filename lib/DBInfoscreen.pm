@@ -90,14 +90,22 @@ sub startup {
 	$self->attr(
 		ice_type_map => sub {
 			my $ice_type_map = JSON->new->utf8->decode(
-				scalar read_file('share/ice_type.json') );
+				scalar read_file('share/zugbildungsplan.json') );
 			my $ret;
 			while ( my ( $k, $v ) = each %{$ice_type_map} ) {
 				if ( $v->{type} ) {
-					$ret->{$k} = [ $v->{type}, $v->{short} ];
+					$ret->{$k}
+					  = [ $v->{type}, $v->{short}, exists $v->{wagon} ? 1 : 0 ];
 				}
 			}
 			return $ret;
+		}
+	);
+
+	$self->attr(
+		train_details_db => sub {
+			return JSON->new->utf8->decode(
+				scalar read_file('share/zugbildungsplan.json') );
 		}
 	);
 
@@ -395,6 +403,7 @@ sub startup {
 	$r->get('/_impressum')->to('static#imprint');
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
+	$r->get('/zb-db/:train')->to('wagenreihung#zugbildung_db');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
