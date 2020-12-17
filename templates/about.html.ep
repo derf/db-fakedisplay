@@ -3,6 +3,7 @@
 		<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 		v<%= stash('version') // '???' %><br/>
 		Entwickelt von <a href="https://twitter.com/derfnull">@derfnull</a><br/>
+		db-infoscreen ist quelloffene Software (Open Source).<br/>
 		<br/>
 		Backends:<br/>
 		Abfahrtstafel: <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
@@ -11,13 +12,17 @@
 		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 		Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS<br/>
 		Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
-		v<%= $Travel::Status::DE::DBWagenreihung::VERSION %><br/>
+		% if ($Travel::Status::DE::DBWagenreihung::VERSION) {
+			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
+		% }
+		<br/>
 		Karte: <a href="https://v5.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
 		Zugauslastung: <a href="https://docs.marudor.de/">marudor.de</a><br/>
 		<br/>
-		Grundlage der <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Wagengattungsdaten</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
+		Verwendete Daten:<br/>
+		Grundlage der <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Wagengattungen</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
 		<br/>
-		Grundlage der <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellendaten</a>
+		Grundlage der <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
 		© DB Station&amp;Service AG,
 		Europaplatz 1,
 		10557 Berlin, lizensiert unter CC-BY 4.0<br/>
