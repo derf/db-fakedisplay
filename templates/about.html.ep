@@ -3,7 +3,7 @@
 		<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
 		v<%= stash('version') // '???' %><br/>
 		Entwickelt von <a href="https://twitter.com/derfnull">@derfnull</a><br/>
-		db-infoscreen ist quelloffene Software (Open Source).<br/>
+		db-infoscreen ist <a href="https://github.com/derf/db-fakedisplay">quelloffene Software</a> (Open Source).<br/>
 		<br/>
 		Backends:<br/>
 		Abfahrtstafel: <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
