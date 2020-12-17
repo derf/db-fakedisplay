@@ -20,10 +20,6 @@ use utf8;
 
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
-our $VERSION = qx{git describe --dirty} || '0.05';
-
-chomp $VERSION;
-
 my %default = (
 	backend => 'iris',
 	mode    => 'app',
@@ -32,6 +28,21 @@ my %default = (
 
 sub startup {
 	my ($self) = @_;
+
+	$self->config(
+		hypnotoad => {
+			accepts => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
+			clients => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
+			listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
+			pid_file => $ENV{DBFAKEDISPLAY_PID_FILE}
+			  // '/tmp/db-fakedisplay.pid',
+			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
+			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
+		},
+		version => $ENV{DBFAKEDISPLAY_VERSION} // qx{git describe --dirty} // '???',
+	);
+
+	chomp $self->config->{version};
 
 	$self->hook(
 		before_dispatch => sub {
@@ -118,7 +129,7 @@ sub startup {
 				realtime_cache => $self->app->cache_iris_rt,
 				root_url       => $self->url_for('/')->to_abs,
 				user_agent     => $self->ua,
-				version        => $VERSION,
+				version        => $self->config->{version},
 			);
 		}
 	);
@@ -132,7 +143,7 @@ sub startup {
 				realtime_cache => $self->app->cache_iris_rt,
 				root_url       => $self->url_for('/')->to_abs,
 				user_agent     => $self->ua,
-				version        => $VERSION,
+				version        => $self->config->{version},
 			);
 		}
 	);
@@ -146,7 +157,7 @@ sub startup {
 				realtime_cache => $self->app->cache_iris_rt,
 				root_url       => $self->url_for('/')->to_abs,
 				user_agent     => $self->ua,
-				version        => $VERSION,
+				version        => $self->config->{version},
 			);
 		}
 	);
@@ -211,7 +222,7 @@ sub startup {
 				$json = $self->render_to_string(
 					json => {
 						api_version => $api_version,
-						version     => $VERSION,
+						version     => $self->config->{version},
 						error       => $errstr,
 					}
 				);
@@ -226,7 +237,7 @@ sub startup {
 					$json = $self->render_to_string(
 						json => {
 							api_version => $api_version,
-							version     => $VERSION,
+							version     => $self->config->{version},
 							error       => 'ambiguous station code/name',
 							candidates  => \@candidates,
 						}
@@ -236,7 +247,7 @@ sub startup {
 					$json = $self->render_to_string(
 						json => {
 							api_version => $api_version,
-							version     => $VERSION,
+							version     => $self->config->{version},
 							error =>
 							  ( $errstr // "Got no results for '$station'" )
 						}
@@ -418,18 +429,6 @@ sub startup {
 	$r->get('/')->to('stationboard#handle_request');
 	$r->get('/multi/*station')->to('stationboard#handle_request');
 	$r->get('/*station')->to('stationboard#handle_request');
-
-	$self->config(
-		hypnotoad => {
-			accepts => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
-			clients => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
-			listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
-			pid_file => $ENV{DBFAKEDISPLAY_PID_FILE}
-			  // '/tmp/db-fakedisplay.pid',
-			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
-			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
-		},
-	);
 
 	$self->types->type( json => 'application/json; charset=utf-8' );
 

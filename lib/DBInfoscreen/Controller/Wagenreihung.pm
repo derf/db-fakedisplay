@@ -9,10 +9,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::DBWagenreihung::Wagon;
 
-my $dbf_version = qx{git describe --dirty} || 'experimental';
-
-chomp $dbf_version;
-
 sub zugbildung_db {
 	my ($self) = @_;
 

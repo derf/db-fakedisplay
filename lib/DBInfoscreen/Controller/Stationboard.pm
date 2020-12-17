@@ -23,10 +23,6 @@ use utf8;
 
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
-my $dbf_version = qx{git describe --dirty} || 'experimental';
-
-chomp $dbf_version;
-
 my %default = (
 	backend => 'iris',
 	mode    => 'app',
@@ -229,7 +225,7 @@ sub handle_request {
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
-	$self->stash( version    => $dbf_version );
+	$self->stash( version    => $self->config->{version} );
 
 	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
 		$template = 'app';
@@ -704,7 +700,7 @@ sub train_details {
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
-	$self->stash( version    => $dbf_version );
+	$self->stash( version    => $self->config->{version} );
 
 	$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
 	  ->subtract( minutes => 20 );
@@ -1227,7 +1223,7 @@ sub handle_result {
 			departures       => \@departures,
 			ice_type         => $self->app->ice_type_map,
 			station          => $station_name,
-			version          => $dbf_version,
+			version          => $self->config->{version},
 			title            => $via ? "$station_name → $via" : $station_name,
 			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,

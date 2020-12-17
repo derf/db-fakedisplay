@@ -12,14 +12,10 @@ use DateTime::Format::Strptime;
 use Geo::Distance;
 use List::Util qw();
 
-my $dbf_version = qx{git describe --dirty} || 'experimental';
-
 my $strp = DateTime::Format::Strptime->new(
 	pattern   => '%Y-%m-%dT%H:%M:%S%z',
 	time_zone => 'Europe/Berlin',
 );
-
-chomp $dbf_version;
 
 sub get_route_indexes {
 	my ( $features, $from_name, $to_name ) = @_;
