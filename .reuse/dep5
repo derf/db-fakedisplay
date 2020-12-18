@@ -39,11 +39,11 @@ Copyright: 2010-2019 Vladimir Agafonkin
    2010-2011 CloudMade
 License: BSD-2-Clause
 
-Files: README.md .gitignore cpanfile
+Files: README.md .gitignore cpanfile cpanfile.snapshot
 Copyright: 2020 Daniel Friesel
 License: CC0-1.0
 
-Files: share/ice_type.json
+Files: share/zugbildungsplan.json
 Copyright: 2020 DB Fernverkehr AG
    2020 Daniel Friesel
 License: CC-BY-4.0
