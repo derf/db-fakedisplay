@@ -414,7 +414,7 @@ sub startup {
 	$r->get('/_impressum')->to('static#imprint');
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
-	$r->get('/zb-db/:train')->to('wagenreihung#zugbildung_db');
+	$r->get('/wr/:train')->to('wagenreihung#zugbildung_db');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');

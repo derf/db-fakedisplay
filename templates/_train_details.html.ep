@@ -113,7 +113,7 @@
         </a>
 %     }
 %     elsif ($icetype and $icetype->[2] and $linetype eq 'fern') {
-        <a class="smallbutton" href="/zb-db/<%= $departure->{train_no} %>"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></a>
+        <a class="smallbutton" href="/wr/<%= $departure->{train_no} %>"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></a>
 %     }
 %     elsif ($icetype and $icetype->[1] and $linetype eq 'fern') {
         <span class="disabledbutton"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></span>
