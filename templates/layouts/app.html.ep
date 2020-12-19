@@ -256,12 +256,6 @@ Bitte eine Station aus der Liste auswählen</div>
   </div> <!-- developers -->
 </div> <!-- notes -->
 
-<div class="notes">
-Siehe auch:
-<a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB Abfahrtsmonitor</a>
-(<a href="https://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)
-</div> <!-- notes -->
-
 </div> <!-- container -->
 
 <div class="container">

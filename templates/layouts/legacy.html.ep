@@ -212,15 +212,6 @@ Bitte eine Station aus der Liste auswählen</div>
   </div> <!-- developers -->
 </div> <!-- notes -->
 
-<div class="notes">
-<span class="notes">Siehe auch:</span>
-<ul>
-<li><a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/dn">DB Abfahrtsmonitor</a>
-   (<a href="https://mobile.bahn.de/bin/mobil/bhftafel.exe/dox">mobil</a>)</li>
-<li>Für Nahverkehr: <a href="https://vrrf.finalrewind.org/">vrr-infoscreen</a></li>
-</ul>
-</div> <!-- notes -->
-
 </div> <!-- container -->
 
 <div class="container">
