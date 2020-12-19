@@ -8,12 +8,14 @@
 		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">2-Clause
 		BSD-Lizenz</a> als Open Source zur Verfügung. © 2020 <a
 		href="https://finalrewind.org/me">Daniel Friesel</a> / <a href="https://twitter.com/derfnull">@derfnull</a>.
+		Fehlermeldungen bitte via
+		<a href="https://github.com/derf/db-fakedisplay/issues">GitHub Issue Tracker</a>.
 	</p>
 	<p>
 		Das Projekt begann als „db-fakedisplay“ (kurz dbf) zur <a href="/Dortmund
 		Hbf?mode=multi">Nachahmung von Bahnhofs-Abfahrtstafeln</a>. Inzwischen
 		liegt der Fokus auf dem <a href="/Dortmund Hbf">App/Infoscreen-Modus</a>
-		und die Abkürzung DBF hat keine Bedeutung mehr.
+		und die Bezeichnung DBF wurde zum Eigennamen ohne weitere Bedeutung.
 	</p>
 	<p>
 		Diese Installation verwendet die DBF-Version
@@ -46,7 +48,6 @@
 	<p>
 		<a href="https://finalrewind.org/me/">Kontakt</a>
 		·
-		<a href="https://github.com/derf/db-fakedisplay/issues">Bugs?</a>
 	</p>
 </div>
 

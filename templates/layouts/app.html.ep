@@ -231,7 +231,8 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="developers-header developers-header-collapsed button button-light">API- und Entwickler-Hinweise</div>
   <div class="developers developers-collapsed">
     <ul>
-      <li>DBF-Abfahrtstafeln können gerne als iframe in eigene Infoscreens o.ä. eingebunden werden.
+      <li>DBF-Abfahrtstafeln können gerne als iframe eingebunden oder in
+        fest installierten Vollbild-Browserfenstern verwendet werden.
         Für eine kleine Ansicht (z.B. iframe in einer normalen Website)
         empfiehlt sich das "App"-Frontend. Für eine große Ansicht
         (z.B. als alleinstehender Infoscreen) gibt es den "Infoscreen"-Modus.</li>
@@ -245,6 +246,7 @@ Bitte eine Station aus der Liste auswählen</div>
         Bitte maximal 30 Anfragen pro Minute und insbesondere nur eine Anfrage
         pro Station und Minute – eine höhere Auflösung haben die Backenddaten
         ohnehin nicht.</li>
+      <li>Ein JSON-Interface für Zugdetails ist in Arbeit.</li>
       <li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
         angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
         <span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
