@@ -2,6 +2,10 @@
     <div>
 %   if ($departure->{train_no} or $departure->{train_line}) {
       <span class="train-line <%= $linetype %>"><%= $departure->{train_type} %>
+%     if ($linetype eq 'fern' and $icetype and $icetype->[1]) {
+        <span class="trainsubtype" aria-hidden="true"><%= $icetype->[1] %></span>
+%     }
+
       <%= $departure->{train_line} // $departure->{train_no} %></span>
       <span class="train-no"><%= $departure->{train_line} ? $departure->{train_no} : q{} %></span>
 %   }
