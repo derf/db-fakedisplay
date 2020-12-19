@@ -225,12 +225,12 @@ Bitte eine Station aus der Liste auswählen</div>
 
 <div class="container">
 <div class="about">
-<a href="_about">db-infoscreen</a>
-v<%= stash('version') // '???' %>
-<br/>
-<a href="_datenschutz" rel="nofollow">Datenschutzerklärung</a>
+<a href="_about">Über DBF</a>
+·
+<a href="_datenschutz" rel="nofollow">Datenschutz</a>
 ·
 <a href="_impressum" rel="nofollow">Impressum</a><br/>
+Version <%= stash('version') // '???' %>
 </div> <!-- about -->
 </div> <!-- container -->
 % }

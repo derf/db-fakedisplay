@@ -1,28 +1,41 @@
 <div class="container">
 	<p>
-		<a href="https://finalrewind.org/projects/db-fakedisplay/">db-infoscreen</a>
-		v<%= stash('version') // '???' %><br/>
-		Entwickelt von <a href="https://twitter.com/derfnull">@derfnull</a><br/>
-		db-infoscreen ist <a href="https://github.com/derf/db-fakedisplay">quelloffene Software</a> (Open Source).<br/>
-		<br/>
-		Backends:<br/>
-		Abfahrtstafel: <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		DBF ist ein inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten mit
+		dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
+		Der <a
+		href="https://github.com/derf/db-fakedisplay">Quelltext</a>
+		steht unter der <a
+		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">2-Clause
+		BSD-Lizenz</a> als Open Source zur Verfügung. © 2020 <a
+		href="https://finalrewind.org/me">Daniel Friesel</a> / <a href="https://twitter.com/derfnull">@derfnull</a>.
+	</p>
+	<p>
+		Das Projekt begann als „db-fakedisplay“ (kurz dbf) zur <a href="/Dortmund
+		Hbf?mode=multi">Nachahmung von Bahnhofs-Abfahrtstafeln</a>. Inzwischen
+		liegt der Fokus auf dem <a href="/Dortmund Hbf">App/Infoscreen-Modus</a>
+		und die Abkürzung DBF hat keine Bedeutung mehr.
+	</p>
+	<p>
+		Diese Installation verwendet die DBF-Version
+		<b><%= stash('version') // '???' %></b> und greift auf die folgenden Backends
+		zu:<br/>
+		• Abfahrtstafel: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		Abfahrtstafel (Legacy): <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		• Abfahrtstafel (Legacy): DB HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
-		Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS<br/>
-		Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
+		• Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS via <a href="https://git.finalrewind.org/db-fakedisplay/tree/lib/DBInfoscreen/Helper/HAFAS.pm">Helper/HAFAS.pm</a><br/>
+		• Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		% if ($Travel::Status::DE::DBWagenreihung::VERSION) {
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
 		% }
 		<br/>
-		Karte: <a href="https://v5.db.transport.rest/">transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
-		Zugauslastung: <a href="https://docs.marudor.de/">marudor.de</a><br/>
+		• Karte: <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
+		• Zugauslastung: <a href="https://docs.marudor.de/">marudor.de</a><br/>
 		<br/>
-		Verwendete Daten:<br/>
-		Grundlage der <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Wagengattungen</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
+		Sie nutzt zusätzlich die folgenden Open Data-Ressourcen:<br/>
+		• <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Zugbildungsplan</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
 		<br/>
-		Grundlage der <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
+		• <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
 		© DB Station&amp;Service AG,
 		Europaplatz 1,
 		10557 Berlin, lizensiert unter CC-BY 4.0<br/>
