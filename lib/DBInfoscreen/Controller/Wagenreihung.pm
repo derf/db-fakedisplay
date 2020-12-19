@@ -49,14 +49,17 @@ sub zugbildung_db {
 	my $pos = 0;
 	for my $wagon (@wagons) {
 		$wagon->{position}{start_percent} = $pos;
-		$wagon->{position}{end_percent}   = $pos + 4;
-		$pos += 4;
+		$wagon->{position}{end_percent}   = $pos + 5;
+		$pos += 5;
 	}
+
+	my $train_type = $details->{raw};
+	$train_type =~ s{ - .* }{}x;
 
 	$self->render(
 		'zugbildung_db',
 		wr_error  => undef,
-		title     => $details->{raw} . ' ' . $train_no,
+		title     => $train_type . ' ' . $train_no,
 		zb        => $details,
 		train_no  => $train_no,
 		wagons    => [@wagons],
