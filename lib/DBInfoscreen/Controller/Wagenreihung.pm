@@ -6,6 +6,8 @@ package DBInfoscreen::Controller::Wagenreihung;
 
 use Mojo::Base 'Mojolicious::Controller';
 
+use utf8;
+
 use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::DBWagenreihung::Wagon;
 
@@ -24,11 +26,12 @@ sub zugbildung_db {
 
 	my @wagons;
 
-	for my $wagon_number ( sort { $a <=> $b } keys %{ $details->{wagon} } ) {
+	for my $wagon ( @{ $details->{wagons} } ) {
+		my ( $wagon_type, $wagon_number ) = @{$wagon};
 		my %wagon = (
 			fahrzeugnummer      => "",
-			fahrzeugtyp         => $details->{wagon}{$wagon_number},
-			kategorie           => "",
+			fahrzeugtyp         => $wagon_type,
+			kategorie           => $wagon_type =~ m{^[0-9.]+$} ? 'LOK' : '',
 			train_no            => $train_no,
 			wagenordnungsnummer => $wagon_number,
 			positionamhalt      => {
@@ -56,10 +59,15 @@ sub zugbildung_db {
 	my $train_type = $details->{raw};
 	$train_type =~ s{ - .* }{}x;
 
+	my $route_start = $details->{route}{start} // $details->{route}{preStart};
+	my $route_end   = $details->{route}{end}   // $details->{route}{postEnd};
+	my $route       = "${route_start} → ${route_end}";
+
 	$self->render(
 		'zugbildung_db',
 		wr_error  => undef,
 		title     => $train_type . ' ' . $train_no,
+		route     => $route,
 		zb        => $details,
 		train_no  => $train_no,
 		wagons    => [@wagons],

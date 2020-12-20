@@ -7,9 +7,7 @@
   </div>
 % }
 <div class="container">
-  <div style="text-align: center;">
-%=  $zb->{route}
-  </div>
+  <div style="text-align: center;"><%= $route %></div>
   Vorgesehener Zugtyp: <%= $zb->{type} %>
 </div>
 <div class="container">
@@ -21,7 +19,7 @@
     <div>
       Quelle: <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">DB Zugbildungsplan</a>
       mit <a href="https://github.com/derf/db-wagenreihung-to-json">automatisierter Nachbearbeitung</a>.<br/>
-      Fehler sind möglich.<br/>
+      Nachbearbeitungsbedingte Fehler sind wahrscheinlich.<br/>
       Daten © 2020 DB Fernverkehr AG, lizensiert unter CC-BY 4.0.
     </div>
 

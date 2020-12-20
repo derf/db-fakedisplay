@@ -116,7 +116,7 @@
         <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">train</i> Wagenreihung
         </a>
 %     }
-%     elsif ($icetype and $icetype->[2] and $linetype eq 'fern') {
+%     elsif ($icetype and $icetype->[2] and ($linetype eq 'fern' or $departure->{train_type} =~ m{NJ})) {
         <a class="smallbutton" href="/wr/<%= $departure->{train_no} %>"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></a>
 %     }
 %     elsif ($icetype and $icetype->[1] and $linetype eq 'fern') {
@@ -227,5 +227,45 @@
           </li>
 %       }
       </ul> <!-- mroute -->
+%   }
+%   if ($details and not $departure->{arrival}) {
+%     if (my $s = $details->{route}{preStart}) {
+        Zug wird voraussichtlich aus <%= $s %> eingesetzt.<br/><br/>
+%     }
+%     if ($details->{cycle}{from}) {
+        Bildung möglicherweise aus
+        <ul>
+%         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{from} // [] }) {
+%           my $train = app->train_details_db->{$train_no};
+%           my $tt = $train->{type} // $train->{raw} // 'Zug';
+%           $tt =~ s{ .*|[0-9]}{};
+            <li><%= $tt %> <%= $train_no %>
+%             if ($train->{route}{start} and $train->{route}{end}) {
+                <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
+%             }
+            </li>
+%         }
+        </ul>
+%     }
+%   }
+%   elsif ($details and not $departure->{departure}) {
+%     if (my $e = $details->{route}{postEnd}) {
+        Zug wird voraussichtlich in <%= $e %> abgestellt.<br/><br/>
+%     }
+%     if ($details->{cycle}{to}) {
+        Weiterfahrt möglicherweise als
+        <ul>
+%         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{to} // [] }) {
+%           my $train = app->train_details_db->{$train_no};
+%           my $tt = $train->{type} // $train->{raw} // 'Zug';
+%           $tt =~ s{ .*|[0-9]}{};
+            <li><%= $tt %> <%= $train_no %>
+%             if ($train->{route}{start} and $train->{route}{end}) {
+                <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
+%             }
+            </li>
+%         }
+        </ul>
+%     }
 %   }
     </div> <!-- mfooter -->

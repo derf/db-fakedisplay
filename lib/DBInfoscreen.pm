@@ -39,7 +39,8 @@ sub startup {
 			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
 			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 		},
-		version => $ENV{DBFAKEDISPLAY_VERSION} // qx{git describe --dirty} // '???',
+		version => $ENV{DBFAKEDISPLAY_VERSION} // qx{git describe --dirty}
+		  // '???',
 	);
 
 	chomp $self->config->{version};
@@ -103,10 +104,11 @@ sub startup {
 			my $ice_type_map = JSON->new->utf8->decode(
 				scalar read_file('share/zugbildungsplan.json') );
 			my $ret;
-			while ( my ( $k, $v ) = each %{$ice_type_map} ) {
+			while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
 				if ( $v->{type} ) {
 					$ret->{$k}
-					  = [ $v->{type}, $v->{short}, exists $v->{wagon} ? 1 : 0 ];
+					  = [ $v->{type}, $v->{short},
+						exists $v->{wagons} ? 1 : 0 ];
 				}
 			}
 			return $ret;
@@ -116,7 +118,7 @@ sub startup {
 	$self->attr(
 		train_details_db => sub {
 			return JSON->new->utf8->decode(
-				scalar read_file('share/zugbildungsplan.json') );
+				scalar read_file('share/zugbildungsplan.json') )->{train};
 		}
 	);
 

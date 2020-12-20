@@ -673,7 +673,9 @@ sub render_train {
 				departure => $departure,
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
-				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
+				details =>
+				  $self->app->train_details_db->{ $departure->{train_no} },
+				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link     => '/' . $station_name,
 			);
