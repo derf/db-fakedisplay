@@ -11,5 +11,5 @@
   <span>λ=<%= $attr->{brakingPercentage} %></span>
 % }
 % if ($attr->{station} and $with_station) {
-  <span><%= $attr->{station} %></span>
+  <span>ab <%= $attr->{station} %></span>
 % }
