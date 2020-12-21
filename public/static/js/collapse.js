@@ -94,7 +94,11 @@ function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function() {
 		const trainElem = $(this);
 		const station = $('div.app').data('station');
-		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station'));
+		var suffix = '';
+		if (window.location.href.includes('detailed=1')) {
+			suffix = '?detailed=1';
+		}
+		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
 		dbf_show_moreinfo(trainElem, false);
 	});
 }

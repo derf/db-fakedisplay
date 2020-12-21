@@ -228,7 +228,24 @@
 %       }
       </ul> <!-- mroute -->
 %   }
-%   if ($details and not $departure->{arrival}) {
+%   if (param('detailed') and $details->{commonAttr}) {
+%     if ($details->{attrVariants} and (not $details->{commonAttr}{vmax} or not $details->{commonAttr}{brakingPercentage})) {
+        <div class="db-attr">
+          Attribute:
+          <ul>
+%           for my $attr (@{$details->{attrVariants} // [] }) {
+              <li><%= include '_train_attr', attr => $attr, with_station => 1 %></li>
+%           }
+          </ul>
+        </div>
+%     }
+%     else {
+        <div class="db-attr">
+%=        include '_train_attr', attr => $details->{commonAttr}, with_station => 0
+        </div>
+%     }
+%   }
+%   if (param('detailed') and $details and not $departure->{arrival}) {
 %     if (my $s = $details->{route}{preStart}) {
         Zug wird voraussichtlich aus <%= $s %> eingesetzt.<br/><br/>
 %     }
@@ -237,7 +254,7 @@
         <ul>
 %         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{from} // [] }) {
 %           my $train = app->train_details_db->{$train_no};
-%           my $tt = $train->{type} // $train->{raw} // 'Zug';
+%           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
             <li><%= $tt %> <%= $train_no %>
 %             if ($train->{route}{start} and $train->{route}{end}) {
@@ -248,7 +265,7 @@
         </ul>
 %     }
 %   }
-%   elsif ($details and not $departure->{departure}) {
+%   elsif (param('detailed') and $details and not $departure->{departure}) {
 %     if (my $e = $details->{route}{postEnd}) {
         Zug wird voraussichtlich in <%= $e %> abgestellt.<br/><br/>
 %     }
@@ -257,7 +274,7 @@
         <ul>
 %         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{to} // [] }) {
 %           my $train = app->train_details_db->{$train_no};
-%           my $tt = $train->{type} // $train->{raw} // 'Zug';
+%           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
             <li><%= $tt %> <%= $train_no %>
 %             if ($train->{route}{start} and $train->{route}{end}) {

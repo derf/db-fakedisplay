@@ -379,6 +379,14 @@ div.app .moreinfo .mroute .cancelled-stop {
 	color: $cancelled-stop-color;
 }
 
+div.app .moreinfo .db-attr {
+	margin-bottom: 1em;
+
+	span {
+		margin-right: 0.5em;
+	}
+}
+
 div.app li .dest {
 	background-color: transparent;
 	font-size:4em;

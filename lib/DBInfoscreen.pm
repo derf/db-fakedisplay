@@ -106,9 +106,10 @@ sub startup {
 			my $ret;
 			while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
 				if ( $v->{type} ) {
-					$ret->{$k}
-					  = [ $v->{type}, $v->{short},
-						exists $v->{wagons} ? 1 : 0 ];
+					$ret->{$k} = [
+						$v->{type}, $v->{shortType},
+						exists $v->{wagons} ? 1 : 0
+					];
 				}
 			}
 			return $ret;

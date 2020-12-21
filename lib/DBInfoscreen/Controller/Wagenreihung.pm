@@ -27,8 +27,9 @@ sub zugbildung_db {
 	my @wagons;
 
 	for my $wagon ( @{ $details->{wagons} } ) {
-		my ( $wagon_type, $wagon_number ) = @{$wagon};
-		my %wagon = (
+		my $wagon_type   = $wagon->{type};
+		my $wagon_number = $wagon->{number};
+		my %wagon        = (
 			fahrzeugnummer      => "",
 			fahrzeugtyp         => $wagon_type,
 			kategorie           => $wagon_type =~ m{^[0-9.]+$} ? 'LOK' : '',
@@ -56,7 +57,7 @@ sub zugbildung_db {
 		$pos += 5;
 	}
 
-	my $train_type = $details->{raw};
+	my $train_type = $details->{rawType};
 	$train_type =~ s{ - .* }{}x;
 
 	my $route_start = $details->{route}{start} // $details->{route}{preStart};
