@@ -1,5 +1,5 @@
 % if ($attr->{series}) {
-  <span>BR <%= $details->{commonAttr}{series} %></span>
+  <span>BR <%= $attr->{series} %></span>
 % }
 % if ($attr->{length}) {
    <span>⇤ <%= $attr->{length} %>m ⇥</span>
