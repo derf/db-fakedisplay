@@ -1,5 +1,9 @@
 % if ($attr->{series}) {
-  <span>BR <%= $attr->{series} %></span>
+  <span>BR <%= $attr->{series} %>
+%   if ($attr->{series2}) {
+      + <%= $attr->{series2} %>
+%   }
+  </span>
 % }
 % if ($attr->{length}) {
    <span>⇤ <%= $attr->{length} %>m ⇥</span>
