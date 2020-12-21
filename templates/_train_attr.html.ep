@@ -1,0 +1,15 @@
+% if ($attr->{series}) {
+  <span>BR <%= $details->{commonAttr}{series} %></span>
+% }
+% if ($attr->{length}) {
+   <span>⇤ <%= $attr->{length} %>m ⇥</span>
+% }
+% if ($attr->{vmax}) {
+  <span><%= $attr->{vmax} %> km/h</span>
+% }
+% if ($attr->{brakingPercentage}) {
+  <span>λ=<%= $attr->{brakingPercentage} %></span>
+% }
+% if ($attr->{station} and $with_station) {
+  <span><%= $attr->{station} %></span>
+% }
