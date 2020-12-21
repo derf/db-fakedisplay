@@ -678,7 +678,7 @@ sub render_train {
 				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link =>
-				  $self->url_with( 'station', station => $station_name ),
+				  $self->url_for( 'station', station => $station_name)->query({detailed => $self->param('detailed')}),
 			);
 		}
 	)->wait;
@@ -1237,7 +1237,7 @@ sub handle_result {
 				  or $template eq 'multi'
 			),
 			force_mobile => ( $template eq 'app' ),
-			nav_link => $self->url_with( 'station', station => $station_name ),
+			nav_link => $self->url_for( 'station', station => $station_name)->query({detailed => $self->param('detailed')}),
 		);
 	}
 	return;
