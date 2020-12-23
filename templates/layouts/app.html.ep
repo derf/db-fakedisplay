@@ -198,7 +198,7 @@ Bitte eine Station aus der Liste auswählen</div>
       <div class="desc">
         %= check_box 'detailed' => 1, id => 'id_detailed'
         <label for="id_detailed">
-          Mehr Details (Zugnummern und Ankunftszeiten) anzeigen
+          Mehr Details anzeigen (u.a. Zugnummern und Zugbildungsplan)
         </label>
       </div>
     </div>
