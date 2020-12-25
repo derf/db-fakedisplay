@@ -4,9 +4,29 @@
 			<%= $wref->{s} %>: Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
 		</p>
 	% }
+	% if (defined $wref->{d}) {
+		<div style="text-align: center;">
+			% if ($wref->{d} == 100) {
+				<i class="material-icons">arrow_back</i>
+			% }
+			% else {
+				<i class="material-icons">arrow_forward</i>
+			% }
+		</div>
+	% }
 	<div>
 		<a href="<%= $wagon_file %>"><img src="<%= $wagon_file %>" style="width: 100%;"></a>
 	</div>
+	% if (defined $wref->{d}) {
+		<div style="text-align: center;">
+			% if ($wref->{d} == 100) {
+				<i class="material-icons">arrow_back</i>
+			% }
+			% else {
+				<i class="material-icons">arrow_forward</i>
+			% }
+		</div>
+	% }
 	<p class="copyright">
 		Abbildung © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG,
 		lizensiert unter CC-BY-4.0
