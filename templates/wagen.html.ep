@@ -1,15 +1,12 @@
 <div class="container">
+	% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
+		<p>
+			<%= $wref->{s} %>: Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+		</p>
+	% }
 	<div>
 		<a href="<%= $wagon_file %>"><img src="<%= $wagon_file %>" style="width: 100%;"></a>
 	</div>
-	<p>
-		% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
-			Position in <%= $wref->{s} %>: Gleis <%= $wref->{p} %> Abschnitt <%= $wref->{ws} %>
-		% }
-		% elsif ($wref->{s} and $wref->{p}) {
-			<%= $wref->{s} %> Gleis <%= $wref->{p} %>
-		% }
-	</p>
 	<p class="copyright">
 		Abbildung © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG,
 		lizensiert unter CC-BY-4.0
