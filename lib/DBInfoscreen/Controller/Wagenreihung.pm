@@ -119,8 +119,9 @@ sub wagenreihung {
 			}
 
 			my $wref = {
-				d  => $wr->direction,
-				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
+
+				#d  => $wr->direction,
+				#e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
 				tt => $wr->train_type,
 				tn => $train,
 				s  => $wr->station_name,
