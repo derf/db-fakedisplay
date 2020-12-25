@@ -36,6 +36,11 @@ div.content {
 	margin: 0;
 }
 
+.copyright {
+	margin-top: 1em;
+	color: $fg3;
+}
+
 .wagonorder {
 	position: relative;
 	width: 100%;
@@ -98,6 +103,10 @@ div.content {
 	display: inline-block;
 	width: 5em;
 	color: $fg2;
+}
+
+.wagonorder .details a.type {
+	color: $link-color;
 }
 
 .wagonorder .details .uicunknown {

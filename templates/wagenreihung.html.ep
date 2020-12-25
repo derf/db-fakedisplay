@@ -60,7 +60,7 @@
 %       }
 %     }
 %     for my $wagon ($wr->wagons) {
-%=      include '_wagon', direction => $wr->direction, wagon => $wagon;
+%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_subtype // 'IC', wref => $wref;
 %     }
       </div>
 <!--  <div>

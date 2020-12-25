@@ -5,6 +5,8 @@ package DBInfoscreen::Controller::Wagenreihung;
 # SPDX-License-Identifier: BSD-2-Clause
 
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::JSON qw(decode_json encode_json);
+use Mojo::Util qw(b64_encode b64_decode);
 
 use utf8;
 
@@ -99,6 +101,7 @@ sub wagenreihung {
 					wr_error  => scalar $@,
 					train_no  => $train,
 					wr        => undef,
+					wref      => undef,
 					hide_opts => 1,
 				);
 			}
@@ -114,6 +117,14 @@ sub wagenreihung {
 				}
 			}
 
+			my $wref = {
+				tt => $wr->train_type,
+				tn => $train,
+				s  => $wr->station_name,
+				p  => $wr->platform
+			};
+			$wref = b64_encode( encode_json($wref) );
+
 			$self->render(
 				'wagenreihung',
 				wr_error => undef,
@@ -121,6 +132,7 @@ sub wagenreihung {
 					map { $wr->train_type . ' ' . $_ } $wr->train_numbers ),
 				train_no  => $train,
 				wr        => $wr,
+				wref      => $wref,
 				hide_opts => 1,
 			);
 		}
@@ -133,11 +145,60 @@ sub wagenreihung {
 				wr_error  => scalar $err,
 				train_no  => $train,
 				wr        => undef,
+				wref      => undef,
 				hide_opts => 1,
 			);
 		}
 	)->wait;
 
+}
+
+sub wagen {
+	my ($self)   = @_;
+	my $wagon_id = $self->stash('wagon');
+	my $wagon_no = $self->param('n');
+	my $section  = $self->param('s');
+	my $wref     = $self->param('r');
+
+	if ( not $self->app->dbdb_wagon->{$wagon_id} ) {
+		$self->render(
+			'not_found',
+			message   => "Keine Daten zu Wagentyp \"${wagon_id}\" vorhanden",
+			hide_opts => 1
+		);
+		return;
+	}
+
+	eval { $wref = decode_json( b64_decode($wref) ); };
+	if ($@) {
+		$wref = {};
+	}
+
+	$wref->{wn} = $wagon_no;
+	$wref->{ws} = $section;
+
+	my $wagon_file
+	  = "https://lib.finalrewind.org/dbdb/db_wagen/${wagon_id}.png";
+
+	my $title = "Wagen $wagon_id";
+
+	if ( $wref->{tt} and $wref->{tn} ) {
+		$title = sprintf( '%s %s', $wref->{tt}, $wref->{tn} );
+		if ($wagon_no) {
+			$title .= " Wagen $wagon_no";
+		}
+		else {
+			$title .= " Wagen $wagon_id";
+		}
+	}
+
+	$self->render(
+		'wagen',
+		title      => $title,
+		wagon_file => $wagon_file,
+		wref       => $wref,
+		hide_opts  => 1,
+	);
 }
 
 1;

@@ -123,6 +123,13 @@ sub startup {
 		}
 	);
 
+	$self->attr(
+		dbdb_wagon => sub {
+			return JSON->new->utf8->decode(
+				scalar read_file('share/dbdb_wagen.json') );
+		}
+	);
+
 	$self->helper(
 		hafas => sub {
 			my ($self) = @_;
@@ -162,6 +169,32 @@ sub startup {
 				user_agent     => $self->ua,
 				version        => $self->config->{version},
 			);
+		}
+	);
+
+	$self->helper(
+		wagon_image => sub {
+			my ( $self, $train_type, $wagon_type, $uic ) = @_;
+			my $ret;
+			if (    $train_type =~ m{IC(?!E)}
+				and $wagon_type
+				=~ m{ ^ [AB] R? k? [ipv] m m? b? d? s? z f? $ }x )
+			{
+				$ret = $wagon_type;
+			}
+			elsif ( not $uic ) {
+				return;
+			}
+			elsif ( $train_type =~ m{ICE [12]} and $wagon_type !~ m{^I} ) {
+				$ret = substr( $uic, 5, 4 );
+			}
+			elsif ( $train_type =~ m{ICE 4} ) {
+				$ret = substr( $uic, 4, 5 );
+			}
+			if ( $ret and $self->app->dbdb_wagon->{$ret} ) {
+				return $ret;
+			}
+			return;
 		}
 	);
 
@@ -418,6 +451,7 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 	$r->get('/wr/:train')->to('wagenreihung#zugbildung_db');
+	$r->get('/w/:wagon')->to('wagenreihung#wagen');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');

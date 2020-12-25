@@ -13,7 +13,7 @@
 <div class="container">
   <div class="wagonorder">
 %   for my $wagon (@{$wagons // []}) {
-%=    include '_wagon', direction => undef, wagon => $wagon;
+%=    include '_wagon', direction => undef, wagon => $wagon, type => $zb->{type}, wref => '';
 %   }
     </div>
     <div>

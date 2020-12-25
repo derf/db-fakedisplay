@@ -50,9 +50,14 @@
   </div>
   <div class="details" style="
   top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
-    <span class="type">
-%=    $wagon->type
-    </span>
+%   if (my $img = wagon_image($type, $wagon->type, $wagon->uic_id)) {
+      <a class="type" href="/w/<%= $img %>?n=<%= $wagon->number // '' %>&amp;s=<%= $wagon->section %>&amp;r=<%= $wref %>"><%= $wagon->type %></a>
+%   }
+%   else {
+      <span class="type">
+%=      $wagon->type
+      </span>
+%   }
 %   my $uic_id = $wagon->uic_id;
 %   if (length($uic_id) != 12) {
       <span class="uicunknown"><%= $uic_id %></span>
