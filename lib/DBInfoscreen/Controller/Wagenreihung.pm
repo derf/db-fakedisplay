@@ -82,6 +82,7 @@ sub wagenreihung {
 	my ($self)    = @_;
 	my $train     = $self->stash('train');
 	my $departure = $self->stash('departure');
+	my $exit_side = $self->param('e');
 
 	$self->render_later;
 
@@ -119,6 +120,7 @@ sub wagenreihung {
 
 			my $wref = {
 				d  => $wr->direction,
+				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
 				tt => $wr->train_type,
 				tn => $train,
 				s  => $wr->station_name,
@@ -191,6 +193,24 @@ sub wagen {
 		else {
 			$title .= " Wagen $wagon_id";
 		}
+	}
+
+	if ( defined $wref->{d} and $wref->{e} ) {
+		if ( $wref->{d} == 0 and $wref->{e} eq 'l' ) {
+			$wref->{e} = 'u';
+		}
+		elsif ( $wref->{d} == 0 and $wref->{e} eq 'r' ) {
+			$wref->{e} = 'd';
+		}
+		elsif ( $wref->{d} == 100 and $wref->{e} eq 'l' ) {
+			$wref->{e} = 'd';
+		}
+		elsif ( $wref->{d} == 100 and $wref->{e} eq 'r' ) {
+			$wref->{e} = 'u';
+		}
+	}
+	else {
+		$wref->{e} = '';
 	}
 
 	$self->render(

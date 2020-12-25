@@ -6,7 +6,7 @@
 	% }
 	% if (defined $wref->{d}) {
 		<div style="text-align: center;">
-			% if ($wref->{d} == 100) {
+			% if ($wref->{d} == 0) {
 				<i class="material-icons">arrow_back</i>
 			% }
 			% else {
@@ -14,12 +14,20 @@
 			% }
 		</div>
 	% }
-	<div>
+	% if ($wref->{e} eq 'u') {
+		<div style="float: left;"><i class="material-icons">arrow_upward</i></div>
+		<div style="float: right;"><i class="material-icons">arrow_upward</i></div>
+	% }
+	<div style="clear: both;">
 		<a href="<%= $wagon_file %>"><img src="<%= $wagon_file %>" style="width: 100%;"></a>
 	</div>
+	% if ($wref->{e} eq 'd') {
+		<div style="float: left;"><i class="material-icons">arrow_downward</i></div>
+		<div style="float: right;"><i class="material-icons">arrow_downward</i></div>
+	% }
 	% if (defined $wref->{d}) {
 		<div style="text-align: center;">
-			% if ($wref->{d} == 100) {
+			% if ($wref->{d} == 0) {
 				<i class="material-icons">arrow_back</i>
 			% }
 			% else {

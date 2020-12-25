@@ -113,7 +113,7 @@
         <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %     }
 %     if ($departure->{wr_link}) {
-        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>"><i class="material-icons" aria-hidden="true">train</i> Wagenreihung
+        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> Wagenreihung
         </a>
 %     }
 %     elsif ($icetype and $icetype->[2] and ($linetype eq 'fern' or $departure->{train_type} =~ m{NJ})) {
