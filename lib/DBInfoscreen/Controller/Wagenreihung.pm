@@ -230,16 +230,16 @@ sub wagen {
 
 	if ( defined $wref->{d} and $wref->{e} ) {
 		if ( $wref->{d} == 0 and $wref->{e} eq 'l' ) {
-			$wref->{e} = 'u';
+			$wref->{e} = 'd';
 		}
 		elsif ( $wref->{d} == 0 and $wref->{e} eq 'r' ) {
-			$wref->{e} = 'd';
+			$wref->{e} = 'u';
 		}
 		elsif ( $wref->{d} == 100 and $wref->{e} eq 'l' ) {
-			$wref->{e} = 'd';
+			$wref->{e} = 'u';
 		}
 		elsif ( $wref->{d} == 100 and $wref->{e} eq 'r' ) {
-			$wref->{e} = 'u';
+			$wref->{e} = 'd';
 		}
 	}
 	else {
