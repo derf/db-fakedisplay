@@ -107,6 +107,14 @@ sub wagenreihung {
 				);
 			}
 
+			my $wref = {
+				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
+				tt => $wr->train_type,
+				tn => $train,
+				s  => $wr->station_name,
+				p  => $wr->platform
+			};
+
 			if ( $wr->has_bad_wagons ) {
 
 				# create fake positions as the correct ones are not available
@@ -117,16 +125,40 @@ sub wagenreihung {
 					$pos += 4;
 				}
 			}
+			elsif ( defined $wr->direction and scalar $wr->wagons > 2 ) {
 
-			my $wref = {
+				# wagenlexikon images only know one orientation. They assume
+				# that the second class (i.e., the wagon with the lowest
+				# wagon number) is in the leftmost carriage(s). We define the
+				# wagon with the lowest start_percent value to be leftmost
+				# and invert the direction passed on to $wref if it is not
+				# the wagon with the lowest wagon number.
 
-				#d  => $wr->direction,
-				#e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
-				tt => $wr->train_type,
-				tn => $train,
-				s  => $wr->station_name,
-				p  => $wr->platform
-			};
+				my @wagons = $wr->wagons;
+
+				# skip first wagon as it may be a locomotive
+				my $wn1 = $wagons[1]->number;
+				my $wn2 = $wagons[2]->number;
+				my $wp1 = $wagons[1]{position}{start_percent};
+				my $wp2 = $wagons[2]{position}{start_percent};
+
+				if ( $wn1 =~ m{^\d+$} and $wn2 =~ m{^\d+$} ) {
+
+                   # We need to perform normalization in two cases:
+                   # * wagon 1 is leftmost and its number is higher than wagon 2
+                   # * wagon 1 is rightmost and its number is lower than wagon 2
+                   #   (-> the leftmost wagon has the highest number)
+					if (   ( $wp1 < $wp2 and $wn1 > $wn2 )
+						or ( $wp1 > $wp2 and $wn1 < $wn2 ) )
+					{
+						$wref->{d} = 100 - $wr->direction;
+					}
+					else {
+						$wref->{d} = $wr->direction;
+					}
+				}
+			}
+
 			$wref = b64_encode( encode_json($wref) );
 
 			$self->render(
