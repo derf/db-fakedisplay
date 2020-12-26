@@ -182,6 +182,9 @@ sub startup {
 			{
 				$ret = $wagon_type;
 			}
+			elsif ( $train_type =~ m{IC2 Twindexx} ) {
+				$ret = $wagon_type;
+			}
 			elsif ( not $uic ) {
 				return;
 			}
@@ -203,6 +206,9 @@ sub startup {
 			}
 			elsif ( $train_type =~ m{ICE T} and substr( $uic, 5, 3 ) eq '415' )
 			{
+				$ret = substr( $uic, 5, 4 );
+			}
+			elsif ( $train_type =~ m{IC2 KISS} ) {
 				$ret = substr( $uic, 5, 4 );
 			}
 			if ( $ret and $self->app->dbdb_wagon->{$ret} ) {
