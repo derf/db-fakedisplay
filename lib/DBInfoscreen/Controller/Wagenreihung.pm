@@ -134,26 +134,49 @@ sub wagenreihung {
 				# and invert the direction passed on to $wref if it is not
 				# the wagon with the lowest wagon number.
 
+				# Note that we need to check both the first two and the last two
+				# wagons as the train may consist of several wings. If their
+				# order differs, we do not show a direction, as we do not
+				# handle that case yet.
+
 				my @wagons = $wr->wagons;
 
-				# skip first wagon as it may be a locomotive
-				my $wn1 = $wagons[1]->number;
-				my $wn2 = $wagons[2]->number;
-				my $wp1 = $wagons[1]{position}{start_percent};
-				my $wp2 = $wagons[2]{position}{start_percent};
+				# skip first/last wagon as it may be a locomotive
+				my $wna1 = $wagons[1]->number;
+				my $wna2 = $wagons[2]->number;
+				my $wnb1 = $wagons[-3]->number;
+				my $wnb2 = $wagons[-2]->number;
+				my $wpa1 = $wagons[1]{position}{start_percent};
+				my $wpa2 = $wagons[2]{position}{start_percent};
+				my $wpb1 = $wagons[-3]{position}{start_percent};
+				my $wpb2 = $wagons[-2]{position}{start_percent};
 
-				if ( $wn1 =~ m{^\d+$} and $wn2 =~ m{^\d+$} ) {
+				if (    $wna1 =~ m{^\d+$}
+					and $wna2 =~ m{^\d+$}
+					and $wnb1 =~ m{^\d+$}
+					and $wnb2 =~ m{^\d+$} )
+				{
 
                    # We need to perform normalization in two cases:
                    # * wagon 1 is leftmost and its number is higher than wagon 2
                    # * wagon 1 is rightmost and its number is lower than wagon 2
                    #   (-> the leftmost wagon has the highest number)
-					if (   ( $wp1 < $wp2 and $wn1 > $wn2 )
-						or ( $wp1 > $wp2 and $wn1 < $wn2 ) )
+
+					# However, if wpa/wna und wpb/wnb do not match, we have a
+					# winged train with different normalization requirements
+					# in its wings. We do not handle that case yet.
+					if ( ( $wna1 <=> $wna2 ) != ( $wnb1 <=> $wnb2 ) ) {
+
+						# unhandled. Do not set $wref->{d}.
+					}
+					elsif (( $wpa1 < $wpa2 and $wna1 > $wna2 )
+						or ( $wpa1 > $wpa2 and $wna1 < $wna2 ) )
 					{
+						# perform normalization
 						$wref->{d} = 100 - $wr->direction;
 					}
 					else {
+						# no normalization required
 						$wref->{d} = $wr->direction;
 					}
 				}
