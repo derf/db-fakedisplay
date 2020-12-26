@@ -191,11 +191,16 @@ sub startup {
 			elsif ( $train_type =~ m{ICE [12]} and $wagon_type !~ m{^I} ) {
 				$ret = substr( $uic, 5, 4 );
 			}
+			elsif ( $train_type =~ m{ICE 3 403.1} ) {
+				$ret = '31_' . substr( $uic, 5, 4 );
+			}
+			elsif ( $train_type =~ m{ICE 3 403.2} ) {
+				$ret = '32_' . substr( $uic, 5, 4 );
+			}
 			elsif ( $train_type =~ m{ICE 3 Redesign} ) {
 				$ret = '3r_' . substr( $uic, 5, 4 );
 			}
-			elsif ( $train_type =~ m{ICE 3} and substr( $uic, 5, 3 ) eq '406' )
-			{
+			elsif ( $train_type =~ m{ICE 3 406} ) {
 				$ret = '3_' . substr( $uic, 5, 4 );
 			}
 			elsif ( $train_type eq 'ICE 3 Velaro' ) {
@@ -204,8 +209,13 @@ sub startup {
 			elsif ( $train_type =~ m{ICE 4} ) {
 				$ret = substr( $uic, 4, 5 );
 			}
-			elsif ( $train_type =~ m{ICE T} and substr( $uic, 5, 3 ) eq '415' )
-			{
+			elsif ( $train_type =~ m{ICE T 411.1} ) {
+				$ret = 't1_' . substr( $uic, 5, 4 );
+			}
+			elsif ( $train_type =~ m{ICE T 411.2} ) {
+				$ret = 't2_' . substr( $uic, 5, 4 );
+			}
+			elsif ( $train_type =~ m{ICE T 415} ) {
 				$ret = substr( $uic, 5, 4 );
 			}
 			elsif ( $train_type =~ m{IC2 KISS} ) {
