@@ -6,8 +6,10 @@ db-infoscreen - App/Infoscreen for Railway Departures in Germany
 db-infoscreen (formerly db-fakedisplay) shows departures at german train
 stations, serving both as infoscreen / webapp and station board look-alike.
 
-Thanks to the undocumented IRIS backend, it usually has very detailed
-information about delay reasons and service limitations.
+It aims to aggregate departure and train data from different sources and
+combine them in a useful (and user-friendly) manner. It is intended both for a
+quick glance at the departure board and for public transportation geeks looking
+for details about specific trains.
 
 There's a public [db-infoscreen service on
 finalrewind.org](https://dbf.finalrewind.org/). You can also host your own
