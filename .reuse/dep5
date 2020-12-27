@@ -43,6 +43,10 @@ Files: README.md .gitignore cpanfile cpanfile.snapshot
 Copyright: 2020 Daniel Friesel
 License: CC0-1.0
 
+Files: share/dbdb_wagen.json
+Copyright: 2020 Daniel Friesel
+License: CC0-1.0
+
 Files: share/zugbildungsplan.json
 Copyright: 2020 DB Fernverkehr AG
    2020 Daniel Friesel
