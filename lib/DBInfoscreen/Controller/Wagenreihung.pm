@@ -236,8 +236,15 @@ sub wagen {
 	$wref->{wn} = $wagon_no;
 	$wref->{ws} = $section;
 
-	my $wagon_file
-	  = "https://lib.finalrewind.org/dbdb/db_wagen/${wagon_id}.png";
+	my @wagon_files
+	  = ("https://lib.finalrewind.org/dbdb/db_wagen/${wagon_id}.png");
+
+	if ( $self->app->dbdb_wagon->{"${wagon_id}_u"} ) {
+		@wagon_files = (
+			"https://lib.finalrewind.org/dbdb/db_wagen/${wagon_id}_u.png",
+			"https://lib.finalrewind.org/dbdb/db_wagen/${wagon_id}_l.png"
+		);
+	}
 
 	my $title = "Wagen $wagon_id";
 
@@ -271,10 +278,10 @@ sub wagen {
 
 	$self->render(
 		'wagen',
-		title      => $title,
-		wagon_file => $wagon_file,
-		wref       => $wref,
-		hide_opts  => 1,
+		title       => $title,
+		wagon_files => [@wagon_files],
+		wref        => $wref,
+		hide_opts   => 1,
 	);
 }
 
