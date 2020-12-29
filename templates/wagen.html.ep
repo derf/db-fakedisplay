@@ -37,6 +37,11 @@
 			% }
 		</div>
 	% }
+	% if ($wagon_data->{name}) {
+		<p>
+			<%= $wagon_data->{name} %>
+		</p>
+	% }
 	<p class="copyright" style="clear: both;">
 		Abbildung © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG,
 		lizensiert unter CC-BY-4.0

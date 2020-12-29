@@ -280,6 +280,7 @@ sub wagen {
 		'wagen',
 		title       => $title,
 		wagon_files => [@wagon_files],
+		wagon_data  => $self->app->dbdb_wagon->{$wagon_id},
 		wref        => $wref,
 		hide_opts   => 1,
 	);
