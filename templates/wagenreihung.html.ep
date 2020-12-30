@@ -67,9 +67,9 @@
       Legende: ♿ Behindertengerechte Ausstattung / 🍴 Bistro/Restaurant / 🚪 Abteile vorhanden
     </div>
 -->
-    <div style="margin-top: 1em;">
+    <p class="copyright">
       Quelle: DB Wagenreihungs-API. Angaben ohne Gewähr.
-    </div>
+    </p>
 
   </div>
 % }
