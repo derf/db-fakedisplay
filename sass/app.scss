@@ -39,6 +39,7 @@ div.content {
 .copyright {
 	margin-top: 1em;
 	color: $fg3;
+	clear: both;
 }
 
 .wagonorder {
@@ -159,6 +160,32 @@ div.content {
 
 .wagonorder .details .uiccheck::before {
 	content: "-";
+}
+
+.singlewagon {
+	.sign-left {
+		float: left;
+		padding-left: 5%;
+	}
+	.sign-right {
+		float: right;
+		padding-right: 5%;
+	}
+	.sign-center {
+		text-align: center;
+	}
+	.platform {
+		text-align: center;
+		background-color: $bg1;
+		font-weight: bold;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+	img.wagonfile {
+		width: 100%;
+		margin-top: 0.2em;
+		margin-bottom: 0.2em;
+	}
 }
 
 div.app {

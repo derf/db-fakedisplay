@@ -1,48 +1,74 @@
-<div class="container">
-	% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
+<div class="container singlewagon">
+	% if (not $wref->{e} and $wref->{s} and $wref->{p} and $wref->{ws}) {
 		<p>
-			<%= $wref->{s} %>: Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+			<%= $wref->{s} %> Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
 		</p>
 	% }
 	% if ($wref->{e} eq 'u') {
-		<div style="float: left;"><i class="material-icons">arrow_upward</i></div>
-		<div style="float: right;"><i class="material-icons">arrow_upward</i></div>
-	% }
-	% for my $wagon_file (@{$wagon_files // [] }) {
-		% if (defined $wref->{d}) {
-			<div style="text-align: center;">
-				% if ($wref->{d} == 0) {
-					<i class="material-icons">arrow_back</i>
-				% }
-				% else {
-					<i class="material-icons">arrow_forward</i>
-				% }
+		% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
+			<div class="platform">
+				<%= $wref->{s} %><br/>Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+				<div class="sign-left"><i class="material-icons">arrow_upward</i></div>
+				<div class="sign-right"><i class="material-icons">arrow_upward</i></div>
 			</div>
 		% }
+	% }
+	% elsif (defined $wref->{d} and $wref->{e} ne 'u') {
+		% if ($wref->{d} == 0) {
+			<div class="sign-left"><i class="material-icons">arrow_back</i></div>
+			<div class="sign-right"><i class="material-icons">arrow_back</i></div>
+			<div class="sign-center"><i class="material-icons">arrow_back</i></div>
+		% }
+		% else {
+			<div class="sign-left"><i class="material-icons">arrow_forward</i></div>
+			<div class="sign-right"><i class="material-icons">arrow_forward</i></div>
+			<div class="sign-center"><i class="material-icons">arrow_forward</i></div>
+		% }
+	% }
+	% for my $wagon_file (@{$wagon_files // [] }) {
+		% if ($wagon_file ne $wagon_files->[0] and defined $wref->{d}) {
+			% if ($wref->{d} == 0) {
+				<div class="sign-left"><i class="material-icons">arrow_back</i></div>
+				<div class="sign-right"><i class="material-icons">arrow_back</i></div>
+				<div class="sign-center"><i class="material-icons">arrow_back</i></div>
+			% }
+			% else {
+				<div class="sign-left"><i class="material-icons">arrow_forward</i></div>
+				<div class="sign-right"><i class="material-icons">arrow_forward</i></div>
+				<div class="sign-center"><i class="material-icons">arrow_forward</i></div>
+			% }
+		% }
 		<div style="clear: both;">
-			<a href="<%= $wagon_file %>"><img src="<%= $wagon_file %>" style="width: 100%;"></a>
+			<a href="<%= $wagon_file %>"><img class="wagonfile" src="<%= $wagon_file %>"></a>
 		</div>
 	% }
 	% if ($wref->{e} eq 'd') {
-		<div style="float: left;"><i class="material-icons">arrow_downward</i></div>
-		<div style="float: right;"><i class="material-icons">arrow_downward</i></div>
+		<div class="sign-left"><i class="material-icons">arrow_downward</i></div>
+		<div class="sign-right"><i class="material-icons">arrow_downward</i></div>
+		% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
+			<div class="platform">
+				<%= $wref->{s} %><br/>Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+			</div>
+		% }
 	% }
-	% if (defined $wref->{d}) {
-		<div style="text-align: center;">
-			% if ($wref->{d} == 0) {
-				<i class="material-icons">arrow_back</i>
-			% }
-			% else {
-				<i class="material-icons">arrow_forward</i>
-			% }
-		</div>
+	% elsif (defined $wref->{d} and $wref->{e} ne 'd') {
+		% if ($wref->{d} == 0) {
+			<div class="sign-left"><i class="material-icons">arrow_back</i></div>
+			<div class="sign-right"><i class="material-icons">arrow_back</i></div>
+			<div class="sign-center"><i class="material-icons">arrow_back</i></div>
+		% }
+		% else {
+			<div class="sign-left"><i class="material-icons">arrow_forward</i></div>
+			<div class="sign-right"><i class="material-icons">arrow_forward</i></div>
+			<div class="sign-center"><i class="material-icons">arrow_forward</i></div>
+		% }
 	% }
 	% if ($wagon_data->{name}) {
 		<p>
 			<%= $wagon_data->{name} %>
 		</p>
 	% }
-	<p class="copyright" style="clear: both;">
+	<p class="copyright">
 		Abbildung © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG,
 		lizensiert unter CC-BY-4.0
 	</p>
