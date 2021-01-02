@@ -46,120 +46,121 @@ div.content {
 	position: relative;
 	width: 100%;
 	height: 100ex;
-}
 
-.wagonorder .section {
-	position: absolute;
-	left: 1em;
-	width: 2em;
-	text-align: center;
-}
+	.section {
+		position: absolute;
+		left: 1em;
+		width: 2em;
+		text-align: center;
+	}
 
-.wagonorder .wagon {
-	position: absolute;
-	left: 3em;
-	min-width: 6em;
-	border: 1px solid $fg3;
-	padding-left: 0.2em;
-	padding-right: 0.2em;
-}
+	.wagon {
+		position: absolute;
+		left: 3em;
+		min-width: 6em;
+		border: 1px solid $fg3;
+		padding-left: 0.2em;
+		padding-right: 0.2em;
 
-.wagonorder .wagon ~ .wagon {
-	border-top: none;
-}
+		.material-icons {
+			color: $fg2;
+		}
 
-.wagonorder .firstclass {
-	background-color: $firstclass-wagon-color;
-}
+		.direction {
+			position: absolute;
+			left: 0.2em;
+			bottom: 0;
+			right: 0;
+			text-align: center;
+			color: $fg2;
+		}
+	}
 
-.wagonorder .powercar {
-	background-color: $powercar-wagon-color;
-}
+	.wagon ~ .wagon {
+		border-top: none;
+	}
 
-.wagonorder .wagon .material-icons {
-	color: $fg2;
-}
+	.firstclass {
+		background-color: $firstclass-wagon-color;
+	}
 
-.wagonorder .wagon .direction {
-	position: absolute;
-	left: 0.2em;
-	bottom: 0;
-	right: 0;
-	text-align: center;
-	color: $fg2;
-}
+	.powercar {
+		background-color: $powercar-wagon-color;
+	}
 
-.wagonorder .nondestwagon {
-	border-style: dashed;
-}
 
-.wagonorder .details {
-	position: absolute;
-	padding-top: 0.5ex;
-	left: 10em;
-	right: 0em;
-}
+	.nondestwagon {
+		border-style: dashed;
+	}
 
-.wagonorder .details .type {
-	display: inline-block;
-	width: 5em;
-	color: $fg2;
-}
+	.details {
+		position: absolute;
+		padding-top: 0.5ex;
+		left: 10em;
+		right: 0em;
 
-.wagonorder .details a.type {
-	color: $link-color;
-}
+		.type {
+			display: inline-block;
+			width: 5em;
+			color: $fg2;
+		}
 
-.wagonorder .details .uicunknown {
-	color: $fg3;
-}
+		a.type {
+			color: $link-color;
+		}
 
-.wagonorder .details .uicexchange {
-	margin-right: 0.2em;
-	color: $fg3;
-}
+		.uicunknown {
+			color: $fg3;
+		}
 
-.wagonorder .details .uiccountry {
-	margin-right: 0.2em;
-	color: $fg3;
-}
+		.uicexchange {
+			margin-right: 0.2em;
+			color: $fg3;
+		}
 
-.wagonorder .details .uic5 {
-	margin-right: 0.2em;
-	color: $fg3;
-}
+		.uiccountry {
+			margin-right: 0.2em;
+			color: $fg3;
+		}
 
-.wagonorder .details .uic56 {
-	color: $fg2;
-	font-weight: bold;
-}
+		.uic5 {
+			margin-right: 0.2em;
+			color: $fg3;
+		}
 
-.wagonorder .details .uic78 {
-	margin-right: 0.2em;
-	color: $fg2;
-	font-weight: bold;
-}
+		.uic56 {
+			color: $fg2;
+			font-weight: bold;
+		}
 
-.wagonorder .details .uic78::before {
-	content: "-";
-}
+		.uic78 {
+			margin-right: 0.2em;
+			color: $fg2;
+			font-weight: bold;
+		}
 
-.wagonorder .details .uictype {
-	margin-right: 0.2em;
-	color: $fg2;
-	font-weight: bold;
-}
+		.uic78::before {
+			content: "-";
+		}
 
-.wagonorder .details .uicno {
-	color: $fg2;
-}
+		.uictype {
+			margin-right: 0.2em;
+			color: $fg2;
+			font-weight: bold;
+		}
 
-.wagonorder .details .uiccheck {
-	color: $fg3;
-}
+		.uicno {
+			color: $fg2;
+		}
 
-.wagonorder .details .uiccheck::before {
-	content: "-";
+		.uiccheck {
+			color: $fg3;
+		}
+
+		.uiccheck::before {
+			content: "-";
+		}
+	}
 }
 
 .singlewagon {
