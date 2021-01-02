@@ -182,6 +182,22 @@ sub wagenreihung {
 				}
 			}
 
+			my $exit_dir = 'unknown';
+			if ( defined $wr->direction and $exit_side ) {
+				if ( $wr->direction == 0 and $exit_side eq 'l' ) {
+					$exit_dir = 'left';
+				}
+				elsif ( $wr->direction == 0 and $exit_side eq 'r' ) {
+					$exit_dir = 'right';
+				}
+				elsif ( $wr->direction == 100 and $exit_side eq 'l' ) {
+					$exit_dir = 'right';
+				}
+				elsif ( $wr->direction == 100 and $exit_side eq 'r' ) {
+					$exit_dir = 'left';
+				}
+			}
+
 			$wref = b64_encode( encode_json($wref) );
 
 			$self->render(
@@ -192,6 +208,7 @@ sub wagenreihung {
 				train_no  => $train,
 				wr        => $wr,
 				wref      => $wref,
+				exit_dir  => $exit_dir,
 				hide_opts => 1,
 			);
 		}

@@ -50,7 +50,7 @@
 	 % }
   </div>
   <div class="container">
-    <div class="wagonorder">
+    <div class="wagonorder exit-<%= stash('exit_dir') // 'unknown'%>">
 %     if (not $wr->has_bad_wagons) {
 %       for my $section ($wr->sections) {
           <div class="section" style="
@@ -60,7 +60,7 @@
 %       }
 %     }
 %     for my $wagon ($wr->wagons) {
-%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_subtype // 'IC', wref => $wref;
+%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_subtype // 'IC', wref => $wref, exit_dir => stash('exit_dir');
 %     }
       </div>
 <!--  <div>

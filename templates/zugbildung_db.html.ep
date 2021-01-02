@@ -11,9 +11,9 @@
   Vorgesehener Zugtyp: <%= $zb->{type} %>
 </div>
 <div class="container">
-  <div class="wagonorder">
+  <div class="wagonorder exit-unknown">
 %   for my $wagon (@{$wagons // []}) {
-%=    include '_wagon', direction => undef, wagon => $wagon, type => $zb->{type}, wref => '';
+%=    include '_wagon', direction => undef, wagon => $wagon, type => $zb->{type}, wref => '', exit_dir => 'unknown';
 %   }
     </div>
     <p class="copyright">
