@@ -107,6 +107,25 @@ sub wagenreihung {
 				);
 			}
 
+			if ( $exit_side and $exit_side =~ m{^a} ) {
+				if ( $wr->sections and defined $wr->direction ) {
+					my $section_0 = ( $wr->sections )[0];
+					my $direction = $wr->direction;
+					if ( $section_0->name eq 'A' and $direction == 0 ) {
+						$exit_side =~ s{^a}{};
+					}
+					elsif ( $section_0->name ne 'A' and $direction == 100 ) {
+						$exit_side =~ s{^a}{};
+					}
+					else {
+						$exit_side = ( $exit_side eq 'ar' ) ? 'l' : 'r';
+					}
+				}
+				else {
+					$exit_side = undef;
+				}
+			}
+
 			my $wref = {
 				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
 				tt => $wr->train_type,
