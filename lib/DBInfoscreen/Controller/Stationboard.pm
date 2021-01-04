@@ -29,6 +29,108 @@ my %default = (
 	admode  => 'deparr',
 );
 
+sub handle_no_results {
+	my ( $self, $backend, $station, $errstr ) = @_;
+
+	if ( $backend eq 'ris' ) {
+		my $db_service = Travel::Status::DE::HAFAS::get_service('DB');
+		my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
+			url   => $db_service->{stopfinder},
+			input => $station,
+		);
+		my @candidates
+		  = map { [ $_->{name}, $_->{id} ] } $sf->results;
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+		{
+			$self->render(
+				'landingpage',
+				stationlist => \@candidates,
+				hide_opts   => 0,
+				status      => 300,
+			);
+			return;
+		}
+	}
+	if ( $backend eq 'iris' ) {
+		my @candidates = map { [ $_->[1], $_->[0] ] }
+		  Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+		{
+			$self->render(
+				'landingpage',
+				stationlist => \@candidates,
+				hide_opts   => 0,
+				status      => 300,
+			);
+			return;
+		}
+	}
+	$self->render(
+		'landingpage',
+		error     => ( $errstr // "Got no results for '$station'" ),
+		hide_opts => 0
+	);
+	return;
+}
+
+sub handle_no_results_json {
+	my ( $self, $backend, $station, $errstr, $api_version ) = @_;
+
+	my $callback = $self->param('callback');
+
+	$self->res->headers->access_control_allow_origin(q{*});
+	my $json;
+	if ($errstr) {
+		$json = $self->render_to_string(
+			json => {
+				api_version => $api_version,
+				version     => $self->config->{version},
+				error       => $errstr,
+			}
+		);
+	}
+	else {
+		my @candidates = map { { code => $_->[0], name => $_->[1] } }
+		  Travel::Status::DE::IRIS::Stations::get_station($station);
+		if ( @candidates > 1
+			or ( @candidates == 1 and $candidates[0]{code} ne $station ) )
+		{
+			$json = $self->render_to_string(
+				json => {
+					api_version => $api_version,
+					version     => $self->config->{version},
+					error       => 'ambiguous station code/name',
+					candidates  => \@candidates,
+				}
+			);
+		}
+		else {
+			$json = $self->render_to_string(
+				json => {
+					api_version => $api_version,
+					version     => $self->config->{version},
+					error => ( $errstr // "Got no results for '$station'" )
+				}
+			);
+		}
+	}
+	if ($callback) {
+		$self->render(
+			data   => "$callback($json);",
+			format => 'json'
+		);
+	}
+	else {
+		$self->render(
+			data   => $json,
+			format => 'json'
+		);
+	}
+	return;
+}
+
 sub result_is_train {
 	my ( $result, $train ) = @_;
 
