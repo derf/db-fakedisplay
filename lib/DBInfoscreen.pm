@@ -316,7 +316,7 @@ sub startup {
 
 			my @symbols
 			  = (
-				qw(hourglass_empty person_outline people priority_high not_interested)
+				qw(help_outline person_outline people priority_high not_interested)
 			  );
 			my $text = 'Auslastung unbekannt';
 
