@@ -188,11 +188,8 @@ sub startup {
 			elsif ( not $uic ) {
 				return;
 			}
-			elsif ( $train_type =~ m{ICE 4} ) {
-				$ret = substr( $uic, 4, 5 );
-			}
 			else {
-				$ret = substr( $uic, 5, 4 );
+				$ret = substr( $uic, 4, 5 );
 			}
 
 			if ( $train_type =~ m{ICE . 4..[.]1} ) {
@@ -201,7 +198,7 @@ sub startup {
 			elsif ( $train_type =~ m{ICE . 4..[.]2} ) {
 				$ret .= '.2';
 			}
-			elsif ( $train_type =~ m{ICE 3 Redesign} ) {
+			elsif ( $train_type =~ m{Redesign} ) {
 				$ret .= '.r';
 			}
 
