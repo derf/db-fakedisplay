@@ -188,39 +188,23 @@ sub startup {
 			elsif ( not $uic ) {
 				return;
 			}
-			elsif ( $train_type =~ m{ICE [12]} and $wagon_type !~ m{^I} ) {
-				$ret = substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE 3 403.1} ) {
-				$ret = '31_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE 3 403.2} ) {
-				$ret = '32_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE 3 Redesign} ) {
-				$ret = '3r_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE 3 406} ) {
-				$ret = '3_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type eq 'ICE 3 Velaro' ) {
-				$ret = substr( $uic, 5, 4 );
-			}
 			elsif ( $train_type =~ m{ICE 4} ) {
 				$ret = substr( $uic, 4, 5 );
 			}
-			elsif ( $train_type =~ m{ICE T 411.1} ) {
-				$ret = 't1_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE T 411.2} ) {
-				$ret = 't2_' . substr( $uic, 5, 4 );
-			}
-			elsif ( $train_type =~ m{ICE T 415} ) {
+			else {
 				$ret = substr( $uic, 5, 4 );
 			}
-			elsif ( $train_type =~ m{IC2 KISS} ) {
-				$ret = substr( $uic, 5, 4 );
+
+			if ( $train_type =~ m{ICE . 4..[.]1} ) {
+				$ret .= '.1';
 			}
+			elsif ( $train_type =~ m{ICE . 4..[.]2} ) {
+				$ret .= '.2';
+			}
+			elsif ( $train_type =~ m{ICE 3 Redesign} ) {
+				$ret .= '.r';
+			}
+
 			if ( $ret and $self->app->dbdb_wagon->{$ret} ) {
 				return $ret;
 			}
@@ -373,7 +357,7 @@ sub startup {
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 	$r->get('/wr/:train')->to('wagenreihung#zugbildung_db');
-	$r->get('/w/:wagon')->to('wagenreihung#wagen');
+	$r->get('/w/*wagon')->to('wagenreihung#wagen');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
