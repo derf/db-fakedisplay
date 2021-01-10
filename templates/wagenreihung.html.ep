@@ -8,8 +8,12 @@
 % }
 % else {
   % my $has_multi_dest = 0;
+  % my $has_multi_desc = 0;
   % if (scalar $wr->destinations > 1) {
     % $has_multi_dest = 1;
+  % }
+  % if (scalar $wr->train_descriptions > 1) {
+    % $has_multi_desc = 1;
   % }
   <div class="container">
     <div style="text-align: center;">
@@ -25,29 +29,15 @@
       </div>
     % }
     <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
-    % if ($wr->train_type =~ m{^IC|EC}) {
-      Zugtyp: <%= $wr->train_subtype // 'IC?' %>
+    % for my $desc ($wr->train_descriptions) {
+      % if ($desc->{text}) {
+        %= $desc->{text}
+        % if ($has_multi_desc) {
+          in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
+        % }
+        <br/>
+      % }
     % }
-	 % elsif ($wr->train_powertype) {
-      %= $wr->train_type
-	 % }
-	 % my %translation = (
-	 %   90 => 'mit sonstigem Antrieb',
-	 %   91 => 'mit elektrischer Lokomotive',
-	 %   92 => 'mit Diesellokomotive',
-	 %   93 => 'Hochgeschwindigkeitszug',
-	 %   94 => 'Elektrischer Triebzug',
-	 %   95 => 'Diesel-Triebzug',
-	 %   96 => 'mit speziellen Beiwagen',
-	 %   97 => 'mit elektrischer Rangierlok',
-	 %   98 => 'mit Diesel-Rangierlok',
-	 %   99 => 'Sonderfahrzeug',
-	 % );
-	 % if (not $wr->train_powertype) {
-	 % }
-	 % else {
-      %= $translation{$wr->train_powertype};
-	 % }
   </div>
   <div class="container">
     <div class="wagonorder exit-<%= stash('exit_dir') // 'unknown'%>">
@@ -60,7 +50,7 @@
 %       }
 %     }
 %     for my $wagon ($wr->wagons) {
-%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_subtype // 'IC', wref => $wref, exit_dir => stash('exit_dir');
+%=      include '_wagon', direction => $wr->direction, wagon => $wagon, wref => $wref, exit_dir => stash('exit_dir');
 %     }
       </div>
 <!--  <div>
