@@ -182,7 +182,7 @@ sub startup {
 			{
 				$ret = $wagon_type;
 			}
-			elsif ( $train_type =~ m{IC2 Twindexx} ) {
+			elsif ( $train_type =~ m{IC2.TWIN} ) {
 				$ret = $wagon_type;
 			}
 			elsif ( not $uic ) {
@@ -192,13 +192,10 @@ sub startup {
 				$ret = substr( $uic, 4, 5 );
 			}
 
-			if ( $train_type =~ m{ICE . 4..[.]1} ) {
-				$ret .= '.1';
+			if ( $train_type =~ m{[.]S(\d)$} ) {
+				$ret .= ".$1";
 			}
-			elsif ( $train_type =~ m{ICE . 4..[.]2} ) {
-				$ret .= '.2';
-			}
-			elsif ( $train_type =~ m{Redesign} ) {
+			elsif ( $train_type =~ m{[.]R$} ) {
 				$ret .= '.r';
 			}
 
