@@ -1,4 +1,5 @@
 package DBInfoscreen::Helper::Wagonorder;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: BSD-2-Clause
@@ -53,6 +54,47 @@ sub is_available_p {
 		}
 	)->wait;
 
+	return $promise;
+}
+
+sub has_umlauf_p {
+	my ( $self, $train_no ) = @_;
+
+	my $promise = Mojo::Promise->new;
+
+	my $url   = "https://lib.finalrewind.org/dbdb/db_umlauf/${train_no}.png";
+	my $cache = $self->{main_cache};
+
+	if ( my $content = $cache->get($url) ) {
+		if ( $content eq 'y' ) {
+			return $promise->resolve;
+		}
+		else {
+			return $promise->reject;
+		}
+	}
+
+	$self->{user_agent}->request_timeout(5)->head_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+			if ( $tx->result->is_success ) {
+				$cache->set( $url, 'y' );
+				$promise->resolve;
+			}
+			else {
+				$cache->set( $url, 'n' );
+				$promise->reject;
+			}
+			return;
+		}
+	)->catch(
+		sub {
+			$cache->set( $url, 'n' );
+			$promise->reject;
+			return;
+		}
+	)->wait;
 	return $promise;
 }
 

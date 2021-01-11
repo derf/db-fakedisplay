@@ -560,6 +560,9 @@ sub render_train {
 	my $stationinfo_req = Mojo::Promise->new;
 	my $route_req       = Mojo::Promise->new;
 
+	my @requests
+	  = ( $wagonorder_req, $utilization_req, $stationinfo_req, $route_req );
+
 	if ( $departure->{wr_link} ) {
 		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
 		  ->then(
@@ -769,9 +772,27 @@ sub render_train {
 		}
 	)->wait;
 
+	if ( $self->param('detailed') ) {
+		my $cycle_req = Mojo::Promise->new;
+		push( @requests, $cycle_req );
+		$self->wagonorder->has_umlauf_p( $result->train_no )->then(
+			sub {
+				$departure->{has_cycle} = 1;
+			}
+		)->catch(
+			sub {
+				# nop
+			}
+		)->finally(
+			sub {
+				$cycle_req->resolve;
+				return;
+			}
+		)->wait;
+	}
+
 	# Defer rendering until all requests have completed
-	Mojo::Promise->all( $wagonorder_req, $utilization_req, $stationinfo_req,
-		$route_req )->then(
+	Mojo::Promise->all(@requests)->then(
 		sub {
 			$self->render(
 				$template // '_train_details',
