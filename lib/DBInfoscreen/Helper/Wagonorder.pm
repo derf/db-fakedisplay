@@ -57,12 +57,11 @@ sub is_available_p {
 	return $promise;
 }
 
-sub has_umlauf_p {
-	my ( $self, $train_no ) = @_;
+sub head_dbdb_p {
+	my ( $self, $url ) = @_;
 
 	my $promise = Mojo::Promise->new;
 
-	my $url   = "https://lib.finalrewind.org/dbdb/db_umlauf/${train_no}.png";
 	my $cache = $self->{main_cache};
 
 	if ( my $content = $cache->get($url) ) {
@@ -98,46 +97,19 @@ sub has_umlauf_p {
 	return $promise;
 }
 
+sub has_cycle_p {
+	my ( $self, $train_no ) = @_;
+
+	return $self->head_dbdb_p(
+		"https://lib.finalrewind.org/dbdb/db_umlauf/${train_no}.png");
+}
+
 sub check_wagonorder_p {
 	my ( $self, $train_no, $wr_link ) = @_;
 
-	my $promise = Mojo::Promise->new;
-
-	my $url
-	  = "https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}";
-	my $cache = $self->{main_cache};
-
-	if ( my $content = $cache->get($url) ) {
-		if ( $content eq 'y' ) {
-			return $promise->resolve;
-		}
-		else {
-			return $promise->reject;
-		}
-	}
-
-	$self->{user_agent}->request_timeout(5)->head_p( $url => $self->{header} )
-	  ->then(
-		sub {
-			my ($tx) = @_;
-			if ( $tx->result->is_success ) {
-				$cache->set( $url, 'y' );
-				$promise->resolve;
-			}
-			else {
-				$cache->set( $url, 'n' );
-				$promise->reject;
-			}
-			return;
-		}
-	)->catch(
-		sub {
-			$cache->set( $url, 'n' );
-			$promise->reject;
-			return;
-		}
-	)->wait;
-	return $promise;
+	return $self->head_dbdb_p(
+		"https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}"
+	);
 }
 
 sub get_p {

@@ -775,7 +775,7 @@ sub render_train {
 	if ( $self->param('detailed') ) {
 		my $cycle_req = Mojo::Promise->new;
 		push( @requests, $cycle_req );
-		$self->wagonorder->has_umlauf_p( $result->train_no )->then(
+		$self->wagonorder->has_cycle_p( $result->train_no )->then(
 			sub {
 				$departure->{has_cycle} = 1;
 			}
