@@ -18,7 +18,7 @@
     </div>
     <p class="copyright">
       Quelle: <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">DB Zugbildungsplan</a>
-      mit <a href="https://github.com/derf/db-wagenreihung-to-json">automatisierter Nachbearbeitung</a>.<br/>
+      mit <a href="https://github.com/derf/db-zugbildung-to-json">automatisierter Nachbearbeitung</a>.<br/>
       Nachbearbeitungsbedingte Fehler sind wahrscheinlich.<br/>
       Daten © 2020 DB Fernverkehr AG, lizensiert unter CC-BY 4.0.
     </p>
