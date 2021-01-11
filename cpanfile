@@ -9,7 +9,7 @@ requires 'JSON::XS';
 requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'Mojolicious';
-requires 'Travel::Status::DE::DBWagenreihung', '0.05';
+requires 'Travel::Status::DE::DBWagenreihung', '0.06';
 requires 'Travel::Status::DE::DeutscheBahn', '< 3.00';
 requires 'Travel::Status::DE::IRIS';
 requires 'XML::LibXML';
