@@ -229,7 +229,7 @@
       </ul> <!-- mroute -->
 %   }
 %   if (param('detailed') and $departure->{has_cycle}) {
-      <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.png">Umlaufplan</a></div>
+      <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.svg">Umlaufplan</a></div>
 %   }
 %   if (param('detailed') and $details->{commonAttr}) {
 %     if ($details->{attrVariants} and (not $details->{commonAttr}{vmax} or not $details->{commonAttr}{brakingPercentage})) {
