@@ -228,10 +228,10 @@
 %       }
       </ul> <!-- mroute -->
 %   }
-%   if (param('detailed') and $departure->{has_cycle}) {
+%   if ($departure->{has_cycle}) {
       <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.svg">Umlaufplan</a></div>
 %   }
-%   if (param('detailed') and $details->{commonAttr}) {
+%   if ($details->{commonAttr}) {
 %     if ($details->{attrVariants} and (not $details->{commonAttr}{vmax} or not $details->{commonAttr}{brakingPercentage})) {
         <div class="db-attr">
           Attribute:
@@ -248,15 +248,15 @@
         </div>
 %     }
 %   }
-%   if (param('detailed') and $details and not $departure->{arrival}) {
+%   if ($details and not $departure->{arrival}) {
 %     if (my $s = $details->{route}{preStart}) {
         Zug wird voraussichtlich aus <%= $s %> eingesetzt.<br/><br/>
 %     }
-%     if ($details->{cycle}{from}) {
+%     if (@{$departure->{cycle_from} // []}) {
         Bildung möglicherweise aus
         <ul>
-%         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{from} // [] }) {
-%           my $train = app->train_details_db->{$train_no};
+%         for my $t (@{$departure->{cycle_from}}) {
+%           my ($train_no, $train) = @{$t};
 %           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
             <li><%= $tt %> <%= $train_no %>
@@ -268,15 +268,15 @@
         </ul>
 %     }
 %   }
-%   elsif (param('detailed') and $details and not $departure->{departure}) {
+%   elsif ($details and not $departure->{departure}) {
 %     if (my $e = $details->{route}{postEnd}) {
         Zug wird voraussichtlich in <%= $e %> abgestellt.<br/><br/>
 %     }
-%     if ($details->{cycle}{to}) {
+%     if (@{$departure->{cycle_to} // []}) {
         Weiterfahrt möglicherweise als
         <ul>
-%         for my $train_no (sort {$a <=> $b} @{ $details->{cycle}{to} // [] }) {
-%           my $train = app->train_details_db->{$train_no};
+%         for my $t (@{$departure->{cycle_to}}) {
+%           my ($train_no, $train) = @{$t};
 %           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
             <li><%= $tt %> <%= $train_no %>

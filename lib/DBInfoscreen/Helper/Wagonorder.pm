@@ -101,7 +101,7 @@ sub has_cycle_p {
 	my ( $self, $train_no ) = @_;
 
 	return $self->head_dbdb_p(
-		"https://lib.finalrewind.org/dbdb/db_umlauf/${train_no}.png");
+		"https://lib.finalrewind.org/dbdb/db_umlauf/${train_no}.svg");
 }
 
 sub check_wagonorder_p {

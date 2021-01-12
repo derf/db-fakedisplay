@@ -10,7 +10,7 @@ use DateTime;
 use DateTime::Format::Strptime;
 use Encode qw(decode encode);
 use File::Slurp qw(read_file write_file);
-use List::Util qw(max);
+use List::Util qw(max uniq);
 use List::MoreUtils qw();
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
@@ -789,6 +789,20 @@ sub render_train {
 				return;
 			}
 		)->wait;
+		$departure->{composition}
+		  = $self->app->train_details_db->{ $departure->{train_no} };
+		my @cycle_from;
+		my @cycle_to;
+		for my $cycle ( values %{ $departure->{composition}->{cycle} // {} } ) {
+			push( @cycle_from, @{ $cycle->{from} // [] } );
+			push( @cycle_to,   @{ $cycle->{to}   // [] } );
+		}
+		@cycle_from = sort { $a <=> $b } uniq @cycle_from;
+		@cycle_to   = sort { $a <=> $b } uniq @cycle_to;
+		$departure->{cycle_from}
+		  = [ map { [ $_, $self->app->train_details_db->{$_} ] } @cycle_from ];
+		$departure->{cycle_to}
+		  = [ map { [ $_, $self->app->train_details_db->{$_} ] } @cycle_to ];
 	}
 
 	# Defer rendering until all requests have completed
@@ -799,9 +813,8 @@ sub render_train {
 				departure => $departure,
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
-				details =>
-				  $self->app->train_details_db->{ $departure->{train_no} },
-				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
+				details => $departure->{composition} // {},
+				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link =>
 				  $self->url_for( 'station', station => $station_name )
