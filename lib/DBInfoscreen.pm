@@ -101,25 +101,31 @@ sub startup {
 
 	$self->attr(
 		ice_type_map => sub {
-			my $ice_type_map = JSON->new->utf8->decode(
-				scalar read_file('share/zugbildungsplan.json') );
-			my $ret;
-			while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
-				if ( $v->{type} ) {
-					$ret->{$k} = [
-						$v->{type}, $v->{shortType},
-						exists $v->{wagons} ? 1 : 0
-					];
+			if ( -r 'share/zugbildungsplan.json' ) {
+				my $ice_type_map = JSON->new->utf8->decode(
+					scalar read_file('share/zugbildungsplan.json') );
+				my $ret;
+				while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
+					if ( $v->{type} ) {
+						$ret->{$k} = [
+							$v->{type}, $v->{shortType},
+							exists $v->{wagons} ? 1 : 0
+						];
+					}
 				}
+				return $ret;
 			}
-			return $ret;
+			return {};
 		}
 	);
 
 	$self->attr(
 		train_details_db => sub {
-			return JSON->new->utf8->decode(
-				scalar read_file('share/zugbildungsplan.json') )->{train};
+			if ( -r 'share/zugbildungsplan.json' ) {
+				return JSON->new->utf8->decode(
+					scalar read_file('share/zugbildungsplan.json') )->{train};
+			}
+			return {};
 		}
 	);
 

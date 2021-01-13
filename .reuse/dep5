@@ -47,11 +47,6 @@ Files: share/dbdb_wagen.json
 Copyright: 2020 Daniel Friesel
 License: CC0-1.0
 
-Files: share/zugbildungsplan.json
-Copyright: 2020 DB Fernverkehr AG
-   2020 Daniel Friesel
-License: CC-BY-4.0
-
 Files: templates/*
 Copyright: 2020 Daniel Friesel
 License: BSD-2-Clause
