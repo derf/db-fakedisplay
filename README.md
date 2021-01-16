@@ -108,6 +108,23 @@ All code in this repository may be used under the terms of the BSD-2-Clause
 (db-infoscreen, see COPYING) and MIT (jquery, jqueryui, and marquee libraries;
 see the respective files) licenses.  Attribution is appreciated.
 
+Background Data Updates
+---
+
+db-infoscreen can use <https://lib.finalrewind.org/dbdb/db_zugbildung_v0.json>
+to show scheduled ICE/IC types (ICE 1/2/3/4/T, IC 1/2), wagon orders, and other
+attributes. It expects the file to be provided in `share/zugbildungsplan.json`.
+
+As this information is updated regularly, the file is not shipped as part of
+this db-infoscreen distribution. It is recommended to retrieve it a few minutes
+after midnight via a daily cronjob. See `examples/dbf_update_zugbildungsplan`
+for a shell script.
+
+DBF will periodically reload `share/zugbildungsplan.json`. You can use your
+service supervisor (e.g. `systemctl reload db-infoscreen`) to force an
+immediate reload. You may also ignore the file entirely; it is entirely
+optional.
+
 System requirements
 ---
 

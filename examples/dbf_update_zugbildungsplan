@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+wget -qO share/zugbildungsplan.json.new https://lib.finalrewind.org/dbdb/db_zugbildung_v0.json
+
+chmod 644 share/zugbildungsplan.json.new
+
+mv share/zugbildungsplan.json.new share/zugbildungsplan.json
