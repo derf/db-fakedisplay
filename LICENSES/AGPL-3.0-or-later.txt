@@ -1,10 +1,3 @@
-This project follows the REUSE specification. The copyright of individuel files
-is documented in the file's header or in .reuse/dep5. The referenced licenses
-are stored in the LICENSES directory.
-
-The program code of db-fakedisplay is licensed under the terms of the AGPL v3+,
-which are as follows.
-
 GNU AFFERO GENERAL PUBLIC LICENSE
 Version 3, 19 November 2007
 

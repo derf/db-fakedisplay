@@ -3,13 +3,15 @@
 		DBF ist ein inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten mit
 		dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
 		Der <a
-		href="https://github.com/derf/db-fakedisplay">Quelltext</a>
+		href="<%= app->config->{'source_url'} %>">Quelltext</a>
 		steht unter der <a
-		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">2-Clause
-		BSD-Lizenz</a> als Open Source zur Verfügung. © 2020 <a
+		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL
+		v3</a> als Open Source zur Verfügung. © 2021 <a
 		href="https://finalrewind.org/me">Daniel Friesel</a> / <a href="https://twitter.com/derfnull">@derfnull</a>.
-		Fehlermeldungen bitte via
-		<a href="https://github.com/derf/db-fakedisplay/issues">GitHub Issue Tracker</a>.
+		% if (my $issue_url = app->config->{'issue_url'}) {
+			Fehlermeldungen bitte via
+			<a href="<%= $issue_url %>">Issue Tracker</a>.
+		% }
 	</p>
 	<p>
 		Das Projekt begann als „db-fakedisplay“ (kurz dbf) zur <a href="/Dortmund

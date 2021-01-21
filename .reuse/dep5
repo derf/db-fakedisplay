@@ -24,7 +24,7 @@ License: CC-BY-4.0
 
 Files: public/static/js/dbf.min.js public/static/js/geolocation.min.js public/static/js/map-refresh.min.js
 Copyright: 2020 Daniel Friesel
-License: BSD-2-Clause
+License: AGPL-3.0-or-later
 
 Files: public/static/js/jquery* public/static/css/jquery-ui.min.css
 Copyright: 2019 jQuery Foundation and other contributors

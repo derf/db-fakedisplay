@@ -1,7 +1,7 @@
 package DBInfoscreen::Controller::Static;
 # Copyright (C) 2011-2020 Daniel Friesel
 #
-# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 use Mojo::Base 'Mojolicious::Controller';
 

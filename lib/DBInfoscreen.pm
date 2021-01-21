@@ -2,7 +2,7 @@ package DBInfoscreen;
 
 # Copyright (C) 2011-2020 Daniel Friesel
 #
-# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 use Mojo::Base 'Mojolicious';
 
@@ -39,6 +39,8 @@ sub startup {
 			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
 			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 		},
+		source_url => 'https://github.com/derf/db-fakedisplay',
+		issue_url => 'https://github.com/derf/db-fakedisplay/issues',
 		version => $ENV{DBFAKEDISPLAY_VERSION} // qx{git describe --dirty}
 		  // '???',
 	);
