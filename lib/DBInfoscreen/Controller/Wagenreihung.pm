@@ -13,16 +13,14 @@ use utf8;
 use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::DBWagenreihung::Wagon;
 
-sub zugbildung_db {
-	my ($self) = @_;
+sub get_zugbildung_db {
+	my ( $self, $train_no ) = @_;
 
-	my $train_no = $self->param('train');
+	say $train_no;
 
 	my $details = $self->app->train_details_db->{$train_no};
 
 	if ( not $details ) {
-		$self->render( 'not_found',
-			message => "Keine Daten zu Zug ${train_no} bekannt" );
 		return;
 	}
 
@@ -66,16 +64,67 @@ sub zugbildung_db {
 	my $route_end   = $details->{route}{end}   // $details->{route}{postEnd};
 	my $route       = "${route_start} → ${route_end}";
 
+	return {
+		route      => $route,
+		train_type => $train_type,
+		wagons     => [@wagons]
+	};
+}
+
+sub zugbildung_db {
+	my ($self) = @_;
+
+	my $train_no = $self->param('train');
+
+	my $details = $self->get_zugbildung_db($train_no);
+
+	if ( not $details ) {
+		$self->render( 'not_found',
+			message => "Keine Daten zu Zug ${train_no} bekannt" );
+		return;
+	}
+
 	$self->render(
 		'zugbildung_db',
 		wr_error  => undef,
-		title     => $train_type . ' ' . $train_no,
-		route     => $route,
+		title     => $details->{train_type} . ' ' . $train_no,
+		route     => $details->{route},
 		zb        => $details,
 		train_no  => $train_no,
-		wagons    => [@wagons],
+		wagons    => $details->{wagons},
 		hide_opts => 1,
 	);
+}
+
+sub handle_wagenreihung_error {
+	my ( $self, $train_no, $err ) = @_;
+
+	my $details = $self->get_zugbildung_db($train_no);
+	if ( $details and @{ $details->{wagons} } ) {
+		my $wr_error
+		  = "${err}. Ersatzweise werden die Solldaten laut Fahrplan angezeigt.";
+		$self->render(
+			'zugbildung_db',
+			wr_error  => $wr_error,
+			title     => $details->{train_type} . ' ' . $train_no,
+			route     => $details->{route},
+			zb        => $details,
+			train_no  => $train_no,
+			wagons    => $details->{wagons},
+			hide_opts => 1,
+		);
+	}
+	else {
+		$self->render(
+			'wagenreihung',
+			title     => "Zug $train_no",
+			wr_error  => $err,
+			train_no  => $train_no,
+			wr        => undef,
+			wref      => undef,
+			hide_opts => 1,
+		);
+	}
 }
 
 sub wagenreihung {
@@ -96,15 +145,8 @@ sub wagenreihung {
 					from_json => $json );
 			};
 			if ($@) {
-				$self->render(
-					'wagenreihung',
-					title     => "Zug $train",
-					wr_error  => scalar $@,
-					train_no  => $train,
-					wr        => undef,
-					wref      => undef,
-					hide_opts => 1,
-				);
+				$self->handle_wagenreihung_error( $train, scalar $@ );
+				return;
 			}
 
 			if ( $exit_side and $exit_side =~ m{^a} ) {
@@ -234,15 +276,9 @@ sub wagenreihung {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->render(
-				'wagenreihung',
-				title     => "Zug $train",
-				wr_error  => scalar $err,
-				train_no  => $train,
-				wr        => undef,
-				wref      => undef,
-				hide_opts => 1,
-			);
+
+			$self->handle_wagenreihung_error( $train, scalar $err );
+			return;
 		}
 	)->wait;
 
