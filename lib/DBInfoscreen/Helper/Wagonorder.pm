@@ -30,7 +30,8 @@ sub is_available_p {
 
 	$self->check_wagonorder_p( $train->train_no, $wr_link )->then(
 		sub {
-			$promise->resolve;
+			my ($body) = @_;
+			$promise->resolve($body);
 			return;
 		},
 		sub {
@@ -45,7 +46,8 @@ sub is_available_p {
 		}
 	)->then(
 		sub {
-			$promise->resolve;
+			my ($body) = @_;
+			$promise->resolve($body);
 			return;
 		},
 		sub {
@@ -54,6 +56,47 @@ sub is_available_p {
 		}
 	)->wait;
 
+	return $promise;
+}
+
+sub get_dbdb_p {
+	my ( $self, $url ) = @_;
+
+	my $promise = Mojo::Promise->new;
+
+	my $cache = $self->{main_cache};
+
+	if ( my $content = $cache->get($url) ) {
+		if ($content) {
+			return $promise->resolve($content);
+		}
+		else {
+			return $promise->reject;
+		}
+	}
+
+	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
+	  ->then(
+		sub {
+			my ($tx) = @_;
+			if ( $tx->result->is_success ) {
+				my $body = $tx->result->body;
+				$cache->set( $url, $body );
+				$promise->resolve($body);
+			}
+			else {
+				$cache->set( $url, q{} );
+				$promise->reject;
+			}
+			return;
+		}
+	)->catch(
+		sub {
+			$cache->set( $url, q{} );
+			$promise->reject;
+			return;
+		}
+	)->wait;
 	return $promise;
 }
 
@@ -106,9 +149,8 @@ sub has_cycle_p {
 
 sub check_wagonorder_p {
 	my ( $self, $train_no, $wr_link ) = @_;
-	return Mojo::Promise->new->resolve;
 
-	return $self->head_dbdb_p(
+	return $self->get_dbdb_p(
 		"https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}"
 	);
 }
@@ -118,6 +160,18 @@ sub get_p {
 
 	my $url
 	  = "https://ist-wr.noncd.db.de/wagenreihung/1.0/${train_no}/${api_ts}";
+
+	if (
+		my $content = $self->{main_cache}->get(
+"https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${api_ts}"
+		)
+	  )
+	{
+		if ( $content !~ m{i} and $content =~ m{a} ) {
+			$url
+			  = "https://www.apps-bahn.de/wr/wagenreihung/1.0/${train_no}/${api_ts}";
+		}
+	}
 
 	my $cache = $self->{realtime_cache};
 
