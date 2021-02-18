@@ -50,7 +50,7 @@
 %       }
 %     }
 %     for my $wagon ($wr->wagons) {
-%=      include '_wagon', direction => $wr->direction, wagon => $wagon, wref => $wref, exit_dir => stash('exit_dir');
+%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_type, wref => $wref, exit_dir => stash('exit_dir');
 %     }
       </div>
 <!--  <div>

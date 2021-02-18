@@ -51,7 +51,7 @@
   <div class="details" style="
   top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%;">
 %   if ($exit_dir ne 'right') {
-%     if (my $img = wagon_image($wagon->train_subtype // 'IC', $wagon->type, $wagon->uic_id)) {
+%     if (my $img = wagon_image($wagon->train_subtype // $type // '?', $wagon->type, $wagon->uic_id)) {
         <a class="type" href="/w/<%= $img %>?n=<%= $wagon->number // '' %>&amp;s=<%= $wagon->section %>&amp;r=<%= $wref %>"><%= $wagon->type %></a>
 %     }
 %     else {
@@ -71,7 +71,7 @@
       <span class="uicexchange"><%= substr($uic_id, 0, 2) %></span><span class="uiccountry"><%= substr($uic_id, 2, 2) %></span><span class="uic56"><%= substr($uic_id, 4, 2) %></span><span class="uic78"><%= substr($uic_id, 6, 2) %></span><span class="uicno"><%= substr($uic_id, 8, 3) %></span><span class="uiccheck"><%= substr($uic_id, 11) %></span>
 %   }
 %   if ($exit_dir eq 'right') {
-%     if (my $img = wagon_image($wagon->train_subtype // 'IC', $wagon->type, $wagon->uic_id)) {
+%     if (my $img = wagon_image($wagon->train_subtype // $type // '?', $wagon->type, $wagon->uic_id)) {
         <a class="type" href="/w/<%= $img %>?n=<%= $wagon->number // '' %>&amp;s=<%= $wagon->section %>&amp;r=<%= $wref %>"><%= $wagon->type %></a>
 %     }
 %     else {
