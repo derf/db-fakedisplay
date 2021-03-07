@@ -32,7 +32,7 @@
     % for my $desc ($wr->train_descriptions) {
       % if ($desc->{text}) {
         %= $desc->{text}
-        % if ($has_multi_desc) {
+        % if ($has_multi_desc and length(join(q{}, sort @{$desc->{sections}}))) {
           in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
         % }
         <br/>
