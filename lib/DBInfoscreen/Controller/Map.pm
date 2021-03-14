@@ -1,4 +1,5 @@
 package DBInfoscreen::Controller::Map;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -138,8 +139,8 @@ sub estimate_train_positions {
 
 	my $now = $opt{now};
 
-	my $from_dt   = $opt{from}{dep};
-	my $to_dt     = $opt{to}{arr};
+	my $from_dt = $opt{from}{dep} // $opt{from}{arr};
+	my $to_dt   = $opt{to}{arr}   // $opt{to}{dep};
 	my $from_name = $opt{from}{name};
 	my $to_name   = $opt{to}{name};
 	my $features  = $opt{features};
@@ -242,10 +243,10 @@ sub estimate_train_positions2 {
 	my $next_stop;
 
 	for my $i ( 1 .. $#route ) {
-		if (    $route[$i]{arr}
-			and $route[ $i - 1 ]{dep}
-			and $now > $route[ $i - 1 ]{dep}
-			and $now < $route[$i]{arr} )
+		if (    ( $route[$i]{arr} // $route[$i]{dep} )
+			and ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
+			and $now > ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
+			and $now < ( $route[$i]{arr} // $route[$i]{dep} ) )
 		{
 
 			# (current position, future positons...) in 2 second steps
@@ -262,7 +263,9 @@ sub estimate_train_positions2 {
 			};
 			last;
 		}
-		if ( $route[ $i - 1 ]{dep} and $now <= $route[ $i - 1 ]{dep} ) {
+		if ( ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
+			and $now <= ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} ) )
+		{
 			@train_positions
 			  = ( [ $route[ $i - 1 ]{lat}, $route[ $i - 1 ]{lon} ] );
 			$next_stop = {
