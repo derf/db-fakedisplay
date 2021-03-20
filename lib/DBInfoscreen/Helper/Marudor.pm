@@ -55,6 +55,13 @@ sub get_json_p {
 
 			my $res = $tx->res->json;
 
+			if ( not $res ) {
+				$self->{log}
+				  ->debug("marudor->get_json_p($url): empty response");
+				$promise->reject("GET $url returned empty response");
+				return;
+			}
+
 			$cache->freeze( $url, $res );
 
 			$promise->resolve($res);

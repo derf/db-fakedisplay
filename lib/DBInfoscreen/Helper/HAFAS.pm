@@ -62,6 +62,12 @@ sub get_json_p {
 
 			my $json = decode_json($body);
 
+			if ( not $json ) {
+				$self->{log}->debug("hafas->get_json_p($url): empty response");
+				$promise->reject("GET $url returned empty response");
+				return;
+			}
+
 			$cache->freeze( $url, $json );
 
 			$promise->resolve($json);
