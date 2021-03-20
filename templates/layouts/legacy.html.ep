@@ -45,6 +45,16 @@
 <body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
 
 <div class="container">
+% if (param('backend') and param('backend') eq 'ris') {
+<div class="warning"><strong>Nicht mehr unterstütze Konfiguration:</strong>
+<div>
+Die Einbindung des „RIS“-Backend wird zum 5.4.2021 deaktiviert. Stattdessen
+steht das deutlich informativere IRIS-Backend zur Verfügung. Um dieses zu
+nutzen, genügt es im Regelfall, „backend=ris“ aus der URL zu entfernen und ggf.
+„Hbf“ an den Bahnhofsnamen anzuhängen.
+</div>
+</div>
+% }
 % if (my $error = stash 'error') {
 <div class="error"><strong>Backend-Fehler:</strong>
 <pre>
