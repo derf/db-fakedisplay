@@ -886,11 +886,9 @@ sub train_details {
 		: undef,
 		departure => $result->departure ? $result->departure->strftime('%H:%M')
 		: undef,
-		train                  => $result->train,
 		train_type             => $result->type // '',
 		train_line             => $result->line_no,
 		train_no               => $result->train_no,
-		via                    => [ $result->route_interesting(3) ],
 		destination            => $result->destination,
 		origin                 => $result->origin,
 		platform               => $result->platform,
@@ -898,22 +896,10 @@ sub train_details {
 		is_cancelled           => $result->is_cancelled,
 		departure_is_cancelled => $result->departure_is_cancelled,
 		arrival_is_cancelled   => $result->arrival_is_cancelled,
-		messages               => {
-			delay => [
-				map { { timestamp => $_->[0], text => $_->[1] } }
-				  $result->delay_messages
-			],
-			qos => [
-				map { { timestamp => $_->[0], text => $_->[1] } }
-				  $result->qos_messages
-			],
-		},
-		moreinfo         => $moreinfo,
-		delay            => $result->delay,
-		route_pre        => [ $result->route_pre ],
-		route_post       => [ $result->route_post ],
-		additional_stops => [ $result->additional_stops ],
-		canceled_stops   => [ $result->canceled_stops ],
+		moreinfo               => $moreinfo,
+		delay                  => $result->delay,
+		route_pre              => [ $result->route_pre ],
+		route_post             => [ $result->route_post ],
 		replaced_by =>
 		  [ map { $_->type . q{ } . $_->train_no } $result->replaced_by ],
 		replacement_for =>

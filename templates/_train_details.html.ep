@@ -9,9 +9,6 @@
       <%= $departure->{train_line} // $departure->{train_no} %></span>
       <span class="train-no"><%= $departure->{train_line} ? $departure->{train_no} : q{} %></span>
 %   }
-%   else {
-      <span class="train-line"><%= $departure->{train} // q{???} %></span>
-%   }
     </div>
     <div>
 %   if ($departure->{origin}) {
