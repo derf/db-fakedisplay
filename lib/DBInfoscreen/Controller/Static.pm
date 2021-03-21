@@ -1,4 +1,5 @@
 package DBInfoscreen::Controller::Static;
+
 # Copyright (C) 2011-2020 Daniel Friesel
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -11,11 +12,11 @@ my %default = (
 );
 
 sub redirect {
-	my ($self)  = @_;
-	my $station = $self->param('station');
-	my $params  = $self->req->params;
+	my ($self) = @_;
+	my $input  = $self->param('input');
+	my $params = $self->req->params;
 
-	$params->remove('station');
+	$params->remove('input');
 
 	for my $param (qw(platforms mode admode via)) {
 		if (
@@ -30,7 +31,12 @@ sub redirect {
 
 	$params = $params->to_string;
 
-	$self->redirect_to("/${station}?${params}");
+	if ( $input =~ m{ ^ [a-zA-Z]{1,5} \s+ \d+ $ }x ) {
+		$self->redirect_to("/z/${input}?${params}");
+	}
+	else {
+		$self->redirect_to("/${input}?${params}");
+	}
 }
 
 sub geolocation {

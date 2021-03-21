@@ -124,13 +124,13 @@ Bitte eine Station aus der Liste auswählen</div>
     <div class="desc">Bahnhof / Haltestelle</div>
     <div>
 % if (stash('stationlist')) {
-      %= select_field station => stash('stationlist')
+      %= select_field input => stash('stationlist')
 % }
-% elsif (stash('station')) {
-      %= text_field 'station', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput'
+% elsif (stash('input')) {
+      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput'
 % }
 % else {
-      %= text_field 'station', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
 % }
     </div>
   </div>
