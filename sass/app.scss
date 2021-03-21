@@ -256,6 +256,11 @@ div.app > ul > li {
 	background-color: $bg;
 }
 
+div.app li .anchor {
+	position: relative;
+	top: -12em;
+}
+
 div.app li .line {
 	font-size: 2.7em;
 	position:absolute;

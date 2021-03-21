@@ -176,7 +176,7 @@
       <ul class="mroute">
 %       for my $stop (@{$departure->{route_pre_diff}}) {
           <li>
-          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed')}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }
@@ -214,7 +214,7 @@
 %       }
 %       for my $stop (@{$departure->{route_post_diff}}) {
           <li>
-          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed')}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }
