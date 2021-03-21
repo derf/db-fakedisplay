@@ -112,7 +112,12 @@
     </div> <!-- dataline -->
     <div class="verbose">
 %     if ($departure->{trip_id}) {
-        <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= $station_name %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+%       if (stash('station_name')) {
+        <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= stash('station_name') %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+%       }
+%       else {
+        <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+%       }
 %     }
 %     if ($departure->{wr_link}) {
         <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> Wagenreihung
@@ -192,19 +197,21 @@
 %         }
           </li>
 %       }
-        <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %>"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %>
-%         if ($departure->{sched_departure}) {
-%           if ($departure->{departure} ne $departure->{sched_departure}) {
-              (heute <%= $departure->{departure} %>)
+%       if (stash('station_name')) {
+          <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %>"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %>
+%           if ($departure->{sched_departure}) {
+%             if ($departure->{departure} ne $departure->{sched_departure}) {
+                (heute <%= $departure->{departure} %>)
+%             }
 %           }
-%         }
-%         elsif ($departure->{arrival}) {
-%           if ($departure->{arrival} ne $departure->{sched_arrival}) {
-              (heute <%= $departure->{arrival} %>)
+%           elsif ($departure->{arrival}) {
+%             if ($departure->{arrival} ne $departure->{sched_arrival}) {
+                (heute <%= $departure->{arrival} %>)
+%             }
 %           }
-%         }
-          <strong><%= $station_name %></strong>
-        </li>
+            <strong><%= stash('station_name') %></strong>
+          </li>
+%       }
 %       for my $stop (@{$departure->{route_post_diff}}) {
           <li>
           <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed')}) %>" class="

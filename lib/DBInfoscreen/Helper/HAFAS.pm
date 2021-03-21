@@ -321,6 +321,8 @@ sub get_route_timestamps_p {
 				$promise->reject;
 				return;
 			}
+			$trainsearch_result->{trainClass}
+			  = $traininfo->{suggestions}[0]{trainClass};
 			my $ret = {};
 
 			my $strp = DateTime::Format::Strptime->new(

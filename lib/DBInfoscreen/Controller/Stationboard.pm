@@ -824,7 +824,7 @@ sub render_train {
 	)->wait;
 }
 
-sub train_details {
+sub station_train_details {
 	my ($self)   = @_;
 	my $train_no = $self->stash('train');
 	my $station  = $self->stash('station');
@@ -917,6 +917,125 @@ sub train_details {
 		$data->{station_name} // $self->stash('station'),
 		$self->param('ajax') ? '_train_details' : 'train_details'
 	);
+}
+
+sub train_details {
+	my ($self) = @_;
+	my $train = $self->stash('train');
+
+	my ( $train_type, $train_no ) = ( $train =~ m{ ^ (\S+) \s+ (.*) $ }x );
+
+	# TODO error handling
+
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
+	}
+
+	my $api_version = $Travel::Status::DE::IRIS::VERSION;
+
+	$self->stash( departures => [] );
+	$self->stash( title      => 'DBF' );
+	$self->stash( version    => $self->config->{version} );
+
+	my $res = {
+		train_type      => $train_type,
+		train_line      => undef,
+		train_no        => $train_no,
+		route_pre_diff  => [],
+		route_post_diff => [],
+		moreinfo        => [],
+		replaced_by     => [],
+		replacement_for => [],
+	};
+
+	$self->stash( title     => "${train_type} ${train_no}" );
+	$self->stash( hide_opts => 1 );
+
+	$self->render_later;
+
+	my $linetype = 'bahn';
+
+	$self->hafas->get_route_timestamps_p( train_no => $train_no )->then(
+		sub {
+			my ( $route_ts, $route_info, $trainsearch ) = @_;
+
+			$res->{trip_id} = $trainsearch->{trip_id};
+
+			if ( not defined $trainsearch->{trainClass} ) {
+				$linetype = 'ext';
+			}
+			elsif ( $trainsearch->{trainClass} <= 2 ) {
+				$linetype = 'fern';
+			}
+			elsif ( $trainsearch->{trainClass} <= 8 ) {
+				$linetype = 'bahn';
+			}
+			elsif ( $trainsearch->{trainClass} <= 16 ) {
+				$linetype = 'sbahn';
+			}
+
+			$res->{origin}      = $route_info->{stations}[0];
+			$res->{destination} = $route_info->{stations}[-1];
+
+			$res->{route_post_diff}
+			  = [ map { { name => $_ } } @{ $route_info->{stations} } ];
+
+			if ($route_ts) {
+				for my $elem ( @{ $res->{route_post_diff} } ) {
+					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
+					{
+						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+					}
+				}
+			}
+
+			if ( $route_info and @{ $route_info->{messages} // [] } ) {
+				my $him = $route_info->{messages};
+				my @him_messages;
+				for my $message ( @{$him} ) {
+					if ( $message->{display} ) {
+						push( @him_messages,
+							[ $message->{header}, $message->{lead} ] );
+						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
+							push(
+								@{ $res->{links} },
+								[
+									"Großstörung",
+									"https://zuginfo.nrw/?msg=$1"
+								]
+							);
+						}
+					}
+				}
+				$res->{moreinfo} = [@him_messages];
+			}
+
+			$self->render(
+				$self->param('ajax') ? '_train_details' : 'train_details',
+				departure => $res,
+				linetype  => $linetype,
+				icetype   => $self->app->ice_type_map->{ $res->{train_no} },
+				details => {},    #$departure->{composition} // {},
+				dt_now => DateTime->now( time_zone => 'Europe/Berlin' ),
+
+				#station_name => "FIXME",#$station_name,
+			);
+		}
+	)->catch(
+		sub {
+			my ($e) = @_;
+			if ($e) {
+				$self->render(
+					'exception',
+					exception => $e,
+					snapshot  => {}
+				);
+			}
+			else {
+				$self->render('not_found');
+			}
+		}
+	)->wait;
 }
 
 sub handle_result {

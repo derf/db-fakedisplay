@@ -1,4 +1,4 @@
-<div class="app" data-station="<%= $station_name %>">
+<div class="app" data-station="<%= stash('station_name') // q{} %>">
 <div class="moreinfo" data-static="1">
 	%= include '_train_details'
 </div>
