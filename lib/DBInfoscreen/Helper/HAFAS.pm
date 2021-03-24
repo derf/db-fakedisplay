@@ -207,7 +207,7 @@ sub trainsearch_p {
 	my $promise = Mojo::Promise->new;
 
 	$self->get_json_p( $self->{realtime_cache},
-		"${base}&date=$opt{date_yy}&trainname=$opt{train_no}" )->then(
+		"${base}&date=$opt{date_yy}&trainname=$opt{train_req}" )->then(
 		sub {
 			my ($trainsearch) = @_;
 
@@ -285,7 +285,7 @@ sub get_route_timestamps_p {
 	if ( $opt{train} ) {
 		$opt{date_yy}      = $opt{train}->start->strftime('%d.%m.%y');
 		$opt{date_yyyy}    = $opt{train}->start->strftime('%d.%m.%Y');
-		$opt{train_no}     = $opt{train}->type . ' ' . $opt{train}->train_no;
+		$opt{train_req}    = $opt{train}->type . ' ' . $opt{train}->train_no;
 		$opt{train_origin} = $opt{train}->origin;
 	}
 	else {

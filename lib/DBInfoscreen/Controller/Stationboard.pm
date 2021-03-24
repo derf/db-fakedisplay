@@ -956,7 +956,7 @@ sub train_details {
 	my $linetype = 'bahn';
 
 	$self->hafas->get_route_timestamps_p(
-		train_no => "${train_type} $train_no" )->then(
+		train_req => "${train_type} $train_no" )->then(
 		sub {
 			my ( $route_ts, $route_info, $trainsearch ) = @_;
 
