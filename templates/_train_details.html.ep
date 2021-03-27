@@ -140,6 +140,12 @@
         <%= $text %><span style="padding-right: 0.5em;">.</span> 1. <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon1 %></i> 2. <i class="material-icons" aria-hidden="true" style="vertical-align: bottom;"><%= $icon2 %></i>
       </div>
 %   }
+%   elsif (my $o = $departure->{occupancy}) {
+      <div class="verbose">
+%       my ($text, $icon) = occupancy_icon($o);
+        <%= $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
+      </div>
+%   }
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
       Meldungen:

@@ -80,6 +80,35 @@ sub get_json_p {
 	return $promise;
 }
 
+sub get_efa_occupancy {
+	my ( $self, %opt ) = @_;
+
+	my $eva      = $opt{eva};
+	my $train_no = $opt{train_no};
+	my $promise  = Mojo::Promise->new;
+
+	$self->get_json_p( $self->{realtime_cache},
+		"https://vrrf.finalrewind.org/_eva/${eva}.json" )->then(
+		sub {
+			my ($utilization_json) = @_;
+
+			if ( $utilization_json->{$train_no}{occupancy} ) {
+				$promise->resolve( $utilization_json->{$train_no}{occupancy} );
+				return;
+			}
+			$promise->reject;
+			return;
+		}
+	)->catch(
+		sub {
+			$promise->reject;
+			return;
+		}
+	)->wait;
+
+	return $promise;
+}
+
 sub get_train_utilization {
 	my ( $self, %opt ) = @_;
 

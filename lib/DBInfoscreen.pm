@@ -295,6 +295,28 @@ sub startup {
 	);
 
 	$self->helper(
+		'occupancy_icon' => sub {
+			my ( $self, $occupancy ) = @_;
+
+			my @symbols
+			  = (qw(help_outline person_outline people priority_high));
+			my $text = 'Auslastung unbekannt';
+
+			if ( $occupancy > 2 ) {
+				$text = 'Sehr hohe Auslastung';
+			}
+			elsif ( $occupancy > 1 ) {
+				$text = 'Hohe Auslastung';
+			}
+			elsif ( $occupancy > 0 ) {
+				$text = 'Geringe Auslastung';
+			}
+
+			return ( $text, $symbols[$occupancy] );
+		}
+	);
+
+	$self->helper(
 		'utilization_icon' => sub {
 			my ( $self,  $utilization ) = @_;
 			my ( $first, $second )      = @{ $utilization // [ 0, 0 ] };

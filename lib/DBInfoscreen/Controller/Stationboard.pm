@@ -557,11 +557,14 @@ sub render_train {
 
 	my $wagonorder_req  = Mojo::Promise->new;
 	my $utilization_req = Mojo::Promise->new;
+	my $occupancy_req   = Mojo::Promise->new;
 	my $stationinfo_req = Mojo::Promise->new;
 	my $route_req       = Mojo::Promise->new;
 
-	my @requests
-	  = ( $wagonorder_req, $utilization_req, $stationinfo_req, $route_req );
+	my @requests = (
+		$wagonorder_req,  $utilization_req, $occupancy_req,
+		$stationinfo_req, $route_req
+	);
 
 	if ( $departure->{wr_link} ) {
 		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
@@ -605,6 +608,26 @@ sub render_train {
 		$wagonorder_req->resolve;
 		$utilization_req->resolve;
 	}
+
+	$self->marudor->get_efa_occupancy(
+		eva      => $result->station_uic,
+		train_no => $result->train_no
+	)->then(
+		sub {
+			my ($occupancy) = @_;
+			$departure->{occupancy} = $occupancy;
+			return;
+		},
+		sub {
+			$departure->{occupancy} = undef;
+			return;
+		}
+	)->finally(
+		sub {
+			$occupancy_req->resolve;
+			return;
+		}
+	)->wait;
 
 	$self->wagonorder->get_stationinfo_p( $result->station_uic )->then(
 		sub {
