@@ -25,16 +25,15 @@
 		zu:<br/>
 		• Abfahrtstafel: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		• Abfahrtstafel (Legacy): DB HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
-		v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 		• Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS via <a href="https://git.finalrewind.org/db-fakedisplay/tree/lib/DBInfoscreen/Helper/HAFAS.pm">Helper/HAFAS.pm</a><br/>
 		• Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		% if ($Travel::Status::DE::DBWagenreihung::VERSION) {
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
 		% }
 		<br/>
-		• Karte: <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a> von <a href="https://github.com/derhuerst">@derhuerst</a><br/>
-		• Zugauslastung: <a href="https://docs.marudor.de/">marudor.de</a><br/>
+		• Karte: DB HAFAS via <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a><br/>
+		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.marudor.de/">marudor.de</a><br/>
+		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
 		<br/>
 		Sie nutzt zusätzlich die folgenden Open Data-Ressourcen:<br/>
 		• <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Zugbildungsplan</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
