@@ -367,6 +367,10 @@ sub handle_request {
 		return;
 	}
 
+	# pre-fill station / train input form
+	$self->stash( input => $station );
+	$self->param( input => $station );
+
 	if ( $template eq 'json' ) {
 		$backend = 'iris';
 		$opt{lookahead} = 120;
