@@ -92,8 +92,9 @@ sub get_efa_occupancy {
 		sub {
 			my ($utilization_json) = @_;
 
-			if ( $utilization_json->{$train_no}{occupancy} ) {
-				$promise->resolve( $utilization_json->{$train_no}{occupancy} );
+			if ( $utilization_json->{train}{$train_no}{occupancy} ) {
+				$promise->resolve(
+					$utilization_json->{train}{$train_no}{occupancy} );
 				return;
 			}
 			$promise->reject;
