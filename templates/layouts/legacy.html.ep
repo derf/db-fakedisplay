@@ -17,7 +17,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v47'; # asset version
+	% my $av = 'v48'; # asset version
 	%= stylesheet "/static/${av}/css/default.css"
 	%= stylesheet "/static/${av}/css/material-icons.css"
 	%= stylesheet "/static/${av}/css/jquery-ui.min.css"
@@ -37,9 +37,6 @@
 	%= javascript '/static/js/jquery-3.4.1.min.js', defer => undef
 	%= javascript "/static/${av}/js/jquery-ui.min.js", defer => undef
 	%= javascript "/static/${av}/js/dbf.min.js", defer => undef
-	% }
-	% if (stash('with_geolocation')) {
-	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
 	% }
 </head>
 <body style="<%= (param('dark') ? 'background-color: #000000; color: #ffffff;' : q{}) %>">
@@ -99,7 +96,7 @@ Bitte eine Station aus der Liste auswählen</div>
   % if (not stash('show_intro')) {
     <div class="break"></div>
     <div class="field">
-      <a class="button" href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
     </div>
   % }
   <div class="break"></div>

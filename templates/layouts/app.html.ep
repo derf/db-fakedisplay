@@ -18,7 +18,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v47'; # asset version
+	% my $av = 'v48'; # asset version
 	% if (session('theme') and session('theme') eq 'dark' or param('dark')) {
 		%= stylesheet "/static/${av}/css/dark.min.css", id => 'theme'
 	% }
@@ -55,8 +55,11 @@
 	%= javascript '/static/js/jquery-3.4.1.min.js', defer => undef
 	%= javascript "/static/${av}/js/jquery-ui.min.js", defer => undef
 	%= javascript "/static/${av}/js/dbf.min.js", defer => undef
-	% if (stash('with_geolocation')) {
-	%= javascript "/static/${av}/js/geolocation.min.js", defer => undef
+	% if (stash('with_geostop')) {
+	%= javascript "/static/${av}/js/geostop.min.js", defer => undef
+	% }
+	% if (stash('with_geotrain')) {
+	%= javascript "/static/${av}/js/geotrain.min.js", defer => undef
 	% }
 	% if (stash('with_map')) {
 	%= stylesheet "/static/${av}/leaflet/leaflet.css"
@@ -89,7 +92,7 @@
 				% else {
 					<li><a href="#stationinput"><i class="material-icons" aria-label="Menü">edit</i></a></li>
 				% }
-				<li><a href="/_auto"><i class="material-icons" aria-label="Stationen in der Umgebung suchen">my_location</i></a></li>
+				<li><a href="/_autostop"><i class="material-icons" aria-label="Stationen in der Umgebung suchen">my_location</i></a></li>
 			</ul>
 		</div>
 	</nav>
@@ -140,7 +143,7 @@ Bitte eine Station aus der Liste auswählen</div>
   % if (not stash('show_intro')) {
     <div class="break"></div>
     <div class="field">
-      <a class="button" href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
     </div>
   % }
   <div class="break"></div>

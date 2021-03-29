@@ -11,6 +11,7 @@ sassc -t compressed sass/light.scss public/static/css/light.min.css
 scripts/update-autocomplete
 
 uglifyjs public/static/js/autocomplete.js public/static/js/collapse.js -c -m > public/static/js/dbf.min.js
-uglifyjs public/static/js/geolocation.js -c -m > public/static/js/geolocation.min.js
+uglifyjs public/static/js/geostop.js -c -m > public/static/js/geostop.min.js
+uglifyjs public/static/js/geotrain.js -c -m > public/static/js/geotrain.min.js
 uglifyjs public/static/js/map-refresh.js -c -m > public/static/js/map-refresh.min.js
 uglifyjs public/static/js/marquee.js -c -m > public/static/js/marquee.min.js

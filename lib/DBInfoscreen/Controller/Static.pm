@@ -39,13 +39,23 @@ sub redirect {
 	}
 }
 
-sub geolocation {
+sub geostop {
 	my ($self) = @_;
 
 	$self->render(
-		'geolocation',
-		with_geolocation => 1,
-		hide_opts        => 1
+		'geostop',
+		with_geostop => 1,
+		hide_opts    => 1
+	);
+}
+
+sub geotrain {
+	my ($self) = @_;
+
+	$self->render(
+		'geotrain',
+		with_geotrain => 1,
+		hide_opts     => 1
 	);
 }
 

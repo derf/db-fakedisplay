@@ -369,7 +369,11 @@ sub startup {
 
 	$r->get('/_redirect')->to('static#redirect');
 
-	$r->get('/_auto')->to('static#geolocation');
+	# legacy entry point
+	$r->get('/_auto')->to('static#geostop');
+
+	$r->get('/_autostop')->to('static#geostop');
+	$r->get('/_autotrain')->to('static#geotrain');
 
 	$r->get('/_datenschutz')->to('static#privacy');
 

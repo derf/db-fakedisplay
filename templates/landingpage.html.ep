@@ -9,7 +9,7 @@
   Verfügbarkeitsgarantie. Alle Angaben ohne Gewähr.
 </p>
 <p class="geolink">
-<a class="button" href="<%= url_for('_auto')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
 </p>
 <p>
 Oder hier angeben:
