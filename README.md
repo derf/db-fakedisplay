@@ -89,6 +89,7 @@ db-infoscreen respects the following environment variables:
 | :------- | :------ | :---------- |
 | DBFAKEDISPLAY\_LISTEN | `http://*:8092` | IP and Port for web service |
 | DBFAKEDISPLAY\_STATS | _None_ | File in which the total count of backend API requests (excluding those answered from cache) is written |
+| DBFAKEDISPLAY\_HAFAS\_API | `https://v5.db.transport.rest` | hafas-rest-api endpoint |
 | DBFAKEDISPLAY\_HAFAS\_CACHE | `/tmp/dbf-hafas` | Directory for HAFAS cache |
 | DBFAKEDISPLAY\_IRIS\_CACHE | `/tmp/dbf-iris-mian` | Directory for IRIS schedule cache |
 | DBFAKEDISPLAY\_IRISRT\_CACHE | `/tmp/dbf-iris-realtime` | Directory for IRIS realtime cache |

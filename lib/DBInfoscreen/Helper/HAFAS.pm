@@ -379,8 +379,8 @@ sub get_route_timestamps_p {
 sub get_polyline_p {
 	my ( $self, $trip_id, $line ) = @_;
 
-	my $url
-	  = "https://v5.db.transport.rest/trips/${trip_id}?lineName=${line}&polyline=true";
+	my $api     = $self->{api};
+	my $url     = "${api}/trips/${trip_id}?lineName=${line}&polyline=true";
 	my $cache   = $self->{realtime_cache};
 	my $promise = Mojo::Promise->new;
 

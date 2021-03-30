@@ -30,6 +30,8 @@ sub startup {
 	my ($self) = @_;
 
 	$self->config(
+		hafas_rest_api => $ENV{DBFAKEDISPLAY_HAFAS_API}
+		  // 'https://v5.db.transport.rest',
 		hypnotoad => {
 			accepts => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
 			clients => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
@@ -142,6 +144,7 @@ sub startup {
 		hafas => sub {
 			my ($self) = @_;
 			state $hafas = DBInfoscreen::Helper::HAFAS->new(
+				api            => $self->config->{hafas_rest_api},
 				log            => $self->app->log,
 				main_cache     => $self->app->cache_iris_main,
 				realtime_cache => $self->app->cache_iris_rt,
