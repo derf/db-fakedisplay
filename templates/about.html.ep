@@ -31,7 +31,12 @@
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
 		% }
 		<br/>
-		• Karte: DB HAFAS via <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a><br/>
+		% if (app->config->{hafas_rest_api} =~ m{v5.db.transport.rest}) {
+			• Karte: DB HAFAS via <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a><br/>
+		% }
+		% else {
+			• Karte: DB HAFAS via <a href="https://github.com/public-transport/hafas-rest-api">hafas-rest-api</a><br/>
+		% }
 		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.marudor.de/">marudor.de</a><br/>
 		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
 		<br/>
