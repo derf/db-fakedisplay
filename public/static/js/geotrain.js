@@ -31,8 +31,10 @@ $(function() {
 		removeStatus();
 		if (data.error) {
 			showError('Backend-Fehler:', data.error, null);
-		} else if (data.trains.length == 0) {
+		} else if (data.evas.length == 0) {
 			showError('Keine Bahnstrecke gefunden', '', null);
+		} else if (data.trains.length == 0) {
+			showError('Keine Züge auf der Strecke gefunden', '', null);
 		} else {
 			$.each(data.trains, function(i, train) {
 
@@ -48,7 +50,7 @@ $(function() {
 
 				var distancenode = $(document.createElement('div'));
 				distancenode.attr('class', 'traininfo');
-				distancenode.html(prev_time + ' ' + prev + '<br/>' + next_time + ' ' + next);
+				distancenode.html(train.likelihood + '%<br/>' + prev_time + ' ' + prev + '<br/>' + next_time + ' ' + next);
 
 				stationlink.append(distancenode);
 				$('div.candidatelist').append(stationlink);
