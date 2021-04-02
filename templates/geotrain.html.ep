@@ -1,5 +1,5 @@
 <div class="geolocation">
-<div class="candidateheader">Experimentelles Beta-Feature.<br/><br/>Züge auf der Strecke:</div>
+<div class="candidateheader">Beta-Feature<br/><br/>Züge auf der Strecke:</div>
 <div class="candidatestatus">Bitte warten…</div>
 <div class="candidatelist"></div>
 </div> <!-- geolocation -->

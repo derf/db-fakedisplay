@@ -124,16 +124,16 @@ Bitte eine Station aus der Liste auswählen</div>
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">Bahnhof / Haltestelle</div>
+    <div class="desc">Zug / Station</div>
     <div>
 % if (stash('stationlist')) {
       %= select_field input => stash('stationlist')
 % }
 % elsif (stash('input')) {
-      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder DS100-Kürzel', id => 'stationinput'
 % }
 % else {
-      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder DS100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
 % }
     </div>
   </div>
@@ -143,7 +143,10 @@ Bitte eine Station aus der Liste auswählen</div>
   % if (not stash('show_intro')) {
     <div class="break"></div>
     <div class="field">
-      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Bahnhöfe im Umfeld suchen</a>
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
+    </div>
+    <div class="field">
+      <a class="button" href="<%= url_for('_autotrain')->to_abs->scheme('https') %>">Fahrende Züge suchen (Beta)</a>
     </div>
   % }
   <div class="break"></div>
