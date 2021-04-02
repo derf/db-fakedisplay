@@ -1,5 +1,5 @@
 <div class="geolocation">
-<div class="candidateheader">Beta-Feature<br/><br/>Züge auf der Strecke:</div>
+<div class="candidateheader"><a href="https://finalrewind.org/interblag/entry/dbf-zuglokalisierung/">Experimentelles Beta-Feature</a><br/><br/>Züge auf der Strecke:</div>
 <div class="candidatestatus">Bitte warten…</div>
 <div class="candidatelist"></div>
 </div> <!-- geolocation -->
