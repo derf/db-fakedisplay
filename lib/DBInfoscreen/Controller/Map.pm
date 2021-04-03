@@ -235,7 +235,7 @@ sub estimate_train_positions {
 #    next_stop: {type, station}
 #    positions: [current position [lat, lon], 2s from now, 4s from now, ...]
 sub estimate_train_positions2 {
-	my (%opt) = @_;
+	my ( $self, %opt ) = @_;
 	my $now   = $opt{now};
 	my @route = @{ $opt{route} // [] };
 
@@ -248,6 +248,9 @@ sub estimate_train_positions2 {
 			and $now > ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
 			and $now < ( $route[$i]{arr} // $route[$i]{dep} ) )
 		{
+
+			# HAFAS does not provide delays for past stops
+			$self->backpropagate_delay( $route[ $i - 1 ], $route[$i] );
 
 			# (current position, future positons...) in 2 second steps
 			@train_positions = estimate_train_positions(
@@ -568,13 +571,13 @@ sub intersection {
 			my @route2
 			  = stopovers_to_route( @{ $pl2->{raw}{stopovers} // [] } );
 
-			my $train1_pos = estimate_train_positions2(
+			my $train1_pos = $self->estimate_train_positions2(
 				now      => $now,
 				route    => \@route1,
 				features => $pl1->{raw}{polyline}{features},
 			);
 
-			my $train2_pos = estimate_train_positions2(
+			my $train2_pos = $self->estimate_train_positions2(
 				now      => $now,
 				route    => \@route2,
 				features => $pl2->{raw}{polyline}{features},
@@ -662,6 +665,25 @@ sub intersection {
 	)->wait;
 }
 
+sub backpropagate_delay {
+	my ( $self, $prev_stop, $next_stop ) = @_;
+
+	if ( ( $next_stop->{arr_delay} || $next_stop->{dep_delay} )
+		and not( $prev_stop->{dep_delay} || $prev_stop->{arr_delay} ) )
+	{
+		$self->log->debug("need to back-propagate delay");
+		my $delay = $next_stop->{arr_delay} || $next_stop->{dep_delay};
+		if ( $prev_stop->{arr} ) {
+			$prev_stop->{arr}->add( minutes => $delay );
+			$prev_stop->{arr_delay} = $delay;
+		}
+		if ( $prev_stop->{dep} ) {
+			$prev_stop->{dep}->add( minutes => $delay );
+			$prev_stop->{dep_delay} = $delay;
+		}
+	}
+}
+
 sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -688,6 +710,12 @@ sub route {
 			my @line_pairs = polyline_to_line_pairs(@polyline);
 
 			my @route = stopovers_to_route( @{ $pl->{raw}{stopovers} // [] } );
+
+			my $train_pos = $self->estimate_train_positions2(
+				now      => $now,
+				route    => \@route,
+				features => $pl->{raw}{polyline}{features},
+			);
 
 			# Prepare from/to markers and name/time/delay overlays for stations
 			for my $stop (@route) {
@@ -737,12 +765,6 @@ sub route {
 				push( @station_coordinates,
 					[ [ $stop->{lat}, $stop->{lon} ], [@stop_lines], ] );
 			}
-
-			my $train_pos = estimate_train_positions2(
-				now      => $now,
-				route    => \@route,
-				features => $pl->{raw}{polyline}{features},
-			);
 
 			push(
 				@markers,
@@ -822,7 +844,7 @@ sub ajax_route {
 
 			my @route = stopovers_to_route( @{ $pl->{raw}{stopovers} // [] } );
 
-			my $train_pos = estimate_train_positions2(
+			my $train_pos = $self->estimate_train_positions2(
 				now      => $now,
 				route    => \@route,
 				features => $pl->{raw}{polyline}{features},
