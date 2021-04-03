@@ -59,7 +59,10 @@ $(function() {
 	};
 
 	var processLocation = function(loc) {
-		$.get('https://dbf.finalrewind.org/__geotrain/search', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult);
+		$.get('https://dbf.finalrewind.org/__geotrain/search', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+			removeStatus();
+			showError("Fehler im Zuglokalisierungs-Backend: ", textStatus, errorThrown);
+		});
 		$('div.candidatestatus').text('Suche Züge…');
 	};
 
