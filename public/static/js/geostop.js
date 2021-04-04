@@ -56,7 +56,10 @@ $(function() {
 	};
 
 	var processLocation = function(loc) {
-		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult);
+		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+			removeStatus();
+			showError("Netzwerkfehler: ", textStatus, errorThrown);
+		});
 		$('div.candidatestatus').text('Suche Bahnhöfe…');
 	};
 
