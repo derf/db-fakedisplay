@@ -14,7 +14,6 @@ use List::Util qw(max uniq);
 use List::MoreUtils qw();
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
-use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use XML::LibXML;
@@ -24,48 +23,25 @@ use utf8;
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
 
 my %default = (
-	backend => 'iris',
-	mode    => 'app',
-	admode  => 'deparr',
+	mode   => 'app',
+	admode => 'deparr',
 );
 
 sub handle_no_results {
-	my ( $self, $backend, $station, $errstr ) = @_;
+	my ( $self, $station, $errstr ) = @_;
 
-	if ( $backend eq 'ris' ) {
-		my $db_service = Travel::Status::DE::HAFAS::get_service('DB');
-		my $sf         = Travel::Status::DE::HAFAS::StopFinder->new(
-			url   => $db_service->{stopfinder},
-			input => $station,
+	my @candidates = map { [ $_->[1], $_->[0] ] }
+	  Travel::Status::DE::IRIS::Stations::get_station($station);
+	if ( @candidates > 1
+		or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+	{
+		$self->render(
+			'landingpage',
+			stationlist => \@candidates,
+			hide_opts   => 0,
+			status      => 300,
 		);
-		my @candidates
-		  = map { [ $_->{name}, $_->{id} ] } $sf->results;
-		if ( @candidates > 1
-			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
-		{
-			$self->render(
-				'landingpage',
-				stationlist => \@candidates,
-				hide_opts   => 0,
-				status      => 300,
-			);
-			return;
-		}
-	}
-	if ( $backend eq 'iris' ) {
-		my @candidates = map { [ $_->[1], $_->[0] ] }
-		  Travel::Status::DE::IRIS::Stations::get_station($station);
-		if ( @candidates > 1
-			or ( @candidates == 1 and $candidates[0][1] ne $station ) )
-		{
-			$self->render(
-				'landingpage',
-				stationlist => \@candidates,
-				hide_opts   => 0,
-				status      => 300,
-			);
-			return;
-		}
+		return;
 	}
 	$self->render(
 		'landingpage',
@@ -76,7 +52,7 @@ sub handle_no_results {
 }
 
 sub handle_no_results_json {
-	my ( $self, $backend, $station, $errstr, $api_version ) = @_;
+	my ( $self, $station, $errstr, $api_version ) = @_;
 
 	my $callback = $self->param('callback');
 
@@ -134,21 +110,10 @@ sub handle_no_results_json {
 sub result_is_train {
 	my ( $result, $train ) = @_;
 
-	if ( $result->can('train_id') ) {
-
-		# IRIS
-		if ( $train eq $result->type . ' ' . $result->train_no ) {
-			return 1;
-		}
-		return 0;
+	if ( $train eq $result->type . ' ' . $result->train_no ) {
+		return 1;
 	}
-	else {
-		# HAFAS
-		if ( $train eq $result->type . ' ' . $result->train ) {
-			return 1;
-		}
-		return 0;
-	}
+	return 0;
 }
 
 sub result_has_line {
@@ -222,7 +187,7 @@ sub log_api_access {
 }
 
 sub get_results_for {
-	my ( $backend, $station, %opt ) = @_;
+	my ( $station, %opt ) = @_;
 	my $data;
 
 	# Cache::File has UTF-8 problems, so strip it (and any other potentially
@@ -230,77 +195,46 @@ sub get_results_for {
 	my $cache_str = $station;
 	$cache_str =~ tr{[0-9a-zA-Z -]}{}cd;
 
-	if ( $backend eq 'iris' ) {
-
-		if ( $ENV{DBFAKEDISPLAY_STATS} ) {
-			log_api_access();
-		}
-
-		# requests with DS100 codes should be preferred (they avoid
-		# encoding problems on the IRIS server). However, only use them
-		# if we have an exact match. Ask the backend otherwise.
-		my @station_matches
-		  = Travel::Status::DE::IRIS::Stations::get_station($station);
-		if ( @station_matches == 1 ) {
-			$station = $station_matches[0][0];
-			my $status = Travel::Status::DE::IRIS->new(
-				station        => $station,
-				main_cache     => $opt{cache_iris_main},
-				realtime_cache => $opt{cache_iris_rt},
-				log_dir        => $ENV{DBFAKEDISPLAY_XMLDUMP_DIR},
-				lookbehind     => 20,
-				lwp_options    => {
-					timeout => 10,
-					agent   => 'dbf.finalrewind.org/2'
-				},
-				%opt
-			);
-			$data = {
-				results => [ $status->results ],
-				errstr  => $status->errstr,
-				station_name =>
-				  ( $status->station ? $status->station->{name} : $station ),
-			};
-		}
-		elsif ( @station_matches > 1 ) {
-			$data = {
-				results => [],
-				errstr  => 'Ambiguous station name',
-			};
-		}
-		else {
-			$data = {
-				results => [],
-				errstr  => 'Unknown station name',
-			};
-		}
+	if ( $ENV{DBFAKEDISPLAY_STATS} ) {
+		log_api_access();
 	}
-	elsif ( $backend eq 'ris' ) {
-		$data = $opt{cache_hafas}->thaw($cache_str);
-		if ( not $data ) {
-			if ( $ENV{DBFAKEDISPLAY_STATS} ) {
-				log_api_access();
-			}
-			my $status = Travel::Status::DE::HAFAS->new(
-				station       => $station,
-				excluded_mots => [qw[bus ferry ondemand tram u]],
-				lwp_options   => {
-					timeout => 10,
-					agent   => 'dbf.finalrewind.org/2'
-				},
-				%opt
-			);
-			$data = {
-				results => [ $status->results ],
-				errstr  => $status->errstr,
-			};
-			$opt{cache_hafas}->freeze( $cache_str, $data );
-		}
+
+	# requests with DS100 codes should be preferred (they avoid
+	# encoding problems on the IRIS server). However, only use them
+	# if we have an exact match. Ask the backend otherwise.
+	my @station_matches
+	  = Travel::Status::DE::IRIS::Stations::get_station($station);
+	if ( @station_matches == 1 ) {
+		$station = $station_matches[0][0];
+		my $status = Travel::Status::DE::IRIS->new(
+			station        => $station,
+			main_cache     => $opt{cache_iris_main},
+			realtime_cache => $opt{cache_iris_rt},
+			log_dir        => $ENV{DBFAKEDISPLAY_XMLDUMP_DIR},
+			lookbehind     => 20,
+			lwp_options    => {
+				timeout => 10,
+				agent   => 'dbf.finalrewind.org/2'
+			},
+			%opt
+		);
+		$data = {
+			results => [ $status->results ],
+			errstr  => $status->errstr,
+			station_name =>
+			  ( $status->station ? $status->station->{name} : $station ),
+		};
+	}
+	elsif ( @station_matches > 1 ) {
+		$data = {
+			results => [],
+			errstr  => 'Ambiguous station name',
+		};
 	}
 	else {
 		$data = {
 			results => [],
-			errstr  => "Backend '$backend' not supported",
+			errstr  => 'Unknown station name',
 		};
 	}
 
@@ -311,19 +245,14 @@ sub handle_request {
 	my ($self) = @_;
 	my $station = $self->stash('station');
 
-	my $template = $self->param('mode')    // 'app';
-	my $backend  = $self->param('backend') // 'iris';
+	my $template     = $self->param('mode') // 'app';
 	my $with_related = !$self->param('no_related');
 	my %opt          = (
-		cache_hafas     => $self->app->cache_hafas,
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
 	);
 
-	my $api_version
-	  = $backend eq 'iris'
-	  ? $Travel::Status::DE::IRIS::VERSION
-	  : $Travel::Status::DE::HAFAS::VERSION;
+	my $api_version = $Travel::Status::DE::IRIS::VERSION;
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
@@ -372,7 +301,6 @@ sub handle_request {
 	$self->param( input => $station );
 
 	if ( $template eq 'json' ) {
-		$backend = 'iris';
 		$opt{lookahead} = 120;
 	}
 
@@ -389,17 +317,16 @@ sub handle_request {
 		$opt{lookahead} = 200;
 	}
 
-	my $data   = get_results_for( $backend, $station, %opt );
+	my $data   = get_results_for( $station, %opt );
 	my $errstr = $data->{errstr};
 
 	if ( not @{ $data->{results} } and $template eq 'json' ) {
-		$self->handle_no_results_json( $backend, $station, $errstr,
-			$api_version );
+		$self->handle_no_results_json( $station, $errstr, $api_version );
 		return;
 	}
 
 	if ( not @{ $data->{results} } ) {
-		$self->handle_no_results( $backend, $station, $errstr );
+		$self->handle_no_results( $station, $errstr );
 		return;
 	}
 
@@ -503,27 +430,6 @@ sub format_iris_result_info {
 	}
 
 	push( @{$moreinfo}, $result->messages );
-
-	return ( $info, $moreinfo );
-}
-
-sub format_hafas_result_info {
-	my ( $self, $result ) = @_;
-	my ( $info, $moreinfo );
-
-	$info = $result->info;
-	if ($info) {
-		$moreinfo = [ [ 'HAFAS', $info ] ];
-	}
-	if ( $result->delay and $result->delay > 0 ) {
-		if ($info) {
-			$info = 'ca. +' . $result->delay . ': ' . $info;
-		}
-		else {
-			$info = 'ca. +' . $result->delay;
-		}
-	}
-	push( @{$moreinfo}, map { [ 'HAFAS', $_ ] } $result->messages );
 
 	return ( $info, $moreinfo );
 }
@@ -861,7 +767,6 @@ sub station_train_details {
 	}
 
 	my %opt = (
-		cache_hafas     => $self->app->cache_hafas,
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
 	);
@@ -876,7 +781,7 @@ sub station_train_details {
 	  ->subtract( minutes => 20 );
 	$opt{lookahead} = 200;
 
-	my $data   = get_results_for( 'iris', $station, %opt );
+	my $data   = get_results_for( $station, %opt );
 	my $errstr = $data->{errstr};
 
 	if ( not @{ $data->{results} } ) {
@@ -1078,7 +983,6 @@ sub handle_result {
 	my $hide_opts      = $self->param('hide_opts') // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
 	my $show_details   = $self->param('detailed') // 0;
-	my $backend        = $self->param('backend') // 'iris';
 	my $admode         = $self->param('admode') // 'deparr';
 	my $apiver         = $self->param('version') // 0;
 	my $callback       = $self->param('callback');
@@ -1111,7 +1015,7 @@ sub handle_result {
 		  map { [ $self->numeric_platform_part( $_->platform ), $_ ] } @results;
 	}
 
-	if ( $backend eq 'iris' and $show_realtime ) {
+	if ($show_realtime) {
 		if ( $admode eq 'arr' ) {
 			@results = sort {
 				( $a->arrival // $a->departure )
@@ -1131,56 +1035,45 @@ sub handle_result {
 	for my $result (@results) {
 		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
 		my $delay    = $result->delay;
-		if ( $backend eq 'iris' and $admode eq 'arr' and not $result->arrival )
-		{
+		if ( $admode eq 'arr' and not $result->arrival ) {
 			next;
 		}
-		if (    $backend eq 'iris'
-			and $admode eq 'dep'
+		if ( $admode eq 'dep'
 			and not $result->departure )
 		{
 			next;
 		}
-		my ( $info, $moreinfo );
-		if ( $backend eq 'iris' ) {
-			( $info, $moreinfo )
-			  = $self->format_iris_result_info( $template, $result );
-		}
-		else {
-			( $info, $moreinfo ) = $self->format_hafas_result_info($result);
-		}
+		my ( $info, $moreinfo )
+		  = $self->format_iris_result_info( $template, $result );
 
 		my $time     = $result->time;
 		my $linetype = 'bahn';
 
-		if ( $backend eq 'iris' ) {
+		my @classes = $result->classes;
+		if ( @classes == 0 ) {
+			$linetype = 'ext';
+		}
+		elsif ( grep { $_ eq 'S' } @classes ) {
+			$linetype = 'sbahn';
+		}
+		elsif ( grep { $_ eq 'F' } @classes ) {
+			$linetype = 'fern';
+		}
 
-			my @classes = $result->classes;
-			if ( @classes == 0 ) {
-				$linetype = 'ext';
-			}
-			elsif ( grep { $_ eq 'S' } @classes ) {
-				$linetype = 'sbahn';
-			}
-			elsif ( grep { $_ eq 'F' } @classes ) {
-				$linetype = 'fern';
-			}
+		# ->time defaults to dep, so we only need to overwrite $time
+		# if we want arrival times
+		if ( $admode eq 'arr' ) {
+			$time = $result->sched_arrival->strftime('%H:%M');
+		}
 
-			# ->time defaults to dep, so we only need to overwrite $time
-			# if we want arrival times
-			if ( $admode eq 'arr' ) {
-				$time = $result->sched_arrival->strftime('%H:%M');
+		if ($show_realtime) {
+			if ( ( $admode eq 'arr' and $result->arrival )
+				or not $result->departure )
+			{
+				$time = $result->arrival->strftime('%H:%M');
 			}
-
-			if ($show_realtime) {
-				if ( ( $admode eq 'arr' and $result->arrival )
-					or not $result->departure )
-				{
-					$time = $result->arrival->strftime('%H:%M');
-				}
-				else {
-					$time = $result->departure->strftime('%H:%M');
-				}
+			else {
+				$time = $result->departure->strftime('%H:%M');
 			}
 		}
 
@@ -1204,7 +1097,7 @@ sub handle_result {
 
 				# no longer supported
 				$self->handle_no_results_json(
-					$backend, undef,
+					undef,
 					"JSON API version=${apiver} is no longer supported",
 					$Travel::Status::DE::IRIS::VERSION
 				);
@@ -1280,7 +1173,7 @@ sub handle_result {
 				]
 			);
 		}
-		elsif ( $backend eq 'iris' ) {
+		else {
 			push(
 				@departures,
 				{
@@ -1346,33 +1239,6 @@ sub handle_result {
 					$data->{station_name} // $self->stash('station') );
 				return;
 			}
-		}
-		else {
-			push(
-				@departures,
-				{
-					time             => $time,
-					train            => $result->train,
-					train_type       => $result->type,
-					destination      => $result->destination,
-					platform         => $platform,
-					changed_platform => $result->is_changed_platform,
-					info             => $info,
-					is_cancelled     => $result->can('is_cancelled')
-					? $result->is_cancelled
-					: undef,
-					messages => {
-						delay => [],
-						qos   => [],
-					},
-					moreinfo         => $moreinfo,
-					delay            => $delay,
-					additional_stops => [],
-					canceled_stops   => [],
-					replaced_by      => [],
-					replacement_for  => [],
-				}
-			);
 		}
 	}
 

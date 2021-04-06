@@ -12,19 +12,11 @@ use DBInfoscreen::Helper::Marudor;
 use DBInfoscreen::Helper::Wagonorder;
 use File::Slurp qw(read_file);
 use JSON;
-use Travel::Status::DE::HAFAS;
-use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS::Stations;
 
 use utf8;
 
 no if $] >= 5.018, warnings => 'experimental::smartmatch';
-
-my %default = (
-	backend => 'iris',
-	mode    => 'app',
-	admode  => 'deparr',
-);
 
 sub startup {
 	my ($self) = @_;
@@ -64,18 +56,6 @@ sub startup {
 					return;
 				}
 			}
-		}
-	);
-
-	$self->attr(
-		cache_hafas => sub {
-			my ($self) = @_;
-			return Cache::File->new(
-				cache_root => $ENV{DBFAKEDISPLAY_HAFAS_CACHE}
-				  // '/tmp/dbf-hafas',
-				default_expires => '180 seconds',
-				lock_level      => Cache::File::LOCK_LOCAL(),
-			);
 		}
 	);
 
