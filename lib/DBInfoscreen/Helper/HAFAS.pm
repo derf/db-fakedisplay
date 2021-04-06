@@ -204,6 +204,10 @@ sub trainsearch_p {
 		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
+	# IRIS reports trains with unknown type as type "-". HAFAS thinks otherwise
+	# and prefers the type to be left out entirely in this case.
+	$opt{train_req} =~ s{^- }{};
+
 	my $promise = Mojo::Promise->new;
 
 	$self->get_json_p( $self->{realtime_cache},
