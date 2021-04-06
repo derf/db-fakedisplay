@@ -254,8 +254,8 @@ sub trainsearch_p {
 			}
 			else {
 				$self->{log}->warn(
-					"hafas->trainsearch_p($opt{train_no}): train not found");
-				$promise->reject("Zug $opt{train_no} nicht gefunden");
+					"hafas->trainsearch_p($opt{train_req}): train not found");
+				$promise->reject("Zug $opt{train_req} nicht gefunden");
 			}
 
            # do not propagate $promise->reject's return value to this promise.
@@ -266,7 +266,7 @@ sub trainsearch_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->warn("hafas->trainsearch_p($opt{train_no}): $err");
+			$self->{log}->warn("hafas->trainsearch_p($opt{train_req}): $err");
 			$promise->reject($err);
 
 			# do not propagate $promise->reject's return value to this promise
