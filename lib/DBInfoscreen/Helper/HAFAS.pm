@@ -385,12 +385,15 @@ sub get_polyline_p {
 
 	my $api     = $self->{api};
 	my $url     = "${api}/trips/${trip_id}?lineName=${line}&polyline=true";
+	my $log_url = $url;
 	my $cache   = $self->{realtime_cache};
 	my $promise = Mojo::Promise->new;
 
+	$log_url =~ s{://\K[^:]+:[^@]+\@}{***@};
+
 	if ( my $content = $cache->thaw($url) ) {
 		$promise->resolve($content);
-		$self->{log}->debug("GET $url (cached)");
+		$self->{log}->debug("GET $log_url (cached)");
 		return $promise;
 	}
 
@@ -401,14 +404,14 @@ sub get_polyline_p {
 
 			if ( my $err = $tx->error ) {
 				$self->{log}->warn(
-"hafas->get_polyline_p($url): HTTP $err->{code} $err->{message}"
+"hafas->get_polyline_p($log_url): HTTP $err->{code} $err->{message}"
 				);
 				$promise->reject(
-					"GET $url returned HTTP $err->{code} $err->{message}");
+					"GET $log_url returned HTTP $err->{code} $err->{message}");
 				return;
 			}
 
-			$self->{log}->debug("GET $url (OK)");
+			$self->{log}->debug("GET $log_url (OK)");
 			my $json = decode_json( $tx->res->body );
 			my @coordinate_list;
 
@@ -435,7 +438,7 @@ sub get_polyline_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->debug("GET $url (error: $err)");
+			$self->{log}->debug("GET $log_url (error: $err)");
 			$promise->reject($err);
 			return;
 		}
