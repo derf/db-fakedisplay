@@ -126,9 +126,18 @@ sub get_xml_p {
 			$body
 			  =~ s{<Attribute([^>]+)text="([^"]*)"([^"=]*)""}{<Attribute$1text="$2&#042;$3&#042;"}s;
 
-			# Dito for <HIMMessage [...] lead="[...]<br>[...]">.
+			# Dito for <HIMMessage [...] lead="[...]<br>[...]">
+			# (replace line breaks with space)
 			while ( $body
-				=~ s{<HIMMessage([^>]+)lead="([^"]*)<br/?>([^"=]*)"}{<HIMMessage$1lead="$2 $3"}gs
+				=~ s{<HIMMessage([^>]+)lead="([^"]*)<br/?>([^"=]*)"}{<HIMMessage$1lead="$2 $3"}gis
+			  )
+			{
+			}
+
+			# ... and any other HTML tag inside an XML attribute
+			# (remove them entirely)
+			while ( $body
+				=~ s{<HIMMessage([^>]+)lead="([^"]*)<[^>]+>([^"=]*)"}{<HIMMessage$1lead="$2$3"}gis
 			  )
 			{
 			}
