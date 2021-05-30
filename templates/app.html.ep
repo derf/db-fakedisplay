@@ -94,45 +94,44 @@
 %   }
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %>">
-%   if (param('detailed')) {
-%     my $arrow = '→';
-%     if (not $departure->{sched_arrival}) {
-%       $arrow = '↦';
+%     if ($departure->{delay} and not $departure->{is_cancelled}) {
+%       my $aria_delay = sprintf("Verspätung %d Minuten", $departure->{delay});
+%       if ($show_realtime) {
+%         if ($departure->{delay} > 0) {
+            <span class="delaynorm" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+%         }
+%         else {
+            <span class="undelaynorm" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+%         }
+%       }
+%       else {
+%         if ($departure->{delay} > 0) {
+            <span class="delay" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+%         }
+%         else {
+            <span class="undelay" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+%         }
+%       }
 %     }
-%     elsif (not $departure->{sched_departure}) {
-%       $arrow = '⇥';
-%     }
-%     if ($show_realtime) {
-%=      ($departure->{arrival} // q{}) . $arrow . ($departure->{departure} // q{})
+%     if (param('detailed')) {
+%       my $arrow = '→';
+%       if (not $departure->{sched_arrival}) {
+%         $arrow = '↦';
+%       }
+%       elsif (not $departure->{sched_departure}) {
+%         $arrow = '⇥';
+%       }
+%       if ($show_realtime) {
+%=        ($departure->{arrival} // q{}) . $arrow . ($departure->{departure} // q{})
+%       }
+%       else {
+%=        ($departure->{sched_arrival} // q{}) . $arrow . ($departure->{sched_departure} // q{})
+%       }
 %     }
 %     else {
-%=      ($departure->{sched_arrival} // q{}) . $arrow . ($departure->{sched_departure} // q{})
+%=      $departure->{time}
 %     }
-%   }
-%   else {
-%=    $departure->{time}
-%   }
     </span>
-    <span class="countdown">
-%   if ($departure->{delay} and not $departure->{is_cancelled}) {
-%     my $aria_delay = sprintf("Verspätung %d Minuten", $departure->{delay});
-%     if ($show_realtime) {
-%       if ($departure->{delay} > 0) {
-          <span class="delaynorm" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
-%       }
-%       else {
-          <span class="undelaynorm" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
-%       }
-%     }
-%     else {
-%       if ($departure->{delay} > 0) {
-          <span class="delay" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
-%       }
-%       else {
-          <span class="undelay" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
-%       }
-%     }
-%   }
 %   if (($departure->{scheduled_platform} and $departure->{platform} and
 %       $departure->{scheduled_platform} ne $departure->{platform})
 %       or $departure->{changed_platform}) {
@@ -142,7 +141,6 @@
       <span class="platform" aria-label="Gleis <%= $departure->{platform} %>">
 %   }
 %=  $departure->{platform}
-    </span>
     </span>
 %   if ($departure->{info} and length $departure->{info}) {
       <span class="info">

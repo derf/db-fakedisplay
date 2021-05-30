@@ -507,14 +507,19 @@ div.app li.cancelled {
 	background-color: $cancelled-bg-color;
 }
 
-div.app li .countdown {
+div.app li .platform {
 	background-color: transparent;
 	font-size: 3em;
+	font-weight: bold;
 	position: absolute;
 	right: 5px;
 	bottom: 2px;
 	padding-left: 0.2em;
 	color: $fg;
+}
+
+div.app li .changed-platform {
+	color: $info-color;
 }
 
 div.app li .header {
@@ -531,38 +536,31 @@ div.app li .head {
 	border-bottom-width:0;
 }
 
-div.app li .countdown .delay {
+div.app li .time .delay {
 	font-size:1em;
 	color: $delay-color;
 	background-color: transparent;
-	padding-right:7px;
+	padding-right: 1ex;
 }
 
-div.app li .countdown .undelay {
+div.app li .time .undelay {
 	font-size:1em;
 	color: $undelay-color;
-	padding-right:7px;
+	padding-right: 1ex;
 }
 
-div.app li .countdown .delaynorm {
+div.app li .time .delaynorm {
 	font-size:0.9em;
 	color: $delaynorm-color;
-	padding-right:7px;
+	padding-right: 1ex;
 }
 
-div.app li .countdown .undelaynorm {
+div.app li .time .undelaynorm {
 	font-size:0.9em;
 	color: $undelaynorm-color;
-	padding-right:7px;
+	padding-right: 1ex;
 }
 
-div.app li .countdown .platform {
-	font-weight: bold;
-}
-
-div.app li .countdown .changed-platform {
-	color: $info-color;
-}
 
 div.app li .time {
 	background-color: transparent;
