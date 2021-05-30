@@ -43,9 +43,7 @@
       data-moreinfo="<%= join(q{|}, map { ($_->[0]->isa('DateTime') ? $_->[0]->strftime('%H:%M') : $_->[0]) . ' ' . $_->[1] } @{ $departure->{moreinfo} // [] } ) %>"
       data-routeprev="<%= join(q{|}, @{ $departure->{route_pre} // [] } ) %>"
       data-routenext="<%= join(q{|}, @{ $departure->{route_post} // [] } ) %>"
-%   my $extraclasses = q{};
 %   if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
-%     $extraclasses .= ' cancelled';
       class="cancelled">
 %   }
 %   else {
@@ -85,17 +83,17 @@
       </div>
 %   }
 %   if ($departure->{sched_departure}) {
-      <span class="dest <%= $extraclasses %>" aria-label="nach <%= $departure->{destination} %>">
+      <span class="dest" aria-label="nach <%= $departure->{destination} %>">
 %=      $departure->{destination}
       </span>
 %   }
 %   else {
-      <span class="origin <%= $extraclasses %>" aria-label="von <%= $departure->{origin} %>">
+      <span class="origin" aria-label="von <%= $departure->{origin} %>">
 %=      $departure->{origin}
       </span>
 %   }
     <span class="time <%= ($show_realtime and $departure->{delay} and not
-      $departure->{is_cancelled}) ? 'delayed' : q{} %> <%= $extraclasses %>">
+      $departure->{is_cancelled}) ? 'delayed' : q{} %>">
 %   if (param('detailed')) {
 %     my $arrow = '→';
 %     if (not $departure->{sched_arrival}) {
@@ -115,7 +113,7 @@
 %=    $departure->{time}
 %   }
     </span>
-    <span class="countdown <%= $extraclasses %>">
+    <span class="countdown">
 %   if ($departure->{delay} and not $departure->{is_cancelled}) {
 %     my $aria_delay = sprintf("Verspätung %d Minuten", $departure->{delay});
 %     if ($show_realtime) {
