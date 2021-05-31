@@ -374,10 +374,16 @@ sub format_iris_result_info {
 	  = join( ', ', map { $_->[1] } $result->delay_messages );
 	my $qosmsg = join( ' +++ ', map { $_->[1] } $result->qos_messages );
 	if ( $result->is_cancelled ) {
-		$info = "Fahrt fällt aus: ${delaymsg}";
+		$info = "Fahrt fällt aus";
+		if ($delaymsg) {
+			$info .= ": ${delaymsg}";
+		}
 	}
 	elsif ( $result->departure_is_cancelled ) {
-		$info = "Zug endet hier: ${delaymsg}";
+		$info = "Zug endet hier";
+		if ($delaymsg) {
+			$info .= ": ${delaymsg}";
+		}
 	}
 	elsif ( $result->delay and $result->delay > 0 ) {
 		if ( $template eq 'app' or $template eq 'infoscreen' ) {
