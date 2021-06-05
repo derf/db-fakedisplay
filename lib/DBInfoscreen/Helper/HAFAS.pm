@@ -121,10 +121,14 @@ sub get_xml_p {
 			$body =~ s{P&R}{P&amp;R};
 			$body =~ s{Wagen \d+ \K&(?= )}{&amp;};
 
-			# <Attribute [...] text="[...] "[...]"" /> is invalid XML.
+			# <Attribute [...] text="[...]"[...]"" /> is invalid XML.
 			# Work around it.
 			$body
-			  =~ s{<Attribute([^>]+)text="([^"]*)"([^"=]*)""}{<Attribute$1text="$2&#042;$3&#042;"}s;
+			  =~ s{<Attribute([^>]+)text="([^"]*)"([^"=>]*)""}{<Attribute$1text="$2&#042;$3&#042;"}s;
+
+			# Same for <HIMMessage lead="[...]"[...]"[...]" />
+			$body
+			  =~ s{<HIMMessage([^>]+)lead="([^"]*)"([^"=>]*)"([^"]*)"}{<Attribute$1text="$2&#042;$3&#042;$4"}s;
 
 			# Dito for <HIMMessage [...] lead="[...]<br>[...]">
 			# (replace line breaks with space)
