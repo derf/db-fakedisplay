@@ -235,346 +235,332 @@ div.app {
 	border-width:1px 2px;
 	width:100%;
 	margin-bottom: 5em;
-}
 
-div.app > ul {
-	position:relative;
-	width:100%;
+	> ul {
+		position:relative;
+		width:100%;
+	
+		list-style-type:none;
+		margin:0;
+		padding:0;
 
-	list-style-type:none;
-	margin:0;
-	padding:0;
-}
+		> li {
+			min-height:7em;
+			display:block;
+			width:100%;
+			position:relative;
+			cursor: pointer;
+			border-bottom: 1px solid $li-border-color;
+			background-color: $bg;
 
-div.app > ul > li {
-	min-height:7em;
-	display:block;
-	width:100%;
-	position:relative;
-	cursor: pointer;
-	border-bottom: 1px solid $li-border-color;
-	background-color: $bg;
-}
+			&.cancelled {
+				background-color: $cancelled-bg-color;
+			}
 
-div.app li .anchor {
-	position: relative;
-	top: -12em;
-}
+			.anchor {
+				position: relative;
+				top: -12em;
+			}
 
-div.app li .line {
-	font-size: 2.7em;
-	position:absolute;
-	bottom:5px;
-	left:2px;
-	max-width: 6em;
-	max-height: 3ex;
-	overflow: hidden;
-}
+			.line {
+				font-size: 2.7em;
+				position:absolute;
+				bottom:5px;
+				left:2px;
+				max-width: 6em;
+				max-height: 3ex;
+				overflow: hidden;
 
-div.app .trainsubtype {
-	font-weight: normal;
-	font-size: 70%;
-	position: relative;
-	vertical-align: baseline;
-	top: -0.6ex;
-	left: -0.5ex;
-}
+				.trainno {
+					font-weight: normal;
+				}
 
-div.app li .line .trainno {
-	font-weight: normal;
-}
+				.trainno_sub {
+					font-weight: normal;
+					font-size: 0.6em;
+					text-align: center;
+					margin-top: -0.2em;
+				}
+			}
 
-div.app li .line .trainno_sub {
-	font-weight: normal;
-	font-size: 0.6em;
-	text-align: center;
-	margin-top: -0.2em;
-}
+			.sbahn .trainno_sub {
+				font-weight: normal;
+				font-size: 0.5em;
+				text-align: center;
+				margin-top: -0.25em;
+			}
 
-div.app li .sbahn .trainno_sub {
-	font-weight: normal;
-	font-size: 0.5em;
-	text-align: center;
-	margin-top: -0.25em;
-}
+			.lineinfo {
+				color:$fg;
+				font-size: 2em;
+				position:absolute;
+				top:0px;
+				left:2px;
+			}
 
-div.app li .lineinfo {
-	color:$fg;
-	font-size: 2em;
-	position:absolute;
-	top:0px;
-	left:2px;
-}
+			.route {
+				background-color: transparent;
+				font-size:2.1em;
+				position:absolute;
+				top:1px;
+				left:7.7em;
+				right: 7em;
+				height: 1.2em;
+				overflow: hidden;
+				color: $route-color;
+			}
 
-div.app .replacement {
-	color: $replacement-color;
-}
+			.info {
+				color: $info-color;
+				background-color: transparent;
+				font-size:2.1em;
+				position:absolute;
+				top:1px;
+				left:7.7em;
+				right: 7em;
+				height: 1.2em;
+				overflow: hidden;
+			}
 
-div.app .replaced {
-	color: $replaced-color;
-}
+			.dest {
+				background-color: transparent;
+				font-size:4em;
+				position:absolute;
+				top:0.62em;
+				left:4em;
+				bottom:0px;
+				width: 70%;
+				overflow: hidden;
+				color: $fg;
+			}
 
-div.app .sbahn {
-	font-weight:bold;
-	border-radius: 30px;
-	padding:3px 6px 2px 6px;
-	background-color: $sbahn-color;
-}
+			.origin {
+				background-color: transparent;
+				font-size:4em;
+				position:absolute;
+				top:0.62em;
+				left:4em;
+				bottom:0px;
+				width: 70%;
+				overflow: hidden;
+				color: $fg2;
 
-div.app .bahn,
-div.app .fern,
-div.app .ext {
-	font-weight:bold;
-	border-radius: 5px;
-	padding:3px 5px 2px 5px;
-}
+				&:before {
+					content: "von ";
+				}
+			}
 
-div.app .bahn {
-	background-color: $bahn-color;
-}
+			.platform {
+				background-color: transparent;
+				font-size: 3em;
+				font-weight: bold;
+				position: absolute;
+				right: 5px;
+				bottom: 2px;
+				padding-left: 0.2em;
+				color: $fg;
+			}
 
-div.app .fern {
-	background-color: $fern-color;
-}
+			.changed-platform {
+				color: $info-color;
+			}
 
-div.app .ext {
-	border: 2px solid $bahn-color;
-}
 
-div.app li .route {
-	background-color: transparent;
-	font-size:2.1em;
-	position:absolute;
-	top:1px;
-	left:7.7em;
-	right: 7em;
-	height: 1.2em;
-	overflow: hidden;
-	color: $route-color;
-}
+			.time {
+				background-color: transparent;
+				font-size:2.3em;
+				position:absolute;
+				right:5px;
+				top:4px;
+				padding-left: 0.2em;
+				color: $fg;
 
-div.app li .info {
-	color: $info-color;
-	background-color: transparent;
-	font-size:2.1em;
-	position:absolute;
-	top:1px;
-	left:7.7em;
-	right: 7em;
-	height: 1.2em;
-	overflow: hidden;
-}
+				&.delayed {
+					color: $delay-color;
+					background-color: transparent;
+				}
 
-div.app .moreinfo {
-	font-size:2.1em;
-	position:fixed;
-	left:0;
-	right:0;
-	bottom:0em;
-	z-index: 5;
-	overflow: auto;
-	cursor: default;
-	background-color: $bg;
-}
+				.delay {
+					font-size:1em;
+					color: $delay-color;
+					background-color: transparent;
+					padding-right: 1ex;
+				}
 
-div.app .moreinfo .mheader,
-div.app .moreinfo .mfooter {
-	max-width: 50em;
-	margin-left: auto;
-	margin-right: auto;
-}
+				.undelay {
+					font-size:1em;
+					color: $undelay-color;
+					padding-right: 1ex;
+				}
 
-div.app .collapsed-moreinfo {
-	display: none;
-}
+				.delaynorm {
+					font-size:0.9em;
+					color: $delaynorm-color;
+					padding-right: 1ex;
+				}
 
-div.app .expanded-moreinfo {
-	display: block;
-}
-
-div.app .moreinfo .mheader {
-	text-align: center;
-	font-size: 120%;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-	padding-left: 1em;
-	padding-right: 1em;
-	border-bottom: 0.1em dashed #cccccc;
-}
-
-div.app .moreinfo .mfooter {
-	padding-top: 0.5em;
-	padding-left: 1em;
-	padding-right: 1em;
-}
-
-div.app .moreinfo .dataline {
-	font-size: 120%;
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 1em;
-}
-
-div.app .moreinfo .dataline > div {
-	width: 33%;
-}
-
-div.app .moreinfo .departure {
-	text-align: right;
-}
-
-div.app .moreinfo .platform {
-	text-align: center;
-}
-
-div.app .moreinfo .arrival {
-	display: inline-block;
-	text-align: right;
-}
-
-div.app .moreinfo .loading {
-	text-align: center;
-	width: 100%;
-	color: #888888;
-}
-
-div.app .moreinfo .minfo {
-	color: $info-color;
-}
-
-div.app .moreinfo .undelay {
-	color: $undelay-color;
-}
-
-div.app .moreinfo .verbose {
-	margin-bottom: 1em;
-}
-
-div.app .moreinfo .mroute .important-stop {
-	color: $fg;
-}
-
-div.app .moreinfo .mroute .generic-stop {
-	color: $fg2;
-}
-
-div.app .moreinfo .mroute .additional-stop {
-	color: $additional-stop-color;
-}
-
-div.app .moreinfo .mroute .cancelled-stop {
-	color: $cancelled-stop-color;
-}
-
-div.app .moreinfo .db-attr {
-	margin-bottom: 1em;
-
-	span {
-		margin-right: 0.5em;
+				.undelaynorm {
+					font-size:0.9em;
+					color: $undelaynorm-color;
+					padding-right: 1ex;
+				}
+			}
+		}
 	}
-}
 
-div.app li .dest {
-	background-color: transparent;
-	font-size:4em;
-	position:absolute;
-	top:0.62em;
-	left:4em;
-	bottom:0px;
-	width: 70%;
-	overflow: hidden;
-	color: $fg;
-}
-
-div.app li .origin {
-	background-color: transparent;
-	font-size:4em;
-	position:absolute;
-	top:0.62em;
-	left:4em;
-	bottom:0px;
-	width: 70%;
-	overflow: hidden;
-	color: $fg2;
-
-	&:before {
-		content: "von ";
+	.trainsubtype {
+		font-weight: normal;
+		font-size: 70%;
+		position: relative;
+		vertical-align: baseline;
+		top: -0.6ex;
+		left: -0.5ex;
 	}
-}
 
-div.app li.cancelled {
-	background-color: $cancelled-bg-color;
-}
+	.replacement {
+		color: $replacement-color;
+	}
 
-div.app li .platform {
-	background-color: transparent;
-	font-size: 3em;
-	font-weight: bold;
-	position: absolute;
-	right: 5px;
-	bottom: 2px;
-	padding-left: 0.2em;
-	color: $fg;
-}
+	.replaced {
+		color: $replaced-color;
+	}
 
-div.app li .changed-platform {
-	color: $info-color;
-}
+	.sbahn {
+		font-weight:bold;
+		border-radius: 30px;
+		padding:3px 6px 2px 6px;
+		background-color: $sbahn-color;
+	}
 
-div.app li .header {
-	color:$fg;
-	font-size:2em;
-	font-weight:bold;
-	padding-top:8px;
-	border-width-top:0;
-	display:block;
-	text-align:center;
-}
+	.bahn, .fern, .ext {
+		font-weight:bold;
+		border-radius: 5px;
+		padding:3px 5px 2px 5px;
+	}
 
-div.app li .head {
-	border-bottom-width:0;
-}
+	.bahn {
+		background-color: $bahn-color;
+	}
 
-div.app li .time .delay {
-	font-size:1em;
-	color: $delay-color;
-	background-color: transparent;
-	padding-right: 1ex;
-}
+	.fern {
+		background-color: $fern-color;
+	}
 
-div.app li .time .undelay {
-	font-size:1em;
-	color: $undelay-color;
-	padding-right: 1ex;
-}
+	.ext {
+		border: 2px solid $bahn-color;
+	}
 
-div.app li .time .delaynorm {
-	font-size:0.9em;
-	color: $delaynorm-color;
-	padding-right: 1ex;
-}
+	.moreinfo {
+		font-size:2.1em;
+		position:fixed;
+		left:0;
+		right:0;
+		bottom:0em;
+		z-index: 5;
+		overflow: auto;
+		cursor: default;
+		background-color: $bg;
 
-div.app li .time .undelaynorm {
-	font-size:0.9em;
-	color: $undelaynorm-color;
-	padding-right: 1ex;
-}
+		.mheader, .mfooter {
+			max-width: 50em;
+			margin-left: auto;
+			margin-right: auto;
+		}
 
+		.mheader {
+			text-align: center;
+			font-size: 120%;
+			padding-top: 0.5em;
+			padding-bottom: 0.5em;
+			padding-left: 1em;
+			padding-right: 1em;
+			border-bottom: 0.1em dashed #cccccc;
+		}
 
-div.app li .time {
-	background-color: transparent;
-	font-size:2.3em;
-	position:absolute;
-	right:5px;
-	top:4px;
-	padding-left: 0.2em;
-	color: $fg;
-}
+		.mfooter {
+			padding-top: 0.5em;
+			padding-left: 1em;
+			padding-right: 1em;
+		}
 
-div.app span.delayed {
-	color: $delay-color;
-	background-color: transparent;
+		.dataline {
+			font-size: 120%;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 1em;
+
+			> div {
+				width: 33%;
+			}
+		}
+
+		.departure {
+			text-align: right;
+		}
+
+		.platform {
+			text-align: center;
+		}
+
+		.arrival {
+			display: inline-block;
+			text-align: right;
+		}
+
+		.loading {
+			text-align: center;
+			width: 100%;
+			color: #888888;
+		}
+
+		.minfo {
+			color: $info-color;
+		}
+
+		.undelay {
+			color: $undelay-color;
+		}
+
+		.verbose {
+			margin-bottom: 1em;
+		}
+
+		.mroute {
+			.important-stop {
+				color: $fg;
+			}
+
+			.generic-stop {
+				color: $fg2;
+			}
+
+			.additional-stop {
+				color: $additional-stop-color;
+			}
+
+			.cancelled-stop {
+				color: $cancelled-stop-color;
+			}
+		}
+
+		.db-attr {
+			margin-bottom: 1em;
+
+			span {
+				margin-right: 0.5em;
+			}
+		}
+
+	}
+
+	.collapsed-moreinfo {
+		display: none;
+	}
+
+	.expanded-moreinfo {
+		display: block;
+	}
 }
 
 ul.ui-autocomplete {
