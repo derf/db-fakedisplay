@@ -28,7 +28,9 @@ my %default = (
 );
 
 sub handle_no_results {
-	my ( $self, $station, $errstr ) = @_;
+	my ( $self, $station, $data ) = @_;
+
+	my $errstr = $data->{errstr};
 
 	my @candidates = map { [ $_->[1], $_->[0] ] }
 	  Travel::Status::DE::IRIS::Stations::get_station($station);
@@ -43,17 +45,27 @@ sub handle_no_results {
 		);
 		return;
 	}
+	if ( $data->{station_ds100} and $data->{station_ds100} =~ m{ ^ [XYZ] }x ) {
+		$self->render(
+			'landingpage',
+			error => ( $errstr // "Keine Abfahrten an '$station'" )
+			  . '. Das von DBF genutzte IRIS-Backend unterstützt im Regelfall nur innerdeutsche Zugfahrten.',
+			hide_opts => 0
+		);
+		return;
+	}
 	$self->render(
 		'landingpage',
-		error     => ( $errstr // "Got no results for '$station'" ),
+		error     => ( $errstr // "Keine Abfahrten an '$station'" ),
 		hide_opts => 0
 	);
 	return;
 }
 
 sub handle_no_results_json {
-	my ( $self, $station, $errstr, $api_version ) = @_;
+	my ( $self, $station, $data, $api_version ) = @_;
 
+	my $errstr   = $data->{errstr};
 	my $callback = $self->param('callback');
 
 	$self->res->headers->access_control_allow_origin(q{*});
@@ -221,6 +233,8 @@ sub get_results_for {
 		$data = {
 			results => [ $status->results ],
 			errstr  => $status->errstr,
+			station_ds100 =>
+			  ( $status->station ? $status->station->{ds100} : undef ),
 			station_name =>
 			  ( $status->station ? $status->station->{name} : $station ),
 		};
@@ -317,16 +331,15 @@ sub handle_request {
 		$opt{lookahead} = 200;
 	}
 
-	my $data   = get_results_for( $station, %opt );
-	my $errstr = $data->{errstr};
+	my $data = get_results_for( $station, %opt );
 
 	if ( not @{ $data->{results} } and $template eq 'json' ) {
-		$self->handle_no_results_json( $station, $errstr, $api_version );
+		$self->handle_no_results_json( $station, $data, $api_version );
 		return;
 	}
 
 	if ( not @{ $data->{results} } ) {
-		$self->handle_no_results( $station, $errstr );
+		$self->handle_no_results( $station, $data );
 		return;
 	}
 
@@ -1104,7 +1117,10 @@ sub handle_result {
 				# no longer supported
 				$self->handle_no_results_json(
 					undef,
-					"JSON API version=${apiver} is no longer supported",
+					{
+						errstr =>
+						  "JSON API version=${apiver} is no longer supported"
+					},
 					$Travel::Status::DE::IRIS::VERSION
 				);
 				return;

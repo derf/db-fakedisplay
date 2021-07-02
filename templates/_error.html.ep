@@ -1,5 +1,5 @@
 <div class="error"><strong>Fehler:</strong>
-<pre>
+<p style="font-family: Monospace;">
 %= $error
-</pre>
+</p>
 </div>

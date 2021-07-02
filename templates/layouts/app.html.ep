@@ -101,9 +101,9 @@
 <div class="container">
 % if (my $error = stash 'error') {
 <div class="error"><strong>Fehler:</strong>
-<pre>
+<p>
 %= $error
-</pre>
+</p>
 </div>
 % }
 % elsif (stash('stationlist')) {
