@@ -34,8 +34,12 @@ sub handle_no_results {
 
 	my @candidates = map { [ $_->[1], $_->[0] ] }
 	  Travel::Status::DE::IRIS::Stations::get_station($station);
-	if ( @candidates > 1
-		or ( @candidates == 1 and $candidates[0][1] ne $station ) )
+	if (
+		@candidates > 1
+		or (    @candidates == 1
+			and $candidates[0][0] ne $station
+			and $candidates[0][1] ne $station )
+	  )
 	{
 		$self->render(
 			'landingpage',
