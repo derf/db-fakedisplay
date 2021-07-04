@@ -44,7 +44,7 @@ for (var station_id in stations) {
 		opacity: 0.7,
 		fillColor: '#f03',
 		fillOpacity: 0.5,
-		radius: 250
+		radius: <%= stash('station_radius') || 250 %>
 	}).bindPopup(stations[station_id][1].join('<br/>')).addTo(map);
 }
 

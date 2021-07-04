@@ -224,7 +224,7 @@ sub estimate_train_positions {
 
 # Input:
 #   now: DateTime
-#   route: hash
+#   route: arrayref of hashrefs
 #     lat: float
 #     lon: float
 #     name: str
@@ -241,9 +241,13 @@ sub estimate_train_positions2 {
 
 	my @train_positions;
 	my $next_stop;
+	my $geo                    = Geo::Distance->new;
+	my $stop_distance_sum      = 0;
+	my $avg_inter_stop_beeline = 0;
 
 	for my $i ( 1 .. $#route ) {
-		if (    ( $route[$i]{arr} // $route[$i]{dep} )
+		if (    not $next_stop
+			and ( $route[$i]{arr} // $route[$i]{dep} )
 			and ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
 			and $now > ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
 			and $now < ( $route[$i]{arr} // $route[$i]{dep} ) )
@@ -264,9 +268,9 @@ sub estimate_train_positions2 {
 				type    => 'next',
 				station => $route[$i],
 			};
-			last;
 		}
-		if ( ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
+		if (    not $next_stop
+			and ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
 			and $now <= ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} ) )
 		{
 			@train_positions
@@ -275,8 +279,17 @@ sub estimate_train_positions2 {
 				type    => 'present',
 				station => $route[ $i - 1 ],
 			};
-			last;
 		}
+		$stop_distance_sum += $geo->distance(
+			'meter',
+			$route[ $i - 1 ]{lon},
+			$route[ $i - 1 ]{lat},
+			$route[$i]{lon}, $route[$i]{lat}
+		);
+	}
+
+	if ($#route) {
+		$avg_inter_stop_beeline = $stop_distance_sum / $#route;
 	}
 
 	if ( @route and not $next_stop ) {
@@ -290,9 +303,10 @@ sub estimate_train_positions2 {
 	my $position_now = shift @train_positions;
 
 	return {
-		next_stop    => $next_stop,
-		position_now => $position_now,
-		positions    => \@train_positions,
+		next_stop              => $next_stop,
+		avg_inter_stop_beeline => $avg_inter_stop_beeline,
+		position_now           => $position_now,
+		positions              => \@train_positions,
 	};
 }
 
@@ -809,7 +823,9 @@ sub route {
 					}
 				],
 				station_coordinates => [@station_coordinates],
-				markers             => [@markers],
+				station_radius =>
+				  ( $train_pos->{avg_inter_stop_beeline} > 500 ? 250 : 100 ),
+				markers => [@markers],
 			);
 		}
 	)->catch(
