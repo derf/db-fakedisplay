@@ -49,7 +49,8 @@ sub handle_no_results {
 		);
 		return;
 	}
-	if ( $data->{station_ds100} and $data->{station_ds100} =~ m{ ^ [XYZ] }x ) {
+	if ( $data->{station_ds100} and $data->{station_ds100} =~ m{ ^ [OPQXYZ] }x )
+	{
 		$self->render(
 			'landingpage',
 			error => ( $errstr // "Keine Abfahrten an '$station'" )
