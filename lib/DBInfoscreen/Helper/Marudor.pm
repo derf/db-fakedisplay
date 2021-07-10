@@ -88,7 +88,8 @@ sub get_efa_occupancy {
 	my $promise  = Mojo::Promise->new;
 
 	$self->get_json_p( $self->{realtime_cache},
-		"https://vrrf.finalrewind.org/_eva/${eva}.json" )->then(
+		"https://vrrf.finalrewind.org/_eva/occupancy-by-eva/${eva}.json" )
+	  ->then(
 		sub {
 			my ($utilization_json) = @_;
 
