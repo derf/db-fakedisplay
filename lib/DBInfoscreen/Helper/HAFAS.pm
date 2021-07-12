@@ -138,6 +138,14 @@ sub get_xml_p {
 			{
 			}
 
+			# ... and <HIMMessage [...] lead="[...]<>[...]">
+			# (replace <> with t$t)
+			while ( $body
+				=~ s{<HIMMessage([^>]+)lead="([^"]*)<>([^"=]*)"}{<HIMMessage$1lead="$2&#11020;$3"}gis
+			  )
+			{
+			}
+
 			# ... and any other HTML tag inside an XML attribute
 			# (remove them entirely)
 			while ( $body
