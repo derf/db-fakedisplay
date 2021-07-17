@@ -199,7 +199,11 @@
             "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
-            "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+            "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %>
+%            if ($stop->{rt_bogus}) {
+               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%            }
+             <%= $stop->{name} %></a>
 %         }
           </li>
 %       }
@@ -237,7 +241,11 @@
             "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
-            "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %> <%= $stop->{name} %></a>
+            "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %>
+%            if ($stop->{rt_bogus}) {
+               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%            }
+            <%= $stop->{name} %></a>
 %         }
           </li>
 %       }

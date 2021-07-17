@@ -381,6 +381,17 @@ sub get_route_timestamps_p {
 						$ret->{$name}{rt_dep} = $ret->{$name}{sched_dep}
 						  ->clone->add( minutes => $delay->{ddelay} );
 					}
+					if (
+						(
+							defined $delay->{adelay}
+							and $delay->{adelay} eq q{}
+						)
+						or
+						( defined $delay->{ddelay} and $delay->{ddelay} eq q{} )
+					  )
+					{
+						$ret->{$name}{rt_bogus} = 1;
+					}
 				}
 			}
 
