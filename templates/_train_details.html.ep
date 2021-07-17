@@ -225,6 +225,9 @@
                 (heute <%= $departure->{arrival} %>)
 %             }
 %           }
+%           if ($departure->{missing_realtime}) {
+              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%           }
             <strong><%= stash('station_name') %></strong>
           </li>
 %       }
