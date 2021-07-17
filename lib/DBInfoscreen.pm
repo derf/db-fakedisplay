@@ -286,13 +286,13 @@ sub startup {
 			my $text = 'Auslastung unbekannt';
 
 			if ( $occupancy > 2 ) {
-				$text = 'Sehr hohe Auslastung';
+				$text = 'Sehr hohe Auslastung erwartet';
 			}
 			elsif ( $occupancy > 1 ) {
-				$text = 'Hohe Auslastung';
+				$text = 'Hohe Auslastung erwartet';
 			}
 			elsif ( $occupancy > 0 ) {
-				$text = 'Geringe Auslastung';
+				$text = 'Geringe Auslastung erwartet';
 			}
 
 			return ( $text, $symbols[$occupancy] );
