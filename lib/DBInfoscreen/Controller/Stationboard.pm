@@ -679,6 +679,9 @@ sub render_train {
 				}
 			}
 			if ($route_ts) {
+				if ( $route_ts->{ $result->station }{rt_bogus} ) {
+					$departure->{missing_realtime} = 1;
+				}
 				for my $elem (
 					@{ $departure->{route_pre_diff} },
 					@{ $departure->{route_post_diff} }
@@ -687,6 +690,9 @@ sub render_train {
 					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
 					{
 						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+					}
+					if ( $elem->{rt_bogus} ) {
+						$departure->{partially_missing_realtime} = 1;
 					}
 				}
 			}
