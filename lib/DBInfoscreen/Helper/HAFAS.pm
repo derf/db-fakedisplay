@@ -392,6 +392,9 @@ sub get_route_timestamps_p {
 					{
 						$ret->{$name}{rt_bogus} = 1;
 					}
+					if ( $delay->{ddelay} and $delay->{ddelay} eq 'cancel' ) {
+						$ret->{$name}{isCancelled} = 1;
+					}
 				}
 			}
 
