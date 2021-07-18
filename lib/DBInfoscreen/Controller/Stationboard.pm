@@ -166,10 +166,6 @@ sub result_has_train_type {
 sub result_has_via {
 	my ( $result, $via ) = @_;
 
-	if ( not $result->can('route_post') ) {
-		return 1;
-	}
-
 	my @route = $result->route_post;
 
 	my $eq_result = List::MoreUtils::any { lc eq lc($via) } @route;
@@ -1169,10 +1165,8 @@ sub handle_result {
 						delayArrival   => $delay_arr,
 						delayDeparture => $delay_dep,
 						destination    => $result->destination,
-						isCancelled    => $result->can('is_cancelled')
-						? $result->is_cancelled
-						: undef,
-						messages => {
+						isCancelled    => $result->is_cancelled,
+						messages       => {
 							delay => [
 								map {
 									{
