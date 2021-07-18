@@ -475,6 +475,16 @@ sub render_train {
 		)
 	];
 
+	if ( not $result->has_realtime ) {
+		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+		if ( $result->start < $now ) {
+			$departure->{missing_realtime} = 1;
+		}
+		else {
+			$departure->{no_realtime_yet} = 1;
+		}
+	}
+
 	my $linetype = 'bahn';
 	my @classes  = $result->classes;
 	if ( @classes == 0 ) {
@@ -680,7 +690,8 @@ sub render_train {
 			}
 			if ($route_ts) {
 				if ( $route_ts->{ $result->station }{rt_bogus} ) {
-					$departure->{missing_realtime} = 1;
+
+					#$departure->{missing_realtime} = 1;
 				}
 				for my $elem (
 					@{ $departure->{route_pre_diff} },

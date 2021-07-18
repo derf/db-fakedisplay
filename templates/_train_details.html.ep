@@ -133,10 +133,10 @@
         <a class="smallbutton" href="<%= $link->[1] %>"><i class="material-icons" aria-hidden="true">warning</i> <%= $link->[0] %></a>
 %     }
 %     if ($departure->{missing_realtime}) {
-        <span class="disabledbutton" title="Nur Fahrplandaten verfügbar. Ob die Zugfahrt tatsächlich stattfindet, ist noch nicht bekannt."><i class="material-icons" aria-hidden="true">gps_off</i> Echtzeitdaten fehlen</span>
+        <span class="disabledbutton" title="Nur Fahrplandaten verfügbar. Ob die Zugfahrt tatsächlich stattfindet, ist nicht bekannt."><i class="material-icons" aria-hidden="true">gps_off</i> Echtzeitdaten fehlen</span>
 %     }
-%     elsif ($departure->{partially_missing_realtime}) {
-        <span class="disabledbutton"><i class="material-icons" aria-hidden="true">gps_off</i> Echtzeitdaten unvollständig</span>
+%     elsif ($departure->{no_realtime_yet}) {
+        <span class="disabledbutton" title="Nur Fahrplandaten verfügbar. Ob die Zugfahrt tatsächlich stattfindet, ist noch nicht bekannt."><i class="material-icons" aria-hidden="true">gps_off</i> Noch keine Echtzeitdaten verfügbar</span>
 %     }
     </div>
 
@@ -225,7 +225,7 @@
                 (heute <%= $departure->{arrival} %>)
 %             }
 %           }
-%           if ($departure->{missing_realtime}) {
+%           if ($departure->{missing_realtime} or $departure->{no_realtime_yet}) {
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %           }
             <strong><%= stash('station_name') %></strong>
