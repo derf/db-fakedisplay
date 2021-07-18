@@ -532,6 +532,10 @@ div.app {
 
 		.verbose {
 			margin-bottom: 1em;
+
+			.no-realtime {
+				color: $cancelled-stop-color;
+			}
 		}
 
 		.mroute {

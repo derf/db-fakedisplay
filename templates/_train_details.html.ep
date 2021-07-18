@@ -132,12 +132,6 @@
 %     for my $link (@{$departure->{links}}) {
         <a class="smallbutton" href="<%= $link->[1] %>"><i class="material-icons" aria-hidden="true">warning</i> <%= $link->[0] %></a>
 %     }
-%     if ($departure->{missing_realtime}) {
-        <span class="disabledbutton" title="Nur Fahrplandaten verfügbar. Ob die Zugfahrt tatsächlich stattfindet, ist nicht bekannt."><i class="material-icons" aria-hidden="true">gps_off</i> Echtzeitdaten fehlen</span>
-%     }
-%     elsif ($departure->{no_realtime_yet}) {
-        <span class="disabledbutton" title="Nur Fahrplandaten verfügbar. Ob die Zugfahrt tatsächlich stattfindet, ist noch nicht bekannt."><i class="material-icons" aria-hidden="true">gps_off</i> Noch keine Echtzeitdaten verfügbar</span>
-%     }
     </div>
 
 %   if (not $departure->{departure_is_cancelled}) {
@@ -153,6 +147,17 @@
           <%= $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
         </div>
 %     }
+%   }
+%
+%   if ($departure->{missing_realtime}) {
+      <div class="verbose">
+        <i class="material-icons no-realtime" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;">gps_off</i> Echtzeitdaten fehlen. Ob die Zugfahrt wie im Fahrplan vorgesehen stattfindet, ist nicht bekannt.
+      </div>
+%   }
+%   elsif ($departure->{no_realtime_yet}) {
+      <div class="verbose">
+        <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;">gps_off</i> Für diese Zugfahrt sind derzeit nur Fahrplandaten bekannt.
+      </div>
 %   }
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
