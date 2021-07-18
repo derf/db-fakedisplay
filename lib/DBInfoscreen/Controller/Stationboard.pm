@@ -1025,6 +1025,8 @@ sub handle_result {
 	my $callback       = $self->param('callback');
 	my $via            = $self->param('via');
 
+	my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
 	if ( $self->param('ajax') ) {
 		delete $self->stash->{layout};
 	}
@@ -1184,6 +1186,12 @@ sub handle_result {
 								} $result->qos_messages
 							],
 						},
+						missingRealtime => (
+							(
+								not $result->has_realtime
+								  and $result->start < $now
+							) ? \1 : \0
+						),
 						platform           => $result->platform,
 						route              => \@json_route,
 						scheduledPlatform  => $result->sched_platform,
@@ -1255,6 +1263,10 @@ sub handle_result {
 					station          => $result->station,
 					moreinfo         => $moreinfo,
 					delay            => $delay,
+					missing_realtime => (
+						not $result->has_realtime
+						  and $result->start < $now ? 1 : 0
+					),
 					route_pre        => [ $result->route_pre ],
 					route_post       => [ $result->route_post ],
 					additional_stops => [ $result->additional_stops ],

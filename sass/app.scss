@@ -380,6 +380,14 @@ div.app {
 					background-color: transparent;
 				}
 
+				.no-realtime {
+					background-color: transparent;
+					padding-right: 1ex;
+					i.material-icons {
+						font-size: 12px;
+					}
+				}
+
 				.delay {
 					font-size:1em;
 					color: $delay-color;

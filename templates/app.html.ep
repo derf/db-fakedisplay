@@ -113,6 +113,9 @@
 %         }
 %       }
 %     }
+%     elsif ($departure->{missing_realtime}) {
+        <span class="no-realtime" aria-label="Echtzeitdaten fehlen"><i class="material-icons" aria-hidden="true">gps_off</i></span>
+%     }
 %     if (param('detailed')) {
 %       my $arrow = '→';
 %       if (not $departure->{sched_arrival}) {
