@@ -60,8 +60,12 @@ and set `PERL5LIB=.../local/lib/perl5` before running index.pl or wrap it
 with `carton exec hypnotoad index.pl`.
 
 Note that you should provide imprint and privacy policy pages. Depending on
-traffic volume, you may also want to increase the amount of worker processes.
-See the Setup notes below.
+traffic volume, you may also want to increase the amount of worker processes
+and install a caching proxy in front of DBF.  See the Setup notes below.
+
+To update your DBF installation, run `git pull`, ensure that all files are
+readable by your www user, and re-run `carton install` or `cpanm --installdeps
+.`.
 
 Installation with Docker
 ---
@@ -79,6 +83,9 @@ provide imprint and privacy policy pages, see the Setup notes below.
 
 Use `docker run -e DBFAKEDISPLAY_WORKERS=4 ...` and similar to pass environment
 variables to the db-infoscreen service.
+
+To update your Docker installation, fetch a new image from Docker Hub and
+re-start the container.
 
 Setup
 ---
@@ -122,8 +129,7 @@ for a shell script.
 
 DBF will periodically reload `share/zugbildungsplan.json`. You can use your
 service supervisor (e.g. `systemctl reload db-infoscreen`) to force an
-immediate reload. You may also ignore the file entirely; it is entirely
-optional.
+immediate reload. You may also ignore the file; it is entirely optional.
 
 System requirements
 ---
