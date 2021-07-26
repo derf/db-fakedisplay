@@ -306,6 +306,7 @@ sub get_route_timestamps_p {
 	my ( $self, %opt ) = @_;
 
 	my $promise = Mojo::Promise->new;
+	my $now     = DateTime->now( time_zone => 'Europe/Berlin' );
 
 	if ( $opt{train} ) {
 		$opt{date_yy}      = $opt{train}->start->strftime('%d.%m.%y');
@@ -314,7 +315,6 @@ sub get_route_timestamps_p {
 		$opt{train_origin} = $opt{train}->origin;
 	}
 	else {
-		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 		$opt{date_yy}   = $now->strftime('%d.%m.%y');
 		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
@@ -355,6 +355,8 @@ sub get_route_timestamps_p {
 				time_zone => 'Europe/Berlin',
 			);
 
+			my $station_is_past = 1;
+
 			for
 			  my $station ( @{ $traininfo->{suggestions}[0]{locations} // [] } )
 			{
@@ -380,21 +382,35 @@ sub get_route_timestamps_p {
 					{
 						$ret->{$name}{rt_dep} = $ret->{$name}{sched_dep}
 						  ->clone->add( minutes => $delay->{ddelay} );
+						if (
+							(
+								defined $delay->{adelay}
+								and $delay->{adelay} eq q{}
+							)
+							or ( defined $delay->{ddelay}
+								and $delay->{ddelay} eq q{} )
+						  )
+						{
+							$ret->{$name}{rt_bogus} = 1;
+						}
+						if ( $delay->{ddelay} and $delay->{ddelay} eq 'cancel' )
+						{
+							$ret->{$name}{isCancelled} = 1;
+						}
 					}
 					if (
-						(
-							defined $delay->{adelay}
-							and $delay->{adelay} eq q{}
-						)
-						or
-						( defined $delay->{ddelay} and $delay->{ddelay} eq q{} )
+						    $station_is_past
+						and not $ret->{$name}{isCancelled}
+						and $now->epoch < (
+							$ret->{$name}{rt_arr} // $ret->{$name}{rt_dep}
+							  // $ret->{$name}{sched_arr}
+							  // $ret->{$name}{sched_dep} // $now
+						)->epoch
 					  )
 					{
-						$ret->{$name}{rt_bogus} = 1;
+						$station_is_past = 0;
 					}
-					if ( $delay->{ddelay} and $delay->{ddelay} eq 'cancel' ) {
-						$ret->{$name}{isCancelled} = 1;
-					}
+					$ret->{$name}{isPast} = $station_is_past;
 				}
 			}
 
