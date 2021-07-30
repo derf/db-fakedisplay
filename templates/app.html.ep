@@ -49,6 +49,7 @@
 %   else {
       >
 %   }
+    <a href="/z/<%= Mojo::Util::url_escape(($departure->{train_type} // q{}) . ' ' . ($departure->{train_no} // $departure->{train} // q{}) . '/' .  ($departure->{station} // $station)) %>">
     <div class="anchor" id="<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>"></div>
     <div class="line <%= $departure->{linetype} %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
@@ -155,6 +156,7 @@
 %=    $route_str
       </span>
 %   }
+    </a>
     </li>
 
 % }

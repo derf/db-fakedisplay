@@ -91,9 +91,10 @@ function dbf_show_moreinfo(trainElem, keep_old) {
 }
 
 function dbf_reg_handlers() {
-	$('div.app > ul > li').click(function() {
+	$('div.app > ul > li').click(function(event) {
 		const trainElem = $(this);
 		const station = $('div.app').data('station');
+		event.preventDefault();
 		var suffix = '';
 		if (window.location.href.includes('detailed=1')) {
 			suffix = '?detailed=1';
