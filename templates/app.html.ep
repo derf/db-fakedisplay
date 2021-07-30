@@ -84,38 +84,40 @@
       </div>
 %   }
 %   if ($departure->{sched_departure}) {
-      <span class="dest" aria-label="nach <%= $departure->{destination} %>">
+      <span class="dest">
+        <span class="visually-hidden">nach</span>
 %=      $departure->{destination}
       </span>
 %   }
 %   else {
-      <span class="origin" aria-label="von <%= $departure->{origin} %>">
+      <span class="origin">
+        <span class="visually-hidden">von</span>
 %=      $departure->{origin}
       </span>
 %   }
     <span class="time <%= ($show_realtime and $departure->{delay} and not
       $departure->{is_cancelled}) ? 'delayed' : q{} %>">
 %     if ($departure->{delay} and not $departure->{is_cancelled}) {
-%       my $aria_delay = sprintf("Verspätung %d Minuten", $departure->{delay});
 %       if ($show_realtime) {
 %         if ($departure->{delay} > 0) {
-            <span class="delaynorm" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+            <span class="delaynorm" aria-hidden="true">(+<%= $departure->{delay} %>)</span>
 %         }
 %         else {
-            <span class="undelaynorm" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+            <span class="undelaynorm" aria-hidden="true">(<%= $departure->{delay} %>)</span>
 %         }
 %       }
 %       else {
 %         if ($departure->{delay} > 0) {
-            <span class="delay" aria-label="<%= $aria_delay %>">(+<%= $departure->{delay} %>)</span>
+            <span class="delay" aria-hidden="true">(+<%= $departure->{delay} %>)</span>
 %         }
 %         else {
-            <span class="undelay" aria-label="<%= $aria_delay %>">(<%= $departure->{delay} %>)</span>
+            <span class="undelay" aria-hidden="true">(<%= $departure->{delay} %>)</span>
 %         }
 %       }
 %     }
 %     elsif ($departure->{missing_realtime}) {
-        <span class="no-realtime" aria-label="Echtzeitdaten fehlen"><i class="material-icons" aria-hidden="true">gps_off</i></span>
+        <span class="visually-hidden">Echtzeitdaten fehlen</span>
+        <span class="no-realtime" aria-hidden="true"><i class="material-icons">gps_off</i></span>
 %     }
 %     if (param('detailed')) {
 %       my $arrow = '→';
@@ -139,11 +141,12 @@
 %   if (($departure->{scheduled_platform} and $departure->{platform} and
 %       $departure->{scheduled_platform} ne $departure->{platform})
 %       or $departure->{changed_platform}) {
-      <span class="platform changed-platform" aria-label="Gleis <%= $departure->{platform} %>">
+      <span class="platform changed-platform">
 %   }
 %   else {
-      <span class="platform" aria-label="Gleis <%= $departure->{platform} %>">
+      <span class="platform">
 %   }
+    <span class="visually-hidden">Gleis</span>
 %=  $departure->{platform}
     </span>
 %   if ($departure->{info} and length $departure->{info}) {
@@ -152,7 +155,8 @@
       </span>
 %   }
 %   else {
-      <span class="route" aria-label="Über <%= $route_str %>">
+      <span class="route">
+      <span class="visually-hidden">über</span>
 %=    $route_str
       </span>
 %   }

@@ -18,7 +18,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v55'; # asset version
+	% my $av = 'v56'; # asset version
 	% if (session('theme') and session('theme') eq 'dark' or param('dark')) {
 		%= stylesheet "/static/${av}/css/dark.min.css", id => 'theme'
 	% }
@@ -84,15 +84,15 @@
 			% }
 			<ul id="nav-mobile" style="float: right;">
 				<li class="waves-effect waves-light">
-					<a onClick="javascript:toggleTheme()"><i class="material-icons" aria-label="Farbschema invertieren">invert_colors</i></a>
+					<a onClick="javascript:toggleTheme()"><span class="visually-hidden">Farbschema invertieren</span><i class="material-icons" aria-hidden="true">invert_colors</i></a>
 				</li>
 				% if (stash('hide_opts')) {
-					<li><a href="/"><i class="material-icons" aria-label="Hauptseite">edit</i></a></li>
+					<li><a href="/"><span class="visually-hidden">Hauptseite</span><i class="material-icons" aria-hidden="true">edit</i></a></li>
 				% }
 				% else {
-					<li><a href="#stationinput"><i class="material-icons" aria-label="Menü">edit</i></a></li>
+					<li><a href="#stationinput"><span class="visually-hidden">Menü</span><i class="material-icons" aria-hidden="true">edit</i></a></li>
 				% }
-				<li><a href="/_autostop"><i class="material-icons" aria-label="Stationen in der Umgebung suchen">my_location</i></a></li>
+				<li><a href="/_autostop"><span class="visually-hidden">Stationen in der Umgebung suchen</span><i class="material-icons" aria-hidden="true">my_location</i></a></li>
 			</ul>
 		</div>
 	</nav>
