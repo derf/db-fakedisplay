@@ -277,7 +277,8 @@ sub wagenreihung {
 		sub {
 			my ($err) = @_;
 
-			$self->handle_wagenreihung_error( $train, scalar $err );
+			$self->handle_wagenreihung_error( $train,
+				$err->{error}->{msg} // "Unbekannter Fehler" );
 			return;
 		}
 	)->wait;
