@@ -34,10 +34,12 @@ sub get_json_p {
 	my $promise = Mojo::Promise->new;
 
 	if ( my $content = $cache->thaw($url) ) {
+		$self->{log}->debug("marudor->get_json_p($url): cached");
+		if ( $content->{error} ) {
+			return $promise->reject( $content->{error} );
+		}
 		return $promise->resolve($content);
 	}
-
-	$self->{log}->debug("get_json_p($url)");
 
 	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
 	  ->then(
@@ -48,6 +50,7 @@ sub get_json_p {
 				$self->{log}->debug(
 "marudor->get_json_p($url): HTTP $err->{code} $err->{message}"
 				);
+				$cache->freeze( $url, { error => $err->{message} } );
 				$promise->reject(
 					"GET $url returned HTTP $err->{code} $err->{message}");
 				return;
@@ -72,6 +75,7 @@ sub get_json_p {
 		sub {
 			my ($err) = @_;
 			$self->{log}->debug("marudor->get_json_p($url): $err");
+			$cache->freeze( $url, { error => $err } );
 			$promise->reject($err);
 			return;
 		}
