@@ -108,6 +108,7 @@ sub head_dbdb_p {
 	my $cache = $self->{main_cache};
 
 	if ( my $content = $cache->get($url) ) {
+		$self->{log}->debug("wagonorder->head_dbdb_p($url): cached ($content)");
 		if ( $content eq 'y' ) {
 			return $promise->resolve;
 		}
@@ -121,10 +122,12 @@ sub head_dbdb_p {
 		sub {
 			my ($tx) = @_;
 			if ( $tx->result->is_success ) {
+				$self->{log}->debug("wagonorder->head_dbdb_p($url): y");
 				$cache->set( $url, 'y' );
 				$promise->resolve;
 			}
 			else {
+				$self->{log}->debug("wagonorder->head_dbdb_p($url): n");
 				$cache->set( $url, 'n' );
 				$promise->reject;
 			}
@@ -132,6 +135,7 @@ sub head_dbdb_p {
 		}
 	)->catch(
 		sub {
+			$self->{log}->debug("wagonorder->head_dbdb_p($url): n");
 			$cache->set( $url, 'n' );
 			$promise->reject;
 			return;
@@ -150,35 +154,50 @@ sub has_cycle_p {
 sub check_wagonorder_p {
 	my ( $self, $train_no, $wr_link ) = @_;
 
-	return $self->get_dbdb_p(
+	my $promise = Mojo::Promise->new;
+
+	$self->head_dbdb_p(
 		"https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${wr_link}"
-	);
+	)->then(
+		sub {
+			$promise->resolve;
+			return;
+		}
+	)->catch(
+		sub {
+			$self->get_p( $train_no, $wr_link )->then(
+				sub {
+					$promise->resolve;
+					return;
+				}
+			)->catch(
+				sub {
+					$promise->reject;
+					return;
+				}
+			)->wait;
+			return;
+		}
+	)->wait;
+
+	return $promise;
 }
 
 sub get_p {
 	my ( $self, $train_no, $api_ts ) = @_;
 
 	my $url
-	  = "https://ist-wr.noncd.db.de/wagenreihung/1.0/${train_no}/${api_ts}";
-
-	if (
-		my $content = $self->{main_cache}->get(
-"https://lib.finalrewind.org/dbdb/has_wagonorder/${train_no}/${api_ts}"
-		)
-	  )
-	{
-		if ( $content !~ m{i} and $content =~ m{a} ) {
-			$url
-			  = "https://www.apps-bahn.de/wr/wagenreihung/1.0/${train_no}/${api_ts}";
-		}
-	}
+	  = "https://www.apps-bahn.de/wr/wagenreihung/1.0/${train_no}/${api_ts}";
 
 	my $cache = $self->{realtime_cache};
 
 	my $promise = Mojo::Promise->new;
 
 	if ( my $content = $cache->thaw($url) ) {
-		$self->{log}->debug("GET $url (cached)");
+		$self->{log}->debug("wagonorder->get_p($url): cached");
+		if ( $content->{error} ) {
+			return $promise->reject($content);
+		}
 		return $promise->resolve($content);
 	}
 
@@ -188,15 +207,21 @@ sub get_p {
 			my ($tx) = @_;
 
 			if ( my $err = $tx->error ) {
-				$self->{log}->warn(
+				my $json = {
+					error => {
+						id  => $err->{code},
+						msg => $err->{message}
+					}
+				};
+				$self->{log}->debug(
 					"wagonorder->get_p($url): HTTP $err->{code} $err->{message}"
 				);
-				$promise->reject(
-					"GET $url returned HTTP $err->{code} $err->{message}");
+				$cache->freeze( $url, $json );
+				$promise->reject($json);
 				return;
 			}
 
-			$self->{log}->debug("GET $url (OK)");
+			$self->{log}->debug("wagonorder->get_p($url): OK");
 			my $json = $tx->res->json;
 
 			$cache->freeze( $url, $json );
@@ -206,7 +231,7 @@ sub get_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->warn("GET $url: $err");
+			$self->{log}->warn("wagonorder->get_p($url): $err");
 			$promise->reject("GET $url: $err");
 			return;
 		}
