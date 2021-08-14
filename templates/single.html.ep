@@ -1,3 +1,9 @@
+<p class="notice">
+<strong>Deprecation Warning.</strong>
+Dieses Frontend wird nicht mehr weitergewickelt und möglicherweise in einer
+zukünftigen DBF-Version abgeschaltet.
+</p>
+
 % if (@{$departures}) {
 
 <div class="displaysingle">
