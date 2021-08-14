@@ -140,15 +140,6 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="field">
     %= submit_button 'Abfahrtsmonitor'
   </div>
-  % if (not stash('show_intro')) {
-    <div class="break"></div>
-    <div class="field">
-      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
-    </div>
-    <div class="field">
-      <a class="button" href="<%= url_for('_autotrain')->to_abs->scheme('https') %>">Fahrende Züge suchen (Beta)</a>
-    </div>
-  % }
   <div class="break"></div>
   <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
   <div class="moresettings moresettings-collapsed">
