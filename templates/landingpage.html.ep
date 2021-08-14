@@ -12,7 +12,8 @@
 <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
 </p>
 <p class="geolink">
-<a class="button" href="<%= url_for('_autotrain')->to_abs->scheme('https') %>">Fahrende Züge suchen (Beta)</a>
+Oder
+<a href="<%= url_for('_autotrain')->to_abs->scheme('https') %>">Züge in der Umgebung suchen</a> (Beta-Feature)
 </p>
 <p>
 Oder hier angeben:
