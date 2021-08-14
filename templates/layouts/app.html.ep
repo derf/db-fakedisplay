@@ -154,10 +154,42 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="moresettings moresettings-collapsed">
     <div class="field">
       <div class="desc">
-        Frontend
+        %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
+        <label for="id_show_realtime">
+          Zeiten inkl. Verspätung angeben
+        </label>
       </div>
-      <div>
-        %= select_field mode => [ ['App' => 'app'], ['Infoscreen' => 'infoscreen'], ['Bahnhofstafel' => 'multi'], ['Gleisanzeiger' => 'single'] ]
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
+        <label for="id_hidelowdelay">
+          Verspätungen erst ab 5 Minuten anzeigen
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'detailed' => 1, id => 'id_detailed'
+        <label for="id_detailed">
+          Mehr Details (u.a. Zugnummern und Zugbildungsplan)
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'no_related' => 1, id => 'id_no_related'
+        <label for="id_no_related">
+        Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
+        <label for="id_hide_opts">
+          Formular verstecken (für Infoscreens)
+        </label>
       </div>
     </div>
     <div class="field">
@@ -178,22 +210,6 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
-        <label for="id_hidelowdelay">
-          Verspätungen erst ab 5 Minuten anzeigen
-        </label>
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
-        %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
-        <label for="id_hide_opts">
-          Formular verstecken (für Infoscreens)
-        </label>
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
         Ankunfts- oder Abfahrtszeit anzeigen?
       </div>
       <div>
@@ -202,26 +218,10 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        %= check_box 'detailed' => 1, id => 'id_detailed'
-        <label for="id_detailed">
-          Mehr Details anzeigen (u.a. Zugnummern und Zugbildungsplan)
-        </label>
+        Frontend
       </div>
-    </div>
-    <div class="field">
-      <div class="desc">
-        %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
-        <label for="id_show_realtime">
-          Echtzeitangaben statt Fahrplandaten anzeigen
-        </label>
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
-        %= check_box 'no_related' => 1, id => 'id_no_related'
-        <label for="id_no_related">
-        Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
-        </label>
+      <div>
+        %= select_field mode => [ ['App' => 'app'], ['Infoscreen' => 'infoscreen'], ['Bahnhofstafel (legacy)' => 'multi'], ['Gleisanzeiger (legacy)' => 'single'] ]
       </div>
     </div>
     <div class="field">
