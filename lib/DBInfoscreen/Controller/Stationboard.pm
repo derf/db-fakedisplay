@@ -1120,9 +1120,6 @@ sub handle_result {
 			if ($info) {
 				$info =~ s{ (?: ca [.] \s* )? [+] [ 1 2 3 4 ] $ }{}x;
 			}
-			if ( $delay and $delay < 5 ) {
-				$delay = undef;
-			}
 		}
 		if ($info) {
 			$info =~ s{ (?: ca [.] \s* )? [+] (\d+) }{Verspätung ca $1 Min.}x;
