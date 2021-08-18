@@ -111,6 +111,10 @@ index.pl daemon -m production** (quick&dirty, does not respect all variables)
 or **hypnotoad** (recommended). A systemd unit example is provided in
 `examples/db-infoscreen.service`.
 
+For public-facing installations, you may want to enable caching in the reverse
+proxy serving DBF. See `examples/nginx-cache.conf` and
+`examples/nginx-site.conf` for nginx examples.
+
 All code in this repository may be used under the terms of the BSD-2-Clause
 (db-infoscreen, see COPYING) and MIT (jquery, jqueryui, and marquee libraries;
 see the respective files) licenses.  Attribution is appreciated.
