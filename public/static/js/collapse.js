@@ -95,9 +95,12 @@ function dbf_reg_handlers() {
 		const trainElem = $(this);
 		const station = $('div.app').data('station');
 		event.preventDefault();
-		var suffix = '';
+		var suffix = '?';
 		if (window.location.href.includes('detailed=1')) {
-			suffix = '?detailed=1';
+			suffix += '&detailed=1';
+		}
+		if (window.location.href.includes('past=1')) {
+			suffix += '&past=1';
 		}
 		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
 		dbf_show_moreinfo(trainElem, false);

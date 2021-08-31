@@ -177,6 +177,14 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
+        %= check_box 'past' => 1, id => 'past'
+        <label for="past">
+        Bereits abgefahrene Züge anzeigen
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
         %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
         <label for="id_hide_opts">
           Formular verstecken (für Infoscreens)

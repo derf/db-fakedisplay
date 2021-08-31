@@ -268,6 +268,12 @@ sub handle_request {
 		lookahead       => $self->config->{lookahead}
 	);
 
+	if ( $self->param('past') ) {
+		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
+		  ->subtract( minutes => 60 );
+		$opt{lookahead} += 60;
+	}
+
 	my $api_version = $Travel::Status::DE::IRIS::VERSION;
 
 	$self->stash( departures => [] );
@@ -320,7 +326,7 @@ sub handle_request {
 		$opt{with_related} = 1;
 	}
 
-	if ( $self->param('train') ) {
+	if ( $self->param('train') and not $opt{datetime} ) {
 
        # request results from twenty minutes ago to avoid train details suddenly
        # becoming unavailable when its scheduled departure is reached.
@@ -811,9 +817,16 @@ sub station_train_details {
 	$self->stash( title      => 'DBF' );
 	$self->stash( version    => $self->config->{version} );
 
-	$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
-	  ->subtract( minutes => 20 );
-	$opt{lookahead} = $self->config->{lookahead} + 20;
+	if ( $self->param('past') ) {
+		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
+		  ->subtract( minutes => 80 );
+		$opt{lookahead} = $self->config->{lookahead} + 80;
+	}
+	else {
+		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
+		  ->subtract( minutes => 20 );
+		$opt{lookahead} = $self->config->{lookahead} + 20;
+	}
 
 	my $data   = get_results_for( $station, %opt );
 	my $errstr = $data->{errstr};
