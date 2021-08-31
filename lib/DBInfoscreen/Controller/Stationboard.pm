@@ -265,6 +265,7 @@ sub handle_request {
 	my %opt          = (
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
+		lookahead       => $self->config->{lookahead}
 	);
 
 	my $api_version = $Travel::Status::DE::IRIS::VERSION;
@@ -315,21 +316,17 @@ sub handle_request {
 	$self->stash( input => $station );
 	$self->param( input => $station );
 
-	if ( $template eq 'json' ) {
-		$opt{lookahead} = 120;
-	}
-
 	if ($with_related) {
 		$opt{with_related} = 1;
 	}
 
 	if ( $self->param('train') ) {
 
-		# request results from five minutes ago to avoid train details suddenly
-		# becoming unavailable when its scheduled departure is reached.
+       # request results from twenty minutes ago to avoid train details suddenly
+       # becoming unavailable when its scheduled departure is reached.
 		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
 		  ->subtract( minutes => 20 );
-		$opt{lookahead} = 200;
+		$opt{lookahead} = $self->config->{lookahead} + 20;
 	}
 
 	my $data = get_results_for( $station, %opt );
@@ -816,7 +813,7 @@ sub station_train_details {
 
 	$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
 	  ->subtract( minutes => 20 );
-	$opt{lookahead} = 200;
+	$opt{lookahead} = $self->config->{lookahead} + 20;
 
 	my $data   = get_results_for( $station, %opt );
 	my $errstr = $data->{errstr};

@@ -33,6 +33,7 @@ sub startup {
 			spare   => $ENV{DBFAKEDISPLAY_SPARE}   // 2,
 			workers => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 		},
+		lookahead  => $ENV{DBFAKEDISPLAY_LOOKAHEAD} // 180,
 		source_url => 'https://github.com/derf/db-fakedisplay',
 		issue_url  => 'https://github.com/derf/db-fakedisplay/issues',
 		version    => $ENV{DBFAKEDISPLAY_VERSION} // qx{git describe --dirty}
