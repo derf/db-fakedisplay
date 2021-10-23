@@ -10,7 +10,7 @@ use Mojo::Promise;
 
 use DateTime;
 use DateTime::Format::Strptime;
-use Geo::Distance;
+use GIS::Distance;
 use List::Util qw();
 
 my $strp = DateTime::Format::Strptime->new(
@@ -64,7 +64,7 @@ sub estimate_timestamped_positions {
 	  = get_route_indexes( $features, $from_name, $to_name );
 
 	my $location_epoch = $from_dt->epoch;
-	my $geo            = Geo::Distance->new;
+	my $distance       = GIS::Distance->new;
 
 	if ( defined $from_index and defined $to_index ) {
 		my $total_distance = 0;
@@ -72,10 +72,9 @@ sub estimate_timestamped_positions {
 			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
 			my $this = $features->[$j]{geometry}{coordinates};
 			if ( $prev and $this ) {
-				$total_distance += $geo->distance(
-					'kilometer', $prev->[0], $prev->[1],
-					$this->[0],  $this->[1]
-				);
+				$total_distance
+				  += $distance->distance_metal( $prev->[1], $prev->[0],
+					$this->[1], $this->[0] );
 			}
 		}
 		my @marker_distances = map { $total_distance * $_ } @completion_ratios;
@@ -85,10 +84,9 @@ sub estimate_timestamped_positions {
 			my $this = $features->[$j]{geometry}{coordinates};
 			if ( $prev and $this ) {
 				my $prev_distance = $total_distance;
-				$total_distance += $geo->distance(
-					'kilometer', $prev->[0], $prev->[1],
-					$this->[0],  $this->[1]
-				);
+				$total_distance
+				  += $distance->distance_metal( $prev->[1], $prev->[0],
+					$this->[1], $this->[0] );
 				for my $i ( @train_positions .. $#marker_distances ) {
 					my $marker_distance = $marker_distances[$i];
 					if ( $total_distance > $marker_distance ) {
@@ -128,7 +126,8 @@ sub estimate_timestamped_positions {
 #         {dep => DateTime, name => str, lat => float, lon => float}
 #   to: next stop
 #       {arr => DateTime, name => str, lat => float, lon => float}
-#   features: https://github.com/public-transport/hafas-client/blob/4/docs/trip.md features array
+#   features: https://github.com/public-transport/hafas-client/blob/5/docs/trip.md features array
+#             (with [lon, lat] coordinates in the geometry dict)
 # Output: list of estimated train positions in [lat, lon] format.
 # - current position
 # - position 2 seconds from now
@@ -153,7 +152,7 @@ sub estimate_train_positions {
 	my @completion_ratios
 	  = map { ( $time_complete + ( $_ * 2 ) ) / $time_total } ( 0 .. 45 );
 
-	my $geo = Geo::Distance->new;
+	my $distance = GIS::Distance->new;
 
 	my ( $from_index, $to_index )
 	  = get_route_indexes( $features, $from_name, $to_name );
@@ -164,10 +163,9 @@ sub estimate_train_positions {
 			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
 			my $this = $features->[$j]{geometry}{coordinates};
 			if ( $prev and $this ) {
-				$total_distance += $geo->distance(
-					'kilometer', $prev->[0], $prev->[1],
-					$this->[0],  $this->[1]
-				);
+				$total_distance
+				  += $distance->distance_metal( $prev->[1], $prev->[0],
+					$this->[1], $this->[0] );
 			}
 		}
 		my @marker_distances = map { $total_distance * $_ } @completion_ratios;
@@ -177,10 +175,9 @@ sub estimate_train_positions {
 			my $this = $features->[$j]{geometry}{coordinates};
 			if ( $prev and $this ) {
 				my $prev_distance = $total_distance;
-				$total_distance += $geo->distance(
-					'kilometer', $prev->[0], $prev->[1],
-					$this->[0],  $this->[1]
-				);
+				$total_distance
+				  += $distance->distance_metal( $prev->[1], $prev->[0],
+					$this->[1], $this->[0] );
 				for my $i ( @train_positions .. $#marker_distances ) {
 					my $marker_distance = $marker_distances[$i];
 					if ( $total_distance > $marker_distance ) {
@@ -241,7 +238,7 @@ sub estimate_train_positions2 {
 
 	my @train_positions;
 	my $next_stop;
-	my $geo                    = Geo::Distance->new;
+	my $distance               = GIS::Distance->new;
 	my $stop_distance_sum      = 0;
 	my $avg_inter_stop_beeline = 0;
 
@@ -280,12 +277,10 @@ sub estimate_train_positions2 {
 				station => $route[ $i - 1 ],
 			};
 		}
-		$stop_distance_sum += $geo->distance(
-			'meter',
-			$route[ $i - 1 ]{lon},
-			$route[ $i - 1 ]{lat},
-			$route[$i]{lon}, $route[$i]{lat}
-		);
+		$stop_distance_sum += $distance->distance_metal(
+			$route[ $i - 1 ]{lat}, $route[ $i - 1 ]{lon},
+			$route[$i]{lat},       $route[$i]{lon}
+		) / 1000;
 	}
 
 	if ($#route) {
@@ -322,7 +317,7 @@ sub estimate_train_intersection {
 
 	my @pairs;
 	my @meeting_points;
-	my $geo = Geo::Distance->new;
+	my $distance = GIS::Distance->new;
 
 	# skip last route element as we compare route[i] with route[i+1]
 	while ( $i1 < $#route1 and $i2 < $#route2 ) {
@@ -409,12 +404,11 @@ sub estimate_train_intersection {
 			else {
 				if (
 					(
-						my $distance = $geo->distance(
-							'kilometer',
-							$train1_positions[$i1][2],
+						my $distance_km = $distance->distance_metal(
 							$train1_positions[$i1][1],
-							$train2_positions[$i2][2],
-							$train2_positions[$i2][1]
+							$train1_positions[$i1][2],
+							$train2_positions[$i2][1],
+							$train2_positions[$i2][2]
 						)
 					) < 1
 				  )
@@ -436,7 +430,7 @@ sub estimate_train_intersection {
 								    $train1_positions[$i1][2]
 								  + $train2_positions[$i2][2]
 							) / 2,
-							distance => $distance,
+							distance => $distance_km,
 						}
 					);
 				}
