@@ -49,16 +49,6 @@ sub geostop {
 	);
 }
 
-sub geotrain {
-	my ($self) = @_;
-
-	$self->render(
-		'geotrain',
-		with_geotrain => 1,
-		hide_opts     => 1
-	);
-}
-
 sub about {
 	my ($self) = @_;
 

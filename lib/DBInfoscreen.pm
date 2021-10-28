@@ -357,7 +357,6 @@ sub startup {
 	$r->get('/_auto')->to('static#geostop');
 
 	$r->get('/_autostop')->to('static#geostop');
-	$r->get('/_autotrain')->to('static#geotrain');
 
 	$r->get('/_datenschutz')->to('static#privacy');
 
