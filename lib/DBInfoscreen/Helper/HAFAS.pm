@@ -186,6 +186,16 @@ sub get_xml_p {
 				my $header  = $message->getAttribute('header');
 				my $lead    = $message->getAttribute('lead');
 				my $display = $message->getAttribute('display');
+
+              # "something is wrong, but we're not telling what" is not helpful.
+              # Observed on RRX lines in NRW
+				if ( $header
+					=~ m{ : \s St..?rung. \s \(Quelle: \s zuginfo.nrw \) $ }x
+					and not $lead )
+				{
+					next;
+				}
+
 				push(
 					@{ $ret->{messages} },
 					{
