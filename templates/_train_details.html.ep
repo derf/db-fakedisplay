@@ -328,9 +328,4 @@
         </ul>
 %     }
 %   }
-%   if ($icetype and not param('detailed')) {
-      <div class="verbose">
-        <a href="<%= url_for->query(detailed => 1) %>">Mehr Details</a>
-      </div>
-%   }
     </div> <!-- mfooter -->
