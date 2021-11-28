@@ -139,6 +139,11 @@ sub get_train_utilization {
 		$next_station = $route[0];
 	}
 
+	if ( not $next_station ) {
+		$promise->reject("train has no next_station");
+		return $promise;
+	}
+
 	$self->get_json_p( $self->{realtime_cache},
 "https://marudor.de/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
 	)->then(
