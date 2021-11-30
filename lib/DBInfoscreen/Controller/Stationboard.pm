@@ -745,7 +745,8 @@ sub render_train {
 		}
 	)->wait;
 
-	if ( $self->param('detailed') ) {
+	# currently useless due to lack of Open Data
+	if ( 0 and $self->param('detailed') ) {
 		my $cycle_req = Mojo::Promise->new;
 		push( @requests, $cycle_req );
 		$self->wagonorder->has_cycle_p( $result->train_no )->then(
