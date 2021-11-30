@@ -232,8 +232,8 @@ sub get_results_for {
 			%opt
 		);
 		$data = {
-			results => [ $status->results ],
-			errstr  => $status->errstr,
+			results       => [ $status->results ],
+			errstr        => $status->errstr,
 			station_ds100 =>
 			  ( $status->station ? $status->station->{ds100} : undef ),
 			station_name =>
@@ -418,7 +418,7 @@ sub format_iris_result_info {
 		for my $rep ( $result->replacement_for ) {
 			$info = sprintf(
 				'Ersatzzug für %s %s %s%s',
-				$rep->type, $rep->train_no,
+				$rep->type,           $rep->train_no,
 				$info ? '+++ ' : q{}, $info // q{}
 			);
 		}
@@ -790,7 +790,7 @@ sub render_train {
 				details => $departure->{composition} // {},
 				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
-				nav_link =>
+				nav_link     =>
 				  $self->url_for( 'station', station => $station_name )
 				  ->query( { detailed => $self->param('detailed') } ),
 			);
@@ -880,7 +880,7 @@ sub station_train_details {
 		delay                  => $result->delay,
 		route_pre              => [ $result->route_pre ],
 		route_post             => [ $result->route_post ],
-		replaced_by =>
+		replaced_by            =>
 		  [ map { $_->type . q{ } . $_->train_no } $result->replaced_by ],
 		replacement_for =>
 		  [ map { $_->type . q{ } . $_->train_no } $result->replacement_for ],
@@ -996,8 +996,8 @@ sub train_details {
 				departure => $res,
 				linetype  => $linetype,
 				icetype   => $self->app->ice_type_map->{ $res->{train_no} },
-				details => {},    #$departure->{composition} // {},
-				dt_now => DateTime->now( time_zone => 'Europe/Berlin' ),
+				details   => {},    #$departure->{composition} // {},
+				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
 
 				#station_name => "FIXME",#$station_name,
 			);
@@ -1026,13 +1026,13 @@ sub handle_result {
 	my @departures;
 
 	my @platforms      = split( /,/, $self->param('platforms') // q{} );
-	my $template       = $self->param('mode') // 'app';
-	my $hide_low_delay = $self->param('hidelowdelay') // 0;
-	my $hide_opts      = $self->param('hide_opts') // 0;
+	my $template       = $self->param('mode')          // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
+	my $hide_opts      = $self->param('hide_opts')     // 0;
 	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $show_details   = $self->param('detailed') // 0;
-	my $admode         = $self->param('admode') // 'deparr';
-	my $apiver         = $self->param('version') // 0;
+	my $show_details   = $self->param('detailed')      // 0;
+	my $admode         = $self->param('admode')        // 'deparr';
+	my $apiver         = $self->param('version')       // 0;
 	my $callback       = $self->param('callback');
 	my $via            = $self->param('via');
 
@@ -1346,7 +1346,7 @@ sub handle_result {
 			station          => $station_name,
 			version          => $self->config->{version},
 			title            => $via ? "$station_name → $via" : $station_name,
-			refresh_interval => $template eq 'app' ? 0 : 120,
+			refresh_interval => $template eq 'app' ? 0        : 120,
 			hide_opts        => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
