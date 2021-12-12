@@ -220,6 +220,7 @@ sub get_results_for {
 	if ( @station_matches == 1 ) {
 		$station = $station_matches[0][2];
 		my $status = Travel::Status::DE::IRIS->new(
+			iris_base      => $ENV{DBFAKEDISPLAY_IRIS_BASE},
 			station        => $station,
 			main_cache     => $opt{cache_iris_main},
 			realtime_cache => $opt{cache_iris_rt},
