@@ -218,7 +218,7 @@ sub get_results_for {
 	my @station_matches
 	  = Travel::Status::DE::IRIS::Stations::get_station($station);
 	if ( @station_matches == 1 ) {
-		$station = $station_matches[0][0];
+		$station = $station_matches[0][2];
 		my $status = Travel::Status::DE::IRIS->new(
 			station        => $station,
 			main_cache     => $opt{cache_iris_main},
