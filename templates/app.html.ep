@@ -108,10 +108,10 @@
 %       }
 %       else {
 %         if ($departure->{delay} > ($hide_low_delay ? 4 : 0)) {
-            <span class="delay" aria-hidden="true">(+<%= $departure->{delay} %>)</span>
+            <span class="delay" aria-hidden="true">+<%= $departure->{delay} %></span>
 %         }
 %         elsif ($departure->{delay} < 0) {
-            <span class="undelay" aria-hidden="true">(<%= $departure->{delay} %>)</span>
+            <span class="undelay" aria-hidden="true"><%= $departure->{delay} %></span>
 %         }
 %       }
 %     }
