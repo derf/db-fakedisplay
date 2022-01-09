@@ -100,10 +100,10 @@
 %     if ($departure->{delay} and not $departure->{is_cancelled}) {
 %       if ($show_realtime) {
 %         if ($departure->{delay} > ($hide_low_delay ? 4 : 0)) {
-            <span class="delaynorm" aria-hidden="true">(+<%= $departure->{delay} %>)</span>
+            <span class="delaynorm" aria-hidden="true">+<%= $departure->{delay} %> ⇒</span>
 %         }
 %         elsif ($departure->{delay} < 0) {
-            <span class="undelaynorm" aria-hidden="true">(<%= $departure->{delay} %>)</span>
+            <span class="undelaynorm" aria-hidden="true"><%= $departure->{delay} %> ⇒</span>
 %         }
 %       }
 %       else {
