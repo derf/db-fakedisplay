@@ -199,6 +199,69 @@ sub log_api_access {
 	return;
 }
 
+sub json_route_diff {
+	my ( $route, $sched_route ) = @_;
+	my @json_route;
+	my @route       = @{$route};
+	my @sched_route = @{$sched_route};
+
+	my $route_idx = 0;
+	my $sched_idx = 0;
+
+	while ( $route_idx <= $#route and $sched_idx <= $#sched_route ) {
+		if ( $route[$route_idx] eq $sched_route[$sched_idx] ) {
+			push( @json_route, { name => $route[$route_idx] } );
+			$route_idx++;
+			$sched_idx++;
+		}
+
+		# this branch is inefficient, but won't be taken frequently
+		elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
+			push(
+				@json_route,
+				{
+					name         => $route[$route_idx],
+					isAdditional => 1
+				}
+			);
+			$route_idx++;
+		}
+		else {
+			push(
+				@json_route,
+				{
+					name        => $sched_route[$sched_idx],
+					isCancelled => 1
+				}
+			);
+			$sched_idx++;
+		}
+	}
+	while ( $route_idx <= $#route ) {
+		push(
+			@json_route,
+			{
+				name         => $route[$route_idx],
+				isAdditional => 1,
+				isCancelled  => 0
+			}
+		);
+		$route_idx++;
+	}
+	while ( $sched_idx <= $#sched_route ) {
+		push(
+			@json_route,
+			{
+				name         => $sched_route[$sched_idx],
+				isAdditional => 0,
+				isCancelled  => 1
+			}
+		);
+		$sched_idx++;
+	}
+	return @json_route;
+}
+
 sub get_results_for {
 	my ( $station, %opt ) = @_;
 	my $data;
@@ -461,15 +524,13 @@ sub format_iris_result_info {
 sub render_train {
 	my ( $self, $result, $departure, $station_name, $template ) = @_;
 
-	$departure->{links}          = [];
-	$departure->{route_pre_diff} = [
-		$self->json_route_diff(
-			[ $result->route_pre ],
-			[ $result->sched_route_pre ]
-		)
-	];
+	$departure->{links} = [];
+	$departure->{route_pre_diff}
+	  = [
+		json_route_diff( [ $result->route_pre ], [ $result->sched_route_pre ] )
+	  ];
 	$departure->{route_post_diff} = [
-		$self->json_route_diff(
+		json_route_diff(
 			[ $result->route_post ],
 			[ $result->sched_route_post ]
 		)
@@ -1138,8 +1199,8 @@ sub handle_result {
 		}
 
 		if ( $template eq 'json' ) {
-			my @json_route = $self->json_route_diff( [ $result->route ],
-				[ $result->sched_route ] );
+			my @json_route
+			  = json_route_diff( [ $result->route ], [ $result->sched_route ] );
 
 			if ( $apiver eq '1' or $apiver eq '2' ) {
 

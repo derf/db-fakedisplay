@@ -25,8 +25,8 @@ sub startup {
 		hafas_rest_api => $ENV{DBFAKEDISPLAY_HAFAS_API}
 		  // 'https://v5.db.transport.rest',
 		hypnotoad => {
-			accepts => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
-			clients => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
+			accepts  => $ENV{DBFAKEDISPLAY_ACCEPTS} // 100,
+			clients  => $ENV{DBFAKEDISPLAY_CLIENTS} // 10,
 			listen   => [ $ENV{DBFAKEDISPLAY_LISTEN} // 'http://*:8092' ],
 			pid_file => $ENV{DBFAKEDISPLAY_PID_FILE}
 			  // '/tmp/db-fakedisplay.pid',
@@ -210,71 +210,6 @@ sub startup {
 				return 1;
 			}
 			return;
-		}
-	);
-
-	$self->helper(
-		'json_route_diff' => sub {
-			my ( $self, $route, $sched_route ) = @_;
-			my @json_route;
-			my @route       = @{$route};
-			my @sched_route = @{$sched_route};
-
-			my $route_idx = 0;
-			my $sched_idx = 0;
-
-			while ( $route_idx <= $#route and $sched_idx <= $#sched_route ) {
-				if ( $route[$route_idx] eq $sched_route[$sched_idx] ) {
-					push( @json_route, { name => $route[$route_idx] } );
-					$route_idx++;
-					$sched_idx++;
-				}
-
-				# this branch is inefficient, but won't be taken frequently
-				elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
-					push(
-						@json_route,
-						{
-							name         => $route[$route_idx],
-							isAdditional => 1
-						}
-					);
-					$route_idx++;
-				}
-				else {
-					push(
-						@json_route,
-						{
-							name        => $sched_route[$sched_idx],
-							isCancelled => 1
-						}
-					);
-					$sched_idx++;
-				}
-			}
-			while ( $route_idx <= $#route ) {
-				push(
-					@json_route,
-					{
-						name         => $route[$route_idx],
-						isAdditional => 1,
-						isCancelled  => 0
-					}
-				);
-				$route_idx++;
-			}
-			while ( $sched_idx <= $#sched_route ) {
-				push(
-					@json_route,
-					{
-						name         => $sched_route[$sched_idx],
-						isAdditional => 0,
-						isCancelled  => 1
-					}
-				);
-				$sched_idx++;
-			}
-			return @json_route;
 		}
 	);
 
