@@ -1170,48 +1170,57 @@ sub handle_result {
 				if ( $result->sched_departure ) {
 					$sched_dep = $result->sched_departure->strftime('%H:%M');
 				}
-				push(
-					@departures,
-					{
-						delayArrival   => $delay_arr,
-						delayDeparture => $delay_dep,
-						destination    => $result->destination,
-						isCancelled    => $result->is_cancelled,
-						messages       => {
-							delay => [
-								map {
-									{
-										timestamp => $_->[0],
-										text      => $_->[1]
-									}
-								} $result->delay_messages
-							],
-							qos => [
-								map {
-									{
-										timestamp => $_->[0],
-										text      => $_->[1]
-									}
-								} $result->qos_messages
-							],
-						},
-						missingRealtime => (
-							(
-								not $result->has_realtime
-								  and $result->start < $now
-							) ? \1 : \0
-						),
-						platform           => $result->platform,
-						route              => \@json_route,
-						scheduledPlatform  => $result->sched_platform,
-						scheduledArrival   => $sched_arr,
-						scheduledDeparture => $sched_dep,
-						train              => $result->train,
-						trainClasses       => [ $result->classes ],
-						trainNumber        => $result->train_no,
-						via                => [ $result->route_interesting(3) ],
-					}
-				);
+				my $dep = {
+					delayArrival   => $delay_arr,
+					delayDeparture => $delay_dep,
+					destination    => $result->destination,
+					isCancelled    => $result->is_cancelled,
+					messages       => {
+						delay => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							  $result->delay_messages
+						],
+						qos => [
+							map { { timestamp => $_->[0], text => $_->[1] } }
+							  $result->qos_messages
+						],
+					},
+					missingRealtime => (
+						( not $result->has_realtime and $result->start < $now )
+						? \1
+						: \0
+					),
+					platform           => $result->platform,
+					route              => \@json_route,
+					scheduledPlatform  => $result->sched_platform,
+					scheduledArrival   => $sched_arr,
+					scheduledDeparture => $sched_dep,
+					train              => $result->train,
+					trainClasses       => [ $result->classes ],
+					trainNumber        => $result->train_no,
+					via                => [ $result->route_interesting(3) ],
+				};
+				for my $replaced_by ( $result->replaced_by ) {
+					push(
+						@{ $dep->{replacementTrains} },
+						{
+							train       => $replaced_by->train,
+							trainType   => $replaced_by->type,
+							trainNumber => $replaced_by->train_no
+						}
+					);
+				}
+				for my $replacement_for ( $result->replacement_for ) {
+					push(
+						@{ $dep->{replacedTrains} },
+						{
+							train       => $replacement_for->train,
+							trainType   => $replacement_for->type,
+							trainNumber => $replacement_for->train_no
+						}
+					);
+				}
+				push( @departures, $dep );
 			}
 		}
 		elsif ( $template eq 'text' ) {
