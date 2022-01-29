@@ -200,7 +200,7 @@ sub log_api_access {
 }
 
 sub json_route_diff {
-	my ( $route, $sched_route ) = @_;
+	my ( $self, $route, $sched_route ) = @_;
 	my @json_route;
 	my @route       = @{$route};
 	my @sched_route = @{$sched_route};
