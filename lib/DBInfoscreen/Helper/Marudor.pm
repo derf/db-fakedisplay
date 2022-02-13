@@ -12,6 +12,7 @@ use DateTime;
 use Encode qw(decode encode);
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
+use Mojo::Util qw(url_escape);
 use XML::LibXML;
 
 sub new {
@@ -143,6 +144,9 @@ sub get_train_utilization {
 		$promise->reject("train has no next_station");
 		return $promise;
 	}
+
+	$this_station = url_escape($this_station);
+	$next_station = url_escape($next_station);
 
 	$self->get_json_p( $self->{realtime_cache},
 "https://marudor.de/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
