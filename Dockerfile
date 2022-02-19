@@ -19,7 +19,7 @@ WORKDIR /app
 RUN ln -sf ../ext-templates/imprint.html.ep templates/imprint.html.ep \
 	&& ln -sf ../ext-templates/privacy.html.ep templates/privacy.html.ep
 
-RUN sed -i "s/version => \$ENV{DBFAKEDISPLAY_VERSION}/version => '${dbf_version}'/" lib/DBInfoscreen.pm
+RUN sed -i "s/version *=> *\$ENV{DBFAKEDISPLAY_VERSION}/version => '${dbf_version}'/" lib/DBInfoscreen.pm
 
 FROM perl:5.30-slim
 
