@@ -145,8 +145,10 @@ sub get_train_utilization {
 		return $promise;
 	}
 
-	$this_station = url_escape($this_station);
-	$next_station = url_escape($next_station);
+	$this_station
+	  = url_escape( encode( 'utf-8', decode( 'iso-8859-15', $this_station ) ) );
+	$next_station
+	  = url_escape( encode( 'utf-8', decode( 'iso-8859-15', $next_station ) ) );
 
 	$self->get_json_p( $self->{realtime_cache},
 "https://marudor.de/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
