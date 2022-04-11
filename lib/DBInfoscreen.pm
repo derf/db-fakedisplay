@@ -42,6 +42,10 @@ sub startup {
 
 	chomp $self->config->{version};
 
+	# Generally, the reverse proxy handles compression.
+	# Also, Mojolicious compression breaks JSON endpoints for some clients.
+	$self->renderer->compress(0);
+
 	$self->hook(
 		before_dispatch => sub {
 			my ($self) = @_;
