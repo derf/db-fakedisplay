@@ -77,13 +77,11 @@ sub handle_no_results_json {
 	$self->res->headers->access_control_allow_origin(q{*});
 	my $json;
 	if ($errstr) {
-		$json = $self->render_to_string(
-			json => {
-				api_version => $api_version,
-				version     => $self->config->{version},
-				error       => $errstr,
-			}
-		);
+		$json = {
+			api_version => $api_version,
+			version     => $self->config->{version},
+			error       => $errstr,
+		};
 	}
 	else {
 		my @candidates = map { { code => $_->[0], name => $_->[1] } }
@@ -91,26 +89,23 @@ sub handle_no_results_json {
 		if ( @candidates > 1
 			or ( @candidates == 1 and $candidates[0]{code} ne $station ) )
 		{
-			$json = $self->render_to_string(
-				json => {
-					api_version => $api_version,
-					version     => $self->config->{version},
-					error       => 'ambiguous station code/name',
-					candidates  => \@candidates,
-				}
-			);
+			$json = {
+				api_version => $api_version,
+				version     => $self->config->{version},
+				error       => 'ambiguous station code/name',
+				candidates  => \@candidates,
+			};
 		}
 		else {
-			$json = $self->render_to_string(
-				json => {
-					api_version => $api_version,
-					version     => $self->config->{version},
-					error => ( $errstr // "Got no results for '$station'" )
-				}
-			);
+			$json = {
+				api_version => $api_version,
+				version     => $self->config->{version},
+				error       => ( $errstr // "Got no results for '$station'" )
+			};
 		}
 	}
 	if ($callback) {
+		$json = $self->render_to_string( json => $json );
 		$self->render(
 			data   => "$callback($json);",
 			format => 'json'
@@ -118,8 +113,7 @@ sub handle_no_results_json {
 	}
 	else {
 		$self->render(
-			data   => $json,
-			format => 'json'
+			json => $json,
 		);
 	}
 	return;
@@ -1386,12 +1380,11 @@ sub handle_result {
 
 	if ( $template eq 'json' ) {
 		$self->res->headers->access_control_allow_origin(q{*});
-		my $json = $self->render_to_string(
-			json => {
-				departures => \@departures,
-			}
-		);
+		my $json = {
+			departures => \@departures,
+		};
 		if ($callback) {
+			$json = $self->render_to_string( json => $json );
 			$self->render(
 				data   => "$callback($json);",
 				format => 'json'
@@ -1399,8 +1392,7 @@ sub handle_result {
 		}
 		else {
 			$self->render(
-				data   => $json,
-				format => 'json'
+				json => $json,
 			);
 		}
 	}
