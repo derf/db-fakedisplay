@@ -94,7 +94,7 @@ sub startup {
 			if ( -r 'share/zugbildungsplan.json' ) {
 				my $ice_type_map = JSON->new->utf8->decode(
 					scalar read_file('share/zugbildungsplan.json') );
-				my $ret;
+				my $ret = {};
 				while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
 					if ( $v->{type} ) {
 						$ret->{$k} = [
