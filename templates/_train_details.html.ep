@@ -195,7 +195,7 @@
       <ul class="mroute">
 %       for my $stop (@{$departure->{route_pre_diff}}) {
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
-          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed'), past => param('past')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed'), past => param('past'), show_realtime => param('show_realtime')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }
@@ -240,7 +240,7 @@
 %       }
 %       for my $stop (@{$departure->{route_post_diff}}) {
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
-          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed'), past => param('past')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{name})->query({detailed => param('detailed'), past => param('past'), show_realtime => param('show_realtime')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }

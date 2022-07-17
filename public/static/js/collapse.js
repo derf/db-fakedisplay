@@ -102,6 +102,9 @@ function dbf_reg_handlers() {
 		if (window.location.href.includes('past=1')) {
 			suffix += '&past=1';
 		}
+		if (window.location.href.includes('show_realtime=1')) {
+			suffix += '&show_realtime=1';
+		}
 		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
 		dbf_show_moreinfo(trainElem, false);
 	});
