@@ -266,6 +266,10 @@ div.app {
 				background-color: $cancelled-bg-color;
 			}
 
+			&.past {
+				background-color: $past-bg-color;
+			}
+
 			> a {
 				color:$fg;
 			}

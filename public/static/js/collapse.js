@@ -105,6 +105,38 @@ function dbf_reg_handlers() {
 		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
 		dbf_show_moreinfo(trainElem, false);
 	});
+	const trainid = $(location).attr('hash').substr(1);
+	if (trainid) {
+		var found = false;
+		$('div.app > ul > li').each(function(index) {
+			if (found) {
+				return;
+			}
+			$(this).find('.anchor').each(function() {
+				if ($(this).attr('id') == trainid) {
+					found = true;
+				}
+			});
+		});
+		if (found) {
+			found = false;
+			$('div.app > ul > li').each(function(index) {
+				if (found) {
+					return;
+				}
+				$(this).find('.anchor').each(function() {
+					if ($(this).attr('id') == trainid) {
+						found = true;
+					}
+				});
+				if (found) {
+					$(this).addClass('selected');
+				} else {
+					$(this).addClass('past');
+				}
+			});
+		}
+	}
 }
 
 $(function() {
