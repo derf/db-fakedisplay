@@ -145,7 +145,7 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="moresettings moresettings-collapsed">
     <div class="field">
       <div class="desc">
-        %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
+        %= check_box 'rt' => 1, id => 'id_show_realtime'
         <label for="id_show_realtime">
           Zeiten inkl. Verspätung angeben
         </label>

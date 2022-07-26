@@ -158,7 +158,7 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        %= check_box 'show_realtime' => 1, id => 'id_show_realtime'
+        %= check_box 'rt' => 1, id => 'id_show_realtime'
         <label for="id_show_realtime">
           Echtzeitangaben statt Fahrplandaten anzeigen
         </label>

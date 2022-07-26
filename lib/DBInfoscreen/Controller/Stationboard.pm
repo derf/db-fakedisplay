@@ -1104,15 +1104,16 @@ sub handle_result {
 	my @departures;
 
 	my @platforms      = split( /,/, $self->param('platforms') // q{} );
-	my $template       = $self->param('mode')          // 'app';
-	my $hide_low_delay = $self->param('hidelowdelay')  // 0;
-	my $hide_opts      = $self->param('hide_opts')     // 0;
-	my $show_realtime  = $self->param('show_realtime') // 0;
-	my $show_details   = $self->param('detailed')      // 0;
-	my $admode         = $self->param('admode')        // 'deparr';
-	my $apiver         = $self->param('version')       // 0;
-	my $callback       = $self->param('callback');
-	my $via            = $self->param('via');
+	my $template       = $self->param('mode')         // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
+	  // 0;
+	my $show_details = $self->param('detailed') // 0;
+	my $admode       = $self->param('admode')   // 'deparr';
+	my $apiver       = $self->param('version')  // 0;
+	my $callback     = $self->param('callback');
+	my $via          = $self->param('via');
 
 	my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
