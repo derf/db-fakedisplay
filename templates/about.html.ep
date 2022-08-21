@@ -37,7 +37,7 @@
 		% else {
 			• Karte: DB HAFAS via <a href="https://github.com/public-transport/hafas-rest-api">hafas-rest-api</a><br/>
 		% }
-		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.marudor.de/">marudor.de</a><br/>
+		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.bahn.expert/">bahn.expert</a><br/>
 		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
 		<br/>
 		Sie nutzt zusätzlich die folgenden Open Data-Ressourcen:<br/>

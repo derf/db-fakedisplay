@@ -151,7 +151,7 @@ sub get_train_utilization {
 	  = url_escape( encode( 'utf-8', decode( 'iso-8859-15', $next_station ) ) );
 
 	$self->get_json_p( $self->{realtime_cache},
-"https://marudor.de/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
+"https://bahn.expert/api/hafas/v2/auslastung/${this_station}/${next_station}/${train_no}/${dep}"
 	)->then(
 		sub {
 			my ($utilization_json) = @_;
