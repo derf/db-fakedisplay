@@ -8,11 +8,11 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use DateTime;
 use DateTime::Format::Strptime;
-use Encode qw(decode encode);
-use File::Slurp qw(read_file write_file);
-use List::Util qw(max uniq);
+use Encode          qw(decode encode);
+use File::Slurp     qw(read_file write_file);
+use List::Util      qw(max uniq);
 use List::MoreUtils qw();
-use Mojo::JSON qw(decode_json);
+use Mojo::JSON      qw(decode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 use Travel::Status::DE::IRIS;
@@ -507,7 +507,7 @@ sub format_iris_result_info {
 		if ( $template ne 'json' ) {
 			push(
 				@{$moreinfo},
-				[ 'Außerplanmäßiger Halt in', $additional_line ]
+				[ 'Außerplanmäßiger Halt in', { text => $additional_line } ]
 			);
 		}
 	}
@@ -517,7 +517,7 @@ sub format_iris_result_info {
 		$info
 		  = 'Ohne Halt in: ' . $cancel_line . ( $info ? ' +++ ' : q{} ) . $info;
 		if ( $template ne 'json' ) {
-			push( @{$moreinfo}, [ 'Ohne Halt in', $cancel_line ] );
+			push( @{$moreinfo}, [ 'Ohne Halt in', { text => $cancel_line } ] );
 		}
 	}
 
@@ -781,8 +781,12 @@ sub render_train {
 				$departure->{messages}{him} = $him;
 				for my $message ( @{$him} ) {
 					if ( $message->{display} ) {
-						push( @him_messages,
-							[ $message->{header}, $message->{lead} ] );
+						push(
+							@him_messages,
+							[
+								$message->{header}, { text => $message->{lead} }
+							]
+						);
 						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
 							push(
 								@{ $departure->{links} },
@@ -799,6 +803,14 @@ sub render_train {
 					@him_messages
 					  = grep { $_->[0] !~ m{Information\. $m\.$} }
 					  @him_messages;
+				}
+				for my $m (@him_messages) {
+					if ( $m->[0] =~ s{: Information.}{: } ) {
+						$m->[1]{icon} = 'info_outline';
+					}
+					if ( $m->[0] =~ s{: Störung.}{: } ) {
+						$m->[1]{icon} = 'warning';
+					}
 				}
 				unshift( @{ $departure->{moreinfo} }, @him_messages );
 			}
@@ -1053,8 +1065,12 @@ sub train_details {
 				my @him_messages;
 				for my $message ( @{$him} ) {
 					if ( $message->{display} ) {
-						push( @him_messages,
-							[ $message->{header}, $message->{lead} ] );
+						push(
+							@him_messages,
+							[
+								$message->{header}, { text => $message->{lead} }
+							]
+						);
 						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
 							push(
 								@{ $res->{links} },
@@ -1064,6 +1080,14 @@ sub train_details {
 								]
 							);
 						}
+					}
+				}
+				for my $m (@him_messages) {
+					if ( $m->[0] =~ s{: Information.}{:} ) {
+						$m->[1]{icon} = 'info_outline';
+					}
+					if ( $m->[0] =~ s{: Störung.}{: } ) {
+						$m->[1]{icon} = 'warning';
 					}
 				}
 				$res->{moreinfo} = [@him_messages];

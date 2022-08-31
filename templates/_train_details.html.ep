@@ -173,16 +173,22 @@
 %         else {
 %=          $pair->[0]->strftime('%H:%M')
 %         }
+          <span class="reason">
+%=        $pair->[1]
+          </span>
 %       }
 %       else {
+%         if ($pair->[1]{icon}) {
+            <i class="material-icons"><%= $pair->[1]{icon} %></i>
+%         }
 %=        $pair->[0]
 %         if (length($pair->[0]) > 25) {
             <br/>
 %         }
+          <span class="reason">
+%=        $pair->[1]{text}
+          </span>
 %       }
-        <span class="reason">
-%=      $pair->[1]
-        </span>
         </li>
 %     }
 %     if ($departure->{route_info}) {
