@@ -162,7 +162,7 @@
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
       Meldungen:
-      <ul>
+      <ul class="messages">
 %     for my $pair (@{$departure->{moreinfo}}) {
         <li>
 %       if ($pair->[0]->isa('DateTime')) {
