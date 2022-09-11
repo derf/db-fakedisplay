@@ -808,8 +808,11 @@ sub render_train {
 					if ( $m->[0] =~ s{: Information.}{: } ) {
 						$m->[1]{icon} = 'info_outline';
 					}
-					if ( $m->[0] =~ s{: Störung.}{: } ) {
+					elsif ( $m->[0] =~ s{: Störung.}{: } ) {
 						$m->[1]{icon} = 'warning';
+					}
+					elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
+						$m->[1]{icon} = 'build';
 					}
 				}
 				unshift( @{ $departure->{moreinfo} }, @him_messages );
@@ -1086,8 +1089,11 @@ sub train_details {
 					if ( $m->[0] =~ s{: Information.}{:} ) {
 						$m->[1]{icon} = 'info_outline';
 					}
-					if ( $m->[0] =~ s{: Störung.}{: } ) {
+					elsif ( $m->[0] =~ s{: Störung.}{: } ) {
 						$m->[1]{icon} = 'warning';
+					}
+					elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
+						$m->[1]{icon} = 'build';
 					}
 				}
 				$res->{moreinfo} = [@him_messages];
