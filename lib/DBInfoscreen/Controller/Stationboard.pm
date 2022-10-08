@@ -808,7 +808,7 @@ sub render_train {
 					if ( $m->[0] =~ s{: Information.}{: } ) {
 						$m->[1]{icon} = 'info_outline';
 					}
-					elsif ( $m->[0] =~ s{: Störung.}{: } ) {
+					elsif ( $m->[0] =~ s{: (?:Großs|S)törung.}{: } ) {
 						$m->[1]{icon} = 'warning';
 					}
 					elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
