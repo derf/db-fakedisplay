@@ -18,22 +18,27 @@ my $strp = DateTime::Format::Strptime->new(
 	time_zone => 'Europe/Berlin',
 );
 
+# Input:
+#   - polyline: Travel::Status::DE::HAFAS::Journey->polyline
+#   - from_name: station name
+#   - to_name: station name
+# Ouptut:
+#   - from_index: polyline index that corresponds to from_name
+#   - to_index: polyline index that corresponds to to_name
 sub get_route_indexes {
-	my ( $features, $from_name, $to_name ) = @_;
+	my ( $polyline, $from_name, $to_name ) = @_;
 	my ( $from_index, $to_index );
 
-	for my $i ( 0 .. $#{$features} ) {
-		my $this_point = $features->[$i];
+	for my $i ( 0 .. $#{$polyline} ) {
+		my $this_point = $polyline->[$i];
 		if (    not defined $from_index
-			and $this_point->{properties}{type}
-			and $this_point->{properties}{type} eq 'stop'
-			and $this_point->{properties}{name} eq $from_name )
+			and $this_point->{name}
+			and $this_point->{name} eq $from_name )
 		{
 			$from_index = $i;
 		}
-		elsif ( $this_point->{properties}{type}
-			and $this_point->{properties}{type} eq 'stop'
-			and $this_point->{properties}{name} eq $to_name )
+		elsif ( $this_point->{name}
+			and $this_point->{name} eq $to_name )
 		{
 			$to_index = $i;
 			last;
@@ -48,8 +53,8 @@ sub get_route_indexes {
 #         {dep => DateTime, name => str, lat => float, lon => float}
 #   to: next stop
 #       {arr => DateTime, name => str, lat => float, lon => float}
-#   features: https://github.com/public-transport/hafas-client/blob/5/docs/trip.md features array
-#             (with [lon, lat] coordinates in the geometry dict)
+#   route: Travel::Status::DE::HAFAS::Journey->route
+#   polyline: Travel::Status::DE::HAFAS::Journey->polyline (list of lon/lat hashes)
 # Output: list of estimated train positions in [lat, lon] format.
 # - current position
 # - position 2 seconds from now
@@ -60,11 +65,12 @@ sub estimate_train_positions {
 
 	my $now = $opt{now};
 
-	my $from_dt = $opt{from}{dep} // $opt{from}{arr};
-	my $to_dt   = $opt{to}{arr}   // $opt{to}{dep};
+	my $from_dt   = $opt{from}{dep} // $opt{from}{arr};
+	my $to_dt     = $opt{to}{arr}   // $opt{to}{dep};
 	my $from_name = $opt{from}{name};
 	my $to_name   = $opt{to}{name};
-	my $features  = $opt{features};
+	my $route     = $opt{route};
+	my $polyline  = $opt{polyline};
 
 	my @train_positions;
 
@@ -77,29 +83,29 @@ sub estimate_train_positions {
 	my $distance = GIS::Distance->new;
 
 	my ( $from_index, $to_index )
-	  = get_route_indexes( $features, $from_name, $to_name );
+	  = get_route_indexes( $polyline, $from_name, $to_name );
 
 	if ( defined $from_index and defined $to_index ) {
 		my $total_distance = 0;
 		for my $j ( $from_index + 1 .. $to_index ) {
-			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
-			my $this = $features->[$j]{geometry}{coordinates};
+			my $prev = $polyline->[ $j - 1 ];
+			my $this = $polyline->[$j];
 			if ( $prev and $this ) {
 				$total_distance
-				  += $distance->distance_metal( $prev->[1], $prev->[0],
-					$this->[1], $this->[0] );
+				  += $distance->distance_metal( $prev->{lat}, $prev->{lon},
+					$this->{lat}, $this->{lon} );
 			}
 		}
 		my @marker_distances = map { $total_distance * $_ } @completion_ratios;
 		$total_distance = 0;
 		for my $j ( $from_index + 1 .. $to_index ) {
-			my $prev = $features->[ $j - 1 ]{geometry}{coordinates};
-			my $this = $features->[$j]{geometry}{coordinates};
+			my $prev = $polyline->[ $j - 1 ];
+			my $this = $polyline->[$j];
 			if ( $prev and $this ) {
 				my $prev_distance = $total_distance;
 				$total_distance
-				  += $distance->distance_metal( $prev->[1], $prev->[0],
-					$this->[1], $this->[0] );
+				  += $distance->distance_metal( $prev->{lat}, $prev->{lon},
+					$this->{lat}, $this->{lon} );
 				for my $i ( @train_positions .. $#marker_distances ) {
 					my $marker_distance = $marker_distances[$i];
 					if ( $total_distance > $marker_distance ) {
@@ -111,10 +117,10 @@ sub estimate_train_positions {
 							  / ( $total_distance - $prev_distance );
 						}
 
-						my $lat = $prev->[1]
-						  + ( $this->[1] - $prev->[1] ) * $sub_ratio;
-						my $lon = $prev->[0]
-						  + ( $this->[0] - $prev->[0] ) * $sub_ratio;
+						my $lat = $prev->{lat}
+						  + ( $this->{lat} - $prev->{lat} ) * $sub_ratio;
+						my $lon = $prev->{lon}
+						  + ( $this->{lon} - $prev->{lon} ) * $sub_ratio;
 
 						push( @train_positions, [ $lat, $lon ] );
 					}
@@ -149,7 +155,7 @@ sub estimate_train_positions {
 #     name: str
 #     arr: DateTime
 #     dep: DateTime
-#   features: ref to transport.rest features list
+#   polyline: ref to Travel::Status::DE::HAFAS::Journey polyline list
 #  Output:
 #    next_stop: {type, station}
 #    positions: [current position [lat, lon], 2s from now, 4s from now, ...]
@@ -180,7 +186,8 @@ sub estimate_train_positions2 {
 				from     => $route[ $i - 1 ],
 				to       => $route[$i],
 				now      => $now,
-				features => $opt{features},
+				route    => $opt{route},
+				polyline => $opt{polyline},
 			);
 
 			$next_stop = {
@@ -233,14 +240,12 @@ sub route_to_ajax {
 	my @route_entries;
 
 	for my $stop (@stopovers) {
-		my @stop_entries = ( $stop->{stop}{name} );
+		my @stop_entries = ( $stop->{name} );
 		my $platform;
 
-		if ( $stop->{arrival}
-			and my $arr = $strp->parse_datetime( $stop->{arrival} ) )
-		{
-			my $delay = ( $stop->{arrivalDelay} // 0 ) / 60;
-			$platform = $stop->{arrivalPlatform};
+		if ( my $arr = $stop->{arr} ) {
+			my $delay = $stop->{arr_delay} // 0;
+			$platform = $stop->{arr_platform};
 
 			push( @stop_entries, $arr->epoch, $delay );
 		}
@@ -248,11 +253,9 @@ sub route_to_ajax {
 			push( @stop_entries, q{}, q{} );
 		}
 
-		if ( $stop->{departure}
-			and my $dep = $strp->parse_datetime( $stop->{departure} ) )
-		{
-			my $delay = ( $stop->{departureDelay} // 0 ) / 60;
-			$platform //= $stop->{departurePlatform} // q{};
+		if ( my $dep = $stop->{dep} ) {
+			my $delay = $stop->{dep_delay} // 0;
+			$platform //= $stop->{dep_platform} // q{};
 
 			push( @stop_entries, $dep->epoch, $delay, $platform );
 		}
@@ -266,56 +269,6 @@ sub route_to_ajax {
 	return join( '|', @route_entries );
 }
 
-# Input: List of transport.rest stopovers
-# Output: List of preprocessed stops. Each is a hash with the following keys:
-#   lat: float
-#   lon: float
-#   name: str
-#   arr: DateTime
-#   dep: DateTime
-#   arr_delay: int
-#   dep_delay: int
-#   platform: str
-sub stopovers_to_route {
-	my (@stopovers) = @_;
-	my @route;
-
-	for my $stop (@stopovers) {
-		my @stop_lines = ( $stop->{stop}{name} );
-		my ( $platform, $arr, $dep, $arr_delay, $dep_delay );
-
-		if (    $stop->{arrival}
-			and $arr = $strp->parse_datetime( $stop->{arrival} ) )
-		{
-			$arr_delay = ( $stop->{arrivalDelay} // 0 ) / 60;
-			$platform //= $stop->{arrivalPlatform};
-		}
-
-		if (    $stop->{departure}
-			and $dep = $strp->parse_datetime( $stop->{departure} ) )
-		{
-			$dep_delay = ( $stop->{departureDelay} // 0 ) / 60;
-			$platform //= $stop->{departurePlatform};
-		}
-
-		push(
-			@route,
-			{
-				lat       => $stop->{stop}{location}{latitude},
-				lon       => $stop->{stop}{location}{longitude},
-				name      => $stop->{stop}{name},
-				arr       => $arr,
-				dep       => $dep,
-				arr_delay => $arr_delay,
-				dep_delay => $dep_delay,
-				platform  => $platform,
-			}
-		);
-
-	}
-	return @route;
-}
-
 sub polyline_to_line_pairs {
 	my (@polyline) = @_;
 	my @line_pairs;
@@ -323,8 +276,8 @@ sub polyline_to_line_pairs {
 		push(
 			@line_pairs,
 			[
-				[ $polyline[ $i - 1 ][1], $polyline[ $i - 1 ][0] ],
-				[ $polyline[$i][1],       $polyline[$i][0] ]
+				[ $polyline[ $i - 1 ]{lat}, $polyline[ $i - 1 ]{lon} ],
+				[ $polyline[$i]{lat},       $polyline[$i]{lon} ]
 			]
 		);
 	}
@@ -362,9 +315,9 @@ sub route {
 
 	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
 		sub {
-			my ($pl) = @_;
+			my ($journey) = @_;
 
-			my @polyline = @{ $pl->{polyline} };
+			my @polyline = $journey->polyline;
 			my @station_coordinates;
 
 			my @markers;
@@ -375,12 +328,12 @@ sub route {
 			# used to draw the train's journey on the map
 			my @line_pairs = polyline_to_line_pairs(@polyline);
 
-			my @route = stopovers_to_route( @{ $pl->{raw}{stopovers} // [] } );
+			my @route = $journey->route;
 
 			my $train_pos = $self->estimate_train_positions2(
 				now      => $now,
 				route    => \@route,
-				features => $pl->{raw}{polyline}{features},
+				polyline => \@polyline,
 			);
 
 			# Prepare from/to markers and name/time/delay overlays for stations
@@ -437,34 +390,30 @@ sub route {
 				{
 					lat   => $train_pos->{position_now}[0],
 					lon   => $train_pos->{position_now}[1],
-					title => $pl->{name}
+					titel => $journey->line
 				}
 			);
 			$next_stop = $train_pos->{next_stop};
 
 			$self->render(
 				'route_map',
-				title      => $pl->{name},
-				hide_opts  => 1,
-				with_map   => 1,
-				ajax_req   => "${trip_id}/${line_no}",
-				ajax_route => route_to_ajax( @{ $pl->{raw}{stopovers} // [] } ),
+				title         => $journey->line,
+				hide_opts     => 1,
+				with_map      => 1,
+				ajax_req      => "${trip_id}/${line_no}",
+				ajax_route    => route_to_ajax( $journey->route ),
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => $pl->{raw}{origin}{name},
-					ts   => $pl->{raw}{departure}
-					? scalar $strp->parse_datetime( $pl->{raw}{departure} )
-					: undef,
+					name => $journey->route_start,
+					ts   => ( $journey->route )[0]->{dep},
 				},
 				destination => {
-					name => $pl->{raw}{destination}{name},
-					ts   => $pl->{raw}{arrival}
-					? scalar $strp->parse_datetime( $pl->{raw}{arrival} )
-					: undef,
+					name => $journey->route_end,
+					ts   => ( $journey->route )[-1]->{arr},
 				},
-				train_no        => scalar $pl->{raw}{line}{additionalName},
-				operator        => scalar $pl->{raw}{line}{operator}{name},
+				train_no        => $journey->train,
+				operator        => $journey->operator,
 				next_stop       => $next_stop,
 				polyline_groups => [
 					{
@@ -475,7 +424,7 @@ sub route {
 					}
 				],
 				station_coordinates => [@station_coordinates],
-				station_radius =>
+				station_radius      =>
 				  ( $train_pos->{avg_inter_stop_beeline} > 500 ? 250 : 100 ),
 				markers => [@markers],
 			);
@@ -506,36 +455,32 @@ sub ajax_route {
 
 	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
 		sub {
-			my ($pl) = @_;
+			my ($journey) = @_;
 
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
-			my @route = stopovers_to_route( @{ $pl->{raw}{stopovers} // [] } );
+			my @route    = $journey->route;
+			my @polyline = $journey->polyline;
 
 			my $train_pos = $self->estimate_train_positions2(
 				now      => $now,
 				route    => \@route,
-				features => $pl->{raw}{polyline}{features},
+				polyline => \@polyline,
 			);
 
-			my @polyline = @{ $pl->{polyline} };
 			$self->render(
 				'_map_infobox',
-				ajax_req   => "${trip_id}/${line_no}",
-				ajax_route => route_to_ajax( @{ $pl->{raw}{stopovers} // [] } ),
+				ajax_req      => "${trip_id}/${line_no}",
+				ajax_route    => route_to_ajax(@route),
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => $pl->{raw}{origin}{name},
-					ts   => $pl->{raw}{departure}
-					? scalar $strp->parse_datetime( $pl->{raw}{departure} )
-					: undef,
+					name => $journey->route_start,
+					ts   => ( $journey->route )[0]->{dep},
 				},
 				destination => {
-					name => $pl->{raw}{destination}{name},
-					ts   => $pl->{raw}{arrival}
-					? scalar $strp->parse_datetime( $pl->{raw}{arrival} )
-					: undef,
+					name => $journey->route_end,
+					ts   => ( $journey->route )[-1]->{arr},
 				},
 				next_stop => $train_pos->{next_stop},
 			);
