@@ -390,14 +390,14 @@ sub route {
 				{
 					lat   => $train_pos->{position_now}[0],
 					lon   => $train_pos->{position_now}[1],
-					titel => $journey->line
+					title => $journey->name
 				}
 			);
 			$next_stop = $train_pos->{next_stop};
 
 			$self->render(
 				'route_map',
-				title         => $journey->line,
+				title         => $journey->name,
 				hide_opts     => 1,
 				with_map      => 1,
 				ajax_req      => "${trip_id}/${line_no}",
@@ -412,7 +412,9 @@ sub route {
 					name => $journey->route_end,
 					ts   => ( $journey->route )[-1]->{arr},
 				},
-				train_no        => $journey->train,
+				train_no => $journey->number
+				? ( $journey->type . ' ' . $journey->number )
+				: undef,
 				operator        => $journey->operator,
 				next_stop       => $next_stop,
 				polyline_groups => [
