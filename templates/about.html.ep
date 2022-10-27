@@ -31,12 +31,11 @@
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
 		% }
 		<br/>
-		% if (app->config->{hafas_rest_api} =~ m{v5.db.transport.rest}) {
-			• Karte: DB HAFAS via <a href="https://v5.db.transport.rest/">v5.db.transport.rest</a><br/>
+		• Karte: <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		% if ($Travel::Status::DE::HAFAS::VERSION) {
+			v<%= $Travel::Status::DE::HAFAS::VERSION %>
 		% }
-		% else {
-			• Karte: DB HAFAS via <a href="https://github.com/public-transport/hafas-rest-api">hafas-rest-api</a><br/>
-		% }
+		<br/>
 		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.bahn.expert/">bahn.expert</a><br/>
 		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
 		<br/>
