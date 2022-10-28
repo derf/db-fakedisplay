@@ -243,7 +243,7 @@ sub route_to_ajax {
 		my @stop_entries = ( $stop->{name} );
 		my $platform;
 
-		if ( my $arr = $stop->{arr} ) {
+		if ( my $arr = $stop->{arr} and not $stop->{arr_cancelled} ) {
 			my $delay = $stop->{arr_delay} // 0;
 			$platform = $stop->{arr_platform};
 
@@ -253,7 +253,7 @@ sub route_to_ajax {
 			push( @stop_entries, q{}, q{} );
 		}
 
-		if ( my $dep = $stop->{dep} ) {
+		if ( my $dep = $stop->{dep} and not $stop->{dep_cancelled} ) {
 			my $delay = $stop->{dep_delay} // 0;
 			$platform //= $stop->{dep_platform} // q{};
 
