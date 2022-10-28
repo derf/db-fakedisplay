@@ -10,6 +10,7 @@ use 5.020;
 
 use DateTime;
 use Encode qw(decode encode);
+use Travel::Status::DE::HAFAS;
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 use XML::LibXML;
@@ -438,68 +439,33 @@ sub get_route_timestamps_p {
 }
 
 # Input: (HAFAS TripID, line number)
-# Output: Promise returning a
-# https://github.com/public-transport/hafas-client/blob/4/docs/trip.md instance
-# on success
+# Output: Promise returning a Travel::Status::DE::HAFAS::Journey instance on success
 sub get_polyline_p {
 	my ( $self, $trip_id, $line ) = @_;
 
-	my $api     = $self->{api};
-	my $url     = "${api}/trips/${trip_id}?lineName=${line}&polyline=true";
-	my $log_url = $url;
-	my $cache   = $self->{realtime_cache};
 	my $promise = Mojo::Promise->new;
 
-	$log_url =~ s{://\K[^:]+:[^@]+\@}{***@};
-
-	if ( my $content = $cache->thaw($url) ) {
-		$promise->resolve($content);
-		$self->{log}->debug("GET $log_url (cached)");
-		return $promise;
-	}
-
-	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
-	  ->then(
+	Travel::Status::DE::HAFAS->new_p(
+		journey => {
+			id   => $trip_id,
+			name => $line,
+		},
+		with_polyline => 1,
+		cache         => $self->{realtime_cache},
+		promise       => 'Mojo::Promise',
+		user_agent    => $self->{user_agent}->request_timeout(5)
+	)->then(
 		sub {
-			my ($tx) = @_;
+			my ($hafas) = @_;
+			my $journey = $hafas->result;
 
-			if ( my $err = $tx->error ) {
-				$self->{log}->warn(
-"hafas->get_polyline_p($log_url): HTTP $err->{code} $err->{message}"
-				);
-				$promise->reject(
-					"GET $log_url returned HTTP $err->{code} $err->{message}");
-				return;
-			}
-
-			$self->{log}->debug("GET $log_url (OK)");
-			my $json = decode_json( $tx->res->body );
-			my @coordinate_list;
-
-			for my $feature ( @{ $json->{polyline}{features} } ) {
-				if ( exists $feature->{geometry}{coordinates} ) {
-					push( @coordinate_list, $feature->{geometry}{coordinates} );
-				}
-
-				#if ($feature->{type} eq 'Feature') {
-				#	say "Feature " . $feature->{properties}{name};
-				#}
-			}
-
-			my $ret = {
-				name     => $json->{line}{name} // '?',
-				polyline => [@coordinate_list],
-				raw      => $json,
-			};
-
-			$cache->freeze( $url, $ret );
-			$promise->resolve($ret);
+			$promise->resolve($journey);
 			return;
 		}
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->debug("GET $log_url (error: $err)");
+			$self->{log}->debug("HAFAS->new_p($trip_id, $line) error: $err");
 			$promise->reject($err);
 			return;
 		}
