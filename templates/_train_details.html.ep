@@ -214,11 +214,11 @@
 %         else {
             generic-stop
 %         }
-%         if ($stop->{rt_dep} and $stop->{dep_delay}) {
-            "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%         if (($stop->{rt_dep} and $stop->{dep_delay}) or (not $stop->{rt_dep} and $stop->{rt_arr} and $stop->{arr_delay})) {
+            "><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %> (heute <%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
-            "><%= $stop->{sched_dep} ? $stop->{sched_dep}->strftime('%H:%M') : q{} %>
+            "><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %>
 %            if ($stop->{rt_bogus}) {
                <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %            }
@@ -259,11 +259,11 @@
 %         else {
             generic-stop
 %         }
-%         if ($stop->{rt_arr} and $stop->{arr_delay}) {
-            "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+%         if (($stop->{rt_arr} and $stop->{arr_delay}) or (not $stop->{rt_arr} and $stop->{rt_dep} and $stop->{dep_delay})) {
+            "><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %> (heute <%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
-            "><%= $stop->{sched_arr} ? $stop->{sched_arr}->strftime('%H:%M') : q{} %>
+            "><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %>
 %            if ($stop->{rt_bogus}) {
                <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %            }
