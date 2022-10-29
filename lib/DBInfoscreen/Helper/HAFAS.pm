@@ -362,6 +362,7 @@ sub get_route_timestamps_p {
 					rt_dep      => $stop->{rt_dep},
 					arr_delay   => $stop->{arr_delay},
 					dep_delay   => $stop->{dep_delay},
+					load        => $stop->{load},
 					isCancelled => (
 						( $stop->{arr_cancelled} or not $stop->{sched_arr} )
 						  and

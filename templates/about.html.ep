@@ -35,7 +35,6 @@
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
 		% }
 		<br/>
-		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.bahn.expert/">bahn.expert</a><br/>
 		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
 		<br/>
 		Sie nutzt zusätzlich die folgenden Open Data-Ressourcen:<br/>

@@ -568,15 +568,12 @@ sub render_train {
 	$self->render_later;
 
 	my $wagonorder_req  = Mojo::Promise->new;
-	my $utilization_req = Mojo::Promise->new;
 	my $occupancy_req   = Mojo::Promise->new;
 	my $stationinfo_req = Mojo::Promise->new;
 	my $route_req       = Mojo::Promise->new;
 
-	my @requests = (
-		$wagonorder_req,  $utilization_req, $occupancy_req,
-		$stationinfo_req, $route_req
-	);
+	my @requests
+	  = ( $wagonorder_req, $occupancy_req, $stationinfo_req, $route_req );
 
 	if ( $departure->{wr_link} ) {
 		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
@@ -595,30 +592,9 @@ sub render_train {
 				return;
 			}
 		)->wait;
-
-		# Looks like utilization data is only available for long-distance trains
-		# – and the few regional trains which also have wagon order data (e.g.
-		# around Stuttgart). Funky.
-		$self->marudor->get_train_utilization( train => $result )->then(
-			sub {
-				my ( $first, $second ) = @_;
-				$departure->{utilization} = [ $first, $second ];
-				return;
-			},
-			sub {
-				$departure->{utilization} = undef;
-				return;
-			}
-		)->finally(
-			sub {
-				$utilization_req->resolve;
-				return;
-			}
-		)->wait;
 	}
 	else {
 		$wagonorder_req->resolve;
-		$utilization_req->resolve;
 	}
 
 	$self->marudor->get_efa_occupancy(
@@ -701,6 +677,13 @@ sub render_train {
 			my ( $route_ts, $journey ) = @_;
 
 			$departure->{trip_id} = $journey->id;
+
+			if ( my $load = $route_ts->{$station_name}{load} ) {
+				if ( %{$load} ) {
+					$departure->{utilization}
+					  = [ $load->{FIRST}, $load->{SECOND} ];
+				}
+			}
 
 			# If a train number changes on the way, IRIS routes are incomplete,
 			# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
