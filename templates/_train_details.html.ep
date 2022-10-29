@@ -215,14 +215,19 @@
             generic-stop
 %         }
 %         if (($stop->{rt_dep} and $stop->{dep_delay}) or (not $stop->{rt_dep} and $stop->{rt_arr} and $stop->{arr_delay})) {
-            "><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %> (heute <%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+            "><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %> (heute <%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %>)
 %         }
 %         else {
             "><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %>
-%            if ($stop->{rt_bogus}) {
-               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
-%            }
-             <%= $stop->{name} %></a>
+%           if ($stop->{rt_bogus}) {
+              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%           }
+%         }
+          <%= $stop->{name} %></a>
+%         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
+%           my ($text, $icon1, $icon2) = utilization_icon([$stop->{load}{FIRST}, $stop->{load}{SECOND}]);
+            <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
 %         }
           </li>
 %       }
@@ -242,6 +247,11 @@
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %           }
             <strong><%= stash('station_name') %></strong>
+%           if (my $u = $departure->{utilization}) {
+%             my ($text, $icon1, $icon2) = utilization_icon($u);
+              <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+              <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
+%           }
           </li>
 %       }
 %       for my $stop (@{$departure->{route_post_diff}}) {
@@ -260,14 +270,19 @@
             generic-stop
 %         }
 %         if (($stop->{rt_arr} and $stop->{arr_delay}) or (not $stop->{rt_arr} and $stop->{rt_dep} and $stop->{dep_delay})) {
-            "><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %> (heute <%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %>) <%= $stop->{name} %></a>
+            "><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %> (heute <%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %>)
 %         }
 %         else {
             "><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %>
-%            if ($stop->{rt_bogus}) {
-               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
-%            }
-            <%= $stop->{name} %></a>
+%           if ($stop->{rt_bogus}) {
+              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%           }
+%         }
+          <%= $stop->{name} %></a>
+%         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
+%           my ($text, $icon1, $icon2) = utilization_icon([$stop->{load}{FIRST}, $stop->{load}{SECOND}]);
+            <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
 %         }
           </li>
 %       }
