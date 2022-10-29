@@ -9,7 +9,7 @@ use warnings;
 use 5.020;
 
 use DateTime;
-use Encode qw(decode encode);
+use Encode     qw(decode encode);
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 use Mojo::Util qw(url_escape);

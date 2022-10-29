@@ -25,15 +25,14 @@
 		zu:<br/>
 		• Abfahrtstafel: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		• Meldungen und Ankunft/Abfahrt an Unterwegshalten: DB HAFAS via <a href="https://git.finalrewind.org/db-fakedisplay/tree/lib/DBInfoscreen/Helper/HAFAS.pm">Helper/HAFAS.pm</a><br/>
+		• Zugdetails: <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		% if ($Travel::Status::DE::HAFAS::VERSION) {
+			v<%= $Travel::Status::DE::HAFAS::VERSION %>
+		% }
+		<br/>
 		• Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		% if ($Travel::Status::DE::DBWagenreihung::VERSION) {
 			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
-		% }
-		<br/>
-		• Karte: <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
-		% if ($Travel::Status::DE::HAFAS::VERSION) {
-			v<%= $Travel::Status::DE::HAFAS::VERSION %>
 		% }
 		<br/>
 		• Zugauslastung Fernverkehr: DB HAFAS via <a href="https://docs.bahn.expert/">bahn.expert</a><br/>

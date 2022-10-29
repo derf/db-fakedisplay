@@ -4,9 +4,14 @@ Beim Bearbeiten der Anfrage ist ein Fehler aufgetreten.<br/>
 
 <pre>
 ----------[Debug start]----------
+% if ($exception) {
 %= $exception->message
 Stash:
 %= dumper $snapshot
+% }
+% else {
+%= stash('message')
+% }
 ----------[Debug end]----------
 </pre>
 </div>

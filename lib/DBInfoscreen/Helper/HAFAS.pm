@@ -326,111 +326,70 @@ sub get_route_timestamps_p {
 		$opt{train_origin} = $opt{train}->origin;
 	}
 	else {
+		$opt{train_req} = $opt{train_type} . ' ' . $opt{train_no};
 		$opt{date_yy}   = $now->strftime('%d.%m.%y');
 		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
-	my $base = 'https://reiseauskunft.bahn.de/bin/traininfo.exe/dn';
-	my ( $trainsearch_result, $trainlink );
-
 	$self->trainsearch_p(%opt)->then(
 		sub {
-			($trainsearch_result) = @_;
-			$trainlink = $trainsearch_result->{trainLink};
-			return Mojo::Promise->all(
-				$self->get_json_p(
-					$self->{realtime_cache},
-					"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_json"
-				),
-				$self->get_xml_p(
-					$self->{realtime_cache},
-					"${base}/${trainlink}?rt=1&date=$opt{date_yy}&L=vs_java3"
-				)
+			my ($trainsearch_result) = @_;
+			my $trip_id = $trainsearch_result->{trip_id};
+			return Travel::Status::DE::HAFAS->new_p(
+				journey => {
+					id => $trip_id,
+
+					# name => $opt{train_no},
+				},
+				cache      => $self->{realtime_cache},
+				promise    => 'Mojo::Promise',
+				user_agent => $self->{user_agent}->request_timeout(10)
 			);
 		}
 	)->then(
 		sub {
-			my ( $traininfo, $traindelay ) = @_;
-			$traininfo  = $traininfo->[0];
-			$traindelay = $traindelay->[0];
-			if ( not $traininfo or $traininfo->{error} ) {
-				$promise->reject;
-				return;
-			}
-			$trainsearch_result->{trainClass}
-			  = $traininfo->{suggestions}[0]{trainClass};
-			my $ret = {};
-
-			my $strp = DateTime::Format::Strptime->new(
-				pattern   => '%d.%m.%y %H:%M',
-				time_zone => 'Europe/Berlin',
-			);
+			my ($hafas) = @_;
+			my $journey = $hafas->result;
+			my $ret     = {};
 
 			my $station_is_past = 1;
-
-			for
-			  my $station ( @{ $traininfo->{suggestions}[0]{locations} // [] } )
-			{
-				my $name = $station->{name};
-				my $arr  = $station->{arrDate} . ' ' . $station->{arrTime};
-				my $dep  = $station->{depDate} . ' ' . $station->{depTime};
+			for my $stop ( $journey->route ) {
+				my $name = $stop->{name};
 				$ret->{$name} = {
-					sched_arr => scalar $strp->parse_datetime($arr),
-					sched_dep => scalar $strp->parse_datetime($dep),
+					sched_arr   => $stop->{sched_arr},
+					sched_dep   => $stop->{sched_dep},
+					rt_arr      => $stop->{rt_arr},
+					rt_dep      => $stop->{rt_dep},
+					arr_delay   => $stop->{arr_delay},
+					dep_delay   => $stop->{dep_delay},
+					isCancelled => (
+						( $stop->{arr_cancelled} or not $stop->{sched_arr} )
+						  and
+						  ( $stop->{dep_cancelled} or not $stop->{sched_dep} )
+					),
 				};
-				if ( exists $traindelay->{station}{$name} ) {
-					my $delay = $traindelay->{station}{$name};
-					if (    $ret->{$name}{sched_arr}
-						and $delay->{adelay}
-						and $delay->{adelay} =~ m{^\d+$} )
-					{
-						$ret->{$name}{rt_arr} = $ret->{$name}{sched_arr}
-						  ->clone->add( minutes => $delay->{adelay} );
-					}
-					if (    $ret->{$name}{sched_dep}
-						and $delay->{ddelay}
-						and $delay->{ddelay} =~ m{^\d+$} )
-					{
-						$ret->{$name}{rt_dep} = $ret->{$name}{sched_dep}
-						  ->clone->add( minutes => $delay->{ddelay} );
-						if (
-							(
-								defined $delay->{adelay}
-								and $delay->{adelay} eq q{}
-							)
-							or ( defined $delay->{ddelay}
-								and $delay->{ddelay} eq q{} )
-						  )
-						{
-							$ret->{$name}{rt_bogus} = 1;
-						}
-						if ( $delay->{ddelay} and $delay->{ddelay} eq 'cancel' )
-						{
-							$ret->{$name}{isCancelled} = 1;
-						}
-					}
-					if (
-						    $station_is_past
-						and not $ret->{$name}{isCancelled}
-						and $now->epoch < (
-							$ret->{$name}{rt_arr} // $ret->{$name}{rt_dep}
-							  // $ret->{$name}{sched_arr}
-							  // $ret->{$name}{sched_dep} // $now
-						)->epoch
-					  )
-					{
-						$station_is_past = 0;
-					}
-					$ret->{$name}{isPast} = $station_is_past;
+				if (
+					    $station_is_past
+					and not $ret->{$name}{isCancelled}
+					and $now->epoch < (
+						$ret->{$name}{rt_arr} // $ret->{$name}{rt_dep}
+						  // $ret->{$name}{sched_arr}
+						  // $ret->{$name}{sched_dep} // $now
+					)->epoch
+				  )
+				{
+					$station_is_past = 0;
 				}
+				$ret->{$name}{isPast} = $station_is_past;
 			}
 
-			$promise->resolve( $ret, $traindelay // {}, $trainsearch_result );
+			$promise->resolve( $ret, $journey );
 			return;
 		}
 	)->catch(
 		sub {
-			$promise->reject;
+			my ($err) = @_;
+			$promise->reject($err);
 			return;
 		}
 	)->wait;
@@ -453,7 +412,7 @@ sub get_polyline_p {
 		with_polyline => 1,
 		cache         => $self->{realtime_cache},
 		promise       => 'Mojo::Promise',
-		user_agent    => $self->{user_agent}->request_timeout(5)
+		user_agent    => $self->{user_agent}->request_timeout(10)
 	)->then(
 		sub {
 			my ($hafas) = @_;

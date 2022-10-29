@@ -698,64 +698,62 @@ sub render_train {
 
 	$self->hafas->get_route_timestamps_p( train => $result )->then(
 		sub {
-			my ( $route_ts, $route_info, $trainsearch ) = @_;
+			my ( $route_ts, $journey ) = @_;
 
-			$departure->{trip_id} = $trainsearch->{trip_id};
+			$departure->{trip_id} = $journey->id;
 
 			# If a train number changes on the way, IRIS routes are incomplete,
 			# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
 			# stops. This is a rare case, one point where it can be observed is
 			# the TGV service at Frankfurt/Karlsruhe/Mannheim.
-			if ( $route_info
-				and my @hafas_stations = @{ $route_info->{stations} // [] } )
-			{
-				if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
-					my @missing_pre;
-					for my $station (@hafas_stations) {
-						if (
-							List::MoreUtils::any { $_->{name} eq $station }
-							@iris_stations
-						  )
-						{
-							unshift(
-								@{ $departure->{route_pre_diff} },
-								@missing_pre
-							);
-							last;
-						}
-						push(
-							@missing_pre,
-							{
-								name  => $station,
-								hafas => 1
-							}
-						);
-					}
-				}
-				if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
-					my @missing_post;
-					for my $station ( reverse @hafas_stations ) {
-						if (
-							List::MoreUtils::any { $_->{name} eq $station }
-							@iris_stations
-						  )
-						{
-							push(
-								@{ $departure->{route_post_diff} },
-								@missing_post
-							);
-							last;
-						}
+			my @hafas_stations = $journey->route;
+			if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
+				my @missing_pre;
+				for my $station (@hafas_stations) {
+					if (
+						List::MoreUtils::any { $_->{name} eq $station->{name} }
+						@iris_stations
+					  )
+					{
 						unshift(
-							@missing_post,
-							{
-								name  => $station,
-								hafas => 1
-							}
+							@{ $departure->{route_pre_diff} },
+							@missing_pre
 						);
+						last;
 					}
+					push(
+						@missing_pre,
+						{
+							name  => $station->{name},
+							hafas => 1
+						}
+					);
 				}
 			}
+			if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
+				my @missing_post;
+				for my $station ( reverse @hafas_stations ) {
+					if (
+						List::MoreUtils::any { $_->{name} eq $station->{name} }
+						@iris_stations
+					  )
+					{
+						push(
+							@{ $departure->{route_post_diff} },
+							@missing_post
+						);
+						last;
+					}
+					unshift(
+						@missing_post,
+						{
+							name  => $station->{name},
+							hafas => 1
+						}
+					);
+				}
+			}
+
 			if ($route_ts) {
 				if ( $route_ts->{ $result->station }{rt_bogus} ) {
 
@@ -770,53 +768,30 @@ sub render_train {
 					{
 						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
 					}
-					if ( $elem->{rt_bogus} ) {
-						$departure->{partially_missing_realtime} = 1;
-					}
 				}
 			}
-			if ( $route_info and @{ $route_info->{messages} // [] } ) {
-				my $him = $route_info->{messages};
-				my @him_messages;
-				$departure->{messages}{him} = $him;
-				for my $message ( @{$him} ) {
-					if ( $message->{display} ) {
-						push(
-							@him_messages,
-							[
-								$message->{header}, { text => $message->{lead} }
-							]
-						);
-						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
-							push(
-								@{ $departure->{links} },
-								[
-									"Großstörung",
-									"https://zuginfo.nrw/?msg=$1"
-								]
-							);
-						}
-					}
+
+			my @him_messages;
+			for my $message ( $journey->messages ) {
+				if ( not $message->code ) {
+					push( @him_messages,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
 				}
-				for my $message ( @{ $departure->{moreinfo} // [] } ) {
-					my $m = $message->[1];
-					@him_messages
-					  = grep { $_->[0] !~ m{Information\. $m\.$} }
-					  @him_messages;
-				}
-				for my $m (@him_messages) {
-					if ( $m->[0] =~ s{: Information.}{: } ) {
-						$m->[1]{icon} = 'info_outline';
-					}
-					elsif ( $m->[0] =~ s{: (?:Großs|S)törung.}{: } ) {
-						$m->[1]{icon} = 'warning';
-					}
-					elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
-						$m->[1]{icon} = 'build';
-					}
-				}
-				unshift( @{ $departure->{moreinfo} }, @him_messages );
 			}
+			for my $m (@him_messages) {
+				if ( $m->[0] =~ s{: Information.}{:} ) {
+					$m->[1]{icon} = 'info_outline';
+				}
+				elsif ( $m->[0] =~ s{: Störung.}{: } ) {
+					$m->[1]{icon} = 'warning';
+				}
+				elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
+					$m->[1]{icon} = 'build';
+				}
+				$m->[0] =~ s{(?!<)->}{ → };
+			}
+			unshift( @{ $departure->{moreinfo} }, @him_messages );
 		}
 	)->catch(
 		sub {
@@ -1029,73 +1004,58 @@ sub train_details {
 	my $linetype = 'bahn';
 
 	$self->hafas->get_route_timestamps_p(
-		train_req => "${train_type} $train_no" )->then(
+		train_type => $train_type,
+		train_no   => $train_no
+	)->then(
 		sub {
-			my ( $route_ts, $route_info, $trainsearch ) = @_;
+			my ( $route_ts, $journey ) = @_;
 
-			$res->{trip_id} = $trainsearch->{trip_id};
+			$res->{trip_id} = $journey->id;
 
-			if ( not defined $trainsearch->{trainClass} ) {
+			if ( not defined $journey->class ) {
 				$linetype = 'ext';
 			}
-			elsif ( $trainsearch->{trainClass} <= 2 ) {
+			elsif ( $journey->class <= 2 ) {
 				$linetype = 'fern';
 			}
-			elsif ( $trainsearch->{trainClass} <= 8 ) {
+			elsif ( $journey->class <= 8 ) {
 				$linetype = 'bahn';
 			}
-			elsif ( $trainsearch->{trainClass} <= 16 ) {
+			elsif ( $journey->class <= 16 ) {
 				$linetype = 'sbahn';
 			}
 
-			$res->{origin}      = $route_info->{stations}[0];
-			$res->{destination} = $route_info->{stations}[-1];
+			$res->{origin}      = $journey->route_start;
+			$res->{destination} = $journey->route_end;
 
 			$res->{route_post_diff}
-			  = [ map { { name => $_ } } @{ $route_info->{stations} } ];
-
-			if ($route_ts) {
-				for my $elem ( @{ $res->{route_post_diff} } ) {
-					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
-					{
-						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
-					}
+			  = [ map { { name => $_->{name} } } $journey->route ];
+			for my $elem ( @{ $res->{route_post_diff} } ) {
+				for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
+					$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
 				}
 			}
 
-			if ( $route_info and @{ $route_info->{messages} // [] } ) {
-				my $him = $route_info->{messages};
-				my @him_messages;
-				for my $message ( @{$him} ) {
-					if ( $message->{display} ) {
-						push(
-							@him_messages,
-							[
-								$message->{header}, { text => $message->{lead} }
-							]
-						);
-						if ( $message->{lead} =~ m{zuginfo.nrw/?\?msg=(\d+)} ) {
-							push(
-								@{ $res->{links} },
-								[
-									"Großstörung",
-									"https://zuginfo.nrw/?msg=$1"
-								]
-							);
-						}
-					}
+			my @him_messages;
+			for my $message ( $journey->messages ) {
+				if ( not $message->code ) {
+					push( @him_messages,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
 				}
-				for my $m (@him_messages) {
-					if ( $m->[0] =~ s{: Information.}{:} ) {
-						$m->[1]{icon} = 'info_outline';
-					}
-					elsif ( $m->[0] =~ s{: Störung.}{: } ) {
-						$m->[1]{icon} = 'warning';
-					}
-					elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
-						$m->[1]{icon} = 'build';
-					}
+			}
+			for my $m (@him_messages) {
+				if ( $m->[0] =~ s{: Information.}{:} ) {
+					$m->[1]{icon} = 'info_outline';
 				}
+				elsif ( $m->[0] =~ s{: Störung.}{: } ) {
+					$m->[1]{icon} = 'warning';
+				}
+				elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
+					$m->[1]{icon} = 'build';
+				}
+			}
+			if (@him_messages) {
 				$res->{moreinfo} = [@him_messages];
 			}
 
@@ -1106,8 +1066,6 @@ sub train_details {
 				icetype   => $self->app->ice_type_map->{ $res->{train_no} },
 				details   => {},    #$departure->{composition} // {},
 				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
-
-				#station_name => "FIXME",#$station_name,
 			);
 		}
 	)->catch(
@@ -1116,7 +1074,8 @@ sub train_details {
 			if ($e) {
 				$self->render(
 					'exception',
-					exception => $e,
+					message   => $e,
+					exception => undef,
 					snapshot  => {}
 				);
 			}

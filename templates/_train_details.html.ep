@@ -165,7 +165,7 @@
       <ul class="messages">
 %     for my $pair (@{$departure->{moreinfo}}) {
         <li>
-%       if ($pair->[0]->isa('DateTime')) {
+%       if (ref($pair->[0]) eq 'DateTime') {
 %         if ($pair->[0]->day != $dt_now->day) {
 %           $pair->[0]->set_locale('de_DE');
 %=          $pair->[0]->strftime('%a %H:%M')
@@ -214,7 +214,7 @@
 %         else {
             generic-stop
 %         }
-%         if ($stop->{rt_dep}) {
+%         if ($stop->{rt_dep} and $stop->{dep_delay}) {
             "><%= $stop->{sched_dep}->strftime('%H:%M') %> (heute <%= $stop->{rt_dep}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
@@ -259,7 +259,7 @@
 %         else {
             generic-stop
 %         }
-%         if ($stop->{rt_arr}) {
+%         if ($stop->{rt_arr} and $stop->{arr_delay}) {
             "><%= $stop->{sched_arr}->strftime('%H:%M') %> (heute <%= $stop->{rt_arr}->strftime('%H:%M') %>) <%= $stop->{name} %></a>
 %         }
 %         else {
