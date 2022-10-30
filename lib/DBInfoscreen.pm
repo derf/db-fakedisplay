@@ -240,7 +240,9 @@ sub startup {
 	$self->helper(
 		'utilization_icon' => sub {
 			my ( $self,  $utilization ) = @_;
-			my ( $first, $second )      = @{ $utilization // [ 0, 0 ] };
+			my ( $first, $second )      = @{ $utilization // [] };
+			$first  //= 0;
+			$second //= 0;
 			my $sum = ( $first + $second ) / 2;
 
 			my @symbols
