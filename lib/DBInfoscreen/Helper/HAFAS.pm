@@ -1,6 +1,6 @@
 package DBInfoscreen::Helper::HAFAS;
 
-# Copyright (C) 2011-2020 Daniel Friesel
+# Copyright (C) 2011-2022 Daniel Friesel
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 

@@ -1,6 +1,6 @@
-package DBInfoscreen::Helper::Marudor;
+package DBInfoscreen::Helper::EFA;
 
-# Copyright (C) 2020 Daniel Friesel
+# Copyright (C) 2020-2022 Daniel Friesel
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -35,7 +35,7 @@ sub get_json_p {
 	my $promise = Mojo::Promise->new;
 
 	if ( my $content = $cache->thaw($url) ) {
-		$self->{log}->debug("marudor->get_json_p($url): cached");
+		$self->{log}->debug("efa->get_json_p($url): cached");
 		if ( $content->{error} ) {
 			return $promise->reject( $content->{error} );
 		}
@@ -49,7 +49,7 @@ sub get_json_p {
 
 			if ( my $err = $tx->error ) {
 				$self->{log}->debug(
-"marudor->get_json_p($url): HTTP $err->{code} $err->{message}"
+"efa->get_json_p($url): HTTP $err->{code} $err->{message}"
 				);
 				$cache->freeze( $url, { error => $err->{message} } );
 				$promise->reject(
@@ -61,7 +61,7 @@ sub get_json_p {
 
 			if ( not $res ) {
 				$self->{log}
-				  ->debug("marudor->get_json_p($url): empty response");
+				  ->debug("efa->get_json_p($url): empty response");
 				$promise->reject("GET $url returned empty response");
 				return;
 			}
@@ -75,7 +75,7 @@ sub get_json_p {
 	)->catch(
 		sub {
 			my ($err) = @_;
-			$self->{log}->debug("marudor->get_json_p($url): $err");
+			$self->{log}->debug("efa->get_json_p($url): $err");
 			$cache->freeze( $url, { error => $err } );
 			$promise->reject($err);
 			return;

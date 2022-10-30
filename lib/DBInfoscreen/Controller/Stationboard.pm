@@ -597,7 +597,7 @@ sub render_train {
 		$wagonorder_req->resolve;
 	}
 
-	$self->marudor->get_efa_occupancy(
+	$self->efa->get_efa_occupancy(
 		eva      => $result->station_uic,
 		train_no => $result->train_no
 	)->then(

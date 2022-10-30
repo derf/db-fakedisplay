@@ -7,8 +7,8 @@ package DBInfoscreen;
 use Mojo::Base 'Mojolicious';
 
 use Cache::File;
+use DBInfoscreen::Helper::EFA;
 use DBInfoscreen::Helper::HAFAS;
-use DBInfoscreen::Helper::Marudor;
 use DBInfoscreen::Helper::Wagonorder;
 use File::Slurp qw(read_file);
 use JSON;
@@ -125,9 +125,9 @@ sub startup {
 	);
 
 	$self->helper(
-		hafas => sub {
+		efa => sub {
 			my ($self) = @_;
-			state $hafas = DBInfoscreen::Helper::HAFAS->new(
+			state $efa = DBInfoscreen::Helper::EFA->new(
 				log            => $self->app->log,
 				main_cache     => $self->app->cache_iris_main,
 				realtime_cache => $self->app->cache_iris_rt,
@@ -139,9 +139,9 @@ sub startup {
 	);
 
 	$self->helper(
-		marudor => sub {
+		hafas => sub {
 			my ($self) = @_;
-			state $hafas = DBInfoscreen::Helper::Marudor->new(
+			state $hafas = DBInfoscreen::Helper::HAFAS->new(
 				log            => $self->app->log,
 				main_cache     => $self->app->cache_iris_main,
 				realtime_cache => $self->app->cache_iris_rt,
