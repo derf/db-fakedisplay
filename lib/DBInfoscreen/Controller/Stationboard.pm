@@ -676,7 +676,8 @@ sub render_train {
 		sub {
 			my ( $route_ts, $journey ) = @_;
 
-			$departure->{trip_id} = $journey->id;
+			$departure->{trip_id}  = $journey->id;
+			$departure->{operator} = $journey->operator;
 
 			if ( my $load = $route_ts->{$station_name}{load} ) {
 				if ( %{$load} ) {
@@ -755,8 +756,14 @@ sub render_train {
 			}
 
 			my @him_messages;
+			my @him_details;
 			for my $message ( $journey->messages ) {
-				if ( not $message->code ) {
+				if ( $message->code ) {
+					push( @him_details,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
+				}
+				else {
 					push( @him_messages,
 						[ $message->short // q{}, { text => $message->text } ]
 					);
@@ -775,6 +782,7 @@ sub render_train {
 				$m->[0] =~ s{(?!<)->}{ → };
 			}
 			unshift( @{ $departure->{moreinfo} }, @him_messages );
+			unshift( @{ $departure->{details} },  @him_details );
 		}
 	)->catch(
 		sub {
@@ -1010,6 +1018,7 @@ sub train_details {
 
 			$res->{origin}      = $journey->route_start;
 			$res->{destination} = $journey->route_end;
+			$res->{operator}    = $journey->operator;
 
 			$res->{route_post_diff}
 			  = [ map { { name => $_->{name} } } $journey->route ];
@@ -1020,8 +1029,14 @@ sub train_details {
 			}
 
 			my @him_messages;
+			my @him_details;
 			for my $message ( $journey->messages ) {
-				if ( not $message->code ) {
+				if ( $message->code ) {
+					push( @him_details,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
+				}
+				else {
 					push( @him_messages,
 						[ $message->short // q{}, { text => $message->text } ]
 					);
@@ -1040,6 +1055,9 @@ sub train_details {
 			}
 			if (@him_messages) {
 				$res->{moreinfo} = [@him_messages];
+			}
+			if (@him_details) {
+				$res->{details} = [@him_details];
 			}
 
 			$self->render(
