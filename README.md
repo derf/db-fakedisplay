@@ -90,7 +90,7 @@ re-start the container.
 Setup
 ---
 
-db-infoscreen respects the following environment variables:
+In hypnotoad mode (recommended), db-infoscreen respects the following environment variables:
 
 | Variable | Default | Description |
 | :------- | :------ | :---------- |
@@ -106,10 +106,15 @@ Set these as needed, create `templates/imprint.html.ep` (imprint) and
 pass requests for db-infoscreen to the appropriate port. See the
 `examples` directory for imprint and privacy policy samples.
 
-You can run the app using a Mojo::Server of your choice, e.g.  **perl
-index.pl daemon -m production** (quick&dirty, does not respect all variables)
-or **hypnotoad** (recommended). A systemd unit example is provided in
-`examples/db-infoscreen.service`.
+You can then use a service supervisor of your choice to run **hypnotoad index.pl**
+(using Mojolicious' hypnotoad server). See `examples/db-infoscreen.service`
+for a systemd unit example.
+
+For a quick&dirty setup on low-traffic sites you can also use **morbo index.pl**
+or **perl index.pl daemon -m production**. In this case, DBFAKEDISPLAY\_LISTEN
+and DBFAKEDISPLAY\_WORKERS have no effect. Morbo accepts IP and port
+configuration using the `-l`/`--listen` switch (default: `http://*:3000`);
+Daemon mode respects the MOJO\_LISTEN environment variable (default: `http://*:3000`).
 
 For public-facing installations, you may want to enable caching in the reverse
 proxy serving DBF. See `examples/nginx-cache.conf` and
