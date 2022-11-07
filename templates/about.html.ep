@@ -7,7 +7,7 @@
 		steht unter der <a
 		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL
 		v3</a> als Open Source zur Verfügung. © 2022 <a
-		href="https://finalrewind.org/me">Daniel Friesel</a> / <a href="https://twitter.com/derfnull">@derfnull</a>.
+		href="https://finalrewind.org">Daniel Friesel</a> / <a href="https://social.antifa.gmbh/@derf">@derf</a>.
 		% if (my $issue_url = app->config->{'issue_url'}) {
 			Fehlermeldungen bitte via
 			<a href="<%= $issue_url %>">Issue Tracker</a>.
