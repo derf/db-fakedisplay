@@ -289,29 +289,30 @@
       </ul> <!-- mroute -->
 %   }
 %   if ($departure->{operator}) {
-     <div>Betrieb: <%= $departure->{operator} %></div>
+     <div class="details">Betrieb: <%= $departure->{operator} %></div>
 %   }
 %   if ($departure->{details} and @{$departure->{details}}) {
-      Details:
-      <ul class="messages">
-%     for my $pair (@{$departure->{details}}) {
-        <li>
-%       if ($pair->[1]{icon}) {
-          <i class="material-icons"><%= $pair->[1]{icon} %></i>
+      <div class="details">Details:
+        <ul>
+%       for my $pair (@{$departure->{details}}) {
+          <li>
+%         if ($pair->[1]{icon}) {
+            <i class="material-icons"><%= $pair->[1]{icon} %></i>
+%         }
+%=        $pair->[0]
+%         if (length($pair->[0]) > 25) {
+            <br/>
+%         }
+          <span class="reason">
+%=        $pair->[1]{text}
+          </span>
+          </li>
 %       }
-%=      $pair->[0]
-%       if (length($pair->[0]) > 25) {
-          <br/>
+%       if ($departure->{route_info}) {
+          <li><%= $departure->{route_info} %></li>
 %       }
-        <span class="reason">
-%=      $pair->[1]{text}
-        </span>
-        </li>
-%     }
-%     if ($departure->{route_info}) {
-        <li><%= $departure->{route_info} %></li>
-%     }
-      </ul>
+        </ul>
+      </div>
 %   }
 %   if ($departure->{has_cycle}) {
       <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.svg">Umlaufplan</a>
