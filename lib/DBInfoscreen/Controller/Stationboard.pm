@@ -907,6 +907,8 @@ sub station_train_details {
 				departure => $result->departure
 				? $result->departure->strftime('%H:%M')
 				: undef,
+				arrival_hidden         => $result->arrival_hidden,
+				departure_hidden       => $result->departure_hidden,
 				train_type             => $result->type // '',
 				train_line             => $result->line_no,
 				train_no               => $result->train_no,

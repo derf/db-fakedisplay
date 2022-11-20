@@ -43,7 +43,7 @@
     <div class="mfooter">
     <div class="dataline">
     <div>
-    <div class="arrival">
+    <div class="arrival <%= $departure->{arrival_hidden} ? 'timehidden' : q{} %>">
 %     if ($departure->{is_cancelled} and $departure->{sched_arrival}) {
         <span class="minfo">An: ––:––</span><br/>Plan: <%= $departure->{sched_arrival} %>
 %     }
@@ -88,10 +88,16 @@
         <%= $left %>Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %><%= $right %>
 %     }
 %   }
+%   if ($departure->{arrival_hidden}) {
+      <br/><span class="timehidden">Nur Einstieg</span>
+%   }
+%   if ($departure->{departure_hidden}) {
+      <br/><span class="timehidden">Nur Ausstieg</span>
+%   }
     </div>
     </div>
     <div>
-    <div class="departure">
+    <div class="departure <%= $departure->{departure_hidden} ? 'timehidden' : q{} %>">
 %     if ($departure->{is_cancelled} and $departure->{sched_departure}) {
         <span class="minfo">Ab: ––:––</span><br/>Plan: <%= $departure->{sched_departure} %>
 %     }
