@@ -217,7 +217,9 @@ sub get_route_timestamps_p {
 			my $station_is_past = 1;
 			for my $stop ( $journey->route ) {
 				my $name = $stop->{name};
-				$ret->{$name} = {
+				$ret->{$name} = $ret->{ $stop->{eva} } = {
+					name        => $stop->{name},
+					eva         => $stop->{eva},
 					sched_arr   => $stop->{sched_arr},
 					sched_dep   => $stop->{sched_dep},
 					rt_arr      => $stop->{rt_arr},

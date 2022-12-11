@@ -748,6 +748,14 @@ sub render_train {
 					@{ $departure->{route_post_diff} }
 				  )
 				{
+					if ( $elem->{name}
+						=~ m{^Betriebsstelle nicht bekannt (\d+)$} )
+					{
+						my $eva = $1;
+						if ( $route_ts->{$eva} ) {
+							$elem->{name} = $route_ts->{$eva}{name};
+						}
+					}
 					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
 					{
 						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
