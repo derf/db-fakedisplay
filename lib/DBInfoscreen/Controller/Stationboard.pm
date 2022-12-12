@@ -275,6 +275,12 @@ sub get_results_p {
 	# if we have an exact match. Ask the backend otherwise.
 	my @station_matches
 	  = Travel::Status::DE::IRIS::Stations::get_station($station);
+
+	# Requests with EVA codes can be handled even if we do not know about them.
+	if ( @station_matches != 1 and $station =~ m{^\d+$} ) {
+		@station_matches = ( [ undef, undef, $station ] );
+	}
+
 	if ( @station_matches == 1 ) {
 		$station = $station_matches[0][2];
 		return Travel::Status::DE::IRIS->new_p(
