@@ -2,7 +2,7 @@
 
 set -eu
 
-wget -qO share/zugbildungsplan.json.new https://lib.finalrewind.org/dbdb/db_zugbildung_v0.json
+wget -qO share/zugbildungsplan.json.new https://lib.finalrewind.org/dbdb/db_zugbildung_v1.json
 
 chmod 644 share/zugbildungsplan.json.new
 

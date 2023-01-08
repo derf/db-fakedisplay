@@ -127,7 +127,7 @@ see the respective files) licenses.  Attribution is appreciated.
 Background Data Updates
 ---
 
-db-infoscreen can use <https://lib.finalrewind.org/dbdb/db_zugbildung_v0.json>
+db-infoscreen can use <https://lib.finalrewind.org/dbdb/db_zugbildung_v1.json>
 to show scheduled ICE/IC types (ICE 1/2/3/4/T, IC 1/2), wagon orders, and other
 attributes. It expects the file to be provided in `share/zugbildungsplan.json`.
 
