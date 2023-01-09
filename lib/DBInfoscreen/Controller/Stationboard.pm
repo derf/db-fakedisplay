@@ -814,12 +814,12 @@ sub render_train {
 		  = $self->app->train_details_db->{ $departure->{train_no} };
 		my @cycle_from;
 		my @cycle_to;
-		for my $cycle ( values %{ $departure->{composition}->{cycle} // {} } ) {
-			push( @cycle_from, @{ $cycle->{from} // [] } );
-			push( @cycle_to,   @{ $cycle->{to}   // [] } );
+		for my $pred ( @{ $departure->{composition}{predecessors} // [] } ) {
+			push( @cycle_from, $pred->[1] );
 		}
-		@cycle_from = sort { $a <=> $b } uniq @cycle_from;
-		@cycle_to   = sort { $a <=> $b } uniq @cycle_to;
+		for my $succ ( @{ $departure->{composition}{successors} // [] } ) {
+			push( @cycle_to, $succ->[1] );
+		}
 		$departure->{cycle_from}
 		  = [ map { [ $_, $self->app->train_details_db->{$_} ] } @cycle_from ];
 		$departure->{cycle_to}
@@ -1057,6 +1057,25 @@ sub train_details {
 			}
 			if (@him_details) {
 				$res->{details} = [@him_details];
+			}
+
+			if ( $self->param('detailed') ) {
+				$res->{composition}
+				  = $self->app->train_details_db->{ $res->{train_no} };
+				my @cycle_from;
+				my @cycle_to;
+				for my $pred ( @{ $res->{composition}{predecessors} // [] } ) {
+					push( @cycle_from, $pred->[1] );
+				}
+				for my $succ ( @{ $res->{composition}{successors} // [] } ) {
+					push( @cycle_to, $succ->[1] );
+				}
+				$res->{cycle_from}
+				  = [ map { [ $_, $self->app->train_details_db->{$_} ] }
+					  @cycle_from ];
+				$res->{cycle_to}
+				  = [ map { [ $_, $self->app->train_details_db->{$_} ] }
+					  @cycle_to ];
 			}
 
 			$self->render(

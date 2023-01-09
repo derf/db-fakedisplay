@@ -320,10 +320,6 @@
         </ul>
       </div>
 %   }
-%   if ($departure->{has_cycle}) {
-      <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.svg">Umlaufplan</a>
-        (ggf. fehlerhaft)</div>
-%   }
 %   if ($details->{attributes}) {
 %     if (@{$details->{attributes}} > 1) {
         <div class="db-attr">
@@ -352,7 +348,12 @@
 %           my ($train_no, $train) = @{$t};
 %           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
+%           if ($tt ne 'Zug') {
+            <li><a href="<%= url_for('train', train => "$tt $train_no")->query({detailed => param('detailed'), past => param('past'), rt => param('rt')}) %>"><%= $tt %> <%= $train_no %></a>
+%           }
+%           else {
             <li><%= $tt %> <%= $train_no %>
+%           }
 %             if ($train->{route}{start} and $train->{route}{end}) {
                 <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
 %             }
@@ -361,7 +362,7 @@
         </ul>
 %     }
 %   }
-%   elsif ($details and not $departure->{departure}) {
+%   if ($details and not $departure->{departure}) {
 %     if (my $e = $details->{route}{postEnd}) {
         Zug wird voraussichtlich in <%= $e %> abgestellt.<br/><br/>
 %     }
@@ -372,7 +373,12 @@
 %           my ($train_no, $train) = @{$t};
 %           my $tt = $train->{type} // $train->{rawType} // 'Zug';
 %           $tt =~ s{ .*|[0-9]}{};
+%           if ($tt ne 'Zug') {
+            <li><a href="<%= url_for('train', train => "$tt $train_no")->query({detailed => param('detailed'), past => param('past'), rt => param('rt')}) %>"><%= $tt %> <%= $train_no %></a>
+%           }
+%           else {
             <li><%= $tt %> <%= $train_no %>
+%           }
 %             if ($train->{route}{start} and $train->{route}{end}) {
                 <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
 %             }
