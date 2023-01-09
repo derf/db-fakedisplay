@@ -1,3 +1,6 @@
+% if ($attr->{series}) {
+  <span>BR <%= $attr->{series} %></span>
+% }
 % if ($attr->{vmax}) {
   <span><%= $attr->{vmax} %> km/h</span>
 % }
