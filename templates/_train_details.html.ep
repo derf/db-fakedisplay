@@ -324,12 +324,12 @@
       <div class="db-attr"><a href="https://lib.finalrewind.org/dbdb/db_umlauf/<%= $departure->{train_no} %>.svg">Umlaufplan</a>
         (ggf. fehlerhaft)</div>
 %   }
-%   if ($details->{commonAttr}) {
-%     if ($details->{attrVariants} and (not $details->{commonAttr}{vmax} or not $details->{commonAttr}{brakingPercentage})) {
+%   if ($details->{attributes}) {
+%     if (@{$details->{attributes}} > 1) {
         <div class="db-attr">
           Attribute:
           <ul>
-%           for my $attr (@{$details->{attrVariants} // [] }) {
+%           for my $attr (@{$details->{attributes}}) {
               <li><%= include '_train_attr', attr => $attr, with_station => 1 %></li>
 %           }
           </ul>
@@ -337,7 +337,7 @@
 %     }
 %     else {
         <div class="db-attr">
-%=        include '_train_attr', attr => $details->{commonAttr}, with_station => 0
+%=        include '_train_attr', attr => $details->{attributes}[0], with_station => 0
         </div>
 %     }
 %   }

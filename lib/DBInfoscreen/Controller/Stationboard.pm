@@ -809,24 +809,7 @@ sub render_train {
 		}
 	)->wait;
 
-	# currently useless due to lack of Open Data
-	if ( 0 and $self->param('detailed') ) {
-		my $cycle_req = Mojo::Promise->new;
-		push( @requests, $cycle_req );
-		$self->wagonorder->has_cycle_p( $result->train_no )->then(
-			sub {
-				$departure->{has_cycle} = 1;
-			}
-		)->catch(
-			sub {
-				# nop
-			}
-		)->finally(
-			sub {
-				$cycle_req->resolve;
-				return;
-			}
-		)->wait;
+	if ( $self->param('detailed') ) {
 		$departure->{composition}
 		  = $self->app->train_details_db->{ $departure->{train_no} };
 		my @cycle_from;
