@@ -64,6 +64,9 @@
           An: <%= $departure->{arrival} %>
 %       }
 %     }
+%     elsif ($departure->{prep_time}) {
+        Ein: <%= $departure->{prep_time} %>
+%     }
     </div>
     </div>
     <div>
@@ -88,7 +91,7 @@
         <%= $left %>Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %><%= $right %>
 %     }
 %   }
-%   if ($departure->{arrival_hidden}) {
+%   if ($departure->{arrival_hidden} and not $departure->{prep_time}) {
       <br/><span class="timehidden">Nur Einstieg</span>
 %   }
 %   if ($departure->{departure_hidden}) {

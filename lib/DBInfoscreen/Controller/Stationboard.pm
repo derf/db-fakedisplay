@@ -809,9 +809,16 @@ sub render_train {
 		}
 	)->wait;
 
+	$departure->{composition}
+	  = $self->app->train_details_db->{ $departure->{train_no} };
+	if (    not $departure->{arrival}
+		and $departure->{composition}{prepTime}
+		and $departure->{composition}{prepAt} eq $station_name )
+	{
+		$departure->{prep_time}      = $departure->{composition}{prepTime};
+		$departure->{arrival_hidden} = 1;
+	}
 	if ( $self->param('detailed') ) {
-		$departure->{composition}
-		  = $self->app->train_details_db->{ $departure->{train_no} };
 		my @cycle_from;
 		my @cycle_to;
 		for my $pred ( @{ $departure->{composition}{predecessors} // [] } ) {
@@ -834,8 +841,10 @@ sub render_train {
 				departure => $departure,
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
-				details => $departure->{composition} // {},
-				dt_now  => DateTime->now( time_zone => 'Europe/Berlin' ),
+				details => $self->param('detailed')
+				? $departure->{composition} // {}
+				: {},
+				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link     =>
 				  $self->url_for( 'station', station => $station_name )
