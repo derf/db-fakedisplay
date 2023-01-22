@@ -261,11 +261,6 @@ sub get_results_p {
 	my ( $station, %opt ) = @_;
 	my $data;
 
-	# Cache::File has UTF-8 problems, so strip it (and any other potentially
-	# problematic chars).
-	my $cache_str = $station;
-	$cache_str =~ tr{[0-9a-zA-Z -]}{}cd;
-
 	if ( $ENV{DBFAKEDISPLAY_STATS} ) {
 		log_api_access();
 	}
