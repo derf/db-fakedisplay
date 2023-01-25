@@ -474,6 +474,22 @@ div.app {
 		border: 2px solid $bahn-color;
 	}
 
+	.tram, .bus, .ubahn {
+		padding:3px 5px 2px 5px;
+	}
+
+	.tram {
+		background-color: $tram-color;
+	}
+
+	.bus {
+		background-color: $bus-color;
+	}
+
+	.ubahn {
+		background-color: $ubahn-color;
+	}
+
 	.moreinfo {
 		font-size:2.1em;
 		position:fixed;
