@@ -1546,15 +1546,14 @@ sub handle_result {
 						platform           => $result->platform,
 						scheduled_platform => $result->sched_platform,
 						info               => $info,
-						is_cancelled       => $result->is_cancelled
-						  || $result->is_partially_cancelled,
-						linetype        => $linetype,
-						station         => $result->station,
-						moreinfo        => $moreinfo,
-						delay           => $delay,
-						replaced_by     => [],
-						replacement_for => [],
-						route_pre       => [],
+						is_cancelled       => $result->is_cancelled,
+						linetype           => $linetype,
+						station            => $result->station,
+						moreinfo           => $moreinfo,
+						delay              => $delay,
+						replaced_by        => [],
+						replacement_for    => [],
+						route_pre          => [],
 						route_post => [ map { $_->{name} } $result->route ],
 						wr_link    => $result->sched_datetime
 						? $result->sched_datetime->strftime('%Y%m%d%H%M')
