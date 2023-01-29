@@ -15,6 +15,7 @@ use List::MoreUtils qw();
 use Mojo::JSON      qw(decode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
+use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use XML::LibXML;
@@ -186,11 +187,15 @@ sub result_has_via {
 }
 
 sub log_api_access {
+	my ($suffix) = @_;
+	$suffix //= q{};
+
+	my $file    = "$ENV{DBFAKEDISPLAY_STATS}${suffix}";
 	my $counter = 1;
-	if ( -r $ENV{DBFAKEDISPLAY_STATS} ) {
-		$counter = read_file( $ENV{DBFAKEDISPLAY_STATS} ) + 1;
+	if ( -r $file ) {
+		$counter = read_file($file) + 1;
 	}
-	write_file( $ENV{DBFAKEDISPLAY_STATS}, $counter );
+	write_file( $file, $counter );
 	return;
 }
 
@@ -261,6 +266,19 @@ sub get_results_p {
 	my ( $station, %opt ) = @_;
 	my $data;
 
+	if ( $opt{hafas} ) {
+		return Travel::Status::DE::HAFAS->new_p(
+			station     => $station,
+			cache       => $opt{cache_iris_rt},
+			lwp_options => {
+				timeout => 10,
+				agent   => 'dbf.finalrewind.org/2'
+			},
+			promise    => 'Mojo::Promise',
+			user_agent => Mojo::UserAgent->new,
+		);
+	}
+
 	if ( $ENV{DBFAKEDISPLAY_STATS} ) {
 		log_api_access();
 	}
@@ -309,11 +327,13 @@ sub handle_request {
 	my $station = $self->stash('station');
 
 	my $template     = $self->param('mode') // 'app';
+	my $hafas        = !!$self->param('hafas');
 	my $with_related = !$self->param('no_related');
 	my %opt          = (
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
-		lookahead       => $self->config->{lookahead}
+		lookahead       => $self->config->{lookahead},
+		hafas           => $hafas,
 	);
 
 	if ( $self->param('past') ) {
@@ -530,19 +550,21 @@ sub format_iris_result_info {
 sub render_train {
 	my ( $self, $result, $departure, $station_name, $template ) = @_;
 
-	$departure->{links}          = [];
-	$departure->{route_pre_diff} = [
-		$self->json_route_diff(
-			[ $result->route_pre ],
-			[ $result->sched_route_pre ]
-		)
-	];
-	$departure->{route_post_diff} = [
-		$self->json_route_diff(
-			[ $result->route_post ],
-			[ $result->sched_route_post ]
-		)
-	];
+	$departure->{links} = [];
+	if ( $result->can('route_pre') ) {
+		$departure->{route_pre_diff} = [
+			$self->json_route_diff(
+				[ $result->route_pre ],
+				[ $result->sched_route_pre ]
+			)
+		];
+		$departure->{route_post_diff} = [
+			$self->json_route_diff(
+				[ $result->route_post ],
+				[ $result->sched_route_post ]
+			)
+		];
+	}
 
 	if ( not $result->has_realtime ) {
 		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
@@ -555,15 +577,35 @@ sub render_train {
 	}
 
 	my $linetype = 'bahn';
-	my @classes  = $result->classes;
-	if ( @classes == 0 ) {
-		$linetype = 'ext';
+
+	if ( $result->can('classes') ) {
+		my @classes = $result->classes;
+		if ( @classes == 0 ) {
+			$linetype = 'ext';
+		}
+		elsif ( grep { $_ eq 'S' } @classes ) {
+			$linetype = 'sbahn';
+		}
+		elsif ( grep { $_ eq 'F' } @classes ) {
+			$linetype = 'fern';
+		}
 	}
-	elsif ( grep { $_ eq 'S' } @classes ) {
-		$linetype = 'sbahn';
-	}
-	elsif ( grep { $_ eq 'F' } @classes ) {
-		$linetype = 'fern';
+	elsif ( $result->can('class') ) {
+		if ( $result->class <= 2 ) {
+			$linetype = 'fern';
+		}
+		elsif ( $result->class == 16 ) {
+			$linetype = 'sbahn';
+		}
+		elsif ( $result->class == 32 ) {
+			$linetype = 'bus';
+		}
+		elsif ( $result->class == 128 ) {
+			$linetype = 'ubahn';
+		}
+		elsif ( $result->class == 256 ) {
+			$linetype = 'tram';
+		}
 	}
 
 	$self->render_later;
@@ -965,8 +1007,6 @@ sub train_details {
 	my ($self) = @_;
 	my $train = $self->stash('train');
 
-	my ( $train_type, $train_no ) = ( $train =~ m{ ^ (\S+) \s+ (.*) $ }x );
-
 	# TODO error handling
 
 	if ( $self->param('ajax') ) {
@@ -980,9 +1020,9 @@ sub train_details {
 	$self->stash( version    => $self->config->{version} );
 
 	my $res = {
-		train_type      => $train_type,
+		train_type      => undef,
 		train_line      => undef,
-		train_no        => $train_no,
+		train_no        => undef,
 		route_pre_diff  => [],
 		route_post_diff => [],
 		moreinfo        => [],
@@ -990,21 +1030,37 @@ sub train_details {
 		replacement_for => [],
 	};
 
-	$self->stash( title     => "${train_type} ${train_no}" );
-	$self->stash( hide_opts => 1 );
+	my %opt;
 
+	if ( $train =~ m{[|]} ) {
+		$opt{trip_id} = $train;
+	}
+	else {
+		my ( $train_type, $train_no ) = ( $train =~ m{ ^ (\S+) \s+ (.*) $ }x );
+		$res->{train_type} = $train_type;
+		$res->{train_no}   = $train_no;
+		$self->stash( title => "${train_type} ${train_no}" );
+		$opt{train_type} = $train_type;
+		$opt{train_no}   = $train_no;
+	}
+
+	$self->stash( hide_opts => 1 );
 	$self->render_later;
 
 	my $linetype = 'bahn';
 
-	$self->hafas->get_route_timestamps_p(
-		train_type => $train_type,
-		train_no   => $train_no
-	)->then(
+	$self->hafas->get_route_timestamps_p(%opt)->then(
 		sub {
 			my ( $route_ts, $journey ) = @_;
 
 			$res->{trip_id} = $journey->id;
+
+			if ( not $res->{train_type} ) {
+				my $train_type = $res->{train_type} = $journey->type   // q{};
+				my $train_no   = $res->{train_no}   = $journey->number // q{};
+				$res->{train_line} = $journey->line_no // q{};
+				$self->stash( title => "${train_type} ${train_no}" );
+			}
 
 			if ( not defined $journey->class ) {
 				$linetype = 'ext';
@@ -1018,6 +1074,15 @@ sub train_details {
 			elsif ( $journey->class <= 16 ) {
 				$linetype = 'sbahn';
 			}
+			elsif ( $journey->class == 32 ) {
+				$linetype = 'bus';
+			}
+			elsif ( $journey->class == 128 ) {
+				$linetype = 'ubahn';
+			}
+			elsif ( $journey->class == 256 ) {
+				$linetype = 'tram';
+			}
 
 			$res->{origin}      = $journey->route_start;
 			$res->{destination} = $journey->route_end;
@@ -1028,6 +1093,45 @@ sub train_details {
 			for my $elem ( @{ $res->{route_post_diff} } ) {
 				for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
 					$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
+				}
+			}
+
+			if ( my $req_name = $self->param('highlight') ) {
+				my $split;
+				for my $i ( 0 .. $#{ $res->{route_post_diff} } ) {
+					if ( $res->{route_post_diff}[$i]{name} eq $req_name ) {
+						$split = $i;
+					}
+				}
+				if ( defined $split ) {
+					$self->stash( station_name => $req_name );
+					for my $i ( 0 .. $split - 1 ) {
+						push(
+							@{ $res->{route_pre_diff} },
+							shift( @{ $res->{route_post_diff} } )
+						);
+					}
+					my $station_info = shift( @{ $res->{route_post_diff} } );
+					if ( $station_info->{sched_arr} ) {
+						$res->{sched_arrival}
+						  = $station_info->{sched_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_arr} ) {
+						$res->{arrival}
+						  = $station_info->{rt_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{sched_dep} ) {
+						$res->{sched_departure}
+						  = $station_info->{sched_dep}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_dep} ) {
+						$res->{departure}
+						  = $station_info->{rt_dep}->strftime('%H:%M');
+					}
+					$res->{arrival_is_cancelled}
+					  = $station_info->{arr_cancelled};
+					$res->{departure_is_cancelled}
+					  = $station_info->{dep_cancelled};
 				}
 			}
 
@@ -1184,21 +1288,46 @@ sub handle_result {
 		{
 			next;
 		}
-		my ( $info, $moreinfo )
-		  = $self->format_iris_result_info( $template, $result );
+		my ( $info, $moreinfo );
+		if ( $result->can('replacement_for') ) {
+			( $info, $moreinfo )
+			  = $self->format_iris_result_info( $template, $result );
+		}
 
-		my $time     = $result->time;
+		my $time
+		  = $result->can('time')
+		  ? $result->time
+		  : $result->sched_datetime->strftime('%H:%M');
 		my $linetype = 'bahn';
 
-		my @classes = $result->classes;
-		if ( @classes == 0 ) {
-			$linetype = 'ext';
+		if ( $result->can('classes') ) {
+			my @classes = $result->classes;
+			if ( @classes == 0 ) {
+				$linetype = 'ext';
+			}
+			elsif ( grep { $_ eq 'S' } @classes ) {
+				$linetype = 'sbahn';
+			}
+			elsif ( grep { $_ eq 'F' } @classes ) {
+				$linetype = 'fern';
+			}
 		}
-		elsif ( grep { $_ eq 'S' } @classes ) {
-			$linetype = 'sbahn';
-		}
-		elsif ( grep { $_ eq 'F' } @classes ) {
-			$linetype = 'fern';
+		elsif ( $result->can('class') ) {
+			if ( $result->class <= 2 ) {
+				$linetype = 'fern';
+			}
+			elsif ( $result->class == 16 ) {
+				$linetype = 'sbahn';
+			}
+			elsif ( $result->class == 32 ) {
+				$linetype = 'bus';
+			}
+			elsif ( $result->class == 128 ) {
+				$linetype = 'ubahn';
+			}
+			elsif ( $result->class == 256 ) {
+				$linetype = 'tram';
+			}
 		}
 
 		# ->time defaults to dep, so we only need to overwrite $time
@@ -1319,70 +1448,120 @@ sub handle_result {
 			);
 		}
 		else {
-			push(
-				@departures,
-				{
-					time          => $time,
-					sched_arrival => $result->sched_arrival
-					? $result->sched_arrival->strftime('%H:%M')
-					: undef,
-					sched_departure => $result->sched_departure
-					? $result->sched_departure->strftime('%H:%M')
-					: undef,
-					arrival => $result->arrival
-					? $result->arrival->strftime('%H:%M')
-					: undef,
-					departure => $result->departure
-					? $result->departure->strftime('%H:%M')
-					: undef,
-					train                  => $result->train,
-					train_type             => $result->type // '',
-					train_line             => $result->line_no,
-					train_no               => $result->train_no,
-					via                    => [ $result->route_interesting(3) ],
-					destination            => $result->destination,
-					origin                 => $result->origin,
-					platform               => $result->platform,
-					scheduled_platform     => $result->sched_platform,
-					info                   => $info,
-					is_cancelled           => $result->is_cancelled,
-					departure_is_cancelled => $result->departure_is_cancelled,
-					arrival_is_cancelled   => $result->arrival_is_cancelled,
-					linetype               => $linetype,
-					messages               => {
-						delay => [
-							map { { timestamp => $_->[0], text => $_->[1] } }
-							  $result->delay_messages
+			if ( $result->can('replacement_for') ) {
+				push(
+					@departures,
+					{
+						time          => $time,
+						sched_arrival => $result->sched_arrival
+						? $result->sched_arrival->strftime('%H:%M')
+						: undef,
+						sched_departure => $result->sched_departure
+						? $result->sched_departure->strftime('%H:%M')
+						: undef,
+						arrival => $result->arrival
+						? $result->arrival->strftime('%H:%M')
+						: undef,
+						departure => $result->departure
+						? $result->departure->strftime('%H:%M')
+						: undef,
+						train              => $result->train,
+						train_type         => $result->type // '',
+						train_line         => $result->line_no,
+						train_no           => $result->train_no,
+						via                => [ $result->route_interesting(3) ],
+						destination        => $result->destination,
+						origin             => $result->origin,
+						platform           => $result->platform,
+						scheduled_platform => $result->sched_platform,
+						info               => $info,
+						is_cancelled       => $result->is_cancelled,
+						departure_is_cancelled =>
+						  $result->departure_is_cancelled,
+						arrival_is_cancelled => $result->arrival_is_cancelled,
+						linetype             => $linetype,
+						messages             => {
+							delay => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->delay_messages
+							],
+							qos => [
+								map {
+									{
+										timestamp => $_->[0],
+										text      => $_->[1]
+									}
+								} $result->qos_messages
+							],
+						},
+						station          => $result->station,
+						moreinfo         => $moreinfo,
+						delay            => $delay,
+						missing_realtime => (
+							not $result->has_realtime
+							  and $result->start < $now ? 1 : 0
+						),
+						route_pre        => [ $result->route_pre ],
+						route_post       => [ $result->route_post ],
+						additional_stops => [ $result->additional_stops ],
+						canceled_stops   => [ $result->canceled_stops ],
+						replaced_by      => [
+							map { $_->type . q{ } . $_->train_no }
+							  $result->replaced_by
 						],
-						qos => [
-							map { { timestamp => $_->[0], text => $_->[1] } }
-							  $result->qos_messages
+						replacement_for => [
+							map { $_->type . q{ } . $_->train_no }
+							  $result->replacement_for
 						],
-					},
-					station          => $result->station,
-					moreinfo         => $moreinfo,
-					delay            => $delay,
-					missing_realtime => (
-						not $result->has_realtime
-						  and $result->start < $now ? 1 : 0
-					),
-					route_pre        => [ $result->route_pre ],
-					route_post       => [ $result->route_post ],
-					additional_stops => [ $result->additional_stops ],
-					canceled_stops   => [ $result->canceled_stops ],
-					replaced_by      => [
-						map { $_->type . q{ } . $_->train_no }
-						  $result->replaced_by
-					],
-					replacement_for => [
-						map { $_->type . q{ } . $_->train_no }
-						  $result->replacement_for
-					],
-					wr_link => $result->sched_departure
-					? $result->sched_departure->strftime('%Y%m%d%H%M')
-					: undef,
-				}
-			);
+						wr_link => $result->sched_departure
+						? $result->sched_departure->strftime('%Y%m%d%H%M')
+						: undef,
+					}
+				);
+			}
+			else {
+				push(
+					@departures,
+					{
+						time            => $time,
+						sched_departure => $result->sched_datetime
+						? $result->sched_datetime->strftime('%H:%M')
+						: undef,
+						departure => $result->rt_datetime
+						? $result->rt_datetime->strftime('%H:%M')
+						: undef,
+						train      => $result->name,
+						train_type => q{},
+						train_line => $result->line,
+						train_no   => $result->number,
+						journey_id => $result->id,
+						via        =>
+						  [ map { $_->{name} } $result->route_interesting(3) ],
+						destination        => $result->destination,
+						origin             => $result->origin,
+						platform           => $result->platform,
+						scheduled_platform => $result->sched_platform,
+						info               => $info,
+						is_cancelled       => $result->is_cancelled
+						  || $result->is_partially_cancelled,
+						linetype        => $linetype,
+						station         => $result->station,
+						moreinfo        => $moreinfo,
+						delay           => $delay,
+						replaced_by     => [],
+						replacement_for => [],
+						route_pre       => [],
+						route_post => [ map { $_->{name} } $result->route ],
+						wr_link    => $result->sched_datetime
+						? $result->sched_datetime->strftime('%Y%m%d%H%M')
+						: undef,
+					}
+				);
+			}
 			if ( $self->param('train') ) {
 				$self->render_train( $result, $departures[-1],
 					$data->{station_name} // $self->stash('station') );

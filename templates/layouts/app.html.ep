@@ -193,6 +193,14 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
+        %= check_box 'hafas' => 1, id => 'id_hafas'
+        <label for="id_hafas">
+          Bus, Stadtbahn und weiteren Nahverkehr anzeigen (via DB HAFAS mgate)
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
         Nur Züge über
       </div>
       <div>

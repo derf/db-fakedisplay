@@ -181,7 +181,19 @@ sub get_route_timestamps_p {
 	my $promise = Mojo::Promise->new;
 	my $now     = DateTime->now( time_zone => 'Europe/Berlin' );
 
-	if ( $opt{train} ) {
+	my $hafas_promise;
+
+	if ( $opt{trip_id} ) {
+		$hafas_promise = Travel::Status::DE::HAFAS->new_p(
+			journey => {
+				id => $opt{trip_id},
+			},
+			cache      => $self->{realtime_cache},
+			promise    => 'Mojo::Promise',
+			user_agent => $self->{user_agent}->request_timeout(10)
+		);
+	}
+	elsif ( $opt{train} ) {
 		$opt{date_yy}      = $opt{train}->start->strftime('%d.%m.%y');
 		$opt{date_yyyy}    = $opt{train}->start->strftime('%d.%m.%Y');
 		$opt{train_req}    = $opt{train}->type . ' ' . $opt{train}->train_no;
@@ -193,7 +205,7 @@ sub get_route_timestamps_p {
 		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
-	$self->trainsearch_p(%opt)->then(
+	$hafas_promise //= $self->trainsearch_p(%opt)->then(
 		sub {
 			my ($trainsearch_result) = @_;
 			my $trip_id = $trainsearch_result->{trip_id};
@@ -208,7 +220,9 @@ sub get_route_timestamps_p {
 				user_agent => $self->{user_agent}->request_timeout(10)
 			);
 		}
-	)->then(
+	);
+
+	$hafas_promise->then(
 		sub {
 			my ($hafas) = @_;
 			my $journey = $hafas->result;

@@ -29,7 +29,7 @@ function dbf_show_moreinfo(trainElem, keep_old) {
 	$('.moreinfo').each(function() {
 		const infoElem = $(this);
 		if (!keep_old) {
-			$('.moreinfo .train-line').removeClass('bahn sbahn fern ext').addClass(trainElem.data('linetype'));
+			$('.moreinfo .train-line').removeClass('sbahn fern ext ubahn bus tram').addClass(trainElem.data('linetype'));
 			$('.moreinfo .train-line').text(trainElem.data('line'));
 			$('.moreinfo .train-no').text(trainElem.data('no'));
 			$('.moreinfo .train-origin').text(trainElem.data('from'));
@@ -80,7 +80,7 @@ function dbf_show_moreinfo(trainElem, keep_old) {
 			}
 			$('.moreinfo .mfooter').append('Fahrtverlauf: <ul class="mroute">' + routebuf + '</ul>');
 		}
-		$.get(window.location.href, {train: trainElem.data('train'), ajax: 1}, function(data) {
+		$.get(window.location.href, {train: trainElem.data('train'), jid: trainElem.data('jid'), ajax: 1}, function(data) {
 			$('.moreinfo').html(data);
 		}).fail(function() {
 			$('.moreinfo .mfooter').append('Der Zug ist abgefahren (Zug nicht gefunden)');
@@ -99,13 +99,20 @@ function dbf_reg_handlers() {
 		if (window.location.href.includes('detailed=1')) {
 			suffix += '&detailed=1';
 		}
+		if (window.location.href.includes('hafas=1')) {
+			suffix += '&hafas=1&highlight=' + trainElem.data('station');
+		}
 		if (window.location.href.includes('past=1')) {
 			suffix += '&past=1';
 		}
 		if (window.location.href.includes('rt=1') || window.location.href.includes('show_realtime=1')) {
 			suffix += '&rt=1';
 		}
-		history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
+		if (window.location.href.includes('hafas=1')) {
+			history.pushState({'page':'traindetail','jid':trainElem.data('jid')}, 'test', '/z/' + trainElem.data('jid') + suffix);
+		} else {
+			history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
+		}
 		dbf_show_moreinfo(trainElem, false);
 	});
 	const trainid = $(location).attr('hash').substr(1);
