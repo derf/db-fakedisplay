@@ -16,6 +16,7 @@ use Mojo::JSON      qw(decode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 use Travel::Status::DE::HAFAS;
+use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use XML::LibXML;
@@ -30,9 +31,46 @@ my %default = (
 );
 
 sub handle_no_results {
-	my ( $self, $station, $data ) = @_;
+	my ( $self, $station, $data, $hafas ) = @_;
 
 	my $errstr = $data->{errstr};
+
+	if ($hafas) {
+		$self->render_later;
+		Travel::Status::DE::HAFAS::StopFinder->new_p(
+			url        => 'https://reiseauskunft.bahn.de/bin/ajax-getstop.exe',
+			input      => $station,
+			promise    => 'Mojo::Promise',
+			user_agent => $self->ua,
+		)->then(
+			sub {
+				my (@candidates) = @_;
+				@candidates = map { [ $_->{name}, $_->{id} ] } @candidates;
+				for my $candidate (@candidates) {
+					$candidate->[0] =~ s{[&]#x0028;}{(}g;
+					$candidate->[0] =~ s{[&]#x0029;}{)}g;
+				}
+				$self->render(
+					'landingpage',
+					stationlist => \@candidates,
+					hide_opts   => 0,
+					status      => 300,
+				);
+				return;
+			}
+		)->catch(
+			sub {
+				my ($err) = @_;
+				$self->render(
+					'landingpage',
+					error     => ( $err // "Keine Abfahrten an '$station'" ),
+					hide_opts => 0
+				);
+				return;
+			}
+		)->wait;
+		return;
+	}
 
 	my @candidates = map { [ $_->[1], $_->[0] ] }
 	  Travel::Status::DE::IRIS::Stations::get_station($station);
@@ -263,7 +301,7 @@ sub json_route_diff {
 }
 
 sub get_results_p {
-	my ( $station, %opt ) = @_;
+	my ( $self, $station, %opt ) = @_;
 	my $data;
 
 	if ( $opt{hafas} ) {
@@ -275,7 +313,7 @@ sub get_results_p {
 				agent   => 'dbf.finalrewind.org/2'
 			},
 			promise    => 'Mojo::Promise',
-			user_agent => Mojo::UserAgent->new,
+			user_agent => $self->ua,
 		);
 	}
 
@@ -405,7 +443,7 @@ sub handle_request {
 
 	$self->render_later;
 
-	get_results_p( $station, %opt )->then(
+	$self->get_results_p( $station, %opt )->then(
 		sub {
 			my ($status) = @_;
 			my $data = {
@@ -421,7 +459,7 @@ sub handle_request {
 				return;
 			}
 			if ( not @{ $data->{results} } ) {
-				$self->handle_no_results( $station, $data );
+				$self->handle_no_results( $station, $data, $hafas );
 				return;
 			}
 			$self->handle_result($data);
@@ -434,7 +472,7 @@ sub handle_request {
 					$api_version );
 				return;
 			}
-			$self->handle_no_results( $station, { errstr => $err } );
+			$self->handle_no_results( $station, { errstr => $err }, $hafas );
 			return;
 		}
 	)->wait;
@@ -924,7 +962,7 @@ sub station_train_details {
 
 	$self->render_later;
 
-	get_results_p( $station, %opt )->then(
+	$self->get_results_p( $station, %opt )->then(
 		sub {
 			my ($status) = @_;
 			my ($result)
