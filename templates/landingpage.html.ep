@@ -1,8 +1,8 @@
 % if (stash 'show_intro') {
 <div class="container">
 <p>
-  DBF ist ein inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten mit
-  dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
+  DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
+  Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
 </p>
 <p>
   Diese Seite ist ein kostenfreies, privat betriebenes Projekt ohne
