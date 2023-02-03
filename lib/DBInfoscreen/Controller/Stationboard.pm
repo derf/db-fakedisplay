@@ -46,6 +46,12 @@ sub handle_no_results {
 			sub {
 				my (@candidates) = @_;
 				@candidates = map { [ $_->{name}, $_->{id} ] } @candidates;
+				if ( @candidates == 1 ) {
+					my $s      = $candidates[0][0];
+					my $params = $self->req->params->to_string;
+					$self->redirect_to("/${s}?${params}");
+					return;
+				}
 				for my $candidate (@candidates) {
 					$candidate->[0] =~ s{[&]#x0028;}{(}g;
 					$candidate->[0] =~ s{[&]#x0029;}{)}g;
