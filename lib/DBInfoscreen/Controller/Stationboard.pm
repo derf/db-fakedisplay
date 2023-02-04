@@ -456,6 +456,13 @@ sub handle_request {
 				results       => [ $status->results ],
 				station_ds100 =>
 				  ( $status->station ? $status->station->{ds100} : undef ),
+				station_eva => (
+					$status->station
+					? ( $status->station->{uic} // $status->station->{eva} )
+					: undef
+				),
+				station_evas =>
+				  ( $status->station ? $status->station->{evas} : [] ),
 				station_name =>
 				  ( $status->station ? $status->station->{name} : $station ),
 			};
@@ -1650,8 +1657,28 @@ sub handle_result {
 	}
 	else {
 		my $station_name = $data->{station_name} // $self->stash('station');
+		my ( $api_link, $api_text, $api_icon );
+		my $params = $self->req->params->clone;
+		$params->param( hafas => not $params->param('hafas') );
+		if ( $params->param('hafas') ) {
+			$api_link = '/' . $data->{station_eva} . '?' . $params->to_string;
+			$api_text = 'lol';
+			$api_icon = 'train';
+		}
+		else {
+			my $iris_eva = List::Util::min grep { $_ >= 1000000 }
+			  @{ $data->{station_evas} // [] };
+			if ($iris_eva) {
+				$api_link = '/' . $iris_eva . '?' . $params->to_string;
+				$api_text = 'lol';
+				$api_icon = 'directions_bus';
+			}
+		}
 		$self->render(
 			$template,
+			api_link         => $api_link,
+			api_text         => $api_text,
+			api_icon         => $api_icon,
 			departures       => \@departures,
 			ice_type         => $self->app->ice_type_map,
 			station          => $station_name,

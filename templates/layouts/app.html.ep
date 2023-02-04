@@ -83,6 +83,11 @@
 				</span>
 			% }
 			<ul id="nav-mobile" style="float: right;">
+				% if (stash('api_link')) {
+					<li class="waves-effect waves-light">
+						<a href="<%= $api_link %>"><span class="visually-hidden"><%= $api_text %></span><i class="material-icons" aria-hidden="true"><%= $api_icon %></i></a>
+					</li>
+				% }
 				<li class="waves-effect waves-light">
 					<a onClick="javascript:toggleTheme()"><span class="visually-hidden">Farbschema invertieren</span><i class="material-icons" aria-hidden="true">invert_colors</i></a>
 				</li>
@@ -92,7 +97,6 @@
 				% else {
 					<li><a href="#stationinput"><span class="visually-hidden">Menü</span><i class="material-icons" aria-hidden="true">edit</i></a></li>
 				% }
-				<li><a href="/_autostop"><span class="visually-hidden">Stationen in der Umgebung suchen</span><i class="material-icons" aria-hidden="true">my_location</i></a></li>
 			</ul>
 		</div>
 	</nav>
@@ -140,6 +144,11 @@ Bitte eine Station aus der Liste auswählen</div>
   <div class="field">
     %= submit_button 'Abfahrtsmonitor'
   </div>
+  % if (stash('input')) {
+    <div class="geolink">
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
+    </div>
+  % }
   <div class="break"></div>
   <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
   <div class="moresettings moresettings-collapsed">
