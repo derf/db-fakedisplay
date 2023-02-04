@@ -12,7 +12,6 @@ use DBInfoscreen::Helper::HAFAS;
 use DBInfoscreen::Helper::Wagonorder;
 use File::Slurp qw(read_file);
 use JSON;
-use Travel::Status::DE::IRIS::Stations;
 
 use utf8;
 
