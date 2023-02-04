@@ -1833,15 +1833,15 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-4.04
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.04.tar.gz
+  Travel-Status-DE-DeutscheBahn-4.05
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.05.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 4.04
-      Travel::Status::DE::HAFAS 4.04
-      Travel::Status::DE::HAFAS::Journey 4.04
-      Travel::Status::DE::HAFAS::Message 4.04
-      Travel::Status::DE::HAFAS::Polyline 4.04
-      Travel::Status::DE::HAFAS::StopFinder 4.04
+      Travel::Status::DE::DeutscheBahn 4.05
+      Travel::Status::DE::HAFAS 4.05
+      Travel::Status::DE::HAFAS::Journey 4.05
+      Travel::Status::DE::HAFAS::Message 4.05
+      Travel::Status::DE::HAFAS::Polyline 4.05
+      Travel::Status::DE::HAFAS::StopFinder 4.05
     requirements:
       Carp 0
       Class::Accessor 0.16
