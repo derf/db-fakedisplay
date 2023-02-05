@@ -56,8 +56,13 @@ sub handle_no_results {
 					$candidate->[0] =~ s{[&]#x0028;}{(}g;
 					$candidate->[0] =~ s{[&]#x0029;}{)}g;
 				}
+				my $err;
+				if ( not $errstr =~ m{LOCATION} ) {
+					$err = $errstr;
+				}
 				$self->render(
 					'landingpage',
+					error       => $err,
 					stationlist => \@candidates,
 					hide_opts   => 0,
 					status      => 300,
