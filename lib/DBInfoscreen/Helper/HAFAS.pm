@@ -232,16 +232,18 @@ sub get_route_timestamps_p {
 			for my $stop ( $journey->route ) {
 				my $name = $stop->{name};
 				$ret->{$name} = $ret->{ $stop->{eva} } = {
-					name        => $stop->{name},
-					eva         => $stop->{eva},
-					sched_arr   => $stop->{sched_arr},
-					sched_dep   => $stop->{sched_dep},
-					rt_arr      => $stop->{rt_arr},
-					rt_dep      => $stop->{rt_dep},
-					arr_delay   => $stop->{arr_delay},
-					dep_delay   => $stop->{dep_delay},
-					load        => $stop->{load},
-					isCancelled => (
+					name          => $stop->{name},
+					eva           => $stop->{eva},
+					sched_arr     => $stop->{sched_arr},
+					sched_dep     => $stop->{sched_dep},
+					rt_arr        => $stop->{rt_arr},
+					rt_dep        => $stop->{rt_dep},
+					arr_delay     => $stop->{arr_delay},
+					dep_delay     => $stop->{dep_delay},
+					arr_cancelled => $stop->{arr_cancelled},
+					dep_cancelled => $stop->{dep_cancelled},
+					load          => $stop->{load},
+					isCancelled   => (
 						( $stop->{arr_cancelled} or not $stop->{sched_arr} )
 						  and
 						  ( $stop->{dep_cancelled} or not $stop->{sched_dep} )

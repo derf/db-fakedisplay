@@ -1183,6 +1183,8 @@ sub train_details {
 					  = $station_info->{arr_cancelled};
 					$res->{departure_is_cancelled}
 					  = $station_info->{dep_cancelled};
+					$res->{is_cancelled} = $res->{arrival_is_cancelled}
+					  || $res->{arrival_is_cancelled};
 				}
 			}
 
