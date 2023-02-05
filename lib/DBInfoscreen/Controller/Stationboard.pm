@@ -46,7 +46,7 @@ sub handle_no_results {
 			sub {
 				my (@candidates) = @_;
 				@candidates = map { [ $_->{name}, $_->{id} ] } @candidates;
-				if ( @candidates == 1 ) {
+				if ( @candidates == 1 and $candidates[0][0] ne $station ) {
 					my $s      = $candidates[0][0];
 					my $params = $self->req->params->to_string;
 					$self->redirect_to("/${s}?${params}");
