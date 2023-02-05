@@ -1,13 +1,10 @@
 <div class="container">
 	<p>
-		DBF ist ein inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten mit
-		dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
-		Der <a
-		href="<%= app->config->{'source_url'} %>">Quelltext</a>
-		steht unter der <a
-		href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL
-		v3</a> als Open Source zur Verfügung. © 2022 <a
-		href="https://finalrewind.org">Daniel Friesel</a> / <a href="https://social.skyshaper.org/derf">@derf</a>.
+		DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
+		Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
+	</p>
+	<p>
+		Der <a href="<%= app->config->{'source_url'} %>">Quelltext</a> steht unter der <a href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL v3</a> als Open Source zur Verfügung. © 2011 – 2023 <a href="https://finalrewind.org">derf</a>.
 		% if (my $issue_url = app->config->{'issue_url'}) {
 			Fehlermeldungen bitte via
 			<a href="<%= $issue_url %>">Issue Tracker</a>.
@@ -23,9 +20,9 @@
 		Diese Installation verwendet die DBF-Version
 		<b><%= stash('version') // '???' %></b> und greift auf die folgenden Backends
 		zu:<br/>
-		• Abfahrtstafel: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		• Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		• Zugdetails: <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		• Nahverkehr und Zugdetails: DB HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 		% if ($Travel::Status::DE::HAFAS::VERSION) {
 			v<%= $Travel::Status::DE::HAFAS::VERSION %>
 		% }
