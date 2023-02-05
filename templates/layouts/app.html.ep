@@ -85,7 +85,7 @@
 			<ul id="nav-mobile" style="float: right;">
 				% if (stash('api_link')) {
 					<li class="waves-effect waves-light">
-						<a href="<%= $api_link %>"><span class="visually-hidden"><%= $api_text %></span><i class="material-icons" aria-hidden="true"><%= $api_icon %></i></a>
+						<a href="<%= stash('api_link') %>"><span class="visually-hidden"><%= stash('api_text') %></span><i class="material-icons" aria-hidden="true"><%= stash('api_icon') %></i></a>
 					</li>
 				% }
 				<li class="waves-effect waves-light">
