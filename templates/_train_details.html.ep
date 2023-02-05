@@ -52,7 +52,7 @@
 %     }
 %     elsif ($departure->{arrival}) {
 %       if ($departure->{arrival} ne $departure->{sched_arrival}) {
-          % if ($departure->{delay} < 0) {
+          % if (($departure->{delay} // 0) < 0) {
             An: <span class="undelay"><%= $departure->{arrival} %></span>
           % }
           % else {
@@ -242,15 +242,11 @@
 %       }
 %       if (stash('station_name')) {
           <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %> <%= $departure->{isPast} ? 'past-stop' : 'future-stop' %>"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %>
-%           if ($departure->{sched_departure}) {
-%             if ($departure->{departure} ne $departure->{sched_departure}) {
-                (heute <%= $departure->{departure} %>)
-%             }
+%           if ($departure->{departure} and $departure->{sched_departure} and $departure->{departure} ne $departure->{sched_departure}) {
+              (heute <%= $departure->{departure} %>)
 %           }
-%           elsif ($departure->{arrival}) {
-%             if ($departure->{arrival} ne $departure->{sched_arrival}) {
-                (heute <%= $departure->{arrival} %>)
-%             }
+%           elsif ($departure->{arrival} and $departure->{sched_arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
+              (heute <%= $departure->{arrival} %>)
 %           }
 %           if ($departure->{missing_realtime} or $departure->{no_realtime_yet}) {
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
