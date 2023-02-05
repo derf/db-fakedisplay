@@ -64,6 +64,9 @@
           An: <%= $departure->{arrival} %>
 %       }
 %     }
+%     elsif ($departure->{sched_arrival}) {
+        An: <%= $departure->{sched_arrival} %>
+%     }
 %     elsif ($departure->{prep_time}) {
         Ein: <%= $departure->{prep_time} %>
 %     }
@@ -115,6 +118,9 @@
 %       else {
           Ab: <%= $departure->{departure} %>
 %       }
+%     }
+%     elsif ($departure->{sched_departure}) {
+        Ab: <%= $departure->{sched_departure} %>
 %     }
     </div>
     </div>
