@@ -1588,6 +1588,10 @@ sub handle_result {
 				);
 			}
 			else {
+				my $city = q{};
+				if ( $result->station =~ m{ , ([^,]+) $ }x ) {
+					$city = $1;
+				}
 				push(
 					@departures,
 					{
@@ -1603,11 +1607,13 @@ sub handle_result {
 						train_line => $result->line,
 						train_no   => $result->number,
 						journey_id => $result->id,
-						via        =>
-						  [ map { $_->{name} } $result->route_interesting(3) ],
-						destination        => $result->destination,
-						origin             => $result->origin,
-						platform           => $result->platform,
+						via        => [
+							map { $_->{name} =~ s{,$city}{}r }
+							  $result->route_interesting(3)
+						],
+						destination => $result->destination =~ s{,$city}{}r,
+						origin      => $result->origin,
+						platform    => $result->platform,
 						scheduled_platform => $result->sched_platform,
 						info               => $info,
 						is_cancelled       => $result->is_cancelled,
