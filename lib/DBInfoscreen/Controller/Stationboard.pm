@@ -1196,6 +1196,9 @@ sub train_details {
 					  = $station_info->{dep_cancelled};
 					$res->{is_cancelled} = $res->{arrival_is_cancelled}
 					  || $res->{arrival_is_cancelled};
+					$res->{platform} = $station_info->{platform};
+					$res->{scheduled_platform}
+					  = $station_info->{sched_platform};
 				}
 			}
 
