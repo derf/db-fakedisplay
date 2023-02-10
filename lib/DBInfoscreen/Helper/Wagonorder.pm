@@ -187,7 +187,7 @@ sub get_p {
 	my ( $self, $train_no, $api_ts ) = @_;
 
 	my $url
-	  = "https://www.apps-bahn.de/wr/wagenreihung/1.0/${train_no}/${api_ts}";
+	  = "https://ist-wr.noncd.db.de/wagenreihung/1.0/${train_no}/${api_ts}";
 
 	my $cache = $self->{realtime_cache};
 
