@@ -144,6 +144,9 @@
 %     elsif ($icetype and $icetype->[1] and $linetype eq 'fern') {
         <span class="disabledbutton"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></span>
 %     }
+%     if ($departure->{train_type} and $departure->{train_no}) {
+        <a class="smallbutton" href="https://bahn.expert/details/<%= $departure->{train_type} %>%20<%= $departure->{train_no} %>/<%= ($departure->{start} // DateTime->now(time_zone => 'Europe/Berlin'))->iso8601 %>?evaNumberAlongRoute=<%= $departure->{eva} %>"><img src="/static/icons/bahn-expert.svg">Details</a>
+%     }
 %     for my $link (@{$departure->{links}}) {
         <a class="smallbutton" href="<%= $link->[1] %>"><i class="material-icons" aria-hidden="true">warning</i> <%= $link->[0] %></a>
 %     }

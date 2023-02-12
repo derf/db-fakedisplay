@@ -1038,6 +1038,8 @@ sub station_train_details {
 				wr_link => $result->sched_departure
 				? $result->sched_departure->strftime('%Y%m%d%H%M')
 				: undef,
+				eva   => $result->station_uic,
+				start => $result->start,
 			};
 
 			$self->stash( title => $status->station->{name}
@@ -1174,6 +1176,7 @@ sub train_details {
 						);
 					}
 					my $station_info = shift( @{ $res->{route_post_diff} } );
+					$res->{eva} = $station_info->{eva};
 					if ( $station_info->{sched_arr} ) {
 						$res->{sched_arrival}
 						  = $station_info->{sched_arr}->strftime('%H:%M');
