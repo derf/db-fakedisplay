@@ -1328,7 +1328,10 @@ sub handle_result {
 	}
 
 	if ($show_realtime) {
-		if ( $admode eq 'arr' ) {
+		if ( $self->param('hafas') ) {
+			@results = sort { $a->datetime <=> $b->datetime } @results;
+		}
+		elsif ( $admode eq 'arr' ) {
 			@results = sort {
 				( $a->arrival // $a->departure )
 				  <=> ( $b->arrival // $b->departure )
@@ -1404,7 +1407,10 @@ sub handle_result {
 		}
 
 		if ($show_realtime) {
-			if ( ( $admode eq 'arr' and $result->arrival )
+			if ( $self->param('hafas') ) {
+				$time = $result->datetime->strftime('%H:%M');
+			}
+			elsif ( ( $admode eq 'arr' and $result->arrival )
 				or not $result->departure )
 			{
 				$time = $result->arrival->strftime('%H:%M');
