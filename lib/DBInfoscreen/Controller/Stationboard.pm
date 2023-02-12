@@ -65,7 +65,7 @@ sub handle_no_results {
 					error       => $err,
 					stationlist => \@candidates,
 					hide_opts   => 0,
-					status      => 300,
+					status      => $data->{status} // 300,
 				);
 				return;
 			}
@@ -75,7 +75,8 @@ sub handle_no_results {
 				$self->render(
 					'landingpage',
 					error     => ( $err // "Keine Abfahrten an '$station'" ),
-					hide_opts => 0
+					hide_opts => 0,
+					status    => $data->{status} // 500,
 				);
 				return;
 			}
@@ -96,7 +97,7 @@ sub handle_no_results {
 			'landingpage',
 			stationlist => \@candidates,
 			hide_opts   => 0,
-			status      => 300,
+			status      => $data->{status} // 300,
 		);
 		return;
 	}
@@ -106,14 +107,16 @@ sub handle_no_results {
 			'landingpage',
 			error => ( $errstr // "Keine Abfahrten an '$station'" )
 			  . '. Das von DBF genutzte IRIS-Backend unterstützt im Regelfall nur innerdeutsche Zugfahrten.',
-			hide_opts => 0
+			hide_opts => 0,
+			status    => $data->{status} // 200,
 		);
 		return;
 	}
 	$self->render(
 		'landingpage',
 		error     => ( $errstr // "Keine Abfahrten an '$station'" ),
-		hide_opts => 0
+		hide_opts => 0,
+		status    => $data->{status} // 404,
 	);
 	return;
 }
@@ -158,12 +161,13 @@ sub handle_no_results_json {
 		$json = $self->render_to_string( json => $json );
 		$self->render(
 			data   => "$callback($json);",
-			format => 'json'
+			format => 'json',
 		);
 	}
 	else {
 		$self->render(
-			json => $json,
+			json   => $json,
+			status => $data->{status} // 300,
 		);
 	}
 	return;
@@ -492,11 +496,24 @@ sub handle_request {
 		sub {
 			my ($err) = @_;
 			if ( $template eq 'json' ) {
-				$self->handle_no_results_json( $station, { errstr => $err },
-					$api_version );
+				$self->handle_no_results_json(
+					$station,
+					{
+						errstr => $err,
+						status => 500
+					},
+					$api_version
+				);
 				return;
 			}
-			$self->handle_no_results( $station, { errstr => $err }, $hafas );
+			$self->handle_no_results(
+				$station,
+				{
+					errstr => $err,
+					status => 500
+				},
+				$hafas
+			);
 			return;
 		}
 	)->wait;
