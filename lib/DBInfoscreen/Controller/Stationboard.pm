@@ -500,7 +500,7 @@ sub handle_request {
 					$station,
 					{
 						errstr => $err,
-						status => 500
+						status => ( $err =~ m{station name$} ? 300 : 500 ),
 					},
 					$api_version
 				);
@@ -510,7 +510,7 @@ sub handle_request {
 				$station,
 				{
 					errstr => $err,
-					status => 500
+					status => ( $err =~ m{station name$} ? 300 : 500 ),
 				},
 				$hafas
 			);
