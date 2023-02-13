@@ -322,6 +322,7 @@ sub get_results_p {
 	if ( $opt{hafas} ) {
 		return Travel::Status::DE::HAFAS->new_p(
 			station     => $station,
+			arrivals    => $opt{arrivals},
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {
 				timeout => 10,
@@ -393,6 +394,10 @@ sub handle_request {
 		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
 		  ->subtract( minutes => 60 );
 		$opt{lookahead} += 60;
+	}
+
+	if ( $self->param('admode') and $self->param('admode') eq 'arr' ) {
+		$opt{arrivals} = 1;
 	}
 
 	my $api_version = $Travel::Status::DE::IRIS::VERSION;
@@ -1317,6 +1322,7 @@ sub handle_result {
 	my $apiver       = $self->param('version')  // 0;
 	my $callback     = $self->param('callback');
 	my $via          = $self->param('via');
+	my $hafas        = $self->param('hafas');
 
 	my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
@@ -1348,7 +1354,7 @@ sub handle_result {
 	}
 
 	if ($show_realtime) {
-		if ( $self->param('hafas') ) {
+		if ($hafas) {
 			@results = sort { $a->datetime <=> $b->datetime } @results;
 		}
 		elsif ( $admode eq 'arr' ) {
@@ -1370,10 +1376,11 @@ sub handle_result {
 	for my $result (@results) {
 		my $platform = ( split( qr{ }, $result->platform // '' ) )[0];
 		my $delay    = $result->delay;
-		if ( $admode eq 'arr' and not $result->arrival ) {
+		if ( $admode eq 'arr' and not $hafas and not $result->arrival ) {
 			next;
 		}
-		if ( $admode eq 'dep'
+		if (    $admode eq 'dep'
+			and not $hafas
 			and not $result->departure )
 		{
 			next;
@@ -1422,12 +1429,12 @@ sub handle_result {
 
 		# ->time defaults to dep, so we only need to overwrite $time
 		# if we want arrival times
-		if ( $admode eq 'arr' ) {
+		if ( $admode eq 'arr' and not $hafas ) {
 			$time = $result->sched_arrival->strftime('%H:%M');
 		}
 
 		if ($show_realtime) {
-			if ( $self->param('hafas') ) {
+			if ($hafas) {
 				$time = $result->datetime->strftime('%H:%M');
 			}
 			elsif ( ( $admode eq 'arr' and $result->arrival )
@@ -1625,10 +1632,12 @@ sub handle_result {
 					@departures,
 					{
 						time            => $time,
-						sched_departure => $result->sched_datetime
+						sched_departure =>
+						  ( $result->sched_datetime and $admode ne 'arr' )
 						? $result->sched_datetime->strftime('%H:%M')
 						: undef,
-						departure => $result->rt_datetime
+						departure =>
+						  ( $result->rt_datetime and $admode ne 'arr' )
 						? $result->rt_datetime->strftime('%H:%M')
 						: undef,
 						train      => $result->name,
@@ -1640,9 +1649,9 @@ sub handle_result {
 							map { $_->{name} =~ s{,$city}{}r }
 							  $result->route_interesting(3)
 						],
-						destination => $result->destination =~ s{,$city}{}r,
-						origin      => $result->origin,
-						platform    => $result->platform,
+						destination => $result->route_end =~ s{,$city}{}r,
+						origin      => $result->route_end =~ s{,$city}{}r,
+						platform           => $result->platform,
 						scheduled_platform => $result->sched_platform,
 						info               => $info,
 						is_cancelled       => $result->is_cancelled,
@@ -1652,9 +1661,12 @@ sub handle_result {
 						delay              => $delay,
 						replaced_by        => [],
 						replacement_for    => [],
-						route_pre          => [],
-						route_post => [ map { $_->{name} } $result->route ],
-						wr_link    => $result->sched_datetime
+						route_pre          => $admode eq 'arr'
+						? [ map { $_->{name} } $result->route ]
+						: [],
+						route_post => $admode eq 'arr' ? []
+						: [ map { $_->{name} } $result->route ],
+						wr_link => $result->sched_datetime
 						? $result->sched_datetime->strftime('%Y%m%d%H%M')
 						: undef,
 					}
