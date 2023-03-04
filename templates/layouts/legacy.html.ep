@@ -73,10 +73,10 @@ Bitte eine Station aus der Liste auswählen</div>
       %= select_field input => stash('stationlist')
 % }
 % elsif (stash('input')) {
-      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel'
+      %= text_field 'input', class => 'station', placeholder => 'Name oder Ril100-Kürzel'
 % }
 % else {
-      %= text_field 'input', class => 'station', placeholder => 'Name oder DS100-Kürzel', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Name oder Ril100-Kürzel', autofocus => 'autofocus'
 % }
     </div>
   </div>

@@ -134,10 +134,10 @@ Bitte eine Station aus der Liste auswählen</div>
       %= select_field input => stash('stationlist')
 % }
 % elsif (stash('input')) {
-      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder DS100-Kürzel', id => 'stationinput'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput'
 % }
 % else {
-      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder DS100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
 % }
     </div>
   </div>
