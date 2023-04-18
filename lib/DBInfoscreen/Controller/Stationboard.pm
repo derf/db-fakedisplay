@@ -1722,7 +1722,7 @@ sub handle_result {
 		$params->param( hafas => not $params->param('hafas') );
 		if ( $params->param('hafas') ) {
 			$api_link = '/' . $data->{station_eva} . '?' . $params->to_string;
-			$api_text = 'lol';
+			$api_text = 'Auf Nahverkehr wechseln';
 			$api_icon = 'train';
 		}
 		else {
@@ -1730,7 +1730,7 @@ sub handle_result {
 			  @{ $data->{station_evas} // [] };
 			if ($iris_eva) {
 				$api_link = '/' . $iris_eva . '?' . $params->to_string;
-				$api_text = 'lol';
+				$api_text = 'Auf Bahnverkehr wechseln';
 				$api_icon = 'directions_bus';
 			}
 		}
