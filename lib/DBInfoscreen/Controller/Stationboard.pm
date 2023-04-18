@@ -1763,11 +1763,45 @@ sub handle_result {
 sub stations_by_coordinates {
 	my $self = shift;
 
-	my $lon = $self->param('lon');
-	my $lat = $self->param('lat');
+	my $lon   = $self->param('lon');
+	my $lat   = $self->param('lat');
+	my $hafas = $self->param('hafas');
 
 	if ( not $lon or not $lat ) {
 		$self->render( json => { error => 'Invalid lon/lat received' } );
+	}
+	if ($hafas) {
+		$self->render_later;
+		Travel::Status::DE::HAFAS->new_p(
+			promise    => 'Mojo::Promise',
+			user_agent => $self->ua,
+			geoSearch  => {
+				lat => $lat,
+				lon => $lon
+			}
+		)->then(
+			sub {
+				my ($hafas) = @_;
+				my @candidates = map {
+					{
+						name     => $_->name,
+						eva      => $_->eva,
+						distance => $_->distance_m / 1000,
+						hafas    => 1
+					}
+				} $hafas->results;
+				$self->render(
+					json => {
+						candidates => [@candidates],
+					}
+				);
+			}
+		)->catch(
+			sub {
+				my ($err) = @_;
+				$self->render( json => { error => $err } );
+			}
+		)->wait;
 	}
 	else {
 		my @candidates = map {
@@ -1778,6 +1812,7 @@ sub stations_by_coordinates {
 				lon      => $_->[0][3],
 				lat      => $_->[0][4],
 				distance => $_->[1],
+				hafas    => 0,
 			}
 		} Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
 			$lat, 10 );

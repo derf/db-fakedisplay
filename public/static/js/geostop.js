@@ -32,17 +32,18 @@ $(function() {
 		if (data.error) {
 			showError('Backend-Fehler:', data.error, null);
 		} else if (data.candidates.length == 0) {
-			showError('Keine Bahnhöfe in 70km Umkreis gefunden', '', null);
+			showError('Keine Stationen in 70km Umkreis gefunden', '', null);
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
-				var ds100 = candidate.ds100,
+				var eva = candidate.eva,
 					name = candidate.name,
-					distance = candidate.distance;
+					distance = candidate.distance,
+					hafas = candidate.hafas;
 				distance = distance.toFixed(1);
 
 				var stationlink = $(document.createElement('a'));
-				stationlink.attr('href', ds100);
+				stationlink.attr('href', eva + '?hafas=' + hafas);
 				stationlink.text(name);
 
 				var distancenode = $(document.createElement('div'));
@@ -56,11 +57,11 @@ $(function() {
 	};
 
 	var processLocation = function(loc) {
-		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude, hafas: window.location.href.match('hafas=1') ? 1 : 0}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
 			removeStatus();
 			showError("Netzwerkfehler: ", textStatus, errorThrown);
 		});
-		$('div.candidatestatus').text('Suche Bahnhöfe…');
+		$('div.candidatestatus').text('Suche Stationen…');
 	};
 
 	var processError = function(error) {
