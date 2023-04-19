@@ -18,7 +18,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v75'; # asset version
+	% my $av = 'v76'; # asset version
 	% if (session('theme') and session('theme') eq 'dark' or param('dark')) {
 		%= stylesheet "/static/${av}/css/dark.min.css", id => 'theme'
 	% }
