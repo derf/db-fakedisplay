@@ -16,7 +16,6 @@ use Mojo::JSON      qw(decode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 use Travel::Status::DE::HAFAS;
-use Travel::Status::DE::HAFAS::StopFinder;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
 use XML::LibXML;
@@ -37,15 +36,15 @@ sub handle_no_results {
 
 	if ($hafas) {
 		$self->render_later;
-		Travel::Status::DE::HAFAS::StopFinder->new_p(
-			url        => 'https://reiseauskunft.bahn.de/bin/ajax-getstop.exe',
-			input      => $station,
-			promise    => 'Mojo::Promise',
-			user_agent => $self->ua,
+		Travel::Status::DE::HAFAS->new_p(
+			locationSearch => $station,
+			promise        => 'Mojo::Promise',
+			user_agent     => $self->ua,
 		)->then(
 			sub {
-				my (@candidates) = @_;
-				@candidates = map { [ $_->{name}, $_->{id} ] } @candidates;
+				my ($status) = @_;
+				my @candidates = $status->results;
+				@candidates = map { [ $_->name, $_->eva ] } @candidates;
 				if ( @candidates == 1 and $candidates[0][0] ne $station ) {
 					my $s      = $candidates[0][0];
 					my $params = $self->req->params->to_string;
