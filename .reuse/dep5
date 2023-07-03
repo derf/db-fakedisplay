@@ -1,11 +1,11 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 
 Files: examples/*
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: CC0-1.0
 
 Files: public/static/css/dark.min.css public/static/css/light.min.css
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: BSD-2-Clause
 
 Files: public/static/css/material-icons.css public/static/fonts/MaterialIcons-*
@@ -14,16 +14,16 @@ License: Apache-2.0
 
 Files: public/static/icons/* public/favicon.ico
 Copyright: 2014-2019 Materialize
-   2020 Daniel Friesel
+   2020 Birte Kristina Friesel
 License: Apache-2.0
 
 Files: public/static/js/autocomplete.*
 Copyright: 2020 DB Station&Service AG, Europaplatz 1, 10557 Berlin
-   2020 Daniel Friesel
+   2020 Birte Kristina Friesel
 License: CC-BY-4.0
 
 Files: public/static/js/dbf.min.js public/static/js/geolocation.min.js public/static/js/map-refresh.min.js
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: AGPL-3.0-or-later
 
 Files: public/static/js/jquery* public/static/css/jquery-ui.min.css
@@ -40,13 +40,13 @@ Copyright: 2010-2019 Vladimir Agafonkin
 License: BSD-2-Clause
 
 Files: README.md .gitignore cpanfile cpanfile.snapshot
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: CC0-1.0
 
 Files: share/dbdb_wagen.json
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: CC0-1.0
 
 Files: templates/*
-Copyright: 2020 Daniel Friesel
+Copyright: 2020 Birte Kristina Friesel
 License: BSD-2-Clause
