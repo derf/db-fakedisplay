@@ -86,6 +86,10 @@ sub zugbildung_db {
 
 	$self->render(
 		'zugbildung_db',
+		description => sprintf(
+			'Soll-Wagenreihung %s %s',
+			$details->{train_type} // 'Zug', $train_no
+		),
 		wr_error  => undef,
 		title     => $details->{train_type} . ' ' . $train_no,
 		route     => $details->{route},
@@ -105,6 +109,10 @@ sub handle_wagenreihung_error {
 		  = "${err}. Ersatzweise werden die Solldaten laut Fahrplan angezeigt.";
 		$self->render(
 			'zugbildung_db',
+			description => sprintf(
+				'Soll-Wagenreihung %s %s',
+				$details->{train_type} // 'Zug', $train_no
+			),
 			wr_error  => $wr_error,
 			title     => $details->{train_type} . ' ' . $train_no,
 			route     => $details->{route},
@@ -261,11 +269,17 @@ sub wagenreihung {
 
 			$wref = b64_encode( encode_json($wref) );
 
+			my $title = join( ' / ',
+				map { $wr->train_type . ' ' . $_ } $wr->train_numbers );
+
 			$self->render(
 				'wagenreihung',
-				wr_error => undef,
-				title    => join( ' / ',
-					map { $wr->train_type . ' ' . $_ } $wr->train_numbers ),
+				description => sprintf(
+					'Ist-Wagenreihung %s in %s',
+					$title, $wr->station_name
+				),
+				wr_error  => undef,
+				title     => $title,
 				train_no  => $train,
 				wr        => $wr,
 				wref      => $wref,
@@ -351,6 +365,9 @@ sub wagen {
 
 	$self->render(
 		'wagen',
+		description => ( $wref->{s} ? 'Position von ' : q{} )
+		  . $title
+		  . ( $wref->{s} ? " in $wref->{s}" : q{} ),
 		title       => $title,
 		wagon_files => [@wagon_files],
 		wagon_data  => $self->app->dbdb_wagon->{$wagon_id},
