@@ -958,6 +958,14 @@ sub render_train {
 		sub {
 			$self->render(
 				$template // '_train_details',
+				description => sprintf(
+					'%s %s%s%s nach %s',
+					$departure->{train_type},
+					$departure->{train_line} // $departure->{train_no},
+					$departure->{origin} ? ' von ' : q{},
+					$departure->{origin}      // q{},
+					$departure->{destination} // 'unbekannt'
+				),
 				departure => $departure,
 				linetype  => $linetype,
 				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
@@ -1279,6 +1287,14 @@ sub train_details {
 
 			$self->render(
 				$self->param('ajax') ? '_train_details' : 'train_details',
+				description => sprintf(
+					'%s %s%s%s nach %s',
+					$res->{train_type},
+					$res->{train_line} // $res->{train_no},
+					$res->{origin} ? ' von ' : q{},
+					$res->{origin}      // q{},
+					$res->{destination} // 'unbekannt'
+				),
 				departure => $res,
 				linetype  => $linetype,
 				icetype   => $self->app->ice_type_map->{ $res->{train_no} },
@@ -1735,6 +1751,8 @@ sub handle_result {
 		}
 		$self->render(
 			$template,
+			description => 'Abfahrtstafel '
+			  . ( $via ? "$station_name via $via" : $station_name ),
 			api_link         => $api_link,
 			api_text         => $api_text,
 			api_icon         => $api_icon,

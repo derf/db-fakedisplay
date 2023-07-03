@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Abfahrtsmonitor, Bahnhofstafel, Abfahrten, Abfahrtstafel, ICE, IC, RE, RB, S-Bahn">
-	<meta name="description" content="Inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten">
+	<meta name="description" content="<%= stash('description') // 'Inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten' %>">
 	<meta name="theme-color" content="#00838f">
 	<link rel="icon" type="image/png" href="/static/icons/icon-16x16.png" sizes="16x16">
 	<link rel="icon" type="image/png" href="/static/icons/icon-32x32.png" sizes="32x32">
