@@ -397,6 +397,7 @@ sub route {
 
 			$self->render(
 				'route_map',
+				description   => "Karte für " . $journey->name,
 				title         => $journey->name,
 				hide_opts     => 1,
 				with_map      => 1,
