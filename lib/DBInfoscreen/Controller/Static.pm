@@ -70,7 +70,6 @@ sub about {
 	$self->render(
 		'about',
 		hide_opts => 1,
-		version   => $self->config->{version}
 	);
 }
 

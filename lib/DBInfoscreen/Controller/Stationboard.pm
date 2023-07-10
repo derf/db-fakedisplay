@@ -131,7 +131,6 @@ sub handle_no_results_json {
 	if ($errstr) {
 		$json = {
 			api_version => $api_version,
-			version     => $self->config->{version},
 			error       => $errstr,
 		};
 	}
@@ -143,7 +142,6 @@ sub handle_no_results_json {
 		{
 			$json = {
 				api_version => $api_version,
-				version     => $self->config->{version},
 				error       => 'ambiguous station code/name',
 				candidates  => \@candidates,
 			};
@@ -151,7 +149,6 @@ sub handle_no_results_json {
 		else {
 			$json = {
 				api_version => $api_version,
-				version     => $self->config->{version},
 				error       => ( $errstr // "Got no results for '$station'" )
 			};
 		}
@@ -403,7 +400,6 @@ sub handle_request {
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
-	$self->stash( version    => $self->config->{version} );
 
 	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
 		$template = 'app';
@@ -1110,7 +1106,6 @@ sub train_details {
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
-	$self->stash( version    => $self->config->{version} );
 
 	my $res = {
 		train_type      => undef,
