@@ -10,7 +10,7 @@ body {
 }
 
 html {
-	font-family: Sans-Serif;
+	font-family: "Arimo", "Arial", Sans-Serif;
 }
 
 a {
@@ -316,51 +316,43 @@ div.app {
 				left:2px;
 			}
 
-			.route {
+			.route, .info {
 				background-color: transparent;
 				font-size:2.1em;
 				position:absolute;
-				top:1px;
-				left:7.7em;
+				top: 0;
+				left: 7.7em;
 				right: 7em;
-				height: 1.2em;
+				height: 1.5em;
 				overflow: hidden;
+			}
+
+			.route {
 				color: $route-color;
 			}
 
 			.info {
 				color: $info-color;
-				background-color: transparent;
-				font-size:2.1em;
-				position:absolute;
-				top:1px;
-				left:7.7em;
-				right: 7em;
-				height: 1.2em;
-				overflow: hidden;
 			}
 
-			.dest {
+			.dest, .origin {
 				background-color: transparent;
 				font-size:4em;
 				position:absolute;
-				top:0.62em;
+				bottom:0;
 				left:4em;
-				bottom:0px;
 				width: 70%;
 				overflow: hidden;
 				color: $fg;
 			}
 
+			.dest {
+				background-color: transparent;
+				color: $fg;
+			}
+
 			.origin {
 				background-color: transparent;
-				font-size:4em;
-				position:absolute;
-				top:0.62em;
-				left:4em;
-				bottom:0px;
-				width: 70%;
-				overflow: hidden;
 				color: $fg2;
 
 				&:before {
@@ -374,7 +366,7 @@ div.app {
 				font-weight: bold;
 				position: absolute;
 				right: 5px;
-				bottom: 2px;
+				bottom: 0;
 				padding-left: 0.2em;
 				color: $fg;
 			}
@@ -389,7 +381,7 @@ div.app {
 				font-size:2.3em;
 				position:absolute;
 				right:5px;
-				top:4px;
+				top:1px;
 				padding-left: 0.2em;
 				color: $fg;
 
