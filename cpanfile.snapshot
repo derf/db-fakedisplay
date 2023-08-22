@@ -1461,10 +1461,10 @@ DISTRIBUTIONS
       IO::Socket::IP 0.37
       Sub::Util 1.41
       perl 5.016
-  Mozilla-CA-20230807
-    pathname: L/LW/LWP/Mozilla-CA-20230807.tar.gz
+  Mozilla-CA-20230821
+    pathname: L/LW/LWP/Mozilla-CA-20230821.tar.gz
     provides:
-      Mozilla::CA 20230807
+      Mozilla::CA 20230821
     requirements:
       ExtUtils::MakeMaker 0
   Net-HTTP-6.23
@@ -1773,18 +1773,7 @@ DISTRIBUTIONS
       IO::Handle 0
       Test::Harness 0
       Test::More 0.71
-      Text::CSV_XS 1.51
       perl 5.006001
-  Text-CSV_XS-1.51
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.51.tgz
-    provides:
-      Text::CSV_XS 1.51
-    requirements:
-      Config 0
-      ExtUtils::MakeMaker 0
-      IO::Handle 0
-      Test::More 0
-      XSLoader 0
   Text-LevenshteinXS-0.03
     pathname: J/JG/JGOLDBERG/Text-LevenshteinXS-0.03.tar.gz
     provides:
@@ -1856,16 +1845,16 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-4.12
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.12.tar.gz
+  Travel-Status-DE-DeutscheBahn-4.14
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.14.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 4.12
-      Travel::Status::DE::HAFAS 4.12
-      Travel::Status::DE::HAFAS::Journey 4.12
-      Travel::Status::DE::HAFAS::Message 4.12
-      Travel::Status::DE::HAFAS::Polyline 4.12
-      Travel::Status::DE::HAFAS::Stop 4.12
-      Travel::Status::DE::HAFAS::StopFinder 4.12
+      Travel::Status::DE::DeutscheBahn 4.14
+      Travel::Status::DE::HAFAS 4.14
+      Travel::Status::DE::HAFAS::Journey 4.14
+      Travel::Status::DE::HAFAS::Message 4.14
+      Travel::Status::DE::HAFAS::Polyline 4.14
+      Travel::Status::DE::HAFAS::Stop 4.14
+      Travel::Status::DE::HAFAS::StopFinder 4.14
     requirements:
       Carp 0
       Class::Accessor 0.16
