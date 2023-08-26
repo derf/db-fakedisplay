@@ -12,7 +12,7 @@ use Encode          qw(decode encode);
 use File::Slurp     qw(read_file write_file);
 use List::Util      qw(max uniq);
 use List::MoreUtils qw();
-use Mojo::JSON      qw(decode_json);
+use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 use Travel::Status::DE::HAFAS;
@@ -1834,6 +1834,26 @@ sub stations_by_coordinates {
 			}
 		);
 	}
+}
+
+sub autocomplete {
+	my $self = shift;
+
+	$self->res->headers->cache_control('max-age=31536000, immutable');
+
+	my $output = '$(function(){const stations=';
+	$output
+	  .= encode_json(
+		[ map { $_->[1] } Travel::Status::DE::IRIS::Stations::get_stations() ]
+	  );
+	$output .= ";\n";
+	$output
+	  .= "\$('input.station').autocomplete({delay:0,minLength:3,source:stations});});\n";
+
+	$self->render(
+		format => 'js',
+		data   => $output
+	);
 }
 
 1;

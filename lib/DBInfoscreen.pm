@@ -305,6 +305,8 @@ sub startup {
 
 	$r->get('/_impressum')->to('static#imprint');
 
+	$r->get('/dyn/:av/autocomplete.js')->to('stationboard#autocomplete');
+
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
 	$r->get('/wr/:train')->to('wagenreihung#zugbildung_db');
 	$r->get('/w/*wagon')->to('wagenreihung#wagen');

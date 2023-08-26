@@ -55,6 +55,9 @@
 	%= javascript '/static/js/jquery-3.4.1.min.js', defer => undef
 	%= javascript "/static/${av}/js/jquery-ui.min.js", defer => undef
 	%= javascript "/static/${av}/js/dbf.min.js", defer => undef
+	% if (not stash('hide_opts')) {
+	%= javascript "/dyn/${av}/autocomplete.js", defer => undef
+	% }
 	% if (stash('with_geostop')) {
 	%= javascript "/static/${av}/js/geostop.min.js", defer => undef
 	% }

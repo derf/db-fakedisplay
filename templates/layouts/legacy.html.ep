@@ -29,6 +29,9 @@
 	%= javascript '/static/js/jquery-3.4.1.min.js'
 	%= javascript "/static/${av}/js/jquery-ui.min.js"
 	%= javascript "/static/${av}/js/dbf.min.js"
+	% if (not stash('hide_opts')) {
+	%= javascript "/dyn/${av}/autocomplete.js", defer => undef
+	% }
 	%= javascript "/static/${av}/js/marquee.min.js"
 	%= javascript begin
 	$(function () {  $('marquee').marquee() });
