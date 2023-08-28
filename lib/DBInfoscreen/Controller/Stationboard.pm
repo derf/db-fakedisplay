@@ -1656,11 +1656,11 @@ sub handle_result {
 						train_no   => $result->number,
 						journey_id => $result->id,
 						via        => [
-							map { $_->{name} =~ s{,$city}{}r }
+							map { $_->{name} =~ s{,\Q$city\E}{}r }
 							  $result->route_interesting(3)
 						],
-						destination => $result->route_end =~ s{,$city}{}r,
-						origin      => $result->route_end =~ s{,$city}{}r,
+						destination => $result->route_end =~ s{,\Q$city\E}{}r,
+						origin      => $result->route_end =~ s{,\Q$city\E}{}r,
 						platform           => $result->platform,
 						scheduled_platform => $result->sched_platform,
 						info               => $info,
