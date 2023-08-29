@@ -5,20 +5,20 @@
  */
 
 $(function() {
-	var removeStatus = function() {
+	const removeStatus = function() {
 		$('div.candidatestatus').remove();
 	};
-	var showError = function(header, message, code) {
-		var errnode = $(document.createElement('div'));
+	const showError = function(header, message, code) {
+		const errnode = $(document.createElement('div'));
 		errnode.attr('class', 'error');
 		errnode.text(message);
 
-		var headnode = $(document.createElement('strong'));
+		const headnode = $(document.createElement('strong'));
 		headnode.text(header);
 		errnode.prepend(headnode);
 
 		if (code) {
-			var shortnode = $(document.createElement('div'));
+			const shortnode = $(document.createElement('div'));
 			shortnode.attr('class', 'errcode');
 			shortnode.text(code);
 			errnode.append(shortnode);
@@ -27,7 +27,7 @@ $(function() {
 		$('div.candidatelist').append(errnode);
 	};
 
-	var processResult = function(data) {
+	const processResult = function(data) {
 		removeStatus();
 		if (data.error) {
 			showError('Backend-Fehler:', data.error, null);
@@ -36,17 +36,16 @@ $(function() {
 		} else {
 			$.each(data.candidates, function(i, candidate) {
 
-				var eva = candidate.eva,
+				const eva = candidate.eva,
 					name = candidate.name,
-					distance = candidate.distance,
+					distance = candidate.distance.toFixed(1),
 					hafas = candidate.hafas;
-				distance = distance.toFixed(1);
 
-				var stationlink = $(document.createElement('a'));
+				const stationlink = $(document.createElement('a'));
 				stationlink.attr('href', eva + '?hafas=' + hafas);
 				stationlink.text(name);
 
-				var distancenode = $(document.createElement('div'));
+				const distancenode = $(document.createElement('div'));
 				distancenode.attr('class', 'distance');
 				distancenode.text(distance);
 
@@ -64,7 +63,7 @@ $(function() {
 		$('div.candidatestatus').text('Suche Stationen…');
 	};
 
-	var processError = function(error) {
+	const processError = function(error) {
 		removeStatus();
 		if (error.code == error.PERMISSION_DENIED) {
 			showError('Standortanfrage nicht möglich.', 'Vermutlich fehlen die Rechte im Browser oder der Android Location Service ist deaktiviert.', 'geolocation.error.PERMISSION_DENIED');
