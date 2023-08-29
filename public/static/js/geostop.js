@@ -43,20 +43,25 @@ $(function() {
 
 				const stationlink = $(document.createElement('a'));
 				stationlink.attr('href', eva + '?hafas=' + hafas);
-				stationlink.text(name);
+				stationlink.text(name + ' ');
 
 				const distancenode = $(document.createElement('div'));
 				distancenode.attr('class', 'distance');
 				distancenode.text(distance);
 
+				const icon = $(document.createElement('i'));
+				icon.attr('class', 'material-icons');
+				icon.text(hafas ? 'directions' : 'train');
+
+				stationlink.append(icon);
 				stationlink.append(distancenode);
 				$('div.candidatelist').append(stationlink);
 			});
 		}
 	};
 
-	var processLocation = function(loc) {
-		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude, hafas: window.location.href.match('hafas=1') ? 1 : 0}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+	const processLocation = function(loc) {
+		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
 			removeStatus();
 			showError("Netzwerkfehler: ", textStatus, errorThrown);
 		});

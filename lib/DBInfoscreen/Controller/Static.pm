@@ -42,23 +42,8 @@ sub redirect {
 sub geostop {
 	my ($self) = @_;
 
-	my ( $api_link, $api_text, $api_icon );
-	if ( $self->param('hafas') ) {
-		$api_link = '/_autostop';
-		$api_text = 'Auf Bahnverkehr wechseln';
-		$api_icon = 'directions_bus';
-	}
-	else {
-		$api_link = '/_autostop?hafas=1';
-		$api_text = 'Auf Nahverkehr wechseln';
-		$api_icon = 'train';
-	}
-
 	$self->render(
 		'geostop',
-		api_link     => $api_link,
-		api_text     => $api_text,
-		api_icon     => $api_icon,
 		with_geostop => 1,
 		hide_opts    => 1
 	);

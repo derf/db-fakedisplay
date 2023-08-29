@@ -6,6 +6,7 @@ requires 'GIS::Distance';
 requires 'GIS::Distance::Fast';
 requires 'JSON';
 requires 'JSON::XS';
+requires 'List::UtilsBy';
 requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'Mojolicious';

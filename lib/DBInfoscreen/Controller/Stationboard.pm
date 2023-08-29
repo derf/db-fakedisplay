@@ -11,6 +11,7 @@ use DateTime::Format::Strptime;
 use Encode          qw(decode encode);
 use File::Slurp     qw(read_file write_file);
 use List::Util      qw(max uniq);
+use List::UtilsBy   qw(uniq_by);
 use List::MoreUtils qw();
 use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
@@ -1781,63 +1782,71 @@ sub stations_by_coordinates {
 
 	if ( not $lon or not $lat ) {
 		$self->render( json => { error => 'Invalid lon/lat received' } );
+		return;
 	}
-	if ($hafas) {
-		$self->render_later;
-		Travel::Status::DE::HAFAS->new_p(
-			promise    => 'Mojo::Promise',
-			user_agent => $self->ua,
-			geoSearch  => {
-				lat => $lat,
-				lon => $lon
+
+	$self->render_later;
+
+	my @iris = map {
+		{
+			ds100    => $_->[0][0],
+			name     => $_->[0][1],
+			eva      => $_->[0][2],
+			lon      => $_->[0][3],
+			lat      => $_->[0][4],
+			distance => $_->[1],
+			hafas    => 0,
+		}
+	} Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
+		$lat, 10 );
+
+	@iris = uniq_by { $_->{name} } @iris;
+
+	Travel::Status::DE::HAFAS->new_p(
+		promise    => 'Mojo::Promise',
+		user_agent => $self->ua,
+		geoSearch  => {
+			lat => $lat,
+			lon => $lon
+		}
+	)->then(
+		sub {
+			my ($hafas) = @_;
+			my @hafas = map {
+				{
+					name     => $_->name,
+					eva      => $_->eva,
+					distance => $_->distance_m / 1000,
+					hafas    => 1
+				}
+			} $hafas->results;
+			if ( @hafas > 10 ) {
+				@hafas = @hafas[ 0 .. 9 ];
 			}
-		)->then(
-			sub {
-				my ($hafas) = @_;
-				my @candidates = map {
-					{
-						name     => $_->name,
-						eva      => $_->eva,
-						distance => $_->distance_m / 1000,
-						hafas    => 1
-					}
-				} $hafas->results;
-				$self->render(
-					json => {
-						candidates => [@candidates],
-					}
-				);
-			}
-		)->catch(
-			sub {
-				my ($err) = @_;
-				$self->render( json => { error => $err } );
-			}
-		)->wait;
-	}
-	else {
-		my @candidates = map {
-			{
-				ds100    => $_->[0][0],
-				name     => $_->[0][1],
-				eva      => $_->[0][2],
-				lon      => $_->[0][3],
-				lat      => $_->[0][4],
-				distance => $_->[1],
-				hafas    => 0,
-			}
-		} Travel::Status::DE::IRIS::Stations::get_station_by_location( $lon,
-			$lat, 10 );
-		$self->render(
-			json => {
-				candidates => [@candidates],
-			}
-		);
-	}
+			my @results = map { $_->[0] }
+			  sort { $a->[1] <=> $b->[1] }
+			  map { [ $_, $_->{distance} ] } ( @iris, @hafas );
+			$self->render(
+				json => {
+					candidates => [@results],
+				}
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				json => {
+					candidates => [@iris],
+					warning    => $err,
+				}
+			);
+		}
+	)->wait;
 }
 
 sub autocomplete {
-	my $self = shift;
+	my ($self) = @_;
 
 	$self->res->headers->cache_control('max-age=31536000, immutable');
 
