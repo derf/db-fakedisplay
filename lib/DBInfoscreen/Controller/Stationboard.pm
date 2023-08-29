@@ -1741,7 +1741,7 @@ sub handle_result {
 			if ($iris_eva) {
 				$api_link = '/' . $iris_eva . '?' . $params->to_string;
 				$api_text = 'Auf Bahnverkehr wechseln';
-				$api_icon = 'directions_bus';
+				$api_icon = 'directions';
 			}
 		}
 		$self->render(
