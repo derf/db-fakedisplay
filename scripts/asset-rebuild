@@ -10,6 +10,5 @@ sassc -t compressed sass/light.scss public/static/css/light.min.css
 
 uglifyjs public/static/js/collapse.js -c -m > public/static/js/dbf.min.js
 uglifyjs public/static/js/geostop.js -c -m > public/static/js/geostop.min.js
-uglifyjs public/static/js/geotrain.js -c -m > public/static/js/geotrain.min.js
 uglifyjs public/static/js/map-refresh.js -c -m > public/static/js/map-refresh.min.js
 uglifyjs public/static/js/marquee.js -c -m > public/static/js/marquee.min.js
