@@ -15,8 +15,6 @@ use JSON;
 
 use utf8;
 
-no if $] >= 5.018, warnings => 'experimental::smartmatch';
-
 sub startup {
 	my ($self) = @_;
 

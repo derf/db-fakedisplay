@@ -23,8 +23,6 @@ use XML::LibXML;
 
 use utf8;
 
-no if $] >= 5.018, warnings => 'experimental::smartmatch';
-
 my %default = (
 	mode   => 'app',
 	admode => 'deparr',
@@ -266,7 +264,13 @@ sub json_route_diff {
 		}
 
 		# this branch is inefficient, but won't be taken frequently
-		elsif ( not( $route[$route_idx] ~~ \@sched_route ) ) {
+		elsif (
+			not(
+				List::MoreUtils::any { $route[$route_idx] eq $_ }
+				@sched_route
+			)
+		  )
+		{
 			push(
 				@json_route,
 				{
@@ -402,7 +406,13 @@ sub handle_request {
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
 
-	if ( not( $template ~~ [qw[app infoscreen json multi single text]] ) ) {
+	if (
+		not(
+			List::MoreUtils::any { $template eq $_ }
+			(qw(app infoscreen json multi single text))
+		)
+	  )
+	{
 		$template = 'app';
 	}
 
@@ -1344,13 +1354,12 @@ sub handle_result {
 	if ( $template eq 'single' ) {
 		if ( not @platforms ) {
 			for my $result (@results) {
+				my $num_part
+				  = $self->numeric_platform_part( $result->platform );
 				if (
-					not( $self->numeric_platform_part( $result->platform ) ~~
-						\@platforms )
-				  )
+					not( List::MoreUtils::any { $num_part eq $_ } @platforms ) )
 				{
-					push( @platforms,
-						$self->numeric_platform_part( $result->platform ) );
+					push( @platforms, $num_part );
 				}
 			}
 			@platforms = sort { $a <=> $b } @platforms;
