@@ -17,28 +17,6 @@
 %   }
     <span class="train-dest"><%= $departure->{destination} // q{???} %></span>
     </div>
-<!--
-%   if ($departure->{is_cancelled}) {
-      <div class="minfo">Fahrt fällt aus</div>
-%   }
-%   elsif (defined $departure->{delay} and $departure->{delay} > 0) {
-      <div class="minfo">+<%= $departure->{delay} %>
-%     if ($departure->{departure_is_cancelled}) {
-        (endet hier)
-%     }
-      </div>
-%   }
-%   if (@{$departure->{replaced_by}}) {
-%     for my $replacement (@{$departure->{replaced_by}}) {
-        <span class="replaced">Ersatzzug: <%= $replacement %></span>
-%     }
-%   }
-%   if (@{$departure->{replacement_for}}) {
-%     for my $replacement (@{$departure->{replacement_for}}) {
-        <span class="replacement">Ersatzzug für <%= $replacement %></span>
-%     }
-%   }
--->
     </div> <!-- mheader -->
     <div class="mfooter">
     <div class="dataline">
@@ -74,6 +52,16 @@
     </div>
     <div>
     <div class="platform">
+%   if (@{$departure->{replaced_by}}) {
+%     for my $replacement (@{$departure->{replaced_by}}) {
+        <span class="replaced">Ersatzfahrt: <a href="/z/<%= $replacement %>/<%= stash('station_name') // q{} %>"><%= $replacement %></a></span><br/>
+%     }
+%   }
+%   if (@{$departure->{replacement_for}}) {
+%     for my $replacement (@{$departure->{replacement_for}}) {
+        <span class="replacement">Ersatzfahrt für <a href="/z/<%= $replacement %>/<%= stash('station_name') // q{} %>"><%= $replacement %></a></span><br/>
+%     }
+%   }
 %   if ($departure->{arrival_is_cancelled} and $departure->{departure_is_cancelled}) {
       <span class="minfo">Fahrt fällt aus</span>
 %   }
