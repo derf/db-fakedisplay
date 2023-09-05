@@ -485,6 +485,9 @@ sub ajax_route {
 					name => $journey->route_end,
 					ts   => ( $journey->route )[-1]->{arr},
 				},
+				train_no => $journey->number
+				? ( $journey->type . ' ' . $journey->number )
+				: undef,
 				next_stop => $train_pos->{next_stop},
 			);
 		}
