@@ -406,7 +406,7 @@ sub route {
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => $journey->route_start,
+					name => ( $journey->route )[0]->{name},
 					ts   => ( $journey->route )[0]->{dep},
 				},
 				destination => {
@@ -478,7 +478,7 @@ sub ajax_route {
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => $journey->route_start,
+					name => ( $journey->route )[0]->{name},
 					ts   => ( $journey->route )[0]->{dep},
 				},
 				destination => {
