@@ -1785,9 +1785,8 @@ sub handle_result {
 sub stations_by_coordinates {
 	my $self = shift;
 
-	my $lon   = $self->param('lon');
-	my $lat   = $self->param('lat');
-	my $hafas = $self->param('hafas');
+	my $lon = $self->param('lon');
+	my $lat = $self->param('lat');
 
 	if ( not $lon or not $lat ) {
 		$self->render( json => { error => 'Invalid lon/lat received' } );
