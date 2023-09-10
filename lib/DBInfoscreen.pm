@@ -288,7 +288,7 @@ sub startup {
 
 	my $r = $self->routes;
 
-	$r->get('/_redirect')->to('static#redirect');
+	$r->get('/_redirect')->to('stationboard#redirect_to_station');
 
 	# legacy entry point
 	$r->get('/_auto')->to('static#geostop');

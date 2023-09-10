@@ -511,7 +511,7 @@ sub handle_request {
 					$station,
 					{
 						errstr => $err,
-						status => ( $err =~ m{station name$} ? 300 : 500 ),
+						status => ( $err =~ m{Ambiguous|LOCATION} ? 300 : 500 ),
 					},
 					$api_version
 				);
@@ -521,7 +521,7 @@ sub handle_request {
 				$station,
 				{
 					errstr => $err,
-					status => ( $err =~ m{station name$} ? 300 : 500 ),
+					status => ( $err =~ m{Ambiguous|LOCATION} ? 300 : 500 ),
 				},
 				$hafas
 			);
@@ -1871,6 +1871,48 @@ sub autocomplete {
 		format => 'js',
 		data   => $output
 	);
+}
+
+sub redirect_to_station {
+	my ($self) = @_;
+	my $input  = $self->param('input');
+	my $params = $self->req->params;
+
+	$params->remove('input');
+
+	for my $param (qw(platforms mode admode via)) {
+		if (
+			not $params->param($param)
+			or ( exists $default{$param}
+				and $params->param($param) eq $default{$param} )
+		  )
+		{
+			$params->remove($param);
+		}
+	}
+
+	if ( $input =~ m{ ^ [a-zA-Z]{1,5} \s+ \d+ $ }x ) {
+		$params = $params->to_string;
+		$self->redirect_to("/z/${input}?${params}");
+	}
+	else {
+		my @candidates
+		  = Travel::Status::DE::IRIS::Stations::get_station($input);
+		if (
+			@candidates == 1
+			and (  $input eq $candidates[0][0]
+				or lc($input) eq lc( $candidates[0][1] )
+				or $input eq $candidates[0][2] )
+		  )
+		{
+			$params->remove('hafas');
+		}
+		else {
+			$params->param( hafas => 1 );
+		}
+		$params = $params->to_string;
+		$self->redirect_to("/${input}?${params}");
+	}
 }
 
 1;
