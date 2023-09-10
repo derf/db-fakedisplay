@@ -982,8 +982,12 @@ sub render_train {
 				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link     =>
-				  $self->url_for( 'station', station => $station_name )
-				  ->query( { detailed => $self->param('detailed') } ),
+				  $self->url_for( 'station', station => $station_name )->query(
+					{
+						detailed => $self->param('detailed'),
+						hafas    => $self->param('hafas')
+					}
+				  ),
 			);
 		}
 	)->wait;
@@ -1775,8 +1779,13 @@ sub handle_result {
 				  or $template eq 'multi'
 			),
 			force_mobile => ( $template eq 'app' ),
-			nav_link => $self->url_for( 'station', station => $station_name )
-			  ->query( { detailed => $self->param('detailed') } ),
+			nav_link     =>
+			  $self->url_for( 'station', station => $station_name )->query(
+				{
+					detailed => $self->param('detailed'),
+					hafas    => $self->param('hafas')
+				}
+			  ),
 		);
 	}
 	return;
