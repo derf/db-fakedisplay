@@ -94,6 +94,7 @@ DISTRIBUTIONS
       JSON::PP 0
       List::Util 1.33
       Path::Tiny 0.077
+      PkgConfig 0.14026
       Test2::API 1.302096
       Text::ParseWords 3.26
       parent 0
@@ -1343,8 +1344,8 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojolicious-9.33
-    pathname: S/SR/SRI/Mojolicious-9.33.tar.gz
+  Mojolicious-9.34
+    pathname: S/SR/SRI/Mojolicious-9.34.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1412,7 +1413,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.33
+      Mojolicious 9.34
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -1589,6 +1590,14 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
+  PkgConfig-0.25026
+    pathname: P/PL/PLICEASE/PkgConfig-0.25026.tar.gz
+    provides:
+      PkgConfig 0.25026
+    requirements:
+      ExtUtils::MakeMaker 6.56
+      Test::More 0.94
+      perl 5.006000
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -1845,16 +1854,16 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-4.16
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.16.tar.gz
+  Travel-Status-DE-DeutscheBahn-4.17
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.17.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 4.16
-      Travel::Status::DE::HAFAS 4.16
-      Travel::Status::DE::HAFAS::Journey 4.16
-      Travel::Status::DE::HAFAS::Message 4.16
-      Travel::Status::DE::HAFAS::Polyline 4.16
-      Travel::Status::DE::HAFAS::Stop 4.16
-      Travel::Status::DE::HAFAS::StopFinder 4.16
+      Travel::Status::DE::DeutscheBahn 4.17
+      Travel::Status::DE::HAFAS 4.17
+      Travel::Status::DE::HAFAS::Journey 4.17
+      Travel::Status::DE::HAFAS::Message 4.17
+      Travel::Status::DE::HAFAS::Polyline 4.17
+      Travel::Status::DE::HAFAS::Stop 4.17
+      Travel::Status::DE::HAFAS::StopFinder 4.17
     requirements:
       Carp 0
       Class::Accessor 0.16
@@ -1872,12 +1881,12 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.14.0
-  Travel-Status-DE-IRIS-1.89
-    pathname: D/DE/DERF/Travel-Status-DE-IRIS-1.89.tar.gz
+  Travel-Status-DE-IRIS-1.90
+    pathname: D/DE/DERF/Travel-Status-DE-IRIS-1.90.tar.gz
     provides:
-      Travel::Status::DE::IRIS 1.89
-      Travel::Status::DE::IRIS::Result 1.89
-      Travel::Status::DE::IRIS::Stations 1.89
+      Travel::Status::DE::IRIS 1.90
+      Travel::Status::DE::IRIS::Result 1.90
+      Travel::Status::DE::IRIS::Stations 1.90
     requirements:
       Carp 0
       Class::Accessor 0
