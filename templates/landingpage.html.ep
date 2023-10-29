@@ -1,18 +1,30 @@
 % if (stash 'show_intro') {
 <div class="container">
-<p>
-  DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
-  Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
-</p>
-<p>
-  Diese Seite ist ein kostenfreies, privat betriebenes Projekt ohne
-  Verfügbarkeitsgarantie. Alle Angaben ohne Gewähr.
-</p>
+% if (languages() =~ m{^en}) {
+  <p>
+    DBF is an unofficial departure monitor for regional and long-distance trains within Germany, aiming to combine multiple data sources in a useful manner.
+    It also has limited support for local transit and traffic outside of Germany.
+  </p>
+  <p>
+    This site is operated by a private entity in a not-for-profit manner.
+    There are no uptime or reliability guarantees whatsoever.
+  </p>
+% }
+% else {
+  <p>
+    DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
+    Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
+  </p>
+  <p>
+    Diese Seite ist ein kostenfreies, privat betriebenes Projekt ohne Verfügbarkeitsgarantie.
+    Alle Angaben ohne Gewähr.
+  </p>
+% }
 <p class="geolink">
-<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
+<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>"><%= l 'Stationen in der Umgebung suchen' %></a>
 </p>
 <p>
-Oder hier angeben:
+%= l 'Oder hier angeben:'
 </p>
 </div>
 % }

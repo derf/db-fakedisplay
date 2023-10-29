@@ -10,6 +10,7 @@ requires 'List::UtilsBy';
 requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'Mojolicious';
+requires 'Mojolicious::Plugin::I18N';
 requires 'Travel::Status::DE::DBWagenreihung', '0.06';
 requires 'Travel::Status::DE::HAFAS', '4.00';
 requires 'Travel::Status::DE::IRIS';
