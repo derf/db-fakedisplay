@@ -94,7 +94,6 @@ DISTRIBUTIONS
       JSON::PP 0
       List::Util 1.33
       Path::Tiny 0.077
-      PkgConfig 0.14026
       Test2::API 1.302096
       Text::ParseWords 3.26
       parent 0
@@ -290,19 +289,19 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  DateTime-1.59
-    pathname: D/DR/DROLSKY/DateTime-1.59.tar.gz
+  DateTime-1.63
+    pathname: D/DR/DROLSKY/DateTime-1.63.tar.gz
     provides:
-      DateTime 1.59
-      DateTime::Duration 1.59
-      DateTime::Helpers 1.59
-      DateTime::Infinite 1.59
-      DateTime::Infinite::Future 1.59
-      DateTime::Infinite::Past 1.59
-      DateTime::LeapSecond 1.59
-      DateTime::PP 1.59
-      DateTime::PPExtra 1.59
-      DateTime::Types 1.59
+      DateTime 1.63
+      DateTime::Duration 1.63
+      DateTime::Helpers 1.63
+      DateTime::Infinite 1.63
+      DateTime::Infinite::Future 1.63
+      DateTime::Infinite::Past 1.63
+      DateTime::LeapSecond 1.63
+      DateTime::PP 1.63
+      DateTime::PPExtra 1.63
+      DateTime::Types 1.63
     requirements:
       Carp 0
       DateTime::Locale 1.06
@@ -1064,19 +1063,19 @@ DISTRIBUTIONS
       Time::Zone 0
       perl 5.006002
       strict 0
-  HTTP-Message-6.44
-    pathname: O/OA/OALDERS/HTTP-Message-6.44.tar.gz
+  HTTP-Message-6.45
+    pathname: O/OA/OALDERS/HTTP-Message-6.45.tar.gz
     provides:
-      HTTP::Config 6.44
-      HTTP::Headers 6.44
-      HTTP::Headers::Auth 6.44
-      HTTP::Headers::ETag 6.44
-      HTTP::Headers::Util 6.44
-      HTTP::Message 6.44
-      HTTP::Request 6.44
-      HTTP::Request::Common 6.44
-      HTTP::Response 6.44
-      HTTP::Status 6.44
+      HTTP::Config 6.45
+      HTTP::Headers 6.45
+      HTTP::Headers::Auth 6.45
+      HTTP::Headers::ETag 6.45
+      HTTP::Headers::Util 6.45
+      HTTP::Message 6.45
+      HTTP::Request 6.45
+      HTTP::Request::Common 6.45
+      HTTP::Response 6.45
+      HTTP::Status 6.45
     requirements:
       Carp 0
       Clone 0.46
@@ -1298,10 +1297,10 @@ DISTRIBUTIONS
       Text::ParseWords 0
       perl 5.006001
       version 0.87
-  Module-Build-Tiny-0.046
-    pathname: L/LE/LEONT/Module-Build-Tiny-0.046.tar.gz
+  Module-Build-Tiny-0.047
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.047.tar.gz
     provides:
-      Module::Build::Tiny 0.046
+      Module::Build::Tiny 0.047
     requirements:
       CPAN::Meta 0
       DynaLoader 0
@@ -1344,8 +1343,8 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojolicious-9.34
-    pathname: S/SR/SRI/Mojolicious-9.34.tar.gz
+  Mojolicious-9.35
+    pathname: S/SR/SRI/Mojolicious-9.35.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1413,7 +1412,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.34
+      Mojolicious 9.35
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -1462,6 +1461,16 @@ DISTRIBUTIONS
       IO::Socket::IP 0.37
       Sub::Util 1.41
       perl 5.016
+  Mojolicious-Plugin-I18N-1.6
+    pathname: S/SH/SHARIFULN/Mojolicious-Plugin-I18N-1.6.tar.gz
+    provides:
+      Mojolicious::Plugin::I18N 1.6
+    requirements:
+      I18N::LangTags 0.35
+      Module::Build 0.42
+      Mojolicious 5
+      Test::More 0
+      perl 5.010001
   Mozilla-CA-20230821
     pathname: L/LW/LWP/Mozilla-CA-20230821.tar.gz
     provides:
@@ -1590,14 +1599,6 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
-  PkgConfig-0.25026
-    pathname: P/PL/PLICEASE/PkgConfig-0.25026.tar.gz
-    provides:
-      PkgConfig 0.25026
-    requirements:
-      ExtUtils::MakeMaker 6.56
-      Test::More 0.94
-      perl 5.006000
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
