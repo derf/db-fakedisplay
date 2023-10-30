@@ -35,6 +35,21 @@ our %Lexicon = (
 	'Impressum' => 'Imprint',
 # landing page
 	'Oder hier angeben:' => 'Or enter manually:',
+# train details
+	'Gleis' => 'Platform',
+	'An:' => 'Arr',
+	'Ab:' => 'Dep',
+	'Plan:' => 'Sched',
+	'Auslastung unbekannt' => 'Occupancy unknown',
+	'Geringe Auslastung' => 'Low occupancy',
+	'Hohe Auslastung' => 'High occupancy',
+	'Sehr hohe Auslastung' => 'Very high occupancy',
+	'Zug ist ausgebucht' => 'Fully booked',
+	'Meldungen' => 'Messages',
+	'Fahrtverlauf' => 'Route',
+	'Betrieb' => 'Operator',
+	'Karte' => 'Map',
+	'Wagen' => 'Composition',
 );
 
 1;
