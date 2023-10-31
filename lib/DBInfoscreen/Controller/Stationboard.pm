@@ -805,7 +805,13 @@ sub render_train {
 		}
 	)->wait;
 
-	$self->hafas->get_route_timestamps_p( train => $result )->then(
+	my %opt = ( train => $result );
+
+	if ( $self->languages =~ m{^en} ) {
+		$opt{language} = 'en';
+	}
+
+	$self->hafas->get_route_timestamps_p(%opt)->then(
 		sub {
 			my ( $route_ts, $journey ) = @_;
 
@@ -1145,6 +1151,10 @@ sub train_details {
 		$self->stash( title => "${train_type} ${train_no}" );
 		$opt{train_type} = $train_type;
 		$opt{train_no}   = $train_no;
+	}
+
+	if ( $self->languages =~ m{^en} ) {
+		$opt{language} = 'en';
 	}
 
 	$self->stash( hide_opts => 1 );

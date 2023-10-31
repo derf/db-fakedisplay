@@ -188,6 +188,7 @@ sub get_route_timestamps_p {
 			journey => {
 				id => $opt{trip_id},
 			},
+			language   => $opt{language},
 			cache      => $self->{realtime_cache},
 			promise    => 'Mojo::Promise',
 			user_agent => $self->{user_agent}->request_timeout(10)
@@ -215,6 +216,7 @@ sub get_route_timestamps_p {
 
 					# name => $opt{train_no},
 				},
+				language   => $opt{language},
 				cache      => $self->{realtime_cache},
 				promise    => 'Mojo::Promise',
 				user_agent => $self->{user_agent}->request_timeout(10)
