@@ -333,15 +333,15 @@ sub wagen {
 		);
 	}
 
-	my $title = "Wagen $wagon_id";
+	my $title = $self->l('Wagen ') . $wagon_id;
 
 	if ( $wref->{tt} and $wref->{tn} ) {
 		$title = sprintf( '%s %s', $wref->{tt}, $wref->{tn} );
 		if ($wagon_no) {
-			$title .= " Wagen $wagon_no";
+			$title .= ' ' . $self->l('Wagen ') . $wagon_no;
 		}
 		else {
-			$title .= " Wagen $wagon_id";
+			$title .= ' ' . $self->l('Wagen ') . $wagon_id;
 		}
 	}
 

@@ -45,11 +45,31 @@ our %Lexicon = (
 	'Hohe Auslastung' => 'High occupancy',
 	'Sehr hohe Auslastung' => 'Very high occupancy',
 	'Zug ist ausgebucht' => 'Fully booked',
+	'Geringe Auslastung erwartet' => 'Low occupancy expected',
+	'Hohe Auslastung erwartet' => 'High occupancy expected',
+	'Sehr hohe Auslastung erwartet' => 'Very high occupancy expected',
 	'Meldungen' => 'Messages',
 	'Fahrtverlauf' => 'Route',
 	'Betrieb' => 'Operator',
 	'Karte' => 'Map',
 	'Wagen' => 'Composition',
+# wagon order
+	'Nach' => 'To',
+	'in Abschnitt' => 'in sections',
+	'Wagen ' => 'carriage ',
+# map
+	'Fahrt' => 'Trip',
+	'von' => 'from',
+	'nach' => 'to',
+	'Nächster Halt:' => 'Next stop:',
+	'um' => 'at',
+	'auf Gleis' => 'on platform',
+	'Aufenthalt in' => 'Stopped in',
+	'an Gleis' => 'on platform',
+	'bis' => 'until',
+	'Abfahrt in' => 'Departs',
+	'von Gleis' => 'from platform',
+	'Endstation erreicht um' => 'Terminus reached at',
 );
 
 1;

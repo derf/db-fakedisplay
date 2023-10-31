@@ -24,16 +24,16 @@
     % if ($has_multi_dest) {
       <div style="text-align: center;">
         % for my $destination ($wr->destinations) {
-          Nach <%= $destination->{name} %> in Abschnitt <%= join(q{}, sort @{$destination->{sections} // []}) %><br/>
+          <%= l 'Nach' %> <%= $destination->{name} %> <%= l 'in Abschnitt' %> <%= join(q{}, sort @{$destination->{sections} // []}) %><br/>
        % }
       </div>
     % }
-    <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
+    <%= $wr->station_name %> <%= l 'Gleis' %> <%= $wr->platform %><br/>
     % for my $desc ($wr->train_descriptions) {
       % if ($desc->{text}) {
         %= $desc->{text}
         % if ($has_multi_desc and length(join(q{}, sort @{$desc->{sections}}))) {
-          in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
+          <%= l 'in Abschnitt' %> <%= join(q{}, sort @{$desc->{sections}}) %>
         % }
         <br/>
       % }

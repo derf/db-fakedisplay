@@ -94,6 +94,6 @@ nicht implementiert.
 
 % if (my $op = stash('operator')) {
 <div class="container" style="margin-top: 1ex; margin-bottom: 1ex; color: #555;">
-Betrieb: <%= $op %>
+<%= l 'Betrieb' %>: <%= $op %>
 </div>
 % }

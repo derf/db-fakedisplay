@@ -1,13 +1,13 @@
 <div class="container singlewagon">
 	% if (not $wref->{e} and $wref->{s} and $wref->{p} and $wref->{ws}) {
 		<p>
-			<%= $wref->{s} %> Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+			<%= $wref->{s} %> <%= l 'Gleis' %> <%= $wref->{p} %> <%= $wref->{ws} %>
 		</p>
 	% }
 	% if ($wref->{e} eq 'u') {
 		% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
 			<div class="platform">
-				<%= $wref->{s} %><br/>Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+				<%= $wref->{s} %><br/><%= l 'Gleis' %> <%= $wref->{p} %> <%= $wref->{ws} %>
 				<div class="sign-left"><i class="material-icons">arrow_upward</i></div>
 				<div class="sign-right"><i class="material-icons">arrow_upward</i></div>
 			</div>
@@ -47,7 +47,7 @@
 		<div class="sign-right"><i class="material-icons">arrow_downward</i></div>
 		% if ($wref->{s} and $wref->{p} and $wref->{ws}) {
 			<div class="platform">
-				<%= $wref->{s} %><br/>Gleis <%= $wref->{p} %> <%= $wref->{ws} %>
+				<%= $wref->{s} %><br/><%= l 'Gleis' %> <%= $wref->{p} %> <%= $wref->{ws} %>
 			</div>
 		% }
 	% }

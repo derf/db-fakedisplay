@@ -43,7 +43,7 @@
 %       }
 %     }
 %     elsif ($departure->{sched_arrival}) {
-        <%= l 'An:' %><%= $departure->{sched_arrival} %>
+        <%= l 'An:' %> <%= $departure->{sched_arrival} %>
 %     }
 %     elsif ($departure->{prep_time}) {
         Ein: <%= $departure->{prep_time} %>
@@ -150,7 +150,7 @@
 %     elsif (my $o = $departure->{occupancy}) {
         <div class="verbose">
 %         my ($text, $icon) = occupancy_icon($o);
-          <%= $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
+          <%= l $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
         </div>
 %     }
 %   }
