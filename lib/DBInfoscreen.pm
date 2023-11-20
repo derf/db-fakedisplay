@@ -53,10 +53,10 @@ sub startup {
 		before_dispatch => sub {
 			my ($self) = @_;
 
-           # The "theme" cookie is set client-side if the theme we delivered was
-           # changed by dark mode detection or by using the theme switcher. It's
-           # not part of Mojolicious' session data (and can't be, due to
-           # signing and HTTPOnly), so we need to add it here.
+			# The "theme" cookie is set client-side if the theme we delivered was
+			# changed by dark mode detection or by using the theme switcher. It's
+			# not part of Mojolicious' session data (and can't be, due to
+			# signing and HTTPOnly), so we need to add it here.
 
 			for my $cookie ( @{ $self->req->cookies } ) {
 				if ( $cookie->name eq 'theme' ) {

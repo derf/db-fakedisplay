@@ -226,10 +226,10 @@ sub wagenreihung {
 					and $wnb2 =~ m{^\d+$} )
 				{
 
-                   # We need to perform normalization in two cases:
-                   # * wagon 1 is leftmost and its number is higher than wagon 2
-                   # * wagon 1 is rightmost and its number is lower than wagon 2
-                   #   (-> the leftmost wagon has the highest number)
+					# We need to perform normalization in two cases:
+					# * wagon 1 is leftmost and its number is higher than wagon 2
+					# * wagon 1 is rightmost and its number is lower than wagon 2
+					#   (-> the leftmost wagon has the highest number)
 
 					# However, if wpa/wna und wpb/wnb do not match, we have a
 					# winged train with different normalization requirements

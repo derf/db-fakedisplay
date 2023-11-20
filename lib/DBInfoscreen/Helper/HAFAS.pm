@@ -115,19 +115,19 @@ sub trainsearch_p {
 			# Try finding a result for the current date
 			for my $suggestion ( @{ $trainsearch->{suggestions} // [] } ) {
 
-       # Drunken API, sail with care. Both date formats are used interchangeably
+				# Drunken API, sail with care. Both date formats are used interchangeably
 				if (
 					exists $suggestion->{depDate}
 					and (  $suggestion->{depDate} eq $opt{date_yy}
 						or $suggestion->{depDate} eq $opt{date_yyyy} )
 				  )
 				{
-            # Train numbers are not unique, e.g. IC 149 refers both to the
-            # InterCity service Amsterdam -> Berlin and to the InterCity service
-            # Koebenhavns Lufthavn st -> Aarhus.  One workaround is making
-            # requests with the stationFilter=80 parameter.  Checking the origin
-            # station seems to be the more generic solution, so we do that
-            # instead.
+					# Train numbers are not unique, e.g. IC 149 refers both to the
+					# InterCity service Amsterdam -> Berlin and to the InterCity service
+					# Koebenhavns Lufthavn st -> Aarhus.  One workaround is making
+					# requests with the stationFilter=80 parameter.  Checking the origin
+					# station seems to be the more generic solution, so we do that
+					# instead.
 					if (    $opt{train_origin}
 						and $suggestion->{dep} eq $opt{train_origin} )
 					{
@@ -139,10 +139,10 @@ sub trainsearch_p {
 
 			if ($result) {
 
-         # The trip_id's date part doesn't seem to matter -- so far, HAFAS is
-         # happy as long as the date part starts with a number. HAFAS-internal
-         # tripIDs use this format (withouth leading zero for day of month < 10)
-         # though, so let's stick with it.
+				# The trip_id's date part doesn't seem to matter -- so far, HAFAS is
+				# happy as long as the date part starts with a number. HAFAS-internal
+				# tripIDs use this format (withouth leading zero for day of month < 10)
+				# though, so let's stick with it.
 				my $date_map = $opt{date_yyyy};
 				$date_map =~ tr{.}{}d;
 				$result->{trip_id} = sprintf( '1|%d|%d|%d|%s',
@@ -156,9 +156,9 @@ sub trainsearch_p {
 				$promise->reject("Zug $opt{train_req} nicht gefunden");
 			}
 
-           # do not propagate $promise->reject's return value to this promise.
-           # Perl implicitly returns the last statement, so we explicitly return
-           # nothing to avoid this.
+			# do not propagate $promise->reject's return value to this promise.
+			# Perl implicitly returns the last statement, so we explicitly return
+			# nothing to avoid this.
 			return;
 		}
 	)->catch(

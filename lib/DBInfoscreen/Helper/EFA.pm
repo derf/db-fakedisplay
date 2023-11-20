@@ -49,8 +49,7 @@ sub get_json_p {
 
 			if ( my $err = $tx->error ) {
 				$self->{log}->debug(
-"efa->get_json_p($url): HTTP $err->{code} $err->{message}"
-				);
+					"efa->get_json_p($url): HTTP $err->{code} $err->{message}");
 				$cache->freeze( $url, { error => $err->{message} } );
 				$promise->reject(
 					"GET $url returned HTTP $err->{code} $err->{message}");
@@ -60,8 +59,7 @@ sub get_json_p {
 			my $res = $tx->res->json;
 
 			if ( not $res ) {
-				$self->{log}
-				  ->debug("efa->get_json_p($url): empty response");
+				$self->{log}->debug("efa->get_json_p($url): empty response");
 				$promise->reject("GET $url returned empty response");
 				return;
 			}
