@@ -133,7 +133,7 @@
     </div>
   </div>
   <div class="field">
-    %= submit_button l('Abfahrstafel')
+    %= submit_button l('Abfahrtstafel')
   </div>
   % if (stash('input')) {
     <div class="geolink">

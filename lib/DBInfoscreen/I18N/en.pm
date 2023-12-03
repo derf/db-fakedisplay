@@ -18,7 +18,7 @@ our %Lexicon = (
 	'Zug / Station' => 'Enter train number or station name',
 	'Zug, Stationsname oder Ril100-Kürzel' =>
 	  'train, station name, or DS100 code',
-	'Abfahrstafel'                            => 'Show departures',
+	'Abfahrtstafel'                           => 'Show departures',
 	'Weitere Einstellungen'                   => 'Preferences',
 	'Zeiten inkl. Verspätung angeben'         => 'Include delay in timestamps',
 	'Verspätungen erst ab 5 Minuten anzeigen' => 'Hide delays below 5 minutes',
