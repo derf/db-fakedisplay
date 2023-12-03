@@ -5,7 +5,7 @@
  */
 
 function setLang(lang) {
-	document.cookie = 'lang=' + lang;
+	document.cookie = 'lang=' + lang + ';SameSite=None;Secure';
 	location.reload();
 }
 

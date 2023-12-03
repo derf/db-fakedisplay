@@ -31,7 +31,7 @@
 			const old = document.getElementById(id);
 			if (old && (old.href != path)) {
 				old.href = path;
-				document.cookie = 'theme=' + name;
+				document.cookie = 'theme=' + name + ';SameSite=None;Secure';
 			}
 		}
 		const otherTheme = {
