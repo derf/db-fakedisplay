@@ -294,14 +294,13 @@ Theme:
 <a onClick="javascript:setTheme('light')">light</a>
 ·
 <a onClick="javascript:setTheme('default')">device theme</a>
-<!--<br/>
+<br/>
 Language:
 <a onClick="javascript:setLang('de')">DE</a>
 ·
 <a onClick="javascript:setLang('en')">EN</a>
 ·
 <a onClick="javascript:setLang('default')">system language</a>
-<br/>-->
 </div>
 <div class="about">
 <a href="_about">DBF</a> v<%= stash('version') // '???' %>
