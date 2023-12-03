@@ -36,7 +36,6 @@ our %Lexicon = (
 	'Nur Abfahrt'                           => 'departure only',
 	'Nur Ankunft'                           => 'arrival only',
 	'Anzeigen'                              => 'Submit',
-	'Über DBF'                              => 'About',
 	'Datenschutz'                           => 'Privacy',
 	'Impressum'                             => 'Imprint',
 

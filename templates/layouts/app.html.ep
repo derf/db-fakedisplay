@@ -27,14 +27,14 @@
 	% }
 	<script>
 		function addStyleSheet(name, id) {
-			var path = '/static/<%=$av%>/css/' + name + '.min.css';
-			var old = document.getElementById(id);
+			const path = '/static/<%=$av%>/css/' + name + '.min.css';
+			const old = document.getElementById(id);
 			if (old && (old.href != path)) {
 				old.href = path;
 				document.cookie = 'theme=' + name;
 			}
 		}
-		var otherTheme = {
+		const otherTheme = {
 			'dark': 'light',
 			'light': 'dark',
 		};
@@ -43,12 +43,6 @@
 			currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 		}
 		addStyleSheet(currentTheme, 'theme');
-
-		function toggleTheme() {
-			currentTheme = otherTheme[currentTheme] || 'light';
-			localStorage.setItem('theme', currentTheme);
-			addStyleSheet(currentTheme, 'theme');
-		}
 	</script>
 	%= stylesheet "/static/${av}/css/material-icons.css"
 	%= stylesheet "/static/${av}/css/jquery-ui.min.css"
@@ -88,9 +82,6 @@
 						<a href="<%= stash('api_link') %>"><span class="visually-hidden"><%= stash('api_text') %></span><i class="material-icons" aria-hidden="true"><%= stash('api_icon') %></i></a>
 					</li>
 				% }
-				<li class="waves-effect waves-light">
-					<a onClick="javascript:toggleTheme()"><span class="visually-hidden">Farbschema invertieren</span><i class="material-icons" aria-hidden="true">invert_colors</i></a>
-				</li>
 				% if (stash('hide_opts')) {
 					<li><a href="/"><span class="visually-hidden">Hauptseite</span><i class="material-icons" aria-hidden="true">edit</i></a></li>
 				% }
@@ -296,13 +287,28 @@
 </div> <!-- container -->
 
 <div class="container">
+<div class="config">
+Theme:
+<a onClick="javascript:setTheme('dark')">dark</a>
+·
+<a onClick="javascript:setTheme('light')">light</a>
+·
+<a onClick="javascript:setTheme('default')">device theme</a>
+<!--<br/>
+Language:
+<a onClick="javascript:setLang('de')">DE</a>
+·
+<a onClick="javascript:setLang('en')">EN</a>
+·
+<a onClick="javascript:setLang('default')">system language</a>
+<br/>-->
+</div>
 <div class="about">
-<a href="_about"><%= l 'Über DBF' %></a>
+<a href="_about">DBF</a> v<%= stash('version') // '???' %>
 ·
 <a href="_datenschutz" rel="nofollow"><%= l 'Datenschutz' %></a>
 ·
-<a href="_impressum" rel="nofollow"><%= l 'Impressum' %></a><br/>
-Version <%= stash('version') // '???' %>
+<a href="_impressum" rel="nofollow"><%= l 'Impressum' %></a>
 </div> <!-- about -->
 </div> <!-- container -->
 % }

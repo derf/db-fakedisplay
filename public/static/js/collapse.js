@@ -4,6 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+function setLang(lang) {
+	document.cookie = 'lang=' + lang;
+	location.reload();
+}
+
+function setTheme(theme) {
+	localStorage.setItem('theme', theme);
+	if (!otherTheme.hasOwnProperty(theme)) {
+		theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	}
+	addStyleSheet(theme, 'theme');
+}
+
 function reload_app() {
 	// TODO use a variable instead of window.location.href, as
 	// window.location.href may be /z/...

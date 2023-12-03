@@ -30,6 +30,7 @@ a {
 
 p,
 div.about,
+div.config,
 div.input-field,
 div.notes {
 	max-width: 94%;
@@ -669,15 +670,27 @@ div.candidatelist a .traininfo {
 	padding-bottom: 0.3em;
 }
 
-div.about {
+div.config {
 	margin-top: 2em;
 	font-family: Sans-Serif;
 	color: $fg2;
+
+	a {
+		color: $link-color;
+		cursor: pointer;
+		text-decoration: none;
+	}
 }
 
-div.about a {
-	color: $link-color;
-	text-decoration: none;
+div.about {
+	margin-top: 1em;
+	font-family: Sans-Serif;
+	color: $fg2;
+
+	a {
+		color: $link-color;
+		text-decoration: none;
+	}
 }
 
 .notice {
