@@ -61,7 +61,6 @@ sub startup {
 			for my $cookie ( @{ $self->req->cookies } ) {
 				if ( $cookie->name eq 'theme' ) {
 					$self->session( theme => $cookie->value );
-					say 'found theme ' . $cookie->value;
 				}
 				elsif ( $cookie->name eq 'lang' ) {
 					my $l = $cookie->value;
