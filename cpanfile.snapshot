@@ -94,6 +94,7 @@ DISTRIBUTIONS
       JSON::PP 0
       List::Util 1.33
       Path::Tiny 0.077
+      PkgConfig 0.14026
       Test2::API 1.302096
       Text::ParseWords 3.26
       parent 0
@@ -289,19 +290,19 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  DateTime-1.63
-    pathname: D/DR/DROLSKY/DateTime-1.63.tar.gz
+  DateTime-1.65
+    pathname: D/DR/DROLSKY/DateTime-1.65.tar.gz
     provides:
-      DateTime 1.63
-      DateTime::Duration 1.63
-      DateTime::Helpers 1.63
-      DateTime::Infinite 1.63
-      DateTime::Infinite::Future 1.63
-      DateTime::Infinite::Past 1.63
-      DateTime::LeapSecond 1.63
-      DateTime::PP 1.63
-      DateTime::PPExtra 1.63
-      DateTime::Types 1.63
+      DateTime 1.65
+      DateTime::Duration 1.65
+      DateTime::Helpers 1.65
+      DateTime::Infinite 1.65
+      DateTime::Infinite::Future 1.65
+      DateTime::Infinite::Past 1.65
+      DateTime::LeapSecond 1.65
+      DateTime::PP 1.65
+      DateTime::PPExtra 1.65
+      DateTime::Types 1.65
     requirements:
       Carp 0
       DateTime::Locale 1.06
@@ -353,15 +354,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.39
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.39.tar.gz
+  DateTime-Locale-1.40
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.40.tar.gz
     provides:
-      DateTime::Locale 1.39
-      DateTime::Locale::Base 1.39
-      DateTime::Locale::Catalog 1.39
-      DateTime::Locale::Data 1.39
-      DateTime::Locale::FromData 1.39
-      DateTime::Locale::Util 1.39
+      DateTime::Locale 1.40
+      DateTime::Locale::Base 1.40
+      DateTime::Locale::Catalog 1.40
+      DateTime::Locale::Data 1.40
+      DateTime::Locale::FromData 1.40
+      DateTime::Locale::Util 1.40
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -1136,18 +1137,18 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       perl 5.008
-  IO-Socket-SSL-2.083
-    pathname: S/SU/SULLR/IO-Socket-SSL-2.083.tar.gz
+  IO-Socket-SSL-2.084
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.084.tar.gz
     provides:
-      IO::Socket::SSL 2.083
+      IO::Socket::SSL 2.084
       IO::Socket::SSL::Intercept 2.056
-      IO::Socket::SSL::OCSP_Cache 2.083
-      IO::Socket::SSL::OCSP_Resolver 2.083
+      IO::Socket::SSL::OCSP_Cache 2.084
+      IO::Socket::SSL::OCSP_Resolver 2.084
       IO::Socket::SSL::PublicSuffix undef
-      IO::Socket::SSL::SSL_Context 2.083
-      IO::Socket::SSL::SSL_HANDLE 2.083
-      IO::Socket::SSL::Session_Cache 2.083
-      IO::Socket::SSL::Trace 2.083
+      IO::Socket::SSL::SSL_Context 2.084
+      IO::Socket::SSL::SSL_HANDLE 2.084
+      IO::Socket::SSL::Session_Cache 2.084
+      IO::Socket::SSL::Trace 2.084
       IO::Socket::SSL::Utils 2.015
     requirements:
       ExtUtils::MakeMaker 0
@@ -1599,6 +1600,14 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
+  PkgConfig-0.25026
+    pathname: P/PL/PLICEASE/PkgConfig-0.25026.tar.gz
+    provides:
+      PkgConfig 0.25026
+    requirements:
+      ExtUtils::MakeMaker 6.56
+      Test::More 0.94
+      perl 5.006000
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -1677,18 +1686,18 @@ DISTRIBUTIONS
       strict 0
       version 0.83
       warnings 0
-  Sub-Exporter-0.990
-    pathname: R/RJ/RJBS/Sub-Exporter-0.990.tar.gz
+  Sub-Exporter-0.991
+    pathname: R/RJ/RJBS/Sub-Exporter-0.991.tar.gz
     provides:
-      Sub::Exporter 0.990
-      Sub::Exporter::Util 0.990
+      Sub::Exporter 0.991
+      Sub::Exporter::Util 0.991
     requirements:
       Carp 0
       Data::OptList 0.100
       ExtUtils::MakeMaker 6.78
       Params::Util 0.14
       Sub::Install 0.92
-      perl 5.008000
+      perl 5.012
       strict 0
       warnings 0
   Sub-Exporter-Progressive-0.001013
@@ -1772,17 +1781,17 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0.62
       perl 5.008
-  Text-CSV-2.03
-    pathname: I/IS/ISHIGAKI/Text-CSV-2.03.tar.gz
+  Text-CSV-2.04
+    pathname: I/IS/ISHIGAKI/Text-CSV-2.04.tar.gz
     provides:
-      Text::CSV 2.03
-      Text::CSV::ErrorDiag 2.03
-      Text::CSV_PP 2.03
+      Text::CSV 2.04
+      Text::CSV::ErrorDiag 2.04
+      Text::CSV_PP 2.04
     requirements:
       ExtUtils::MakeMaker 0
       IO::Handle 0
       Test::Harness 0
-      Test::More 0.71
+      Test::More 0.92
       perl 5.006001
   Text-LevenshteinXS-0.03
     pathname: J/JG/JGOLDBERG/Text-LevenshteinXS-0.03.tar.gz
