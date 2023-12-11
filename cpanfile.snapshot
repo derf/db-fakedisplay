@@ -1038,12 +1038,12 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  HTTP-Cookies-6.10
-    pathname: O/OA/OALDERS/HTTP-Cookies-6.10.tar.gz
+  HTTP-Cookies-6.11
+    pathname: O/OA/OALDERS/HTTP-Cookies-6.11.tar.gz
     provides:
-      HTTP::Cookies 6.10
-      HTTP::Cookies::Microsoft 6.10
-      HTTP::Cookies::Netscape 6.10
+      HTTP::Cookies 6.11
+      HTTP::Cookies::Microsoft 6.11
+      HTTP::Cookies::Netscape 6.11
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -1864,16 +1864,16 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-4.18
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.18.tar.gz
+  Travel-Status-DE-DeutscheBahn-4.19
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-4.19.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 4.18
-      Travel::Status::DE::HAFAS 4.18
-      Travel::Status::DE::HAFAS::Journey 4.18
-      Travel::Status::DE::HAFAS::Message 4.18
-      Travel::Status::DE::HAFAS::Polyline 4.18
-      Travel::Status::DE::HAFAS::Stop 4.18
-      Travel::Status::DE::HAFAS::StopFinder 4.18
+      Travel::Status::DE::DeutscheBahn 4.19
+      Travel::Status::DE::HAFAS 4.19
+      Travel::Status::DE::HAFAS::Journey 4.19
+      Travel::Status::DE::HAFAS::Message 4.19
+      Travel::Status::DE::HAFAS::Polyline 4.19
+      Travel::Status::DE::HAFAS::Stop 4.19
+      Travel::Status::DE::HAFAS::StopFinder 4.19
     requirements:
       Carp 0
       Class::Accessor 0.16
@@ -1891,12 +1891,12 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.14.0
-  Travel-Status-DE-IRIS-1.90
-    pathname: D/DE/DERF/Travel-Status-DE-IRIS-1.90.tar.gz
+  Travel-Status-DE-IRIS-1.91
+    pathname: D/DE/DERF/Travel-Status-DE-IRIS-1.91.tar.gz
     provides:
-      Travel::Status::DE::IRIS 1.90
-      Travel::Status::DE::IRIS::Result 1.90
-      Travel::Status::DE::IRIS::Stations 1.90
+      Travel::Status::DE::IRIS 1.91
+      Travel::Status::DE::IRIS::Result 1.91
+      Travel::Status::DE::IRIS::Stations 1.91
     requirements:
       Carp 0
       Class::Accessor 0
