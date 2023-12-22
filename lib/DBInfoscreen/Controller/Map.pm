@@ -61,7 +61,7 @@ sub get_route_indexes {
 # - position 4 seconds from now
 # - ...
 sub estimate_train_positions {
-	my (%opt) = @_;
+	my ( $self, %opt ) = @_;
 
 	my $now = $opt{now};
 
@@ -189,7 +189,7 @@ sub estimate_train_positions2 {
 			$self->backpropagate_delay( $route[ $i - 1 ], $route[$i] );
 
 			# (current position, future positons...) in 2 second steps
-			@train_positions = estimate_train_positions(
+			@train_positions = $self->estimate_train_positions(
 				from     => $route[ $i - 1 ],
 				to       => $route[$i],
 				now      => $now,
