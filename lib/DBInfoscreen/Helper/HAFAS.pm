@@ -232,25 +232,24 @@ sub get_route_timestamps_p {
 
 			my $station_is_past = 1;
 			for my $stop ( $journey->route ) {
-				my $name = $stop->{name};
-				$ret->{$name} = $ret->{ $stop->{eva} } = {
-					name           => $stop->{name},
-					eva            => $stop->{eva},
-					sched_arr      => $stop->{sched_arr},
-					sched_dep      => $stop->{sched_dep},
-					rt_arr         => $stop->{rt_arr},
-					rt_dep         => $stop->{rt_dep},
-					arr_delay      => $stop->{arr_delay},
-					dep_delay      => $stop->{dep_delay},
-					arr_cancelled  => $stop->{arr_cancelled},
-					dep_cancelled  => $stop->{dep_cancelled},
-					platform       => $stop->{platform},
-					sched_platform => $stop->{sched_platform},
-					load           => $stop->{load},
+				my $name = $stop->loc->name;
+				$ret->{$name} = $ret->{ $stop->loc->eva } = {
+					name           => $stop->loc->name,
+					eva            => $stop->loc->eva,
+					sched_arr      => $stop->sched_arr,
+					sched_dep      => $stop->sched_dep,
+					rt_arr         => $stop->rt_arr,
+					rt_dep         => $stop->rt_dep,
+					arr_delay      => $stop->arr_delay,
+					dep_delay      => $stop->dep_delay,
+					arr_cancelled  => $stop->arr_cancelled,
+					dep_cancelled  => $stop->dep_cancelled,
+					platform       => $stop->platform,
+					sched_platform => $stop->sched_platform,
+					load           => $stop->load,
 					isCancelled    => (
-						( $stop->{arr_cancelled} or not $stop->{sched_arr} )
-						  and
-						  ( $stop->{dep_cancelled} or not $stop->{sched_dep} )
+						      ( $stop->arr_cancelled or not $stop->sched_arr )
+						  and ( $stop->dep_cancelled or not $stop->sched_dep )
 					),
 				};
 				if (

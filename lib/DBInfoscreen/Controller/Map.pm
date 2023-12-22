@@ -65,10 +65,10 @@ sub estimate_train_positions {
 
 	my $now = $opt{now};
 
-	my $from_dt   = $opt{from}{dep} // $opt{from}{arr};
-	my $to_dt     = $opt{to}{arr}   // $opt{to}{dep};
-	my $from_name = $opt{from}{name};
-	my $to_name   = $opt{to}{name};
+	my $from_dt   = $opt{from}->dep // $opt{from}->arr;
+	my $to_dt     = $opt{to}->arr   // $opt{to}->dep;
+	my $from_name = $opt{from}->loc->name;
+	my $to_name   = $opt{to}->loc->name;
 	my $route     = $opt{route};
 	my $polyline  = $opt{polyline};
 
@@ -135,16 +135,23 @@ sub estimate_train_positions {
 		}
 	}
 	else {
+		$self->log->debug(
+			"Did not find route indexes for $from_name → $to_name");
+		$self->log->debug(
+"Falling back to $opt{from}{lat} $opt{from}{lon}  →   $opt{to}{lat} $opt{to}{lon}"
+		);
 		for my $ratio (@completion_ratios) {
 			my $lat
-			  = $opt{from}{lat} + ( $opt{to}{lat} - $opt{from}{lat} ) * $ratio;
+			  = $opt{from}->loc->lat
+			  + ( $opt{to}->loc->lat - $opt{from}->loc->lat ) * $ratio;
 			my $lon
-			  = $opt{from}{lon} + ( $opt{to}{lon} - $opt{from}{lon} ) * $ratio;
+			  = $opt{from}->loc->lon
+			  + ( $opt{to}->loc->lon - $opt{from}->loc->lon ) * $ratio;
 			push( @train_positions, [ $lat, $lon ] );
 		}
 		return @train_positions;
 	}
-	return [ $opt{to}{lat}, $opt{to}{lon} ];
+	return [ $opt{to}->loc->lat, $opt{to}->loc->lon ];
 }
 
 # Input:
@@ -172,10 +179,10 @@ sub estimate_train_positions2 {
 
 	for my $i ( 1 .. $#route ) {
 		if (    not $next_stop
-			and ( $route[$i]{arr} // $route[$i]{dep} )
-			and ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
-			and $now > ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} )
-			and $now < ( $route[$i]{arr} // $route[$i]{dep} ) )
+			and ( $route[$i]->arr // $route[$i]->dep )
+			and ( $route[ $i - 1 ]->dep // $route[ $i - 1 ]->arr )
+			and $now > ( $route[ $i - 1 ]->dep // $route[ $i - 1 ]->arr )
+			and $now < ( $route[$i]->arr // $route[$i]->dep ) )
 		{
 
 			# HAFAS does not provide delays for past stops
@@ -200,15 +207,15 @@ sub estimate_train_positions2 {
 			and $now <= ( $route[ $i - 1 ]{dep} // $route[ $i - 1 ]{arr} ) )
 		{
 			@train_positions
-			  = ( [ $route[ $i - 1 ]{lat}, $route[ $i - 1 ]{lon} ] );
+			  = ( [ $route[ $i - 1 ]->loc->lat, $route[ $i - 1 ]->loc->lon ] );
 			$next_stop = {
 				type    => 'present',
 				station => $route[ $i - 1 ],
 			};
 		}
 		$stop_distance_sum += $distance->distance_metal(
-			$route[ $i - 1 ]{lat}, $route[ $i - 1 ]{lon},
-			$route[$i]{lat},       $route[$i]{lon}
+			$route[ $i - 1 ]->loc->lat, $route[ $i - 1 ]->loc->lon,
+			$route[$i]->loc->lat,       $route[$i]->loc->lon
 		) / 1000;
 	}
 
@@ -217,7 +224,7 @@ sub estimate_train_positions2 {
 	}
 
 	if ( @route and not $next_stop ) {
-		@train_positions = ( [ $route[-1]{lat}, $route[-1]{lon} ] );
+		@train_positions = ( [ $route[-1]->loc->lat, $route[-1]->loc->lon ] );
 		$next_stop       = {
 			type    => 'present',
 			station => $route[-1]
@@ -240,12 +247,12 @@ sub route_to_ajax {
 	my @route_entries;
 
 	for my $stop (@stopovers) {
-		my @stop_entries = ( $stop->{name} );
+		my @stop_entries = ( $stop->loc->name );
 		my $platform;
 
-		if ( my $arr = $stop->{arr} and not $stop->{arr_cancelled} ) {
-			my $delay = $stop->{arr_delay} // 0;
-			$platform = $stop->{arr_platform};
+		if ( my $arr = $stop->arr and not $stop->arr_cancelled ) {
+			my $delay = $stop->arr_delay // 0;
+			$platform = $stop->platform;
 
 			push( @stop_entries, $arr->epoch, $delay );
 		}
@@ -253,9 +260,9 @@ sub route_to_ajax {
 			push( @stop_entries, q{}, q{} );
 		}
 
-		if ( my $dep = $stop->{dep} and not $stop->{dep_cancelled} ) {
-			my $delay = $stop->{dep_delay} // 0;
-			$platform //= $stop->{dep_platform} // q{};
+		if ( my $dep = $stop->dep and not $stop->dep_cancelled ) {
+			my $delay = $stop->dep_delay // 0;
+			$platform //= $stop->platform // q{};
 
 			push( @stop_entries, $dep->epoch, $delay, $platform );
 		}
@@ -338,51 +345,51 @@ sub route {
 
 			# Prepare from/to markers and name/time/delay overlays for stations
 			for my $stop (@route) {
-				my @stop_lines = ( $stop->{name} );
+				my @stop_lines = ( $stop->loc->name );
 
-				if ( $from_name and $stop->{name} eq $from_name ) {
+				if ( $from_name and $stop->loc->name eq $from_name ) {
 					push(
 						@markers,
 						{
-							lon   => $stop->{lon},
-							lat   => $stop->{lat},
-							title => $stop->{name},
+							lon   => $stop->loc->lon,
+							lat   => $stop->loc->lat,
+							title => $stop->loc->name,
 							icon  => 'goldIcon',
 						}
 					);
 				}
-				if ( $to_name and $stop->{name} eq $to_name ) {
+				if ( $to_name and $stop->loc->name eq $to_name ) {
 					push(
 						@markers,
 						{
-							lon   => $stop->{lon},
-							lat   => $stop->{lat},
-							title => $stop->{name},
+							lon   => $stop->loc->lon,
+							lat   => $stop->loc->lat,
+							title => $stop->loc->name,
 							icon  => 'greenIcon',
 						}
 					);
 				}
 
-				if ( $stop->{platform} ) {
-					push( @stop_lines, 'Gleis ' . $stop->{platform} );
+				if ( $stop->platform ) {
+					push( @stop_lines, 'Gleis ' . $stop->platform );
 				}
-				if ( $stop->{arr} ) {
-					my $arr_line = $stop->{arr}->strftime('Ankunft: %H:%M');
-					if ( $stop->{arr_delay} ) {
-						$arr_line .= sprintf( ' (%+d)', $stop->{arr_delay} );
+				if ( $stop->arr ) {
+					my $arr_line = $stop->arr->strftime('Ankunft: %H:%M');
+					if ( $stop->arr_delay ) {
+						$arr_line .= sprintf( ' (%+d)', $stop->arr_delay );
 					}
 					push( @stop_lines, $arr_line );
 				}
-				if ( $stop->{dep} ) {
-					my $dep_line = $stop->{dep}->strftime('Abfahrt: %H:%M');
-					if ( $stop->{dep_delay} ) {
-						$dep_line .= sprintf( ' (%+d)', $stop->{dep_delay} );
+				if ( $stop->dep ) {
+					my $dep_line = $stop->dep->strftime('Abfahrt: %H:%M');
+					if ( $stop->dep_delay ) {
+						$dep_line .= sprintf( ' (%+d)', $stop->dep_delay );
 					}
 					push( @stop_lines, $dep_line );
 				}
 
 				push( @station_coordinates,
-					[ [ $stop->{lat}, $stop->{lon} ], [@stop_lines], ] );
+					[ [ $stop->loc->lat, $stop->loc->lon ], [@stop_lines], ] );
 			}
 
 			push(
@@ -406,12 +413,12 @@ sub route {
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => ( $journey->route )[0]->{name},
-					ts   => ( $journey->route )[0]->{dep},
+					name => ( $journey->route )[0]->loc->name,
+					ts   => ( $journey->route )[0]->dep,
 				},
 				destination => {
 					name => $journey->route_end,
-					ts   => ( $journey->route )[-1]->{arr},
+					ts   => ( $journey->route )[-1]->arr,
 				},
 				train_no => $journey->number
 				? ( $journey->type . ' ' . $journey->number )
@@ -478,12 +485,12 @@ sub ajax_route {
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
 				origin => {
-					name => ( $journey->route )[0]->{name},
-					ts   => ( $journey->route )[0]->{dep},
+					name => ( $journey->route )[0]->loc->name,
+					ts   => ( $journey->route )[0]->dep,
 				},
 				destination => {
 					name => $journey->route_end,
-					ts   => ( $journey->route )[-1]->{arr},
+					ts   => ( $journey->route )[-1]->arr,
 				},
 				train_no => $journey->number
 				? ( $journey->type . ' ' . $journey->number )

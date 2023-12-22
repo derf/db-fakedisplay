@@ -834,7 +834,9 @@ sub render_train {
 				my @missing_pre;
 				for my $station (@hafas_stations) {
 					if (
-						List::MoreUtils::any { $_->{name} eq $station->{name} }
+						List::MoreUtils::any {
+							$_->{name} eq $station->loc->name
+						}
 						@iris_stations
 					  )
 					{
@@ -847,7 +849,7 @@ sub render_train {
 					push(
 						@missing_pre,
 						{
-							name  => $station->{name},
+							name  => $station->loc->name,
 							hafas => 1
 						}
 					);
@@ -857,7 +859,9 @@ sub render_train {
 				my @missing_post;
 				for my $station ( reverse @hafas_stations ) {
 					if (
-						List::MoreUtils::any { $_->{name} eq $station->{name} }
+						List::MoreUtils::any {
+							$_->{name} eq $station->loc->name
+						}
 						@iris_stations
 					  )
 					{
@@ -870,7 +874,7 @@ sub render_train {
 					unshift(
 						@missing_post,
 						{
-							name  => $station->{name},
+							name  => $station->loc->name,
 							hafas => 1
 						}
 					);
@@ -1202,7 +1206,7 @@ sub train_details {
 			$res->{operator}    = $journey->operator;
 
 			$res->{route_post_diff}
-			  = [ map { { name => $_->{name} } } $journey->route ];
+			  = [ map { { name => $_->loc->name } } $journey->route ];
 			for my $elem ( @{ $res->{route_post_diff} } ) {
 				for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
 					$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
@@ -1709,7 +1713,7 @@ sub handle_result {
 						train_no   => $result->number,
 						journey_id => $result->id,
 						via        => [
-							map { $_->{name} =~ s{,\Q$city\E}{}r }
+							map { $_->loc->name =~ s{,\Q$city\E}{}r }
 							  $result->route_interesting(3)
 						],
 						destination => $result->route_end =~ s{,\Q$city\E}{}r,
@@ -1725,10 +1729,10 @@ sub handle_result {
 						replaced_by        => [],
 						replacement_for    => [],
 						route_pre          => $admode eq 'arr'
-						? [ map { $_->{name} } $result->route ]
+						? [ map { $_->loc->name } $result->route ]
 						: [],
 						route_post => $admode eq 'arr' ? []
-						: [ map { $_->{name} } $result->route ],
+						: [ map { $_->loc->name } $result->route ],
 						wr_link => $result->sched_datetime
 						? $result->sched_datetime->strftime('%Y%m%d%H%M')
 						: undef,
