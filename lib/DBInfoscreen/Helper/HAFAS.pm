@@ -86,95 +86,6 @@ sub get_json_p {
 	return $promise;
 }
 
-sub trainsearch_p {
-	my ( $self, %opt ) = @_;
-
-	my $base
-	  = 'https://reiseauskunft.bahn.de/bin/trainsearch.exe/dn?L=vs_json&start=yes&rt=1';
-
-	if ( not $opt{date_yy} ) {
-		my $now = DateTime->now( time_zone => 'Europe/Berlin' );
-		$opt{date_yy}   = $now->strftime('%d.%m.%y');
-		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
-	}
-
-	# IRIS reports trains with unknown type as type "-". HAFAS thinks otherwise
-	# and prefers the type to be left out entirely in this case.
-	$opt{train_req} =~ s{^- }{};
-
-	my $promise = Mojo::Promise->new;
-
-	$self->get_json_p( $self->{realtime_cache},
-		"${base}&date=$opt{date_yy}&trainname=$opt{train_req}" )->then(
-		sub {
-			my ($trainsearch) = @_;
-
-			# Fallback: Take first result
-			my $result = $trainsearch->{suggestions}[0];
-
-			# Try finding a result for the current date
-			for my $suggestion ( @{ $trainsearch->{suggestions} // [] } ) {
-
-				# Drunken API, sail with care. Both date formats are used interchangeably
-				if (
-					exists $suggestion->{depDate}
-					and (  $suggestion->{depDate} eq $opt{date_yy}
-						or $suggestion->{depDate} eq $opt{date_yyyy} )
-				  )
-				{
-					# Train numbers are not unique, e.g. IC 149 refers both to the
-					# InterCity service Amsterdam -> Berlin and to the InterCity service
-					# Koebenhavns Lufthavn st -> Aarhus.  One workaround is making
-					# requests with the stationFilter=80 parameter.  Checking the origin
-					# station seems to be the more generic solution, so we do that
-					# instead.
-					if (    $opt{train_origin}
-						and $suggestion->{dep} eq $opt{train_origin} )
-					{
-						$result = $suggestion;
-						last;
-					}
-				}
-			}
-
-			if ($result) {
-
-				# The trip_id's date part doesn't seem to matter -- so far, HAFAS is
-				# happy as long as the date part starts with a number. HAFAS-internal
-				# tripIDs use this format (withouth leading zero for day of month < 10)
-				# though, so let's stick with it.
-				my $date_map = $opt{date_yyyy};
-				$date_map =~ tr{.}{}d;
-				$result->{trip_id} = sprintf( '1|%d|%d|%d|%s',
-					$result->{id},   $result->{cycle},
-					$result->{pool}, $date_map );
-				$promise->resolve($result);
-			}
-			else {
-				$self->{log}->warn(
-					"hafas->trainsearch_p($opt{train_req}): train not found");
-				$promise->reject("Zug $opt{train_req} nicht gefunden");
-			}
-
-			# do not propagate $promise->reject's return value to this promise.
-			# Perl implicitly returns the last statement, so we explicitly return
-			# nothing to avoid this.
-			return;
-		}
-	)->catch(
-		sub {
-			my ($err) = @_;
-			$self->{log}->warn("hafas->trainsearch_p($opt{train_req}): $err");
-			$promise->reject($err);
-
-			# do not propagate $promise->reject's return value to this promise
-			return;
-		}
-	)->wait;
-
-	return $promise;
-}
-
 sub get_route_timestamps_p {
 	my ( $self, %opt ) = @_;
 
@@ -195,26 +106,31 @@ sub get_route_timestamps_p {
 		);
 	}
 	elsif ( $opt{train} ) {
-		$opt{date_yy}      = $opt{train}->start->strftime('%d.%m.%y');
-		$opt{date_yyyy}    = $opt{train}->start->strftime('%d.%m.%Y');
 		$opt{train_req}    = $opt{train}->type . ' ' . $opt{train}->train_no;
 		$opt{train_origin} = $opt{train}->origin;
 	}
 	else {
 		$opt{train_req} = $opt{train_type} . ' ' . $opt{train_no};
-		$opt{date_yy}   = $now->strftime('%d.%m.%y');
-		$opt{date_yyyy} = $now->strftime('%d.%m.%Y');
 	}
 
-	$hafas_promise //= $self->trainsearch_p(%opt)->then(
+	$hafas_promise //= Travel::Status::DE::HAFAS->new_p(
+		journeyMatch => $opt{train_req} =~ s{^- }{}r,
+		language     => $opt{language},
+		cache        => $self->{realtime_cache},
+		promise      => 'Mojo::Promise',
+		user_agent   => $self->{user_agent}->request_timeout(10)
+	)->then(
 		sub {
-			my ($trainsearch_result) = @_;
-			my $trip_id = $trainsearch_result->{trip_id};
+			my ($hafas) = @_;
+			my @results = $hafas->results;
+
+			if ( not @results ) {
+				return Mojo::Promise->reject(
+					"journeyMatch($opt{train_req}) found no results");
+			}
 			return Travel::Status::DE::HAFAS->new_p(
 				journey => {
-					id => $trip_id,
-
-					# name => $opt{train_no},
+					id => $results[0]->id,
 				},
 				language   => $opt{language},
 				cache      => $self->{realtime_cache},
