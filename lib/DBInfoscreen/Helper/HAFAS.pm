@@ -29,63 +29,6 @@ sub new {
 
 }
 
-sub get_json_p {
-	my ( $self, $cache, $url ) = @_;
-
-	my $promise = Mojo::Promise->new;
-
-	if ( my $content = $cache->thaw($url) ) {
-		return $promise->resolve($content);
-	}
-
-	$self->{log}->debug("get_json_p($url)");
-
-	$self->{user_agent}->request_timeout(5)->get_p( $url => $self->{header} )
-	  ->then(
-		sub {
-			my ($tx) = @_;
-
-			if ( my $err = $tx->error ) {
-				$self->{log}->warn(
-					"hafas->get_json_p($url): HTTP $err->{code} $err->{message}"
-				);
-				$promise->reject(
-					"GET $url returned HTTP $err->{code} $err->{message}");
-				return;
-			}
-			my $body
-			  = encode( 'utf-8', decode( 'ISO-8859-15', $tx->res->body ) );
-
-			$body =~ s{^TSLs[.]sls = }{};
-			$body =~ s{;$}{};
-			$body =~ s{&#x0028;}{(}g;
-			$body =~ s{&#x0029;}{)}g;
-
-			my $json = decode_json($body);
-
-			if ( not $json ) {
-				$self->{log}->debug("hafas->get_json_p($url): empty response");
-				$promise->reject("GET $url returned empty response");
-				return;
-			}
-
-			$cache->freeze( $url, $json );
-
-			$promise->resolve($json);
-			return;
-		}
-	)->catch(
-		sub {
-			my ($err) = @_;
-			$self->{log}->warn("hafas->get_json_p($url): $err");
-			$promise->reject($err);
-			return;
-		}
-	)->wait;
-
-	return $promise;
-}
-
 sub get_route_timestamps_p {
 	my ( $self, %opt ) = @_;
 
