@@ -811,98 +811,37 @@ sub render_train {
 		$opt{language} = 'en';
 	}
 
-	$self->hafas->get_route_timestamps_p(%opt)->then(
+	$self->hafas->get_route_p(%opt)->then(
 		sub {
-			my ( $route_ts, $journey ) = @_;
+			my ( $route, $journey ) = @_;
 
 			$departure->{trip_id}  = $journey->id;
 			$departure->{operator} = $journey->operator;
 
-			if ( my $load = $route_ts->{$station_name}{load} ) {
-				if ( %{$load} ) {
-					$departure->{utilization}
-					  = [ $load->{FIRST}, $load->{SECOND} ];
-				}
-			}
-
-			# If a train number changes on the way, IRIS routes are incomplete,
-			# whereas HAFAS data has all stops -> merge HAFAS stops into IRIS
-			# stops. This is a rare case, one point where it can be observed is
-			# the TGV service at Frankfurt/Karlsruhe/Mannheim.
-			my @hafas_stations = $journey->route;
-			if ( my @iris_stations = @{ $departure->{route_pre_diff} } ) {
-				my @missing_pre;
-				for my $station (@hafas_stations) {
-					if (
-						List::MoreUtils::any {
-							$_->{name} eq $station->loc->name
-						}
-						@iris_stations
-					  )
-					{
-						unshift(
-							@{ $departure->{route_pre_diff} },
-							@missing_pre
-						);
-						last;
-					}
-					push(
-						@missing_pre,
-						{
-							name  => $station->loc->name,
-							hafas => 1
-						}
-					);
-				}
-			}
-			if ( my @iris_stations = @{ $departure->{route_post_diff} } ) {
-				my @missing_post;
-				for my $station ( reverse @hafas_stations ) {
-					if (
-						List::MoreUtils::any {
-							$_->{name} eq $station->loc->name
-						}
-						@iris_stations
-					  )
-					{
-						push(
-							@{ $departure->{route_post_diff} },
-							@missing_post
-						);
-						last;
-					}
-					unshift(
-						@missing_post,
-						{
-							name  => $station->loc->name,
-							hafas => 1
-						}
-					);
-				}
-			}
-
-			if ($route_ts) {
-				if ( $route_ts->{ $result->station }{rt_bogus} ) {
-
-					#$departure->{missing_realtime} = 1;
-				}
-				for my $elem (
-					@{ $departure->{route_pre_diff} },
-					@{ $departure->{route_post_diff} }
-				  )
+			# Use HAFAS route as source of truth; ignore IRIS data
+			$departure->{route_pre_diff}  = [];
+			$departure->{route_post_diff} = $route;
+			my $split;
+			for my $i ( 0 .. $#{ $departure->{route_post_diff} } ) {
+				if ( $departure->{route_post_diff}[$i]{name} eq $station_name )
 				{
-					if ( $elem->{name}
-						=~ m{^Betriebsstelle nicht bekannt (\d+)$} )
-					{
-						my $eva = $1;
-						if ( $route_ts->{$eva} ) {
-							$elem->{name} = $route_ts->{$eva}{name};
+					$split = $i;
+					if ( my $load = $route->[$i]{load} ) {
+						if ( %{$load} ) {
+							$departure->{utilization}
+							  = [ $load->{FIRST}, $load->{SECOND} ];
 						}
 					}
-					for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } )
-					{
-						$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
-					}
+					last;
+				}
+			}
+
+			if ( defined $split ) {
+				for my $i ( 0 .. $split - 1 ) {
+					push(
+						@{ $departure->{route_pre_diff} },
+						shift( @{ $departure->{route_post_diff} } )
+					);
 				}
 			}
 
@@ -1003,6 +942,7 @@ sub render_train {
 	)->wait;
 }
 
+# /z/:train/*station
 sub station_train_details {
 	my ($self)   = @_;
 	my $train_no = $self->stash('train');
@@ -1036,6 +976,7 @@ sub station_train_details {
 
 	$self->render_later;
 
+	# Always performs an IRIS request
 	$self->get_results_p( $station, %opt )->then(
 		sub {
 			my ($status) = @_;
@@ -1117,6 +1058,7 @@ sub station_train_details {
 	)->wait;
 }
 
+# /z/:train
 sub train_details {
 	my ($self) = @_;
 	my $train = $self->stash('train');
@@ -1182,9 +1124,9 @@ sub train_details {
 
 	my $linetype = 'bahn';
 
-	$self->hafas->get_route_timestamps_p(%opt)->then(
+	$self->hafas->get_route_p(%opt)->then(
 		sub {
-			my ( $route_ts, $journey ) = @_;
+			my ( $route, $journey ) = @_;
 
 			$res->{trip_id} = $journey->id;
 
@@ -1221,19 +1163,14 @@ sub train_details {
 			$res->{destination} = $journey->route_end;
 			$res->{operator}    = $journey->operator;
 
-			$res->{route_post_diff}
-			  = [ map { { name => $_->loc->name } } $journey->route ];
-			for my $elem ( @{ $res->{route_post_diff} } ) {
-				for my $key ( keys %{ $route_ts->{ $elem->{name} } // {} } ) {
-					$elem->{$key} = $route_ts->{ $elem->{name} }{$key};
-				}
-			}
+			$res->{route_post_diff} = $route;
 
 			if ( my $req_name = $self->param('highlight') ) {
 				my $split;
 				for my $i ( 0 .. $#{ $res->{route_post_diff} } ) {
 					if ( $res->{route_post_diff}[$i]{name} eq $req_name ) {
 						$split = $i;
+						last;
 					}
 				}
 				if ( defined $split ) {

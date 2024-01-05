@@ -29,7 +29,7 @@ sub new {
 
 }
 
-sub get_route_timestamps_p {
+sub get_route_p {
 	my ( $self, %opt ) = @_;
 
 	my $promise = Mojo::Promise->new;
@@ -88,46 +88,48 @@ sub get_route_timestamps_p {
 		sub {
 			my ($hafas) = @_;
 			my $journey = $hafas->result;
-			my $ret     = {};
-
+			my @ret;
 			my $station_is_past = 1;
 			for my $stop ( $journey->route ) {
-				my $name = $stop->loc->name;
-				$ret->{$name} = $ret->{ $stop->loc->eva } = {
-					name           => $stop->loc->name,
-					eva            => $stop->loc->eva,
-					sched_arr      => $stop->sched_arr,
-					sched_dep      => $stop->sched_dep,
-					rt_arr         => $stop->rt_arr,
-					rt_dep         => $stop->rt_dep,
-					arr_delay      => $stop->arr_delay,
-					dep_delay      => $stop->dep_delay,
-					arr_cancelled  => $stop->arr_cancelled,
-					dep_cancelled  => $stop->dep_cancelled,
-					platform       => $stop->platform,
-					sched_platform => $stop->sched_platform,
-					load           => $stop->load,
-					isCancelled    => (
-						      ( $stop->arr_cancelled or not $stop->sched_arr )
-						  and ( $stop->dep_cancelled or not $stop->sched_dep )
-					),
-				};
+				push(
+					@ret,
+					{
+						name           => $stop->loc->name,
+						eva            => $stop->loc->eva,
+						sched_arr      => $stop->sched_arr,
+						sched_dep      => $stop->sched_dep,
+						rt_arr         => $stop->rt_arr,
+						rt_dep         => $stop->rt_dep,
+						arr_delay      => $stop->arr_delay,
+						dep_delay      => $stop->dep_delay,
+						arr_cancelled  => $stop->arr_cancelled,
+						dep_cancelled  => $stop->dep_cancelled,
+						platform       => $stop->platform,
+						sched_platform => $stop->sched_platform,
+						load           => $stop->load,
+						isAdditional   => $stop->is_additional,
+						isCancelled    => (
+							( $stop->arr_cancelled or not $stop->sched_arr )
+							  and
+							  ( $stop->dep_cancelled or not $stop->sched_dep )
+						),
+					}
+				);
 				if (
 					    $station_is_past
-					and not $ret->{$name}{isCancelled}
+					and not $ret[-1]{isCancelled}
 					and $now->epoch < (
-						$ret->{$name}{rt_arr} // $ret->{$name}{rt_dep}
-						  // $ret->{$name}{sched_arr}
-						  // $ret->{$name}{sched_dep} // $now
+						$ret[-1]{rt_arr} // $ret[-1]{rt_dep}
+						  // $ret[-1]{sched_arr} // $ret[-1]{sched_dep} // $now
 					)->epoch
 				  )
 				{
 					$station_is_past = 0;
 				}
-				$ret->{$name}{isPast} = $station_is_past;
+				$ret[-1]{isPast} = $station_is_past;
 			}
 
-			$promise->resolve( $ret, $journey );
+			$promise->resolve( \@ret, $journey );
 			return;
 		}
 	)->catch(
