@@ -843,6 +843,9 @@ sub render_train {
 						shift( @{ $departure->{route_post_diff} } )
 					);
 				}
+
+				# remove entry for $station_name
+				shift( @{ $departure->{route_post_diff} } );
 			}
 
 			my @him_messages;
