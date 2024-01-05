@@ -72,9 +72,23 @@ sub get_route_p {
 				return Mojo::Promise->reject(
 					"journeyMatch($opt{train_req}) found no results");
 			}
+
+			my $result = $results[0];
+			if ( @results > 1 ) {
+				for my $journey (@results) {
+					if ( $opt{train_origin}
+						and ( $journey->route )[0]->loc->name eq
+						$opt{train_origin} )
+					{
+						$result = $journey;
+						last;
+					}
+				}
+			}
+
 			return Travel::Status::DE::HAFAS->new_p(
 				journey => {
-					id => $results[0]->id,
+					id => $result->id,
 				},
 				language   => $opt{language},
 				cache      => $self->{realtime_cache},
