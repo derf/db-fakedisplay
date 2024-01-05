@@ -460,8 +460,8 @@ sub handle_request {
 
 	if ( $self->param('train') and not $opt{datetime} ) {
 
-       # request results from twenty minutes ago to avoid train details suddenly
-       # becoming unavailable when its scheduled departure is reached.
+		# request results from twenty minutes ago to avoid train details suddenly
+		# becoming unavailable when its scheduled departure is reached.
 		$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' )
 		  ->subtract( minutes => 20 );
 		$opt{lookahead} = $self->config->{lookahead} + 20;
@@ -1174,7 +1174,6 @@ sub train_details {
 			if ( $+{year} ) {
 				$opt{datetime}->set( year => $+{year} );
 			}
-			say "set $opt{datetime}";
 		}
 	}
 
