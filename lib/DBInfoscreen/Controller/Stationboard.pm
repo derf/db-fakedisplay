@@ -1960,7 +1960,13 @@ sub redirect_to_station {
 		}
 	}
 
-	if ( $input =~ m{ ^ [a-zA-Z]{1,5} \s+ \d+ $ }x ) {
+	if ( $input =~ m{ ^ [a-zA-Z]{1,5} \s+ \d+ }x ) {
+		if ( $input =~ s{ \s* @ \s* (?<date> [0-9.]+) $ }{}x ) {
+			$params->param( date => $+{date} );
+		}
+		elsif ( $input =~ s{ \s* [(] \s* (?<date> [0-9.]+) \s* [)] $ }{}x ) {
+			$params->param( date => $+{date} );
+		}
 		$params = $params->to_string;
 		$self->redirect_to("/z/${input}?${params}");
 	}
