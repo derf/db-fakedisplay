@@ -58,6 +58,7 @@ sub get_route_timestamps_p {
 
 	$hafas_promise //= Travel::Status::DE::HAFAS->new_p(
 		journeyMatch => $opt{train_req} =~ s{^- }{}r,
+		datetime     => ( $opt{train} ? $opt{train}->start : undef ),
 		language     => $opt{language},
 		cache        => $self->{realtime_cache},
 		promise      => 'Mojo::Promise',
