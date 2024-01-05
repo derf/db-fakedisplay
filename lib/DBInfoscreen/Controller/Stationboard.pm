@@ -1161,6 +1161,23 @@ sub train_details {
 		$opt{language} = 'en';
 	}
 
+	if ( my $date = $self->param('date') ) {
+		if ( $date
+			=~ m{ ^ (?<day> \d{1,2} ) [.] (?<month> \d{1,2} ) [.] (?<year> \d{4})? $ }x
+		  )
+		{
+			$opt{datetime} = DateTime->now( time_zone => 'Europe/Berlin' );
+			$opt{datetime}->set(
+				day   => $+{day},
+				month => $+{month}
+			);
+			if ( $+{year} ) {
+				$opt{datetime}->set( year => $+{year} );
+			}
+			say "set $opt{datetime}";
+		}
+	}
+
 	$self->stash( hide_opts => 1 );
 	$self->render_later;
 
