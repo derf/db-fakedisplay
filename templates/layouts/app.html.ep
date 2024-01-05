@@ -241,6 +241,12 @@
           in full-screen browser setups. The App frontend works best for
           small screens, whereas the legacy Infoscreen mode is better suited
           for large displays.</li>
+        <li>The departure board supports names, EVA IDs, and (in IRIS mode)
+          DS100/Ril100 codes as station identifiers.</li>
+        <li>Requests for train details can optionally be suffixed with the
+          DD.MM.[YYYY] date of the requested trip, e.g. "ICE 921 (1.1.)" or
+          "ICE 921 @ 1.1.". The date refers to the scheduled departure at the
+          train's origin station.</li>
         <li>A JSON IRIS API is avaliable via
           <span style="font-family: monospace;">mode=json&amp;version=3</span>
           (or just <span style="font-family: monospace;">https://dbf.finalrewind.org/Station.json?version=3</span>).
@@ -261,6 +267,12 @@
           Für eine kleine Ansicht (z.B. iframe in einer normalen Website)
           empfiehlt sich das "App"-Frontend. Für eine große Ansicht
           (z.B. als alleinstehender Infoscreen) gibt es den "Infoscreen"-Modus.</li>
+        <li>Die Abfahrtstafel unterstützt Namen, EVA-IDs, und (im IRIS-Backend)
+          DS100/Ril100-Codes zur Identifikation von Stationen.</li>
+        <li>Zugdetails können optional für spezifische Abfahrtsdaten im
+          DD.MM.[YYYY]-Format abgefragt werden, z.B. "ICE 921 (1.1.)" oder
+          "ICE 921 @ 1.1.". Das Datum bezieht sich auf die geplante
+          Abfahrtszeit am Startbahnhof der Zugfahrt.</li>
         <li>Die Parameter <span style="font-family: monospace;">mode=json&amp;version=3</span>
           (alternativ <span style="font-family:
           monospace;">https://dbf.finalrewind.org/Bahnhofsname.json?version=3</span>)
