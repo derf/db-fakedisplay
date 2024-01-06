@@ -817,6 +817,7 @@ sub render_train {
 
 			$departure->{trip_id}  = $journey->id;
 			$departure->{operator} = $journey->operator;
+			$departure->{date}     = $route->[0]{sched_dep} // $route->[0]{dep};
 
 			# Use HAFAS route as source of truth; ignore IRIS data
 			$departure->{route_pre_diff}  = [];
@@ -1132,6 +1133,7 @@ sub train_details {
 			my ( $route, $journey ) = @_;
 
 			$res->{trip_id} = $journey->id;
+			$res->{date}    = $route->[0]{sched_dep} // $route->[0]{dep};
 
 			if ( not $res->{train_type} ) {
 				my $train_type = $res->{train_type} = $journey->type   // q{};
