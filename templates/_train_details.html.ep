@@ -204,9 +204,13 @@
 %   }
 %   if ($departure->{route_pre_diff} and $departure->{route_post_diff}) {
 %=    l 'Fahrtverlauf am'
-      <a href="<%= url_for('train', train => stash('train'))->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas'), date => $departure->{date}->clone->subtract(days => 1)->strftime('%d.%m.%Y'), highlight => param('highlight') // stash('station')}) %>">◀</a>
+%     if (stash('train') !~ m{[|]}) {
+        <a href="<%= url_for('train', train => stash('train'))->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas'), date => $departure->{date}->clone->subtract(days => 1)->strftime('%d.%m.%Y'), highlight => param('highlight') // stash('station')}) %>">◀</a>
+%     }
 %=    $departure->{date}->strftime('%d.%m.%Y')
+%     if (stash('train') !~ m{[|]}) {
       <a href="<%= url_for('train', train => stash('train'))->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas'), date => $departure->{date}->clone->add(days => 1)->strftime('%d.%m.%Y'), highlight => param('highlight') // stash('station')}) %>">▶</a>
+%     }
       <ul class="mroute">
 %       for my $stop (@{$departure->{route_pre_diff}}) {
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
