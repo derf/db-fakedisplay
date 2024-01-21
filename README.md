@@ -1,10 +1,9 @@
 db-infoscreen - App/Infoscreen for Railway Departures in Germany
 ---
 
-[db-infoscreen homepage](https://finalrewind.org/projects/db-fakedisplay/)
-
-db-infoscreen (formerly db-fakedisplay) shows departures at german train
-stations, serving both as infoscreen / webapp and station board look-alike.
+[db-infoscreen](https://finalrewind.org/projects/db-fakedisplay/) (formerly
+db-fakedisplay) shows departures at german train stations, serving both as
+infoscreen / webapp and station board look-alike.
 
 It aims to aggregate departure and train data from different sources and
 combine them in a useful (and user-friendly) manner. It is intended both for a
@@ -171,3 +170,12 @@ The easiest way of making changes available is by maintaining a public fork of
 the Git repository. A tarball is also acceptable. Please change `source_url` in
 `lib/DBInfoscreen.pm` to point to your Git repository / source archive if you
 are using a version with custom changes.
+
+Resources
+---
+
+Mirrors of the db-infoscreen repository are available at
+
+* [Chaosdorf](https://chaosdorf.de/git/derf/db-infoscreen)
+* [git.finalrewind.org](https://git.finalrewind.org/db-fakedisplay/)
+* [GitHub](https://github.com/derf/db-fakedisplay)
