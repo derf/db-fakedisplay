@@ -978,6 +978,16 @@ sub station_train_details {
 		$opt{lookahead} = $self->config->{lookahead} + 20;
 	}
 
+	# Berlin Hbf exists twice:
+	# - BLS / 8011160
+	# - BL / 8098160 (formerly "Berlin Hbf (tief)")
+	# Right now DBF assumes that station name -> EVA / DS100 is a unique map.
+	# This is not the case. Work around it here until dbf has been adjusted
+	# properly.
+	if ( $station eq 'Berlin Hbf' ) {
+		$opt{with_related} = 1;
+	}
+
 	$self->render_later;
 
 	# Always performs an IRIS request
