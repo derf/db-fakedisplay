@@ -126,12 +126,12 @@ DISTRIBUTIONS
       ExtUtils::CBuilder 0
       ExtUtils::MakeMaker 6.52
       perl 5.006
-  B-Hooks-EndOfScope-0.26
-    pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.26.tar.gz
+  B-Hooks-EndOfScope-0.28
+    pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.28.tar.gz
     provides:
-      B::Hooks::EndOfScope 0.26
-      B::Hooks::EndOfScope::PP 0.26
-      B::Hooks::EndOfScope::XS 0.26
+      B::Hooks::EndOfScope 0.28
+      B::Hooks::EndOfScope::PP 0.28
+      B::Hooks::EndOfScope::XS 0.28
     requirements:
       ExtUtils::MakeMaker 0
       Hash::Util::FieldHash 0
@@ -1832,12 +1832,12 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.08
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.08.tar.gz
+  Travel-Status-DE-DBWagenreihung-0.09
+    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.09.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.08
-      Travel::Status::DE::DBWagenreihung::Section 0.08
-      Travel::Status::DE::DBWagenreihung::Wagon 0.08
+      Travel::Status::DE::DBWagenreihung 0.09
+      Travel::Status::DE::DBWagenreihung::Section 0.09
+      Travel::Status::DE::DBWagenreihung::Wagon 0.09
     requirements:
       Carp 0
       Class::Accessor 0
