@@ -123,7 +123,7 @@
 %       }
 %     }
 %     if ($departure->{wr_link}) {
-        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= l 'Wagen' %>
+        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
 %     }
 %     elsif ($icetype and $icetype->[2] and ($linetype eq 'fern' or $departure->{train_type} =~ m{NJ})) {

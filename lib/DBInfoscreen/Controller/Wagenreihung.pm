@@ -16,8 +16,6 @@ use Travel::Status::DE::DBWagenreihung::Wagon;
 sub get_zugbildung_db {
 	my ( $self, $train_no ) = @_;
 
-	say $train_no;
-
 	my $details = $self->app->train_details_db->{$train_no};
 
 	if ( not $details ) {

@@ -16,6 +16,7 @@ use List::MoreUtils qw();
 use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
+use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
@@ -714,7 +715,16 @@ sub render_train {
 		$self->wagonorder->get_p( $result->train_no, $departure->{wr_link} )
 		  ->then(
 			sub {
-				# great!
+				my ($wr_json) = @_;
+				eval {
+					my $wr
+					  = Travel::Status::DE::DBWagenreihung->new(
+						from_json => $wr_json );
+					$departure->{wr_text} = join( q{ + },
+						map { $_->{short} }
+						grep { $_->{short} } $wr->train_descriptions );
+				};
+				$departure->{wr_text} ||= 'Wagen';
 				return;
 			},
 			sub {
