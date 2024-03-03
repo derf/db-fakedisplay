@@ -711,7 +711,7 @@ sub render_train {
 	  = ( $wagonorder_req, $occupancy_req, $stationinfo_req, $route_req );
 
 	if ( $departure->{wr_link} ) {
-		$self->wagonorder->is_available_p( $result, $departure->{wr_link} )
+		$self->wagonorder->get_p( $result->train_no, $departure->{wr_link} )
 		  ->then(
 			sub {
 				# great!
