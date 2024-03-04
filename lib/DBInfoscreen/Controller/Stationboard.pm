@@ -720,6 +720,7 @@ sub render_train {
 					my $wr
 					  = Travel::Status::DE::DBWagenreihung->new(
 						from_json => $wr_json );
+					$departure->{wr}      = $wr;
 					$departure->{wr_text} = join( q{ + },
 						map { $_->{short} }
 						grep { $_->{short} } $wr->train_descriptions );

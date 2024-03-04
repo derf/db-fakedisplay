@@ -523,10 +523,21 @@ div.app {
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
-			margin-bottom: 1em;
+			margin-bottom: 0.5em;
 
 			> div {
 				width: 33%;
+			}
+		}
+
+		.wagonorder-preview {
+			font-size: 110%;
+			width: 100%;
+			text-align: center;
+			margin-bottom: 1em;
+
+			a {
+				color: $fg;
 			}
 		}
 

@@ -113,6 +113,27 @@
     </div>
     </div>
     </div> <!-- dataline -->
+%   if (my $wr = $departure->{wr}) {
+      <div class="wagonorder-preview">
+%     my @wagons = $wr->wagons;
+%     my $direction = $wr->direction == 100 ? '→' : '←';
+%     if ($departure->{direction}) {
+%       $direction = $departure->{direction} eq 'l' ? '◀' : '▶';
+%       if (($departure->{direction} eq 'l' ? 0 : 100) != $wr->direction) {
+%         @wagons = reverse @wagons;
+%       }
+%     }
+      <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>">
+      %= $direction
+%     for my $wagon (@wagons) {
+%       if (not ($wagon->is_locomotive or $wagon->is_powercar)) {
+%=        $wagon->number || ($wagon->type =~ m{AB} ? '½' : $wagon->type =~ m{A} ? '1.' : $wagon->type =~ m{B} ? '2.' : '?' )
+%       }
+%     }
+      %= $direction
+      </a>
+      </div>
+%   }
     <div class="verbose">
 %     if ($departure->{trip_id}) {
 %       if (stash('station_name')) {
