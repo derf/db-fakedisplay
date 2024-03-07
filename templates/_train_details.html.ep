@@ -125,10 +125,15 @@
 %     }
       <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>">
       %= $direction
+%     my $gi;
 %     for my $wagon (@wagons) {
 %       if (not ($wagon->is_locomotive or $wagon->is_powercar)) {
+%         if (defined $gi and $gi != $wagon->group_index) {
+            •
+%         }
 %=        $wagon->number || ($wagon->type =~ m{AB} ? '½' : $wagon->type =~ m{A} ? '1.' : $wagon->type =~ m{B} ? '2.' : '?' )
 %       }
+%       $gi = $wagon->group_index;
 %     }
       %= $direction
       </a>
