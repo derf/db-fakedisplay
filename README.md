@@ -95,7 +95,6 @@ In hypnotoad mode (recommended), db-infoscreen respects the following environmen
 | :------- | :------ | :---------- |
 | DBFAKEDISPLAY\_LISTEN | `http://*:8092` | IP and Port for web service |
 | DBFAKEDISPLAY\_STATS | _None_ | File in which the total count of backend API requests (excluding those answered from cache) is written |
-| DBFAKEDISPLAY\_HAFAS\_API | `https://v5.db.transport.rest` | hafas-rest-api endpoint |
 | DBFAKEDISPLAY\_IRIS\_CACHE | `/tmp/dbf-iris-mian` | Directory for IRIS schedule cache |
 | DBFAKEDISPLAY\_IRISRT\_CACHE | `/tmp/dbf-iris-realtime` | Directory for IRIS realtime cache |
 | DBFAKEDISPLAY\_WORKERS | 2 | Number of worker processes (i.e., maximum amount of concurrent requests) |
