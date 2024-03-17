@@ -36,8 +36,14 @@ sub handle_no_results {
 
 	if ($hafas) {
 		$self->render_later;
+		my $service = 'DB';
+		if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) )
+		{
+			$service = $hafas;
+		}
 		Travel::Status::DE::HAFAS->new_p(
 			locationSearch => $station,
+			service        => $service,
 			promise        => 'Mojo::Promise',
 			user_agent     => $self->ua,
 		)->then(
@@ -324,7 +330,14 @@ sub get_results_p {
 	my $data;
 
 	if ( $opt{hafas} ) {
+		my $service = 'DB';
+		if ( $opt{hafas} ne '1'
+			and Travel::Status::DE::HAFAS::get_service( $opt{hafas} ) )
+		{
+			$service = $opt{hafas};
+		}
 		return Travel::Status::DE::HAFAS->new_p(
+			service     => $service,
 			station     => $station,
 			arrivals    => $opt{arrivals},
 			cache       => $opt{cache_iris_rt},
@@ -385,7 +398,7 @@ sub handle_request {
 	my $station = $self->stash('station');
 
 	my $template     = $self->param('mode') // 'app';
-	my $hafas        = !!$self->param('hafas');
+	my $hafas        = $self->param('hafas');
 	my $with_related = !$self->param('no_related');
 	my %opt          = (
 		cache_iris_main => $self->app->cache_iris_main,
