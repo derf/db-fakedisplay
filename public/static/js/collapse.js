@@ -107,21 +107,22 @@ function dbf_reg_handlers() {
 	$('div.app > ul > li').click(function(event) {
 		const trainElem = $(this);
 		const station = $('div.app').data('station');
+		const param = new URLSearchParams(window.location.search);
 		event.preventDefault();
 		var suffix = '?';
-		if (window.location.href.includes('detailed=1')) {
+		if (param.get('detailed')) {
 			suffix += '&detailed=1';
 		}
-		if (window.location.href.includes('hafas=1')) {
-			suffix += '&hafas=1&highlight=' + trainElem.data('station');
+		if (param.get('hafas')) {
+			suffix += '&hafas=' + param.get('hafas') + '&highlight=' + trainElem.data('station');
 		}
-		if (window.location.href.includes('past=1')) {
+		if (param.get('past')) {
 			suffix += '&past=1';
 		}
-		if (window.location.href.includes('rt=1') || window.location.href.includes('show_realtime=1')) {
+		if (param.get('rt') || param.get('show_realtime')) {
 			suffix += '&rt=1';
 		}
-		if (window.location.href.includes('hafas=1')) {
+		if (param.get('hafas')) {
 			history.pushState({'page':'traindetail','jid':trainElem.data('jid')}, 'test', '/z/' + trainElem.data('jid') + suffix);
 		} else {
 			history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
