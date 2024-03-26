@@ -39,6 +39,7 @@ sub get_route_p {
 
 	if ( $opt{trip_id} ) {
 		$hafas_promise = Travel::Status::DE::HAFAS->new_p(
+			service => $opt{service},
 			journey => {
 				id => $opt{trip_id},
 			},

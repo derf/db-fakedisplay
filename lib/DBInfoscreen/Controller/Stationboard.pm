@@ -1101,7 +1101,8 @@ sub station_train_details {
 # /z/:train
 sub train_details {
 	my ($self) = @_;
-	my $train = $self->stash('train');
+	my $train  = $self->stash('train');
+	my $hafas  = $self->param('hafas');
 
 	# TODO error handling
 
@@ -1137,6 +1138,11 @@ sub train_details {
 		$self->stash( title => "${train_type} ${train_no}" );
 		$opt{train_type} = $train_type;
 		$opt{train_no}   = $train_no;
+	}
+
+	my $service = 'DB';
+	if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) ) {
+		$opt{service} = $hafas;
 	}
 
 	if ( $self->languages =~ m{^en} ) {
