@@ -31,7 +31,7 @@
 %   }
     <li
 % if (param('hafas')) {
-      data-jid="<%= $departure->{journey_id} %>"
+      data-jid="<%= $departure->{journey_id} =~ s{#}{%23}gr %>"
 % }
       data-train="<%= ($departure->{train_type} // q{}) %> <%= ($departure->{train_no} // $departure->{train} // q{}) %>"
       data-line="<%= $departure->{train_type} %> <%= $departure->{train_line} // $departure->{train_no} %>"
