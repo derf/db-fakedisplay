@@ -139,10 +139,10 @@
     <div class="verbose">
 %     if ($departure->{trip_id}) {
 %       if (stash('station_name')) {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>?from=<%= stash('station_name') %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>?from=<%= stash('station_name') %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
 %       }
 %       else {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} %>/<%= $departure->{train_line} // 0 %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
 %       }
 %     }
 %     if ($departure->{wr_link}) {

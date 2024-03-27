@@ -1,6 +1,6 @@
 <div class="container" id="infobox" style="margin-top: 1ex; margin-bottom: 1ex;">
 <div class="journey" id="jdata"
-data-req="<%= stash('ajax_req') %>"
+data-req="<%= stash('ajax_req') =~ s{#}{%23}gr %>"
 data-route="<%= stash('ajax_route') %>"
 data-poly="<%= stash('ajax_polyline') %>"
 >

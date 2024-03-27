@@ -68,7 +68,8 @@ function dbf_anim_fine() {
 }
 
 function dbf_map_reload() {
-	$.get('/_ajax_mapinfo/' + j_reqid, function(data) {
+	const param = new URLSearchParams(window.location.search);
+	$.get('/_ajax_mapinfo/' + j_reqid + '?hafas=' + param.get('hafas'), function(data) {
 		$('#infobox').html(data);
 		dbf_map_parse();
 		setTimeout(dbf_map_reload, 61000);

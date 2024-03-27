@@ -161,11 +161,15 @@ sub get_route_p {
 # Input: (HAFAS TripID, line number)
 # Output: Promise returning a Travel::Status::DE::HAFAS::Journey instance on success
 sub get_polyline_p {
-	my ( $self, $trip_id, $line ) = @_;
+	my ( $self, %opt ) = @_;
 
+	my $trip_id = $opt{id};
+	my $line    = $opt{line};
+	my $service = $opt{service};
 	my $promise = Mojo::Promise->new;
 
 	Travel::Status::DE::HAFAS->new_p(
+		service => $service,
 		journey => {
 			id   => $trip_id,
 			name => $line,

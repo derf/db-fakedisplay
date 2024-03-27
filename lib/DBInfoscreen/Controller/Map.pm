@@ -314,13 +314,26 @@ sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
 	my $line_no = $self->stash('lineno');
+	my $hafas   = $self->param('hafas');
 
 	my $from_name = $self->param('from');
 	my $to_name   = $self->param('to');
 
 	$self->render_later;
 
-	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
+	my $service = 'DB';
+	if (    $hafas
+		and $hafas ne '1'
+		and Travel::Status::DE::HAFAS::get_service($hafas) )
+	{
+		$service = $hafas;
+	}
+
+	$self->hafas->get_polyline_p(
+		id      => $trip_id,
+		line    => $line_no,
+		service => $service
+	)->then(
 		sub {
 			my ($journey) = @_;
 
@@ -458,12 +471,25 @@ sub ajax_route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
 	my $line_no = $self->stash('lineno');
+	my $hafas   = $self->param('hafas');
 
 	delete $self->stash->{layout};
 
 	$self->render_later;
 
-	$self->hafas->get_polyline_p( $trip_id, $line_no )->then(
+	my $service = 'DB';
+	if (    $hafas
+		and $hafas ne '1'
+		and Travel::Status::DE::HAFAS::get_service($hafas) )
+	{
+		$service = $hafas;
+	}
+
+	$self->hafas->get_polyline_p(
+		id      => $trip_id,
+		line    => $line_no,
+		service => $service
+	)->then(
 		sub {
 			my ($journey) = @_;
 
