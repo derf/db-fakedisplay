@@ -1739,6 +1739,11 @@ sub handle_result {
 		my $params = $self->req->params->clone;
 		$params->param( hafas => not $params->param('hafas') );
 		if ( $params->param('hafas') ) {
+			if (    $data->{station_eva} >= 8100000
+				and $data->{station_eva} < 8200000 )
+			{
+				$params->param( hafas => 'ÖBB' );
+			}
 			$api_link = '/' . $data->{station_eva} . '?' . $params->to_string;
 			$api_text = 'Auf Nahverkehr wechseln';
 			$api_icon = 'train';
