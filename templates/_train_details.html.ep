@@ -2,9 +2,6 @@
     <div>
 %   if ($departure->{train_no} or $departure->{train_line}) {
       <span class="train-line <%= $linetype %>"><%= $departure->{train_type} %>
-%     if ($linetype eq 'fern' and $icetype and $icetype->[1]) {
-        <span class="trainsubtype" aria-hidden="true"><%= $icetype->[1] %></span>
-%     }
 
       <%= $departure->{train_line} // $departure->{train_no} %></span>
       <span class="train-no"><%= $departure->{train_line} ? $departure->{train_no} : q{} %></span>
@@ -151,12 +148,6 @@
 %     if ($departure->{wr_link}) {
         <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
-%     }
-%     elsif ($icetype and $icetype->[2] and ($linetype eq 'fern' or $departure->{train_type} =~ m{NJ})) {
-        <a class="smallbutton" href="/wr/<%= $departure->{train_no} %>"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></a>
-%     }
-%     elsif ($icetype and $icetype->[1] and $linetype eq 'fern') {
-        <span class="disabledbutton"><i class="material-icons" aria-hidden="true">train</i> Plan: <%= $icetype->[0] %></span>
 %     }
 %     if ($departure->{train_type} and $departure->{train_no}) {
         <a class="smallbutton" href="https://bahn.expert/details/<%= $departure->{train_type} %>%20<%= $departure->{train_no} %>/<%= ($departure->{date} // DateTime->now(time_zone => 'Europe/Berlin'))->iso8601 %>?evaNumberAlongRoute=<%= $departure->{eva} %>"><img src="/static/icons/bahn-expert.svg">Details</a>
@@ -350,72 +341,5 @@
 %       }
         </ul>
       </div>
-%   }
-%   if ($details->{attributes}) {
-%     if (@{$details->{attributes}} > 1) {
-        <div class="db-attr">
-          Attribute:
-          <ul>
-%           for my $attr (@{$details->{attributes}}) {
-              <li><%= include '_train_attr', attr => $attr, with_station => 1 %></li>
-%           }
-          </ul>
-        </div>
-%     }
-%     else {
-        <div class="db-attr">
-%=        include '_train_attr', attr => $details->{attributes}[0], with_station => 0
-        </div>
-%     }
-%   }
-%   if ($details and not $departure->{arrival}) {
-%     if (my $s = $details->{route}{preStart}) {
-        Zug wird voraussichtlich aus <%= $s %> eingesetzt.<br/><br/>
-%     }
-%     if (@{$departure->{cycle_from} // []}) {
-        Bildung möglicherweise aus
-        <ul>
-%         for my $t (@{$departure->{cycle_from}}) {
-%           my ($train_no, $train) = @{$t};
-%           my $tt = $train->{type} // $train->{rawType} // 'Zug';
-%           $tt =~ s{ .*|[0-9]}{};
-%           if ($tt ne 'Zug') {
-            <li><a href="<%= url_for('train', train => "$tt $train_no")->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>"><%= $tt %> <%= $train_no %></a>
-%           }
-%           else {
-            <li><%= $tt %> <%= $train_no %>
-%           }
-%             if ($train->{route}{start} and $train->{route}{end}) {
-                <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
-%             }
-            </li>
-%         }
-        </ul>
-%     }
-%   }
-%   if ($details and not $departure->{departure}) {
-%     if (my $e = $details->{route}{postEnd}) {
-        Zug wird voraussichtlich in <%= $e %> abgestellt.<br/><br/>
-%     }
-%     if (@{$departure->{cycle_to} // []}) {
-        Weiterfahrt möglicherweise als
-        <ul>
-%         for my $t (@{$departure->{cycle_to}}) {
-%           my ($train_no, $train) = @{$t};
-%           my $tt = $train->{type} // $train->{rawType} // 'Zug';
-%           $tt =~ s{ .*|[0-9]}{};
-%           if ($tt ne 'Zug') {
-            <li><a href="<%= url_for('train', train => "$tt $train_no")->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>"><%= $tt %> <%= $train_no %></a>
-%           }
-%           else {
-            <li><%= $tt %> <%= $train_no %>
-%           }
-%             if ($train->{route}{start} and $train->{route}{end}) {
-                <%= $train->{route}{start} %> → <%= $train->{route}{end} %>
-%             }
-            </li>
-%         }
-        </ul>
-%     }
 %   }
     </div> <!-- mfooter -->

@@ -103,36 +103,6 @@ sub startup {
 	);
 
 	$self->attr(
-		ice_type_map => sub {
-			if ( -r 'share/zugbildungsplan.json' ) {
-				my $ice_type_map = JSON->new->utf8->decode(
-					scalar read_file('share/zugbildungsplan.json') );
-				my $ret = {};
-				while ( my ( $k, $v ) = each %{ $ice_type_map->{train} } ) {
-					if ( $v->{type} ) {
-						$ret->{$k} = [
-							$v->{type}, $v->{shortType},
-							exists $v->{wagons} ? 1 : 0
-						];
-					}
-				}
-				return $ret;
-			}
-			return {};
-		}
-	);
-
-	$self->attr(
-		train_details_db => sub {
-			if ( -r 'share/zugbildungsplan.json' ) {
-				return JSON->new->utf8->decode(
-					scalar read_file('share/zugbildungsplan.json') )->{train};
-			}
-			return {};
-		}
-	);
-
-	$self->attr(
 		dbdb_wagon => sub {
 			return JSON->new->utf8->decode(
 				scalar read_file('share/dbdb_wagen.json') );
@@ -323,7 +293,6 @@ sub startup {
 	$r->get('/dyn/:av/autocomplete.js')->to('stationboard#autocomplete');
 
 	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
-	$r->get('/wr/:train')->to('wagenreihung#zugbildung_db');
 	$r->get('/w/*wagon')->to('wagenreihung#wagen');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');

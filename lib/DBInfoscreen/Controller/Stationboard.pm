@@ -915,30 +915,6 @@ sub render_train {
 		}
 	)->wait;
 
-	$departure->{composition}
-	  = $self->app->train_details_db->{ $departure->{train_no} };
-	if (    not $departure->{arrival}
-		and $departure->{composition}{prepTime}
-		and $departure->{composition}{prepAt} eq $station_name )
-	{
-		$departure->{prep_time}      = $departure->{composition}{prepTime};
-		$departure->{arrival_hidden} = 1;
-	}
-	if ( $self->param('detailed') ) {
-		my @cycle_from;
-		my @cycle_to;
-		for my $pred ( @{ $departure->{composition}{predecessors} // [] } ) {
-			push( @cycle_from, $pred->[1] );
-		}
-		for my $succ ( @{ $departure->{composition}{successors} // [] } ) {
-			push( @cycle_to, $succ->[1] );
-		}
-		$departure->{cycle_from}
-		  = [ map { [ $_, $self->app->train_details_db->{$_} ] } @cycle_from ];
-		$departure->{cycle_to}
-		  = [ map { [ $_, $self->app->train_details_db->{$_} ] } @cycle_to ];
-	}
-
 	# Defer rendering until all requests have completed
 	Mojo::Promise->all(@requests)->then(
 		sub {
@@ -952,12 +928,8 @@ sub render_train {
 					$departure->{origin}      // q{},
 					$departure->{destination} // 'unbekannt'
 				),
-				departure => $departure,
-				linetype  => $linetype,
-				icetype => $self->app->ice_type_map->{ $departure->{train_no} },
-				details => $self->param('detailed')
-				? $departure->{composition} // {}
-				: {},
+				departure    => $departure,
+				linetype     => $linetype,
 				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
 				station_name => $station_name,
 				nav_link     =>
@@ -1290,25 +1262,6 @@ sub train_details {
 				$res->{details} = [@him_details];
 			}
 
-			if ( $self->param('detailed') ) {
-				$res->{composition}
-				  = $self->app->train_details_db->{ $res->{train_no} };
-				my @cycle_from;
-				my @cycle_to;
-				for my $pred ( @{ $res->{composition}{predecessors} // [] } ) {
-					push( @cycle_from, $pred->[1] );
-				}
-				for my $succ ( @{ $res->{composition}{successors} // [] } ) {
-					push( @cycle_to, $succ->[1] );
-				}
-				$res->{cycle_from}
-				  = [ map { [ $_, $self->app->train_details_db->{$_} ] }
-					  @cycle_from ];
-				$res->{cycle_to}
-				  = [ map { [ $_, $self->app->train_details_db->{$_} ] }
-					  @cycle_to ];
-			}
-
 			$self->render(
 				$self->param('ajax') ? '_train_details' : 'train_details',
 				description => sprintf(
@@ -1321,8 +1274,6 @@ sub train_details {
 				),
 				departure => $res,
 				linetype  => $linetype,
-				icetype   => $self->app->ice_type_map->{ $res->{train_no} },
-				details   => {},    #$departure->{composition} // {},
 				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
 			);
 		}
@@ -1809,7 +1760,6 @@ sub handle_result {
 			api_text         => $api_text,
 			api_icon         => $api_icon,
 			departures       => \@departures,
-			ice_type         => $self->app->ice_type_map,
 			station          => $station_name,
 			version          => $self->config->{version},
 			title            => $via ? "$station_name → $via" : $station_name,

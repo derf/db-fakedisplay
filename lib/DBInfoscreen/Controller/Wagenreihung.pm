@@ -13,124 +13,18 @@ use utf8;
 use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::DBWagenreihung::Wagon;
 
-sub get_zugbildung_db {
-	my ( $self, $train_no ) = @_;
-
-	my $details = $self->app->train_details_db->{$train_no};
-
-	if ( not $details ) {
-		return;
-	}
-
-	my @wagons;
-
-	for my $wagon ( @{ $details->{wagons} } ) {
-		my $wagon_type   = $wagon->{type};
-		my $wagon_number = $wagon->{number};
-		my %wagon        = (
-			fahrzeugnummer      => "",
-			fahrzeugtyp         => $wagon_type,
-			kategorie           => $wagon_type =~ m{^[0-9.]+$} ? 'LOK' : '',
-			train_no            => $train_no,
-			wagenordnungsnummer => $wagon_number,
-			positionamhalt      => {
-				startprozent => 0,
-				endeprozent  => 0,
-				startmeter   => 0,
-				endemeter    => 0,
-			}
-		);
-		my $wagon = Travel::Status::DE::DBWagenreihung::Wagon->new(%wagon);
-
-		if ( $details->{type} ) {
-			$wagon->set_traintype( $details->{type} );
-		}
-		push( @wagons, $wagon );
-	}
-
-	my $pos = 0;
-	for my $wagon (@wagons) {
-		$wagon->{position}{start_percent} = $pos;
-		$wagon->{position}{end_percent}   = $pos + 5;
-		$pos += 5;
-	}
-
-	my $train_type = $details->{rawType};
-	$train_type =~ s{ - .* }{}x;
-
-	my $route_start = $details->{route}{start} // $details->{route}{preStart};
-	my $route_end   = $details->{route}{end}   // $details->{route}{postEnd};
-	my $route       = "${route_start} → ${route_end}";
-
-	return {
-		route      => $route,
-		train_type => $train_type,
-		wagons     => [@wagons]
-	};
-}
-
-sub zugbildung_db {
-	my ($self) = @_;
-
-	my $train_no = $self->param('train');
-
-	my $details = $self->get_zugbildung_db($train_no);
-
-	if ( not $details ) {
-		$self->render( 'not_found',
-			message => "Keine Daten zu Zug ${train_no} bekannt" );
-		return;
-	}
-
-	$self->render(
-		'zugbildung_db',
-		description => sprintf(
-			'Soll-Wagenreihung %s %s',
-			$details->{train_type} // 'Zug', $train_no
-		),
-		wr_error  => undef,
-		title     => $details->{train_type} . ' ' . $train_no,
-		route     => $details->{route},
-		zb        => $details,
-		train_no  => $train_no,
-		wagons    => $details->{wagons},
-		hide_opts => 1,
-	);
-}
-
 sub handle_wagenreihung_error {
 	my ( $self, $train_no, $err ) = @_;
 
-	my $details = $self->get_zugbildung_db($train_no);
-	if ( $details and @{ $details->{wagons} } ) {
-		my $wr_error
-		  = "${err}. Ersatzweise werden die Solldaten laut Fahrplan angezeigt.";
-		$self->render(
-			'zugbildung_db',
-			description => sprintf(
-				'Soll-Wagenreihung %s %s',
-				$details->{train_type} // 'Zug', $train_no
-			),
-			wr_error  => $wr_error,
-			title     => $details->{train_type} . ' ' . $train_no,
-			route     => $details->{route},
-			zb        => $details,
-			train_no  => $train_no,
-			wagons    => $details->{wagons},
-			hide_opts => 1,
-		);
-	}
-	else {
-		$self->render(
-			'wagenreihung',
-			title     => "Zug $train_no",
-			wr_error  => $err,
-			train_no  => $train_no,
-			wr        => undef,
-			wref      => undef,
-			hide_opts => 1,
-		);
-	}
+	$self->render(
+		'wagenreihung',
+		title     => "Zug $train_no",
+		wr_error  => $err,
+		train_no  => $train_no,
+		wr        => undef,
+		wref      => undef,
+		hide_opts => 1,
+	);
 }
 
 sub wagenreihung {
