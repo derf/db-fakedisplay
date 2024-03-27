@@ -117,6 +117,7 @@ Bitte eine Station aus der Liste auswählen</div>
 
 
 %= form_for _redirect => begin
+%= hidden_field hafas => param('hafas')
 <div>
   <div class="field">
     <div class="desc">Zug / Station</div>
