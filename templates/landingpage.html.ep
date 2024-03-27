@@ -1,6 +1,6 @@
 % if (stash 'show_intro') {
 <div class="container">
-% if (languages() =~ m{^en}) {
+% if (0) {
   <p>
     DBF is an unofficial departure monitor for regional and long-distance trains within Germany, aiming to combine multiple data sources in a useful manner.
     It also has limited support for local transit and traffic outside of Germany.
@@ -21,10 +21,10 @@
   </p>
 % }
 <p class="geolink">
-<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>"><%= l 'Stationen in der Umgebung suchen' %></a>
+<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
 </p>
 <p>
-%= l 'Oder hier angeben:'
+Oder hier angeben:
 </p>
 </div>
 % }

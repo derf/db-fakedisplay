@@ -102,8 +102,8 @@
 </div>
 % }
 % elsif (stash('stationlist')) {
-<div class="error"><strong><%= l 'Mehrdeutige Eingabe' %>.</strong>
-<%= l 'Bitte eine Station aus der Liste auswählen' %></div>
+<div class="error"><strong>Mehrdeutige Eingabe.</strong>
+Bitte eine Station aus der Liste auswählen</div>
 % }
 </div>
 
@@ -119,35 +119,35 @@
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc"><%= l 'Zug / Station' %></div>
+    <div class="desc">Zug / Station</div>
     <div>
 % if (stash('stationlist')) {
       %= select_field input => stash('stationlist')
 % }
 % elsif (stash('input')) {
-      %= text_field 'input', class => 'station', placeholder => l 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput'
 % }
 % else {
-      %= text_field 'input', class => 'station', placeholder => l 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
 % }
     </div>
   </div>
   <div class="field">
-    %= submit_button l('Abfahrtstafel')
+    %= submit_button 'Abfahrtstafel'
   </div>
   % if (stash('input')) {
     <div class="geolink">
-      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>"><%= l 'Stationen in der Umgebung suchen' %></a>
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
     </div>
   % }
   <div class="break"></div>
-  <div class="moresettings-header moresettings-header-collapsed button button-light"><%= l 'Weitere Einstellungen' %></div>
+  <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
   <div class="moresettings moresettings-collapsed">
     <div class="field">
       <div class="desc">
         %= check_box 'rt' => 1, id => 'id_show_realtime'
         <label for="id_show_realtime">
-          %= l 'Zeiten inkl. Verspätung angeben'
+          Zeiten inkl. Verspätung angeben
         </label>
       </div>
     </div>
@@ -155,7 +155,7 @@
       <div class="desc">
         %= check_box 'hidelowdelay' => 1, id => 'id_hidelowdelay'
         <label for="id_hidelowdelay">
-          %= l 'Verspätungen erst ab 5 Minuten anzeigen'
+          Verspätungen erst ab 5 Minuten anzeigen
         </label>
       </div>
     </div>
@@ -163,7 +163,7 @@
       <div class="desc">
         %= check_box 'detailed' => 1, id => 'id_detailed'
         <label for="id_detailed">
-          %= l 'Mehr Details'
+          Mehr Details
         </label>
       </div>
     </div>
@@ -171,7 +171,7 @@
       <div class="desc">
         %= check_box 'no_related' => 1, id => 'id_no_related'
         <label for="id_no_related">
-          %= l 'Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")'
+          Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
         </label>
       </div>
     </div>
@@ -179,7 +179,7 @@
       <div class="desc">
         %= check_box 'past' => 1, id => 'past'
         <label for="past">
-          %= l 'Bereits abgefahrene Züge anzeigen'
+          Bereits abgefahrene Züge anzeigen
         </label>
       </div>
     </div>
@@ -187,21 +187,21 @@
       <div class="desc">
         %= check_box 'hide_opts' => 1, id => 'id_hide_opts'
         <label for="id_hide_opts">
-          %= l 'Formular verstecken'
+          Formular verstecken
         </label>
       </div>
     </div>
     <div class="field">
       <div class="desc">
-        %= l 'Nur Züge über'
+        Nur Züge über
       </div>
       <div>
-        %= text_field 'via', placeholder => l('Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)'), class => 'station'
+        %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
       </div>
     </div>
     <div class="field">
       <div class="desc">
-        %= l 'Gleise'
+        Gleise
       </div>
       <div>
         %= text_field 'platforms', placeholder => '1, 2, 5, ...'
@@ -209,10 +209,10 @@
     </div>
     <div class="field">
       <div class="desc">
-        %= l 'Ankunfts- oder Abfahrtszeit anzeigen?'
+        Ankunfts- oder Abfahrtszeit anzeigen?
       </div>
       <div>
-        %= select_field admode => [[l('Abfahrt bevorzugen') => 'deparr'], [l('Nur Abfahrt') => 'dep'], [l('Nur Ankunft') => 'arr']]
+        %= select_field admode => [['Abfahrt bevorzugen' => 'deparr'], ['Nur Abfahrt' => 'dep'], ['Nur Ankunft' => 'arr']]
       </div>
     </div>
     <div class="field">
@@ -224,7 +224,7 @@
       </div>
     </div>
     <div class="field">
-      %= submit_button l('Anzeigen')
+      %= submit_button 'Anzeigen'
     </div>
   </div> <!-- moresettings -->
 </div>
@@ -236,7 +236,7 @@
   <div class="developers-header developers-header-collapsed button button-light">API</div>
   <div class="developers developers-collapsed">
     <ul>
-      % if (languages() =~ m{^en}) {
+      % if (0) {
         <li>You're welcome to embed DBF departure boards as iframes or use them
           in full-screen browser setups. The App frontend works best for
           small screens, whereas the legacy Infoscreen mode is better suited
@@ -300,26 +300,27 @@
 
 <div class="container">
 <div class="config">
-Theme:
-<a onClick="javascript:setTheme('dark')">dark</a>
-·
+Farbschema:
 <a onClick="javascript:setTheme('light')">light</a>
 ·
-<a onClick="javascript:setTheme('default')">device theme</a>
+<a onClick="javascript:setTheme('dark')">dunkel</a>
+·
+<a onClick="javascript:setTheme('default')">automatisch</a>
+<!--Language:
 <br/>
-Language:
 <a onClick="javascript:setLang('de')">DE</a>
 ·
 <a onClick="javascript:setLang('en')">EN</a>
 ·
 <a onClick="javascript:setLang('default')">system language</a>
+-->
 </div>
 <div class="about">
 <a href="_about">DBF</a> v<%= stash('version') // '???' %>
 ·
-<a href="_datenschutz" rel="nofollow"><%= l 'Datenschutz' %></a>
+<a href="_datenschutz" rel="nofollow">Datenschutz</a>
 ·
-<a href="_impressum" rel="nofollow"><%= l 'Impressum' %></a>
+<a href="_impressum" rel="nofollow">Impressum</a>
 </div> <!-- about -->
 </div> <!-- container -->
 % }

@@ -20,27 +20,27 @@
     <div>
     <div class="arrival <%= $departure->{arrival_hidden} ? 'timehidden' : q{} %>">
 %     if ($departure->{is_cancelled} and $departure->{sched_arrival}) {
-        <span class="minfo"><%= l 'An:' %> ––:––</span><br/><%= l 'Plan:' %> <%= $departure->{sched_arrival} %>
+        <span class="minfo">An: ––:––</span><br/>Plan: <%= $departure->{sched_arrival} %>
 %     }
 %     elsif ($departure->{arrival_is_cancelled}) {
-        <span class="minfo">Beginnt hier</span><br/><%= l 'Plan:' %> <%= $departure->{sched_arrival} %>
+        <span class="minfo">Beginnt hier</span><br/>Plan: <%= $departure->{sched_arrival} %>
 %     }
 %     elsif ($departure->{arrival}) {
 %       if ($departure->{arrival} ne $departure->{sched_arrival}) {
           % if (($departure->{delay} // 0) < 0) {
-            <%= l 'An:' %> <span class="undelay"><%= $departure->{arrival} %></span>
+            An: <span class="undelay"><%= $departure->{arrival} %></span>
           % }
           % else {
-            <%= l 'An:' %> <span class="minfo"><%= $departure->{arrival} %></span>
+            An: <span class="minfo"><%= $departure->{arrival} %></span>
           % }
-          <br/><%= l 'Plan:' %> <%= $departure->{sched_arrival} %>
+          <br/>Plan: <%= $departure->{sched_arrival} %>
 %       }
 %       else {
-          <%= l 'An:' %> <%= $departure->{arrival} %>
+          An: <%= $departure->{arrival} %>
 %       }
 %     }
 %     elsif ($departure->{sched_arrival}) {
-        <%= l 'An:' %> <%= $departure->{sched_arrival} %>
+        An: <%= $departure->{sched_arrival} %>
 %     }
 %     elsif ($departure->{prep_time}) {
         Ein: <%= $departure->{prep_time} %>
@@ -73,10 +73,10 @@
 %     }
 %     if ($departure->{scheduled_platform} and $departure->{platform}
 %         and $departure->{scheduled_platform} ne $departure->{platform}) {
-        <span class="minfo"><%= $left %><%= l 'Gleis' %> <%= $departure->{platform} %><%= $right %></span>
+        <span class="minfo"><%= $left %>Gleis <%= $departure->{platform} %><%= $right %></span>
 %     }
 %     elsif ($departure->{scheduled_platform} or $departure->{platform}) {
-        <%= $left %><%= l 'Gleis' %> <%= $departure->{platform} // $departure->{scheduled_platform} %><%= $right %>
+        <%= $left %>Gleis <%= $departure->{platform} // $departure->{scheduled_platform} %><%= $right %>
 %     }
 %   }
 %   if ($departure->{arrival_hidden} and not $departure->{prep_time}) {
@@ -90,22 +90,22 @@
     <div>
     <div class="departure <%= $departure->{departure_hidden} ? 'timehidden' : q{} %>">
 %     if ($departure->{is_cancelled} and $departure->{sched_departure}) {
-        <span class="minfo"><%= l 'Ab:' %> ––:––</span><br/><%= l 'Plan:' %> <%= $departure->{sched_departure} %>
+        <span class="minfo">Ab: ––:––</span><br/>Plan: <%= $departure->{sched_departure} %>
 %     }
 %     elsif ($departure->{departure_is_cancelled}) {
-        <span class="minfo">Endet hier</span><br/><%= l 'Plan:' %> <%= $departure->{sched_departure} %>
+        <span class="minfo">Endet hier</span><br/>Plan: <%= $departure->{sched_departure} %>
 %     }
 %     elsif ($departure->{departure}) {
 %       if ($departure->{departure} ne $departure->{sched_departure}) {
-          <%= l 'Ab:' %> <span class="minfo"><%= $departure->{departure} %></span>
-          <br/><%= l 'Plan:' %> <%= $departure->{sched_departure} %>
+          Ab: <span class="minfo"><%= $departure->{departure} %></span>
+          <br/>Plan: <%= $departure->{sched_departure} %>
 %       }
 %       else {
-          <%= l 'Ab:' %> <%= $departure->{departure} %>
+          Ab: <%= $departure->{departure} %>
 %       }
 %     }
 %     elsif ($departure->{sched_departure}) {
-        <%= l 'Ab:' %> <%= $departure->{sched_departure} %>
+        Ab: <%= $departure->{sched_departure} %>
 %     }
     </div>
     </div>
@@ -139,10 +139,10 @@
     <div class="verbose">
 %     if ($departure->{trip_id}) {
 %       if (stash('station_name')) {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>?from=<%= stash('station_name') %>&amp;hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>?from=<%= stash('station_name') %>&amp;hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %       }
 %       else {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>?hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> <%= l 'Karte' %></a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} // 0 %>?hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %       }
 %     }
 %     if ($departure->{wr_link}) {
@@ -161,13 +161,13 @@
 %     if (my $u = $departure->{utilization}) {
         <div class="verbose">
 %         my ($text, $icon1, $icon2) = utilization_icon($u);
-          <%= l $text %><span style="padding-right: 0.5em;">.</span> 1. <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon1 %></i> 2. <i class="material-icons" aria-hidden="true" style="vertical-align: bottom;"><%= $icon2 %></i>
+          <%= $text %><span style="padding-right: 0.5em;">.</span> 1. <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon1 %></i> 2. <i class="material-icons" aria-hidden="true" style="vertical-align: bottom;"><%= $icon2 %></i>
         </div>
 %     }
 %     elsif (my $o = $departure->{occupancy}) {
         <div class="verbose">
 %         my ($text, $icon) = occupancy_icon($o);
-          <%= l $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
+          <%= $text %><span style="padding-right: 0.5em;">.</span> <i class="material-icons" aria-hidden="true" style="padding-right: 0.5em; vertical-align: bottom;"><%= $icon %></i></i>
         </div>
 %     }
 %   }
@@ -184,7 +184,7 @@
 %   }
 
 %   if ($departure->{moreinfo} and @{$departure->{moreinfo}}) {
-%=    l 'Meldungen'
+      Meldungen
       <ul class="messages">
 %     for my $pair (@{$departure->{moreinfo}}) {
         <li>
@@ -221,7 +221,7 @@
 %   }
 %   if ($departure->{route_pre_diff} and $departure->{route_post_diff}) {
 %     if ($departure->{date}) {
-%=      l 'Fahrtverlauf am'
+        Fahrtverlauf am
 %       if (stash('train') !~ m{[|]}) {
           <a href="<%= url_for('train', train => stash('train'))->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas'), date => $departure->{date}->clone->subtract(days => 1)->strftime('%d.%m.%Y'), highlight => param('highlight') // stash('station')}) %>">◀</a>
 %       }
@@ -317,7 +317,7 @@
       </ul> <!-- mroute -->
 %   }
 %   if ($departure->{operator}) {
-     <div class="details"><%= l 'Betrieb' %>: <%= $departure->{operator} %></div>
+     <div class="details">Betrieb: <%= $departure->{operator} %></div>
 %   }
 %   if ($departure->{details} and @{$departure->{details}}) {
       <div class="details">Details:

@@ -38,12 +38,6 @@ sub startup {
 	chomp $self->config->{version};
 	$self->defaults( version => $self->config->{version} // 'UNKNOWN' );
 
-	$self->plugin(
-		I18N => {
-			default => 'de',
-		},
-	);
-
 	# Generally, the reverse proxy handles compression.
 	# Also, Mojolicious compression breaks legacy callback-based JSON endpoints
 	# for some clients.
@@ -61,18 +55,6 @@ sub startup {
 			for my $cookie ( @{ $self->req->cookies } ) {
 				if ( $cookie->name eq 'theme' ) {
 					$self->session( theme => $cookie->value );
-				}
-				elsif ( $cookie->name eq 'lang' ) {
-					my $l = $cookie->value;
-					if ( $l eq 'de' or $l eq 'en' ) {
-						$self->languages($l);
-					}
-				}
-			}
-
-			if ( my $l = $self->param('lang') ) {
-				if ( $l eq 'de' or $l eq 'en' ) {
-					$self->languages($l);
 				}
 			}
 		}

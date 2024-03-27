@@ -833,9 +833,9 @@ sub render_train {
 
 	my %opt = ( train => $result );
 
-	if ( $self->languages =~ m{^en} ) {
-		$opt{language} = 'en';
-	}
+	#if ( $self->languages =~ m{^en} ) {
+	#	$opt{language} = 'en';
+	#}
 
 	$self->hafas->get_route_p(%opt)->then(
 		sub {
@@ -1117,9 +1117,9 @@ sub train_details {
 		$opt{service} = $hafas;
 	}
 
-	if ( $self->languages =~ m{^en} ) {
-		$opt{language} = 'en';
-	}
+	#if ( $self->languages =~ m{^en} ) {
+	#	$opt{language} = 'en';
+	#}
 
 	if ( my $date = $self->param('date') ) {
 		if ( $date
