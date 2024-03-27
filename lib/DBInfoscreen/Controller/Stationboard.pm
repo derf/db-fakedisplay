@@ -1908,6 +1908,10 @@ sub redirect_to_station {
 		$params = $params->to_string;
 		$self->redirect_to("/z/${input}?${params}");
 	}
+	elsif ( $params->param('hafas') and $params->param('hafas') ne '1' ) {
+		$params = $params->to_string;
+		$self->redirect_to("/${input}?${params}");
+	}
 	else {
 		my @candidates
 		  = Travel::Status::DE::IRIS::Stations::get_station($input);
