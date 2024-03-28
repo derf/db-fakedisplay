@@ -144,7 +144,7 @@ sub get_route_p {
 				$ret[-1]{isPast} = $station_is_past;
 			}
 
-			$promise->resolve( \@ret, $journey );
+			$promise->resolve( \@ret, $journey, $hafas );
 			return;
 		}
 	)->catch(

@@ -29,6 +29,20 @@ my %default = (
 	admode => 'deparr',
 );
 
+sub class_to_product {
+	my ( $self, $hafas ) = @_;
+
+	my $bits = $hafas->get_active_service->{productbits};
+	my $ret;
+
+	for my $i ( 0 .. $#{$bits} ) {
+		$ret->{ 2**$i }
+		  = ref( $bits->[$i] ) eq 'ARRAY' ? $bits->[$i][0] : $bits->[$i];
+	}
+
+	return $ret;
+}
+
 sub handle_no_results {
 	my ( $self, $station, $data, $hafas ) = @_;
 
@@ -490,6 +504,7 @@ sub handle_request {
 			my ($status) = @_;
 			my $data = {
 				results       => [ $status->results ],
+				hafas         => $hafas ? $status : undef,
 				station_ds100 =>
 				  ( $status->station ? $status->station->{ds100} : undef ),
 				station_eva => (
@@ -1144,7 +1159,7 @@ sub train_details {
 
 	$self->hafas->get_route_p(%opt)->then(
 		sub {
-			my ( $route, $journey ) = @_;
+			my ( $route, $journey, $hafas_obj ) = @_;
 
 			$res->{trip_id} = $journey->id;
 			$res->{date}    = $route->[0]{sched_dep} // $route->[0]{dep};
@@ -1159,23 +1174,25 @@ sub train_details {
 			if ( not defined $journey->class ) {
 				$linetype = 'ext';
 			}
-			elsif ( $journey->class <= 2 ) {
-				$linetype = 'fern';
-			}
-			elsif ( $journey->class <= 8 ) {
-				$linetype = 'bahn';
-			}
-			elsif ( $journey->class <= 16 ) {
-				$linetype = 'sbahn';
-			}
-			elsif ( $journey->class == 32 ) {
-				$linetype = 'bus';
-			}
-			elsif ( $journey->class == 128 ) {
-				$linetype = 'ubahn';
-			}
-			elsif ( $journey->class == 256 ) {
-				$linetype = 'tram';
+			else {
+				my $prod
+				  = $self->class_to_product($hafas_obj)->{ $journey->class }
+				  // q{};
+				if ( $prod eq 'ice' or $prod eq 'ic_ec' ) {
+					$linetype = 'fern';
+				}
+				elsif ( $prod eq 's' ) {
+					$linetype = 'sbahn';
+				}
+				elsif ( $prod eq 'bus' ) {
+					$linetype = 'bus';
+				}
+				elsif ( $prod eq 'u' ) {
+					$linetype = 'ubahn';
+				}
+				elsif ( $prod eq 'tram' ) {
+					$linetype = 'tram';
+				}
 			}
 
 			$res->{origin}      = $journey->route_start;
@@ -1313,6 +1330,7 @@ sub handle_result {
 	my $callback     = $self->param('callback');
 	my $via          = $self->param('via');
 	my $hafas        = $self->param('hafas');
+	my $hafas_obj    = $data->{hafas};
 
 	my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
@@ -1360,6 +1378,9 @@ sub handle_result {
 		}
 	}
 
+	my $class_to_product
+	  = $hafas_obj ? $self->class_to_product($hafas_obj) : {};
+
 	@results = $self->filter_results(@results);
 
 	for my $result (@results) {
@@ -1399,19 +1420,20 @@ sub handle_result {
 			}
 		}
 		elsif ( $result->can('class') ) {
-			if ( $result->class <= 2 ) {
+			my $prod = $class_to_product->{ $result->class } // q{};
+			if ( $prod eq 'ice' or $prod eq 'ic_ec' ) {
 				$linetype = 'fern';
 			}
-			elsif ( $result->class == 16 ) {
+			elsif ( $prod eq 's' ) {
 				$linetype = 'sbahn';
 			}
-			elsif ( $result->class == 32 ) {
+			elsif ( $prod eq 'bus' ) {
 				$linetype = 'bus';
 			}
-			elsif ( $result->class == 128 ) {
+			elsif ( $prod eq 'u' ) {
 				$linetype = 'ubahn';
 			}
-			elsif ( $result->class == 256 ) {
+			elsif ( $prod eq 'tram' ) {
 				$linetype = 'tram';
 			}
 		}
