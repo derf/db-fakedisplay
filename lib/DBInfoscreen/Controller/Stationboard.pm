@@ -1044,6 +1044,8 @@ sub station_train_details {
 				arrival_is_cancelled   => $result->arrival_is_cancelled,
 				moreinfo               => $moreinfo,
 				delay                  => $result->delay,
+				arrival_delay          => $result->arrival_delay,
+				departure_delay        => $result->departure_delay,
 				route_pre              => [ $result->route_pre ],
 				route_post             => [ $result->route_post ],
 				replaced_by            => [
@@ -1641,6 +1643,8 @@ sub handle_result {
 						station          => $result->station,
 						moreinfo         => $moreinfo,
 						delay            => $delay,
+						arrival_delay    => $result->arrival_delay,
+						departure_delay  => $result->departure_delay,
 						missing_realtime => (
 							not $result->has_realtime
 							  and $result->start < $now ? 1 : 0

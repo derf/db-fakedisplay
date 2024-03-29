@@ -27,7 +27,7 @@
 %     }
 %     elsif ($departure->{arrival}) {
 %       if ($departure->{arrival} ne $departure->{sched_arrival}) {
-          % if (($departure->{delay} // 0) < 0) {
+          % if (($departure->{arrival_delay} // 0) < 0) {
             An: <span class="undelay"><%= $departure->{arrival} %></span>
           % }
           % else {
