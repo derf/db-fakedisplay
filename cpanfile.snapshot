@@ -1450,16 +1450,6 @@ DISTRIBUTIONS
       IO::Socket::IP 0.37
       Sub::Util 1.41
       perl 5.016
-  Mojolicious-Plugin-I18N-1.6
-    pathname: S/SH/SHARIFULN/Mojolicious-Plugin-I18N-1.6.tar.gz
-    provides:
-      Mojolicious::Plugin::I18N 1.6
-    requirements:
-      I18N::LangTags 0.35
-      Module::Build 0.42
-      Mojolicious 5
-      Test::More 0
-      perl 5.010001
   Mozilla-CA-20240313
     pathname: L/LW/LWP/Mozilla-CA-20240313.tar.gz
     provides:
@@ -1833,12 +1823,12 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.11
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.11.tar.gz
+  Travel-Status-DE-DBWagenreihung-0.12
+    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.12.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.11
-      Travel::Status::DE::DBWagenreihung::Section 0.11
-      Travel::Status::DE::DBWagenreihung::Wagon 0.11
+      Travel::Status::DE::DBWagenreihung 0.12
+      Travel::Status::DE::DBWagenreihung::Section 0.12
+      Travel::Status::DE::DBWagenreihung::Wagon 0.12
     requirements:
       Carp 0
       Class::Accessor 0
