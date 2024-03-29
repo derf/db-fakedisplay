@@ -6,12 +6,18 @@
 % if ($wagon->is_locomotive or $wagon->is_powercar) {
 %   $extra_class .= ' powercar';
 % }
+% if ($wagon->is_closed) {
+%   $extra_class .= ' closed';
+% }
 % if ($wagon->train_no ne $train_no) {
 %   $extra_class .= ' nondestwagon';
 % }
   <div class="wagon <%= $extra_class %>" style="
   top: <%= $wagon->{position}{start_percent} %>%; bottom: <%= 100 - $wagon->{position}{end_percent} %>%; <%= $bg %>">
 %   if ($wagon->is_locomotive or $wagon->is_powercar) {
+%   }
+%   elsif ($wagon->is_closed) {
+      X
 %   }
 %   else {
 %=    $wagon->number // '?'
