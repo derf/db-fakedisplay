@@ -61,7 +61,8 @@ $(function() {
 	};
 
 	const processLocation = function(loc) {
-		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+		const param = new URLSearchParams(window.location.search);
+		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude, hafas: param.get('hafas')}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
 			removeStatus();
 			showError("Netzwerkfehler: ", textStatus, errorThrown);
 		});

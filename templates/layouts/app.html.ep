@@ -138,7 +138,7 @@ Bitte eine Station aus der Liste auswählen</div>
   </div>
   % if (stash('input')) {
     <div class="geolink">
-      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https') %>">Stationen in der Umgebung suchen</a>
+      <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https')->query({hafas => param('hafas')}) %>">Stationen in der Umgebung suchen</a>
     </div>
   % }
   <div class="break"></div>

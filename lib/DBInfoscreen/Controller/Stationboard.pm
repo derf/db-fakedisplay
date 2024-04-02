@@ -1818,12 +1818,21 @@ sub handle_result {
 sub stations_by_coordinates {
 	my $self = shift;
 
-	my $lon = $self->param('lon');
-	my $lat = $self->param('lat');
+	my $lon   = $self->param('lon');
+	my $lat   = $self->param('lat');
+	my $hafas = $self->param('hafas');
 
 	if ( not $lon or not $lat ) {
 		$self->render( json => { error => 'Invalid lon/lat received' } );
 		return;
+	}
+
+	my $service = 'DB';
+	if (    $hafas
+		and $hafas ne '1'
+		and Travel::Status::DE::HAFAS::get_service($hafas) )
+	{
+		$service = $hafas;
 	}
 
 	$self->render_later;
@@ -1846,6 +1855,7 @@ sub stations_by_coordinates {
 	Travel::Status::DE::HAFAS->new_p(
 		promise    => 'Mojo::Promise',
 		user_agent => $self->ua,
+		service    => $service,
 		geoSearch  => {
 			lat => $lat,
 			lon => $lon
@@ -1858,7 +1868,7 @@ sub stations_by_coordinates {
 					name     => $_->name,
 					eva      => $_->eva,
 					distance => $_->distance_m / 1000,
-					hafas    => 1
+					hafas    => $service,
 				}
 			} $hafas->results;
 			if ( @hafas > 10 ) {
