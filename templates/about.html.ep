@@ -4,7 +4,7 @@
 		Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
 	</p>
 	<p>
-		Der <a href="<%= app->config->{'source_url'} %>">Quelltext</a> steht unter der <a href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL v3</a> als Open Source zur Verfügung. © 2011 – 2023 <a href="https://finalrewind.org">derf</a>.
+		Der <a href="<%= app->config->{'source_url'} %>">Quelltext</a> steht unter der <a href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL v3</a> als Open Source zur Verfügung. © 2011 – 2024 <a href="https://finalrewind.org">derf</a>.
 		% if (my $issue_url = app->config->{'issue_url'}) {
 			Fehlermeldungen bitte via
 			<a href="<%= $issue_url %>">Issue Tracker</a>.
@@ -17,32 +17,37 @@
 		und die Bezeichnung DBF wurde zum Eigennamen ohne weitere Bedeutung.
 	</p>
 	<p>
-		Diese Installation verwendet die DBF-Version
-		<b><%= stash('version') // '???' %></b> und greift auf die folgenden Backends
-		zu:<br/>
-		• Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
-		v<%= $Travel::Status::DE::IRIS::VERSION %><br/>
-		• Nahverkehr und Zugdetails: DB HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
-		% if ($Travel::Status::DE::HAFAS::VERSION) {
-			v<%= $Travel::Status::DE::HAFAS::VERSION %>
+		Diese Installation nutzt
+		<strong>DBF v<%= stash('version') // '???' %></strong> mit folgenden Backends:
+		<ul>
+		<li> Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		<strong>v<%= $Travel::Status::DE::IRIS::VERSION %></strong></li>
+		<li> Nahverkehr und Zugdetails: DB HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		<strong>v<%= $Travel::Status::DE::HAFAS::VERSION %></strong></li>
+		<li>Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
+		<strong>v<%= $Travel::Status::DE::DBWagenreihung::VERSION %></strong></li>
+		<li>Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a></li>
+		</ul>
+	</p>
+	<p>
+		Unterstützte HAFAS-Instanzen:
+		<ul>
+		% for my $service (Travel::Status::DE::HAFAS::get_services()) {
+			<li><%= $service->{shortname} %> (<%= $service->{name} %>)</li>
 		% }
-		<br/>
-		• Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
-		% if ($Travel::Status::DE::DBWagenreihung::VERSION) {
-			v<%= $Travel::Status::DE::DBWagenreihung::VERSION %>
-		% }
-		<br/>
-		• Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a><br/>
-		<br/>
-		Sie nutzt zusätzlich die folgenden Open Data-Ressourcen:<br/>
-		• <a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Zugbildungsplan</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0
-		<br/>
-		• <a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
+		</ul>
+	</p>
+	<p>
+		Verwendete Open Data-Ressourcen:
+		<ul>
+		<li><a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Zugbildungsplan</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0</li>
+		<li><a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
 		© DB Station&amp;Service AG,
 		Europaplatz 1,
-		10557 Berlin, lizensiert unter CC-BY 4.0<br/>
-		• <a href="https://data.deutschebahn.com/dataset/fahrzeuglexikon">Fahrzeuglexikon</a>
-		© DB Fernverkehr AG, lizensiert unter CC-BY 4.0; Abbildungen © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG, lizensiert unter CC-BY-SA 4.0<br/>
+		10557 Berlin, lizensiert unter CC-BY 4.0</li>
+		<li><a href="https://data.deutschebahn.com/dataset/fahrzeuglexikon">Fahrzeuglexikon</a>
+		© DB Fernverkehr AG, lizensiert unter CC-BY 4.0; Abbildungen © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG, lizensiert unter CC-BY-SA 4.0</li>
+		</ul>
 	</p>
 </div>
 
