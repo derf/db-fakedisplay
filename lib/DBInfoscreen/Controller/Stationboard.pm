@@ -874,6 +874,12 @@ sub render_train {
 							  = [ $load->{FIRST}, $load->{SECOND} ];
 						}
 					}
+					$departure->{tz_offset}   = $route->[$i]{tz_offset};
+					$departure->{local_dt_da} = $route->[$i]{local_dt_da};
+					$departure->{local_sched_arr}
+					  = $route->[$i]{local_sched_arr};
+					$departure->{local_sched_dep}
+					  = $route->[$i]{local_sched_dep};
 					last;
 				}
 			}
