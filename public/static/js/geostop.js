@@ -42,7 +42,11 @@ $(function() {
 					hafas = candidate.hafas;
 
 				const stationlink = $(document.createElement('a'));
-				stationlink.attr('href', eva + '?hafas=' + hafas);
+				if (hafas) {
+					stationlink.attr('href', eva + '?hafas=' + hafas);
+				} else {
+					stationlink.attr('href', eva);
+				}
 				stationlink.text(name + ' ');
 
 				const distancenode = $(document.createElement('div'));

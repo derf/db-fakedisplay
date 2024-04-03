@@ -113,7 +113,7 @@ function dbf_reg_handlers() {
 		if (param.get('detailed')) {
 			suffix += '&detailed=1';
 		}
-		if (param.get('hafas')) {
+		if (param.get('hafas') && param.get('hafas') != '0') {
 			suffix += '&hafas=' + param.get('hafas') + '&highlight=' + trainElem.data('station');
 		}
 		if (param.get('past')) {
@@ -122,7 +122,7 @@ function dbf_reg_handlers() {
 		if (param.get('rt') || param.get('show_realtime')) {
 			suffix += '&rt=1';
 		}
-		if (param.get('hafas')) {
+		if (param.get('hafas') && param.get('hafas') != '0') {
 			history.pushState({'page':'traindetail','jid':trainElem.data('jid')}, 'test', '/z/' + trainElem.data('jid') + suffix);
 		} else {
 			history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
