@@ -45,6 +45,9 @@
 %     elsif ($departure->{prep_time}) {
         Ein: <%= $departure->{prep_time} %>
 %     }
+%     if ($departure->{tz_offset} and $departure->{local_sched_arr}) {
+        <br/>Lokal: <%= $departure->{local_sched_arr}->strftime('%H:%M') %>
+%     }
     </div>
     </div>
     <div>
@@ -106,6 +109,9 @@
 %     }
 %     elsif ($departure->{sched_departure}) {
         Ab: <%= $departure->{sched_departure} %>
+%     }
+%     if ($departure->{tz_offset} and $departure->{local_sched_dep}) {
+        <br/>Lokal: <%= $departure->{local_sched_dep}->strftime('%H:%M') %>
 %     }
     </div>
     </div>
@@ -282,6 +288,9 @@
 %           }
 %           if ($departure->{missing_realtime} or $departure->{no_realtime_yet}) {
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%           }
+%           if ($departure->{tz_offset} and $departure->{local_dt_da}) {
+              (lokal <%= $departure->{local_dt_da}->strftime('%H:%M') %>)
 %           }
             <strong><%= stash('station_name') %></strong>
 %           if (my $u = $departure->{utilization}) {
