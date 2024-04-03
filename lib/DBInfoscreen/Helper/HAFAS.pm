@@ -105,7 +105,67 @@ sub get_route_p {
 			my $journey = $hafas->result;
 			my @ret;
 			my $station_is_past = 1;
+
+			my $num_names      = 0;
+			my $prev_name      = q{};
+			my $num_directions = 0;
+			my $prev_direction = q{};
+			my $num_operators  = 0;
+			my $prev_operator  = q{};
+
 			for my $stop ( $journey->route ) {
+				my $prod = $stop->prod_dep // $stop->prod_arr;
+				if ( $prod and $prod->name and $prod->name ne $prev_name ) {
+					$num_names++;
+					$prev_name = $prod->name;
+				}
+				if (    $prod
+					and $prod->operator
+					and $prod->operator ne $prev_operator )
+				{
+					$num_operators++;
+					$prev_operator = $prod->operator;
+				}
+				if ( $stop->direction and $stop->direction ne $prev_direction )
+				{
+					$num_directions++;
+					$prev_direction = $stop->direction;
+				}
+			}
+
+			$prev_name      = q{};
+			$prev_direction = q{};
+			$prev_operator  = q{};
+
+			for my $stop ( $journey->route ) {
+
+				my $prod = $stop->prod_dep // $stop->prod_arr;
+				my %annotation;
+				if (    $num_names > 1
+					and $prod
+					and $prod->name
+					and $prod->name ne $prev_name )
+				{
+					$prev_name = $annotation{prod_name} = $prod->name;
+				}
+				if (    $num_operators > 1
+					and $prod
+					and $prod->operator
+					and $prod->operator ne $prev_operator )
+				{
+					$prev_operator = $annotation{operator} = $prod->operator;
+				}
+				if (    $num_directions > 1
+					and $stop->direction
+					and $stop->direction ne $prev_direction )
+				{
+					$prev_direction = $annotation{direction} = $stop->direction;
+				}
+
+				if (%annotation) {
+					$annotation{is_annotated} = 1;
+				}
+
 				push(
 					@ret,
 					{
@@ -129,6 +189,7 @@ sub get_route_p {
 							  and
 							  ( $stop->dep_cancelled or not $stop->sched_dep )
 						),
+						%annotation,
 					}
 				);
 				if (

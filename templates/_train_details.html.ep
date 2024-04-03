@@ -243,6 +243,19 @@
 %     }
       <ul class="mroute">
 %       for my $stop (@{$departure->{route_pre_diff}}) {
+%         if ($stop->{is_annotated} and $stop->{prod_name}) {
+            <li class="annotation">
+%             if ($stop->{prod_name}) {
+%=              $stop->{prod_name}
+%             }
+%             if ($stop->{direction}) {
+                → <%= $stop->{direction} %>
+%             }
+%             if ($stop->{operator}) {
+                (<%= $stop->{operator} %>)
+%             }
+            </li>
+%         }
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
           <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
@@ -278,6 +291,19 @@
           </li>
 %       }
 %       if (stash('station_name')) {
+%         if ($departure->{is_annotated} and $departure->{prod_name}) {
+            <li class="annotation">
+%             if ($departure->{prod_name}) {
+%=              $departure->{prod_name}
+%             }
+%             if ($departure->{direction}) {
+                → <%= $departure->{direction} %>
+%             }
+%             if ($departure->{operator}) {
+                (<%= $departure->{operator} %>)
+%             }
+            </li>
+%         }
           <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %> <%= $departure->{isPast} ? 'past-stop' : 'future-stop' %>">
 %=          $departure->{departure} // $departure->{arrival} // $departure->{sched_departure} // $departure->{sched_arrival} // q{}
 %           if ($departure->{departure} and $departure->{sched_departure} and $departure->{departure} ne $departure->{sched_departure}) {
@@ -301,6 +327,19 @@
           </li>
 %       }
 %       for my $stop (@{$departure->{route_post_diff}}) {
+%         if ($stop->{is_annotated} and $stop->{prod_name}) {
+            <li class="annotation">
+%             if ($stop->{prod_name}) {
+%=              $stop->{prod_name}
+%             }
+%             if ($stop->{direction}) {
+                → <%= $stop->{direction} %>
+%             }
+%             if ($stop->{operator}) {
+                (<%= $stop->{operator} %>)
+%             }
+            </li>
+%         }
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
           <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {

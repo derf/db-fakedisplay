@@ -880,6 +880,10 @@ sub render_train {
 					  = $route->[$i]{local_sched_arr};
 					$departure->{local_sched_dep}
 					  = $route->[$i]{local_sched_dep};
+					$departure->{is_annotated} = $route->[$i]{is_annotated};
+					$departure->{prod_name}    = $route->[$i]{prod_name};
+					$departure->{direction}    = $route->[$i]{direction};
+					$departure->{operator}     = $route->[$i]{operator};
 					last;
 				}
 			}
@@ -1253,6 +1257,10 @@ sub train_details {
 					$res->{local_dt_da}     = $station_info->{local_dt_da};
 					$res->{local_sched_arr} = $station_info->{local_sched_arr};
 					$res->{local_sched_dep} = $station_info->{local_sched_dep};
+					$res->{is_annotated}    = $station_info->{is_annotated};
+					$res->{prod_name}       = $station_info->{prod_name};
+					$res->{direction}       = $station_info->{direction};
+					$res->{operator}        = $station_info->{operator};
 					$res->{platform}        = $station_info->{platform};
 					$res->{scheduled_platform}
 					  = $station_info->{sched_platform};

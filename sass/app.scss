@@ -618,6 +618,12 @@ div.app {
 				list-style-type: circle;
 			}
 
+			.annotation {
+				color: $fg2;
+				list-style-type: none;
+				padding-left: 3em;
+			}
+
 			.sched-delayed:before {
 				content: "(";
 			}
