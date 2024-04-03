@@ -119,6 +119,7 @@ sub get_route_p {
 						dep_delay      => $stop->dep_delay,
 						arr_cancelled  => $stop->arr_cancelled,
 						dep_cancelled  => $stop->dep_cancelled,
+						tz_offset      => $stop->tz_offset,
 						platform       => $stop->platform,
 						sched_platform => $stop->sched_platform,
 						load           => $stop->load,
@@ -142,6 +143,32 @@ sub get_route_p {
 					$station_is_past = 0;
 				}
 				$ret[-1]{isPast} = $station_is_past;
+				if ( $stop->tz_offset ) {
+					if ( $stop->sched_arr ) {
+						$ret[-1]{local_sched_arr}
+						  = $stop->sched_arr->clone->add(
+							minutes => $stop->tz_offset );
+					}
+					if ( $stop->sched_dep ) {
+						$ret[-1]{local_sched_dep}
+						  = $stop->sched_dep->clone->add(
+							minutes => $stop->tz_offset );
+					}
+					if ( $stop->rt_arr ) {
+						$ret[-1]{local_rt_arr} = $stop->rt_arr->clone->add(
+							minutes => $stop->tz_offset );
+					}
+					if ( $stop->rt_dep ) {
+						$ret[-1]{local_rt_dep} = $stop->rt_dep->clone->add(
+							minutes => $stop->tz_offset );
+					}
+					$ret[-1]{local_dt_ad} = $ret[-1]{local_rt_arr}
+					  // $ret[-1]{local_sched_arr} // $ret[-1]{local_rt_dep}
+					  // $ret[-1]{local_sched_dep};
+					$ret[-1]{local_dt_da} = $ret[-1]{local_rt_dep}
+					  // $ret[-1]{local_sched_dep} // $ret[-1]{local_rt_arr}
+					  // $ret[-1]{local_sched_arr};
+				}
 			}
 
 			$promise->resolve( \@ret, $journey, $hafas );

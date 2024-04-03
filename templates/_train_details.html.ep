@@ -260,6 +260,9 @@
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %           }
 %         }
+%         if ($stop->{tz_offset} and $stop->{local_dt_da}) {
+            (lokal <%= $stop->{local_dt_da}->strftime('%H:%M') %>)
+%         }
           <%= $stop->{name} %></a>
 %         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
 %           my ($text, $icon1, $icon2) = utilization_icon([$stop->{load}{FIRST}, $stop->{load}{SECOND}]);
@@ -311,6 +314,9 @@
 %           if ($stop->{rt_bogus}) {
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
 %           }
+%         }
+%         if ($stop->{tz_offset} and $stop->{local_dt_ad}) {
+            (lokal <%= $stop->{local_dt_ad}->strftime('%H:%M') %>)
 %         }
           <%= $stop->{name} %></a>
 %         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
