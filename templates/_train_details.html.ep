@@ -252,7 +252,7 @@
             generic-stop
 %         }
 %         if (($stop->{rt_dep} and $stop->{dep_delay}) or (not $stop->{rt_dep} and $stop->{rt_arr} and $stop->{arr_delay})) {
-            "><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %> (heute <%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %>)
+            "><%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %> <span class="sched-delayed"><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %></span>
 %         }
 %         else {
             "><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %>
@@ -269,12 +269,13 @@
           </li>
 %       }
 %       if (stash('station_name')) {
-          <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %> <%= $departure->{isPast} ? 'past-stop' : 'future-stop' %>"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %>
+          <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %> <%= $departure->{isPast} ? 'past-stop' : 'future-stop' %>">
+%=          $departure->{departure} // $departure->{arrival} // $departure->{sched_departure} // $departure->{sched_arrival} // q{}
 %           if ($departure->{departure} and $departure->{sched_departure} and $departure->{departure} ne $departure->{sched_departure}) {
-              (heute <%= $departure->{departure} %>)
+              <span class="sched-delayed"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span>
 %           }
 %           elsif ($departure->{arrival} and $departure->{sched_arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
-              (heute <%= $departure->{arrival} %>)
+              <span class="sched-delayed"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span>
 %           }
 %           if ($departure->{missing_realtime} or $departure->{no_realtime_yet}) {
               <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
@@ -303,7 +304,7 @@
             generic-stop
 %         }
 %         if (($stop->{rt_arr} and $stop->{arr_delay}) or (not $stop->{rt_arr} and $stop->{rt_dep} and $stop->{dep_delay})) {
-            "><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %> (heute <%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %>)
+            "><%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %> <span class="sched-delayed"><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %></span>
 %         }
 %         else {
             "><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %>

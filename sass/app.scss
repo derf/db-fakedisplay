@@ -618,6 +618,14 @@ div.app {
 				list-style-type: circle;
 			}
 
+			.sched-delayed:before {
+				content: "(";
+			}
+
+			.sched-delayed:after {
+				content: ")";
+			}
+
 			i.material-icons {
 				font-size: 14px;
 			}
