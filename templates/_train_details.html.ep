@@ -376,8 +376,8 @@
 %       }
       </ul> <!-- mroute -->
 %   }
-%   if ($departure->{operator}) {
-     <div class="details">Betrieb: <%= $departure->{operator} %></div>
+%   if ($departure->{operators} and @{$departure->{operators} // []}) {
+     <div class="details">Betrieb: <%= join(q{, }, @{ $departure->{operators} // [] } ) %></div>
 %   }
 %   if ($departure->{details} and @{$departure->{details}}) {
       <div class="details">Details:

@@ -856,9 +856,9 @@ sub render_train {
 		sub {
 			my ( $route, $journey ) = @_;
 
-			$departure->{trip_id}  = $journey->id;
-			$departure->{operator} = $journey->operator;
-			$departure->{date}     = $route->[0]{sched_dep} // $route->[0]{dep};
+			$departure->{trip_id}   = $journey->id;
+			$departure->{operators} = [ $journey->operators ];
+			$departure->{date} = $route->[0]{sched_dep} // $route->[0]{dep};
 
 			# Use HAFAS route as source of truth; ignore IRIS data
 			$departure->{route_pre_diff}  = [];
@@ -1209,7 +1209,7 @@ sub train_details {
 
 			$res->{origin}      = $journey->route_start;
 			$res->{destination} = $journey->route_end;
-			$res->{operator}    = $journey->operator;
+			$res->{operators}   = [ $journey->operators ];
 
 			$res->{route_post_diff} = $route;
 
