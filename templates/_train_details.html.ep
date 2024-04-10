@@ -271,13 +271,13 @@
             generic-stop
 %         }
 %         if (($stop->{rt_dep} and $stop->{dep_delay}) or (not $stop->{rt_dep} and $stop->{rt_arr} and $stop->{arr_delay})) {
-            "><%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %> <span class="sched-delayed"><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %></span>
+            "><span class="time-sched-only"><%= ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') %></span> <span class="time-delayed"><%= ($stop->{rt_dep} // $stop->{rt_arr})->strftime('%H:%M') %></span>
+%         }
+%         elsif (($stop->{rt_dep} and defined $stop->{dep_delay}) or (not $stop->{rt_dep} and $stop->{rt_arr} and defined $stop->{arr_delay})) {
+            "><span class="time-sched-ontime"><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %></span>
 %         }
 %         else {
-            "><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %>
-%           if ($stop->{rt_bogus}) {
-              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
-%           }
+            "><span class="time-sched"><%= ($stop->{sched_dep} // $stop->{sched_arr}) ? ($stop->{sched_dep} // $stop->{sched_arr})->strftime('%H:%M') : q{} %></span>
 %         }
 %         if ($stop->{tz_offset} and $stop->{local_dt_da}) {
             (lokal <%= $stop->{local_dt_da}->strftime('%H:%M') %>)
@@ -305,16 +305,23 @@
             </li>
 %         }
           <li class="<%= $departure->{is_cancelled} ? 'cancelled-stop' : q{} %> <%= $departure->{isPast} ? 'past-stop' : 'future-stop' %>">
-%=          $departure->{departure} // $departure->{arrival} // $departure->{sched_departure} // $departure->{sched_arrival} // q{}
 %           if ($departure->{departure} and $departure->{sched_departure} and $departure->{departure} ne $departure->{sched_departure}) {
-              <span class="sched-delayed"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span>
+              <span class="time-sched-only"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span><span class="time-delayed">
+%           }
+%           elsif ($departure->{departure} and $departure->{sched_departure} and $departure->{departure} eq $departure->{sched_departure} and not $departure->{no_realtime_yet}) {
+              <span class="time-sched-ontime">
 %           }
 %           elsif ($departure->{arrival} and $departure->{sched_arrival} and $departure->{arrival} ne $departure->{sched_arrival}) {
-              <span class="sched-delayed"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span>
+              <span class="time-sched-only"><%= $departure->{sched_departure} // $departure->{sched_arrival} // q{} %></span><span class="time-delayed">
 %           }
-%           if ($departure->{missing_realtime} or $departure->{no_realtime_yet}) {
-              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
+%           elsif ($departure->{arrival} and $departure->{sched_arrival} and $departure->{arrival} eq $departure->{sched_arrival} and not $departure->{no_realtime_yet}) {
+              <span class="time-sched-ontime">
 %           }
+%           else {
+              <span class="time-sched">
+%           }
+%=          $departure->{departure} // $departure->{arrival} // $departure->{sched_departure} // $departure->{sched_arrival} // q{}
+            </span>
 %           if ($departure->{tz_offset} and $departure->{local_dt_da}) {
               (lokal <%= $departure->{local_dt_da}->strftime('%H:%M') %>)
 %           }
@@ -355,13 +362,13 @@
             generic-stop
 %         }
 %         if (($stop->{rt_arr} and $stop->{arr_delay}) or (not $stop->{rt_arr} and $stop->{rt_dep} and $stop->{dep_delay})) {
-            "><%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %> <span class="sched-delayed"><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %></span>
+            "><span class="time-sched-only"><%= ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') %></span> <span class="time-delayed"><%= ($stop->{rt_arr} // $stop->{rt_dep})->strftime('%H:%M') %></span>
+%         }
+%         elsif (($stop->{rt_arr} and defined $stop->{arr_delay}) or (not $stop->{rt_arr} and $stop->{rt_dep} and defined $stop->{dep_delay})) {
+            "><span class="time-sched-ontime"><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %></span>
 %         }
 %         else {
-            "><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %>
-%           if ($stop->{rt_bogus}) {
-              <i class="material-icons" aria-label="Echtzeitdaten fehlen">gps_off</i>
-%           }
+            "><span class="time-sched"><%= ($stop->{sched_arr} // $stop->{sched_dep}) ? ($stop->{sched_arr} // $stop->{sched_dep})->strftime('%H:%M') : q{} %></span>
 %         }
 %         if ($stop->{tz_offset} and $stop->{local_dt_ad}) {
             (lokal <%= $stop->{local_dt_ad}->strftime('%H:%M') %>)

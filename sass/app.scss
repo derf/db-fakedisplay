@@ -618,17 +618,42 @@ div.app {
 				list-style-type: circle;
 			}
 
+			.time-early {
+				color: $early-stop-color;
+			}
+
+			.time-delayed {
+				color: $delayed-stop-color;
+			}
+
+			.time-sched-only {
+				color: $delayed-stop-color;
+			}
+
+			.time-sched-ontime {
+				color: $early-stop-color;
+			}
+
+
 			.annotation {
 				color: $fg2;
 				list-style-type: none;
 				padding-left: 3em;
 			}
 
-			.sched-delayed:before {
+			.-sched:before {
+				content: " ";
+			}
+
+			.time-sched:after {
+				content: " ";
+			}
+
+			.time-sched-only:before {
 				content: "(";
 			}
 
-			.sched-delayed:after {
+			.time-sched-only:after {
 				content: ")";
 			}
 
