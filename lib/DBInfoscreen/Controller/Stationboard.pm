@@ -518,7 +518,14 @@ sub handle_request {
 				  ( $status->station ? $status->station->{name} : $station ),
 			};
 
-			if ( $status->station and $status->station->{names} ) {
+			# Travel::Status::DE::HAFAS mis-detects ÖBB station names
+			if (    $hafas
+				and $hafas eq 'ÖBB'
+				and @{ $status->station->{names} // [] } > 1 )
+			{
+				$data->{station_name} = $station;
+			}
+			elsif ( $status->station and $status->station->{names} ) {
 				$data->{station_name}
 				  = List::Util::reduce { length($a) < length($b) ? $a : $b }
 				@{ $status->station->{names} };
