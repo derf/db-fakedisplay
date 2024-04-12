@@ -1180,7 +1180,8 @@ sub train_details {
 				my $train_type = $res->{train_type} = $journey->type   // q{};
 				my $train_no   = $res->{train_no}   = $journey->number // q{};
 				$res->{train_line} = $journey->line_no // q{};
-				$self->stash( title => "${train_type} ${train_no}" );
+				$self->stash( title => $train_type . ' '
+					  . ( $train_no || $res->{train_line} ) );
 			}
 
 			if ( not defined $journey->class ) {
