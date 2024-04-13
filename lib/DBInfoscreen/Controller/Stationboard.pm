@@ -1170,20 +1170,26 @@ sub train_details {
 			$res->{trip_id} = $journey->id;
 			$res->{date}    = $route->[0]{sched_dep} // $route->[0]{dep};
 
-			if ( not $res->{train_type} ) {
-				my $train_type = $res->{train_type} = $journey->type   // q{};
-				my $train_no   = $res->{train_no}   = $journey->number // q{};
-				$res->{train_line} = $journey->line_no // q{};
-				$self->stash( title => $train_type . ' '
-					  . ( $train_no || $res->{train_line} ) );
+			my $product = $journey->product;
+
+			if ( my $req_name = $self->param('highlight') ) {
+				if ( my $p = $journey->product_at($req_name) ) {
+					$product = $p;
+				}
 			}
 
-			if ( not defined $journey->class ) {
+			my $train_type = $res->{train_type} = $product->type   // q{};
+			my $train_no   = $res->{train_no}   = $product->number // q{};
+			$res->{train_line} = $product->line_no // q{};
+			$self->stash( title => $train_type . ' '
+				  . ( $train_no || $res->{train_line} ) );
+
+			if ( not defined $product->class ) {
 				$linetype = 'ext';
 			}
 			else {
 				my $prod
-				  = $self->class_to_product($hafas_obj)->{ $journey->class }
+				  = $self->class_to_product($hafas_obj)->{ $product->class }
 				  // q{};
 				if ( $prod eq 'ice' or $prod eq 'ic_ec' ) {
 					$linetype = 'fern';
