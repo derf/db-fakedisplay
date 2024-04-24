@@ -289,7 +289,8 @@ sub startup {
 
 	$r->get('/')->to('stationboard#handle_request');
 	$r->get('/multi/*station')->to('stationboard#handle_request');
-	$r->get('/*station')->to('stationboard#handle_request');
+	$r->get( '/*station' => [ format => [ 'html', 'json' ] ] )
+	  ->to( 'stationboard#handle_request', format => undef );
 
 	$self->types->type( json => 'application/json; charset=utf-8' );
 

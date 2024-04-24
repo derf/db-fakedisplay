@@ -469,7 +469,12 @@ sub handle_request {
 	# (or used by) marudor.de, it was renamed to 'json'. Many clients won't
 	# notice this for year to come, so we make sure mode=marudor still works as
 	# intended.
-	if ( $template eq 'marudor' ) {
+	if (
+		$template eq 'marudor'
+		or (    $self->req->headers->accept
+			and $self->req->headers->accept eq 'application/json' )
+	  )
+	{
 		$template = 'json';
 	}
 
