@@ -937,27 +937,36 @@ sub render_train {
 	# Defer rendering until all requests have completed
 	Mojo::Promise->all(@requests)->then(
 		sub {
-			$self->render(
-				$template // '_train_details',
-				description => sprintf(
-					'%s %s%s%s nach %s',
-					$departure->{train_type},
-					$departure->{train_line} // $departure->{train_no},
-					$departure->{origin} ? ' von ' : q{},
-					$departure->{origin}      // q{},
-					$departure->{destination} // 'unbekannt'
-				),
-				departure    => $departure,
-				linetype     => $linetype,
-				dt_now       => DateTime->now( time_zone => 'Europe/Berlin' ),
-				station_name => $station_name,
-				nav_link     =>
-				  $self->url_for( 'station', station => $station_name )->query(
-					{
-						detailed => $self->param('detailed'),
-						hafas    => $self->param('hafas')
-					}
-				  ),
+			$self->respond_to(
+				json => {
+					json => {
+						departure    => $departure,
+						station_name => $station_name,
+					},
+				},
+				any => {
+					template    => $template // '_train_details',
+					description => sprintf(
+						'%s %s%s%s nach %s',
+						$departure->{train_type},
+						$departure->{train_line} // $departure->{train_no},
+						$departure->{origin} ? ' von ' : q{},
+						$departure->{origin}      // q{},
+						$departure->{destination} // 'unbekannt'
+					),
+					departure => $departure,
+					linetype  => $linetype,
+					dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+					station_name => $station_name,
+					nav_link     =>
+					  $self->url_for( 'station', station => $station_name )
+					  ->query(
+						{
+							detailed => $self->param('detailed'),
+							hafas    => $self->param('hafas')
+						}
+					  ),
+				},
 			);
 		}
 	)->wait;
@@ -971,6 +980,10 @@ sub station_train_details {
 
 	if ( $self->param('ajax') ) {
 		delete $self->stash->{layout};
+	}
+
+	if ( $station =~ s{ [.] json $ }{}x ) {
+		$self->stash( format => 'json' );
 	}
 
 	my %opt = (

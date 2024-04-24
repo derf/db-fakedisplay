@@ -279,8 +279,9 @@ sub startup {
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
-	$r->get( '/z/:train/*station' => 'train_at_station' )
-	  ->to('stationboard#station_train_details');
+	$r->get( '/z/:train/*station' => [ format => [ 'html', 'json' ] ] )
+	  ->to( 'stationboard#station_train_details', format => undef )
+	  ->name('train_at_station');
 	$r->get( '/z/:train' => [ format => [ 'html', 'json' ] ] )
 	  ->to( 'stationboard#train_details', format => undef )->name('train');
 
