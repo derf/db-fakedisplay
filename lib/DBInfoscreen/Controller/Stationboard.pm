@@ -1098,11 +1098,20 @@ sub station_train_details {
 	)->catch(
 		sub {
 			my ($errstr) = @_;
-			$self->render(
-				'landingpage',
-				error =>
-				  "Keine Abfahrt von $train_no in $station gefunden: $errstr",
-				status => 404,
+			$self->respond_to(
+				json => {
+					json => {
+						error =>
+"Keine Abfahrt von $train_no in $station gefunden: $errstr",
+					},
+					status => 404,
+				},
+				any => {
+					template => 'landingpage',
+					error    =>
+"Keine Abfahrt von $train_no in $station gefunden: $errstr",
+					status => 404,
+				},
 			);
 			return;
 		}
