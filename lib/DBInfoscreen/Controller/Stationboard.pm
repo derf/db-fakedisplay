@@ -1134,7 +1134,10 @@ sub train_details {
 	}
 
 	my $service = 'DB';
-	if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) ) {
+	if (    $hafas
+		and $hafas ne '1'
+		and Travel::Status::DE::HAFAS::get_service($hafas) )
+	{
 		$opt{service} = $hafas;
 	}
 
