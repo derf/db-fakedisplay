@@ -1303,34 +1303,52 @@ sub train_details {
 				$res->{details} = [@him_details];
 			}
 
-			$self->render(
-				$self->param('ajax') ? '_train_details' : 'train_details',
-				description => sprintf(
-					'%s %s%s%s nach %s',
-					$res->{train_type},
-					$res->{train_line} // $res->{train_no},
-					$res->{origin} ? ' von ' : q{},
-					$res->{origin}      // q{},
-					$res->{destination} // 'unbekannt'
-				),
-				departure => $res,
-				linetype  => $linetype,
-				dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+			$self->respond_to(
+				json => {
+					json => {
+						journey => $journey,
+					},
+				},
+				any => {
+					template => $self->param('ajax')
+					? '_train_details'
+					: 'train_details',
+					description => sprintf(
+						'%s %s%s%s nach %s',
+						$res->{train_type},
+						$res->{train_line} // $res->{train_no},
+						$res->{origin} ? ' von ' : q{},
+						$res->{origin}      // q{},
+						$res->{destination} // 'unbekannt'
+					),
+					departure => $res,
+					linetype  => $linetype,
+					dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+				},
 			);
 		}
 	)->catch(
 		sub {
 			my ($e) = @_;
 			if ($e) {
-				$self->render(
-					'exception',
-					message   => $e,
-					exception => undef,
-					snapshot  => {}
+				$self->respond_to(
+					json => {
+						json => {
+							error => $e,
+						},
+						status => 500,
+					},
+					any => {
+						template  => 'exception',
+						message   => $e,
+						exception => undef,
+						snapshot  => {},
+						status    => 500,
+					},
 				);
 			}
 			else {
-				$self->render('not_found');
+				$self->render( 'not_found', status => 404 );
 			}
 		}
 	)->wait;

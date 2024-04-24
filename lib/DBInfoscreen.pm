@@ -281,7 +281,8 @@ sub startup {
 	$r->get('/map/:tripid/:lineno')->to('map#route');
 	$r->get( '/z/:train/*station' => 'train_at_station' )
 	  ->to('stationboard#station_train_details');
-	$r->get( '/z/:train' => 'train' )->to('stationboard#train_details');
+	$r->get( '/z/:train' => [ format => [ 'html', 'json' ] ] )
+	  ->to( 'stationboard#train_details', format => undef )->name('train');
 
 	$self->defaults( layout => 'app' );
 
