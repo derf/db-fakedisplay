@@ -1130,8 +1130,6 @@ sub train_details {
 		delete $self->stash->{layout};
 	}
 
-	my $api_version = $Travel::Status::DE::IRIS::VERSION;
-
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
 
