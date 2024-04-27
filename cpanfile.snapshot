@@ -354,15 +354,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.41
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.41.tar.gz
+  DateTime-Locale-1.42
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.42.tar.gz
     provides:
-      DateTime::Locale 1.41
-      DateTime::Locale::Base 1.41
-      DateTime::Locale::Catalog 1.41
-      DateTime::Locale::Data 1.41
-      DateTime::Locale::FromData 1.41
-      DateTime::Locale::Util 1.41
+      DateTime::Locale 1.42
+      DateTime::Locale::Base 1.42
+      DateTime::Locale::Catalog 1.42
+      DateTime::Locale::Data 1.42
+      DateTime::Locale::FromData 1.42
+      DateTime::Locale::Util 1.42
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -811,13 +811,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.17
       perl 5.006001
-  ExtUtils-Config-0.008
-    pathname: L/LE/LEONT/ExtUtils-Config-0.008.tar.gz
+  ExtUtils-Config-0.009
+    pathname: L/LE/LEONT/ExtUtils-Config-0.009.tar.gz
     provides:
-      ExtUtils::Config 0.008
+      ExtUtils::Config 0.009
+      ExtUtils::Config::MakeMaker 0.009
     requirements:
       Data::Dumper 0
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
+      ExtUtils::MakeMaker::Config 0
+      perl 5.006
       strict 0
       warnings 0
   ExtUtils-Depends-0.8001
@@ -848,10 +851,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-InstallPaths-0.012
-    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.012.tar.gz
+  ExtUtils-InstallPaths-0.013
+    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.013.tar.gz
     provides:
-      ExtUtils::InstallPaths 0.012
+      ExtUtils::InstallPaths 0.013
     requirements:
       Carp 0
       ExtUtils::Config 0.002
@@ -1823,12 +1826,12 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.12
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.12.tar.gz
+  Travel-Status-DE-DBWagenreihung-0.13
+    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.13.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.12
-      Travel::Status::DE::DBWagenreihung::Section 0.12
-      Travel::Status::DE::DBWagenreihung::Wagon 0.12
+      Travel::Status::DE::DBWagenreihung 0.13
+      Travel::Status::DE::DBWagenreihung::Section 0.13
+      Travel::Status::DE::DBWagenreihung::Wagon 0.13
     requirements:
       Carp 0
       Class::Accessor 0
