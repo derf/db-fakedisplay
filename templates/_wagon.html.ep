@@ -87,6 +87,6 @@
 %     }
 %   }
 %   if ($multi and defined $wagon->group_index and (not defined $prev_gi or $wagon->group_index != $prev_gi)) {
-      <br/><span class="grouptype"><%= ($wr->train_descriptions)[$wagon->group_index]{short} %> → <%= $wr->{data}{istformation}{allFahrzeuggruppe}[$wagon->group_index]{zielbetriebsstellename} %></span>
+      <br/><span class="groupno"><%= $wr->train_type %> <%= ($wr->groups)[$wagon->group_index]->train_no %> → <%= $wr->{data}{istformation}{allFahrzeuggruppe}[$wagon->group_index]{zielbetriebsstellename} %></span> <span class="grouptype"><%= ($wr->train_descriptions)[$wagon->group_index]{short} %></span>
 %   }
   </div>

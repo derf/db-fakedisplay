@@ -165,8 +165,20 @@ div.content {
 			color: $link-color;
 		}
 
-		.grouptype {
+		.groupno {
 			color: $fg;
+		}
+
+		.grouptype {
+			color: $fg2;
+		}
+
+		.grouptype:before {
+			content: "(";
+		}
+
+		.grouptype:after {
+			content: ")";
 		}
 
 		.uicunknown {
@@ -199,7 +211,7 @@ div.content {
 			font-weight: bold;
 		}
 
-		.uic78::before {
+		.uic78:before {
 			content: "-";
 		}
 
@@ -217,7 +229,7 @@ div.content {
 			color: $fg3;
 		}
 
-		.uiccheck::before {
+		.uiccheck:before {
 			content: "-";
 		}
 	}
