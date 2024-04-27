@@ -10,7 +10,7 @@ requires 'List::UtilsBy';
 requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'Mojolicious';
-requires 'Travel::Status::DE::DBWagenreihung', '0.12';
+requires 'Travel::Status::DE::DBWagenreihung', '== 0.13';
 requires 'Travel::Status::DE::HAFAS', '>= 5.06';
 requires 'Travel::Status::DE::IRIS';
 requires 'XML::LibXML';

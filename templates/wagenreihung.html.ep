@@ -17,7 +17,7 @@
   % }
   <div class="container">
     <div style="text-align: center;">
-%=    join( ' / ', $wr->origins )
+%=    join( ' / ', map { $_->{name} } $wr->origins )
       →
 %=    join( ' / ', map { $_->{name} } $wr->destinations )
     </div>
@@ -28,7 +28,7 @@
        % }
       </div>
     % }
-    <%= $wr->station_name %> Gleis <%= $wr->platform %><br/>
+    <%= $wr->station->{name} %> Gleis <%= $wr->platform %><br/>
     % for my $desc ($wr->train_descriptions) {
       % if ($desc->{text}) {
         %= $desc->{text}

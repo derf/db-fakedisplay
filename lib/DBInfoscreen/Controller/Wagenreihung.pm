@@ -72,7 +72,7 @@ sub wagenreihung {
 				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
 				tt => $wr->train_type,
 				tn => $train,
-				s  => $wr->station_name,
+				s  => $wr->station->{name},
 				p  => $wr->platform
 			};
 
@@ -168,7 +168,7 @@ sub wagenreihung {
 				'wagenreihung',
 				description => sprintf(
 					'Ist-Wagenreihung %s in %s',
-					$title, $wr->station_name
+					$title, $wr->station->{name}
 				),
 				wr_error  => undef,
 				title     => $title,
