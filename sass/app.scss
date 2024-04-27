@@ -158,11 +158,15 @@ div.content {
 		.type {
 			display: inline-block;
 			width: 5em;
-			color: $fg2;
+			color: $fg;
 		}
 
 		a.type {
 			color: $link-color;
+		}
+
+		.grouptype {
+			color: $fg;
 		}
 
 		.uicunknown {
