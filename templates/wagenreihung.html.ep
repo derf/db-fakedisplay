@@ -17,27 +17,8 @@
   % }
   <div class="container">
     <div style="text-align: center;">
-%=    join( ' / ', map { $_->{name} } $wr->origins )
-      →
-%=    join( ' / ', map { $_->{name} } $wr->destinations )
+      <%= $wr->station->{name} %> Gleis <%= $wr->platform %><br/>
     </div>
-    % if ($has_multi_dest) {
-      <div style="text-align: center;">
-        % for my $destination ($wr->destinations) {
-          Nach <%= $destination->{name} %> in Abschnitt <%= join(q{}, sort @{$destination->{sections} // []}) %><br/>
-       % }
-      </div>
-    % }
-    <%= $wr->station->{name} %> Gleis <%= $wr->platform %><br/>
-    % for my $desc ($wr->train_descriptions) {
-      % if ($desc->{text}) {
-        %= $desc->{text}
-        % if ($has_multi_desc and length(join(q{}, sort @{$desc->{sections}}))) {
-          in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
-        % }
-        <br/>
-      % }
-    % }
   </div>
   <div class="container">
     <div class="wagonorder exit-<%= stash('exit_dir') // 'unknown'%>">
@@ -49,10 +30,27 @@
           </div>
 %       }
 %     }
+%     my $gi;
 %     for my $wagon ($wr->wagons) {
-%=      include '_wagon', direction => $wr->direction, wagon => $wagon, type => $wr->train_type, wref => $wref, exit_dir => stash('exit_dir');
+%=      include '_wagon', wr => $wr, wagon => $wagon, prev_gi => $gi, multi => $has_multi_desc + $has_multi_dest, wref => $wref, exit_dir => stash('exit_dir');
+%       $gi = $wagon->group_index;
 %     }
       </div>
+      <div style="text-align: center;">
+%=      join( ' / ', map { $_->{name} } $wr->origins )
+        →
+%=      join( ' / ', map { $_->{name} } $wr->destinations )
+      </div>
+    % for my $desc ($wr->train_descriptions) {
+      % if ($desc->{text}) {
+        <div style="text-align: center;">
+          %= $desc->{text}
+          % if ($has_multi_desc and length(join(q{}, sort @{$desc->{sections}}))) {
+            in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
+          % }
+        </div>
+      % }
+    % }
 <!--  <div>
       Legende: ♿ Behindertengerechte Ausstattung / 🍴 Bistro/Restaurant / 🚪 Abteile vorhanden
     </div>
