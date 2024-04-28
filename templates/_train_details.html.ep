@@ -119,7 +119,7 @@
 %   if (my $wr = $departure->{wr}) {
       <div class="wagonorder-preview">
 %     my @wagons = $wr->wagons;
-%     my $direction = $wr->direction ? $wr->direction == 100 ? '→' : '←' : q{};
+%     my $direction = defined $wr->direction ? $wr->direction == 100 ? '→' : '←' : q{};
 %     if ($departure->{direction}) {
 %       $direction = $departure->{direction} eq 'l' ? '◀' : '▶';
 %       if (($departure->{direction} eq 'l' ? 0 : 100) != $wr->direction) {
