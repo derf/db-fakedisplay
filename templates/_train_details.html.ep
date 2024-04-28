@@ -118,31 +118,18 @@
     </div> <!-- dataline -->
 %   if (my $wr = $departure->{wr}) {
       <div class="wagonorder-preview">
-%     my @wagons = $wr->wagons;
 %     my $direction = defined $wr->direction ? $wr->direction == 100 ? '→' : '←' : q{};
 %     if ($departure->{direction}) {
 %       $direction = $departure->{direction} eq 'l' ? '◀' : '▶';
-%       if (($departure->{direction} eq 'l' ? 0 : 100) != $wr->direction) {
-%         @wagons = reverse @wagons;
-%       }
 %     }
       <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>">
       %= $direction
-%     my $gi;
-%     for my $wagon (@wagons) {
-%       if (not ($wagon->is_locomotive or $wagon->is_powercar)) {
-%         if (defined $gi and $gi != $wagon->group_index) {
-            •
-%         }
-%         if ($wagon->is_closed) {
-            X
-%         }
-%         else {
-%=          $wagon->number || ($wagon->type =~ m{AB} ? '½' : $wagon->type =~ m{A} ? '1.' : $wagon->type =~ m{B} ? '2.' : $wagon->type )
-%         }
-%       }
-%       $gi = $wagon->group_index;
-%     }
+      % if (defined $departure->{direction_num} and $departure->{direction_num} != $wr->direction) {
+        %= join(q{ }, reverse @{$departure->{wr_preview} // []})
+      % }
+      % else {
+        %= join(q{ }, @{$departure->{wr_preview} // []})
+      % }
       %= $direction
       </a>
       </div>

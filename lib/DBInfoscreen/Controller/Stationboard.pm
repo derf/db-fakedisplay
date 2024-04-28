@@ -749,8 +749,38 @@ sub render_train {
 						from_json => $wr_json );
 					$departure->{wr}      = $wr;
 					$departure->{wr_text} = join( q{ • },
-						map { $_->{short} }
-						grep { $_->{short} } $wr->train_descriptions );
+						map { $_->desc_short }
+						grep { $_->desc_short } $wr->groups );
+					my $first = 0;
+					for my $group ( $wr->groups ) {
+						for my $wagon ( $group->wagons ) {
+							if (
+								not(   $wagon->is_locomotive
+									or $wagon->is_powercar )
+							  )
+							{
+								if ($first) {
+									push( @{ $departure->{wr_preview} }, '•' );
+									$first = 0;
+								}
+								my $entry;
+								if ( $wagon->is_closed ) {
+									$entry = 'X';
+								}
+								else {
+									$entry = $wagon->number
+									  || (
+										  $wagon->type =~ m{AB} ? '½'
+										: $wagon->type =~ m{A}  ? '1.'
+										: $wagon->type =~ m{B}  ? '2.'
+										:                         $wagon->type
+									  );
+								}
+								push( @{ $departure->{wr_preview} }, $entry );
+							}
+						}
+						$first = 1;
+					}
 				};
 				$departure->{wr_text} ||= 'Wagen';
 				return;
@@ -826,7 +856,8 @@ sub render_train {
 			}
 
 			if ($direction) {
-				$departure->{direction} = $direction;
+				$departure->{direction}     = $direction;
+				$departure->{direction_num} = $direction eq 'l' ? 0 : 100;
 			}
 			elsif ( $platform_info->{direction} ) {
 				$departure->{direction} = 'a' . $platform_info->{direction};
