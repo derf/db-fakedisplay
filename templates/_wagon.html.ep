@@ -87,6 +87,17 @@
 %     }
 %   }
 %   if ($multi and defined $wagon->group_index and (not defined $prev_gi or $wagon->group_index != $prev_gi)) {
-      <br/><span class="groupno"><%= $wr->train_type %> <%= ($wr->groups)[$wagon->group_index]->train_no %> → <%= $wr->{data}{istformation}{allFahrzeuggruppe}[$wagon->group_index]{zielbetriebsstellename} %></span> <span class="grouptype"><%= ($wr->train_descriptions)[$wagon->group_index]{short} %></span>
+      <br/>
+      <span class="groupno">
+%       if (scalar $wr->train_nos > 1) {
+          <%= $wr->train_type %> <%= ($wr->groups)[$wagon->group_index]->train_no %>
+%       }
+%       if (scalar $wr->destinations > 1) {
+          → <%= $wr->{data}{istformation}{allFahrzeuggruppe}[$wagon->group_index]{zielbetriebsstellename} %>
+%       }
+      </span>
+      % if (scalar $wr->train_descriptions > 1 and ($wr->train_descriptions)[$wagon->group_index]{short}) {
+        <span class="grouptype"><%= ($wr->train_descriptions)[$wagon->group_index]{short} %></span>
+%     }
 %   }
   </div>
