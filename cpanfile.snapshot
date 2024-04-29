@@ -156,6 +156,37 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  CPAN-Meta-Requirements-2.143
+    pathname: R/RJ/RJBS/CPAN-Meta-Requirements-2.143.tar.gz
+    provides:
+      CPAN::Meta::Requirements 2.143
+      CPAN::Meta::Requirements::Range 2.143
+    requirements:
+      B 0
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      perl 5.010000
+      strict 0
+      version 0.88
+      warnings 0
+  CPAN-Requirements-Dynamic-0.001
+    pathname: L/LE/LEONT/CPAN-Requirements-Dynamic-0.001.tar.gz
+    provides:
+      CPAN::Requirements::Dynamic 0.001
+    requirements:
+      CPAN::Meta::Prereqs 0
+      CPAN::Meta::Requirements::Range 0
+      Carp 0
+      ExtUtils::Config 0
+      ExtUtils::HasCompiler 0
+      ExtUtils::MakeMaker 0
+      IPC::Cmd 0
+      Module::Metadata 0
+      Parse::CPAN::Meta 0
+      Perl::OSType 0
+      perl 5.006
+      strict 0
+      warnings 0
   Cache-2.11
     pathname: S/SH/SHLOMIF/Cache-2.11.tar.gz
     provides:
@@ -833,6 +864,23 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
+  ExtUtils-HasCompiler-0.024
+    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.024.tar.gz
+    provides:
+      ExtUtils::HasCompiler 0.024
+    requirements:
+      Carp 0
+      DynaLoader 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      ExtUtils::Mksymlists 0
+      File::Basename 0
+      File::Spec::Functions 0
+      File::Temp 0
+      base 0
+      perl 5.006
+      strict 0
+      warnings 0
   ExtUtils-Helpers-0.026
     pathname: L/LE/LEONT/ExtUtils-Helpers-0.026.tar.gz
     provides:
@@ -1289,12 +1337,13 @@ DISTRIBUTIONS
       Text::ParseWords 0
       perl 5.006001
       version 0.87
-  Module-Build-Tiny-0.047
-    pathname: L/LE/LEONT/Module-Build-Tiny-0.047.tar.gz
+  Module-Build-Tiny-0.048
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.048.tar.gz
     provides:
-      Module::Build::Tiny 0.047
+      Module::Build::Tiny 0.048
     requirements:
       CPAN::Meta 0
+      CPAN::Requirements::Dynamic 0
       DynaLoader 0
       Exporter 5.57
       ExtUtils::CBuilder 0
@@ -1826,12 +1875,13 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.13
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.13.tar.gz
+  Travel-Status-DE-DBWagenreihung-0.14
+    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.14.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.13
-      Travel::Status::DE::DBWagenreihung::Section 0.13
-      Travel::Status::DE::DBWagenreihung::Wagon 0.13
+      Travel::Status::DE::DBWagenreihung 0.14
+      Travel::Status::DE::DBWagenreihung::Group 0.14
+      Travel::Status::DE::DBWagenreihung::Section 0.14
+      Travel::Status::DE::DBWagenreihung::Wagon 0.14
     requirements:
       Carp 0
       Class::Accessor 0
