@@ -7,14 +7,6 @@
   </div>
 % }
 % else {
-  % my $has_multi_dest = 0;
-  % my $has_multi_desc = 0;
-  % if (scalar $wr->destinations > 1) {
-    % $has_multi_dest = 1;
-  % }
-  % if (scalar $wr->train_descriptions > 1) {
-    % $has_multi_desc = 1;
-  % }
   <div class="container">
     <div style="text-align: center;">
       <%= $wr->station->{name} %> Gleis <%= $wr->platform %><br/>
@@ -30,10 +22,12 @@
           </div>
 %       }
 %     }
-%     my $gi;
-%     for my $wagon ($wr->wagons) {
-%=      include '_wagon', wr => $wr, wagon => $wagon, prev_gi => $gi, multi => $has_multi_desc + (scalar $wr->destinations) - 1 + (scalar $wr->train_nos) - 1, wref => $wref, exit_dir => stash('exit_dir');
-%       $gi = $wagon->group_index;
+%     for my $group ($wr->groups) {
+%       my $first = 1;
+%       for my $wagon ($group->wagons) {
+%=        include '_wagon', wr => $wr, wagon => $wagon, first => $first, multi => (scalar $wr->destinations) - 1 + (scalar $wr->train_nos) - 1, wref => $wref, exit_dir => stash('exit_dir');
+%         $first = 0;
+%       }
 %     }
       </div>
       <div style="text-align: center;">
@@ -41,12 +35,12 @@
         →
 %=      join( ' / ', map { $_->{name} } $wr->destinations )
       </div>
-    % for my $desc ($wr->train_descriptions) {
-      % if ($desc->{text}) {
+    % for my $group ($wr->groups) {
+      % if ($group->description) {
         <div style="text-align: center;">
-          %= $desc->{text}
-          % if ($has_multi_desc and length(join(q{}, sort @{$desc->{sections}}))) {
-            in Abschnitt <%= join(q{}, sort @{$desc->{sections}}) %>
+          %= $group->description
+          % if (scalar $wr->groups > 1 and $group->has_sections) {
+            in Abschnitt <%= join(q{}, sort $group->sections) %>
           % }
         </div>
       % }
