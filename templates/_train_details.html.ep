@@ -68,10 +68,10 @@
 %   else {
 %     my $left = '';
 %     my $right = '';
-%     if ($departure->{direction} and $departure->{direction} eq 'l') {
+%     if ($departure->{wr_direction} and $departure->{wr_direction} eq 'l') {
 %       $left = '◀ ';
 %     }
-%     elsif ($departure->{direction} and $departure->{direction} eq 'r') {
+%     elsif ($departure->{wr_direction} and $departure->{wr_direction} eq 'r') {
 %       $right = ' ▶';
 %     }
 %     if ($departure->{scheduled_platform} and $departure->{platform}
@@ -119,10 +119,10 @@
 %   if (my $wr = $departure->{wr}) {
       <div class="wagonorder-preview">
 %     my $direction = defined $wr->direction ? $wr->direction == 100 ? '→' : '←' : q{};
-%     if ($departure->{direction}) {
-%       $direction = $departure->{direction} eq 'l' ? '◀' : '▶';
+%     if ($departure->{wr_direction}) {
+%       $direction = $departure->{wr_direction} eq 'l' ? '◀' : '▶';
 %     }
-      <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>">
+      <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>">
       %= $direction
       % if (defined $departure->{direction_num} and $departure->{direction_num} != $wr->direction) {
         %= join(q{ }, reverse @{$departure->{wr_preview} // []})
@@ -144,7 +144,7 @@
 %       }
 %     }
 %     if ($departure->{wr_link}) {
-        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
+        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
 %     }
 %     if ($departure->{train_type} and $departure->{train_no}) {

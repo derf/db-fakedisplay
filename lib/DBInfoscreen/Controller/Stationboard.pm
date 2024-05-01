@@ -856,11 +856,11 @@ sub render_train {
 			}
 
 			if ($direction) {
-				$departure->{direction}     = $direction;
-				$departure->{direction_num} = $direction eq 'l' ? 0 : 100;
+				$departure->{wr_direction}     = $direction;
+				$departure->{wr_direction_num} = $direction eq 'l' ? 0 : 100;
 			}
 			elsif ( $platform_info->{direction} ) {
-				$departure->{direction} = 'a' . $platform_info->{direction};
+				$departure->{wr_direction} = 'a' . $platform_info->{direction};
 			}
 
 			return;
