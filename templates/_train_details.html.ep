@@ -118,12 +118,18 @@
     </div> <!-- dataline -->
 %   if (my $wr = $departure->{wr}) {
       <div class="wagonorder-preview">
-%     my $direction = defined $wr->direction ? $wr->direction == 100 ? '→' : '←' : q{};
-%     if ($departure->{wr_direction}) {
-%       $direction = $departure->{wr_direction} eq 'l' ? '◀' : '▶';
+%     my $left = defined $wr->direction ? $wr->direction == 100 ? q{} : '←' : q{};
+%     my $right = defined $wr->direction ? $wr->direction == 100 ? '→' : q{} : q{};
+%     if ($departure->{wr_direction} and $departure->{wr_direction} eq 'l') {
+%       $left = '◀';
+%       $right = q{};
+%     }
+%     elsif ($departure->{wr_direction} and $departure->{wr_direction} eq 'r') {
+%       $left = q{};
+%       $right = '▶';
 %     }
       <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>">
-      %= $direction
+      %= $left
       % for my $entry ((defined $departure->{wr_direction_num} and $departure->{wr_direction_num} != $wr->direction) ? reverse @{$departure->{wr_preview} // []} : @{$departure->{wr_preview} // []}) {
         % if ($entry->[1]) {
           <span class="<%= $entry->[1] %>"><%= $entry->[0] %></span>
@@ -132,7 +138,7 @@
           %= $entry->[0]
         % }
       % }
-      %= $direction
+      %= $right
       </a>
       </div>
 %   }
