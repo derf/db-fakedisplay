@@ -124,11 +124,13 @@
 %     }
       <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>">
       %= $direction
-      % if (defined $departure->{direction_num} and $departure->{direction_num} != $wr->direction) {
-        %= join(q{ }, reverse @{$departure->{wr_preview} // []})
-      % }
-      % else {
-        %= join(q{ }, @{$departure->{wr_preview} // []})
+      % for my $entry ((defined $departure->{wr_direction_num} and $departure->{wr_direction_num} != $wr->direction) ? reverse @{$departure->{wr_preview} // []} : @{$departure->{wr_preview} // []}) {
+        % if ($entry->[1]) {
+          <span class="<%= $entry->[1] %>"><%= $entry->[0] %></span>
+        % }
+        % else {
+          %= $entry->[0]
+        % }
       % }
       %= $direction
       </a>

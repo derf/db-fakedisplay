@@ -759,13 +759,19 @@ sub render_train {
 									or $wagon->is_powercar )
 							  )
 							{
+								my $class;
 								if ($first) {
-									push( @{ $departure->{wr_preview} }, '•' );
+									push(
+										@{ $departure->{wr_preview} },
+										[ '•', 'meta' ]
+									);
 									$first = 0;
+									say "-";
 								}
 								my $entry;
 								if ( $wagon->is_closed ) {
 									$entry = 'X';
+									$class = 'closed';
 								}
 								else {
 									$entry = $wagon->number
@@ -776,7 +782,16 @@ sub render_train {
 										:                         $wagon->type
 									  );
 								}
-								push( @{ $departure->{wr_preview} }, $entry );
+								if (
+									$group->train_no ne $departure->{train_no} )
+								{
+									$class = 'otherno';
+								}
+								say $entry;
+								push(
+									@{ $departure->{wr_preview} },
+									[ $entry, $class ]
+								);
 							}
 						}
 						$first = 1;
