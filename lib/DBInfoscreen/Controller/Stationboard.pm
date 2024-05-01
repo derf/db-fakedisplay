@@ -753,6 +753,7 @@ sub render_train {
 						grep { $_->desc_short } $wr->groups );
 					my $first = 0;
 					for my $group ( $wr->groups ) {
+						my $had_entry = 0;
 						for my $wagon ( $group->wagons ) {
 							if (
 								not(   $wagon->is_locomotive
@@ -790,9 +791,12 @@ sub render_train {
 									@{ $departure->{wr_preview} },
 									[ $entry, $class ]
 								);
+								$had_entry = 1;
 							}
 						}
-						$first = 1;
+						if ($had_entry) {
+							$first = 1;
+						}
 					}
 				};
 				$departure->{wr_text} ||= 'Wagen';
