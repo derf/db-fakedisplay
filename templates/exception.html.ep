@@ -5,7 +5,7 @@ Beim Bearbeiten der Anfrage ist ein Fehler aufgetreten.<br/>
 <pre>
 ----------[Debug start]----------
 % if ($exception) {
-%= $exception->message
+%= ref($exception) ? $exception->message : $exception
 Stash:
 %= dumper $snapshot
 % }
