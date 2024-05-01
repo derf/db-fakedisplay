@@ -766,7 +766,6 @@ sub render_train {
 										[ '•', 'meta' ]
 									);
 									$first = 0;
-									say "-";
 								}
 								my $entry;
 								if ( $wagon->is_closed ) {
@@ -787,7 +786,6 @@ sub render_train {
 								{
 									$class = 'otherno';
 								}
-								say $entry;
 								push(
 									@{ $departure->{wr_preview} },
 									[ $entry, $class ]
