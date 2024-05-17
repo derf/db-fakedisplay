@@ -17,6 +17,7 @@ use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 use Travel::Status::DE::DBWagenreihung;
+use Travel::Status::DE::EFA;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
 use Travel::Status::DE::IRIS::Stations;
@@ -44,11 +45,20 @@ sub class_to_product {
 }
 
 sub handle_no_results {
-	my ( $self, $station, $data, $hafas ) = @_;
+	my ( $self, $station, $data, $hafas, $efa ) = @_;
 
 	my $errstr = $data->{errstr};
 
-	if ($hafas) {
+	if ($efa) {
+		$self->render(
+			'landingpage',
+			error     => ( $errstr // "Keine Abfahrten an '$station'" ),
+			hide_opts => 0,
+			status    => $data->{status} // 404,
+		);
+		return;
+	}
+	elsif ($hafas) {
 		$self->render_later;
 		my $service = 'DB';
 		if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) )
@@ -343,6 +353,25 @@ sub get_results_p {
 	my ( $self, $station, %opt ) = @_;
 	my $data;
 
+	if ( $opt{efa} ) {
+		my $service = 'VRR';
+		if ( $opt{efa} ne '1'
+			and Travel::Status::DE::EFA::get_service( $opt{efa} ) )
+		{
+			$service = $opt{efa};
+		}
+		say "EFA $service";
+		return Travel::Status::DE::EFA->new_p(
+			service     => $service,
+			name        => $station,
+			lwp_options => {
+				timeout => 10,
+				agent   => 'dbf.finalrewind.org/2'
+			},
+			promise    => 'Mojo::Promise',
+			user_agent => Mojo::UserAgent->new,
+		);
+	}
 	if ( $opt{hafas} ) {
 		my $service = 'DB';
 		if ( $opt{hafas} ne '1'
@@ -412,12 +441,14 @@ sub handle_request {
 	my $station = $self->stash('station');
 
 	my $template     = $self->param('mode') // 'app';
+	my $efa          = $self->param('efa');
 	my $hafas        = $self->param('hafas');
 	my $with_related = !$self->param('no_related');
 	my %opt          = (
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
 		lookahead       => $self->config->{lookahead},
+		efa             => $efa,
 		hafas           => $hafas,
 	);
 
@@ -507,6 +538,10 @@ sub handle_request {
 	$self->get_results_p( $station, %opt )->then(
 		sub {
 			my ($status) = @_;
+			if ($efa) {
+				$self->handle_efa( $station, $status );
+				return;
+			}
 			my $data = {
 				results       => [ $status->results ],
 				hafas         => $hafas ? $status : undef,
@@ -553,7 +588,7 @@ sub handle_request {
 					errstr => $err,
 					status => ( $err =~ m{Ambiguous|LOCATION} ? 300 : 500 ),
 				},
-				$hafas
+				$hafas, $efa
 			);
 			return;
 		}
@@ -1425,6 +1460,85 @@ sub train_details {
 			}
 		}
 	)->wait;
+}
+
+sub handle_efa {
+	my ( $self, $station_name, $efa ) = @_;
+	my $template       = $self->param('mode')         // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
+	  // 0;
+
+	my @departures;
+
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
+	}
+
+	for my $result ( $efa->results ) {
+		my $time     = $result->sched_datetime->strftime('%H:%M');
+		my $linetype = $result->mot_name // 'bahn';
+		if ( $linetype eq 's-bahn' ) {
+			$linetype = 'sbahn';
+		}
+		elsif ( $linetype eq 'u-bahn' ) {
+			$linetype = 'ubahn';
+		}
+		elsif ( $linetype =~ m{bus} ) {
+			$linetype = 'bus';
+		}
+		elsif ( $linetype eq 'zug' ) {
+			$linetype = 'bahn';
+		}
+		elsif ( $linetype eq 'sonstige' ) {
+			$linetype = 'ext';
+		}
+		say $result->line . " : $linetype";
+		push(
+			@departures,
+			{
+				time            => $time,
+				sched_departure => $result->sched_datetime->strftime('%H:%M'),
+				departure       => $result->rt_datetime
+				? $result->rt_datetime->strftime('%H:%M')
+				: undef,
+				train           => $result->line,
+				train_type      => q{},
+				train_line      => $result->line,
+				train_no        => $result->train_no,
+				via             => [],
+				destination     => $result->destination,
+				platform        => $result->platform,
+				is_cancelled    => $result->is_cancelled,
+				linetype        => $linetype,
+				delay           => $result->delay,
+				replaced_by     => [],
+				replacement_for => [],
+				route_pre       => [],
+				route_post      => [],
+				wr_link         => undef,
+			}
+		);
+	}
+
+	$self->render(
+		$template,
+		description      => "Abfahrtstafel $station_name",
+		departures       => \@departures,
+		station          => $station_name,
+		version          => $self->config->{version},
+		title            => $station_name,
+		refresh_interval => $template eq 'app' ? 0 : 120,
+		hide_opts        => $hide_opts,
+		hide_low_delay   => $hide_low_delay,
+		show_realtime    => $show_realtime,
+		load_marquee     => (
+			     $template eq 'single'
+			  or $template eq 'multi'
+		),
+		force_mobile => ( $template eq 'app' ),
+	);
 }
 
 sub handle_result {
