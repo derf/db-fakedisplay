@@ -13,7 +13,6 @@ use Encode     qw(decode encode);
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 use Mojo::Util qw(url_escape);
-use XML::LibXML;
 
 sub new {
 	my ( $class, %opt ) = @_;

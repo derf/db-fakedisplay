@@ -13,7 +13,6 @@ use Encode qw(decode encode);
 use Travel::Status::DE::HAFAS;
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
-use XML::LibXML;
 
 sub new {
 	my ( $class, %opt ) = @_;
