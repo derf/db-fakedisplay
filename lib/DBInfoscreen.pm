@@ -190,6 +190,16 @@ sub startup {
 			  = (qw(help_outline person_outline people priority_high));
 			my $text = 'Auslastung unbekannt';
 
+			if ( $occupancy eq 'MANY_SEATS' ) {
+				$occupancy = 1;
+			}
+			elsif ( $occupancy eq 'FEW_SEATS' ) {
+				$occupancy = 2;
+			}
+			elsif ( $occupancy eq 'STANDING_ONLY' ) {
+				$occupancy = 3;
+			}
+
 			if ( $occupancy > 2 ) {
 				$text = 'Sehr hohe Auslastung erwartet';
 			}

@@ -1513,6 +1513,7 @@ sub handle_efa {
 				is_cancelled    => $result->is_cancelled,
 				linetype        => $linetype,
 				delay           => $result->delay,
+				occupancy       => $result->occupancy,
 				replaced_by     => [],
 				replacement_for => [],
 				route_pre       => [],
