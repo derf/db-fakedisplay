@@ -151,6 +151,18 @@
 %   else {
       <span class="platform">
 %   }
+%   if ($departure->{load}{FIRST} or $departure->{load}{SECOND}) {
+%     my ($text, $icon1, $icon2) = utilization_icon([$departure->{load}{FIRST}, $departure->{load}{SECOND}]);
+      <span class="load">
+        <i class="material-icons" style="vertical-align: bottom;" aria-hidden="true"><%= $icon2 %></i>
+      </span>
+%   }
+%   elsif (my $o = $departure->{occupancy}) {
+      <span class="load">
+%       my ($text, $icon) = occupancy_icon($o);
+        <i class="material-icons" style="vertical-align: bottom;" aria-hidden="true"><%= $icon %></i>
+      </span>
+%   }
     <span class="visually-hidden">Gleis</span>
 %=  $departure->{platform}
     </span>

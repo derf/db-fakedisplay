@@ -1925,6 +1925,7 @@ sub handle_result {
 						origin      => $result->route_end =~ s{,\Q$city\E}{}r,
 						platform           => $result->platform,
 						scheduled_platform => $result->sched_platform,
+						load               => $result->load // {},
 						info               => $info,
 						is_cancelled       => $result->is_cancelled,
 						linetype           => $linetype,
