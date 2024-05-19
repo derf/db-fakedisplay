@@ -360,7 +360,6 @@ sub get_results_p {
 		{
 			$service = $opt{efa};
 		}
-		say "EFA $service";
 		return Travel::Status::DE::EFA->new_p(
 			service     => $service,
 			name        => $station,
@@ -1477,7 +1476,15 @@ sub handle_efa {
 	}
 
 	for my $result ( $efa->results ) {
-		my $time     = $result->sched_datetime->strftime('%H:%M');
+		my $time;
+
+		if ( $show_realtime and $result->rt_datetime ) {
+			$time = $result->rt_datetime->strftime('%H:%M');
+		}
+		else {
+			$time = $result->sched_datetime->strftime('%H:%M');
+		}
+
 		my $linetype = $result->mot_name // 'bahn';
 		if ( $linetype eq 's-bahn' ) {
 			$linetype = 'sbahn';
@@ -1494,7 +1501,6 @@ sub handle_efa {
 		elsif ( $linetype eq 'sonstige' ) {
 			$linetype = 'ext';
 		}
-		say $result->line . " : $linetype";
 		push(
 			@departures,
 			{
