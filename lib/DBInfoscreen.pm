@@ -187,7 +187,9 @@ sub startup {
 			my ( $self, $occupancy ) = @_;
 
 			my @symbols
-			  = (qw(help_outline person_outline people priority_high));
+			  = (
+				qw(help_outline person_outline people priority_high not_interested)
+			  );
 			my $text = 'Auslastung unbekannt';
 
 			if ( $occupancy eq 'MANY_SEATS' ) {
@@ -199,7 +201,13 @@ sub startup {
 			elsif ( $occupancy eq 'STANDING_ONLY' ) {
 				$occupancy = 3;
 			}
+			elsif ( $occupancy eq 'FULL' ) {
+				$occupancy = 4;
+			}
 
+			if ( $occupancy > 3 ) {
+				$text = 'Voraussichtlich überfüllt';
+			}
 			if ( $occupancy > 2 ) {
 				$text = 'Sehr hohe Auslastung erwartet';
 			}
