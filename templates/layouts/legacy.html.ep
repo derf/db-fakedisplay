@@ -17,7 +17,7 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	% my $av = 'v99'; # asset version
+	% my $av = 'v100'; # asset version
 	%= stylesheet "/static/${av}/css/legacy.css"
 	%= stylesheet "/static/${av}/css/material-icons.css"
 	%= stylesheet "/static/${av}/css/jquery-ui.min.css"
