@@ -20,10 +20,12 @@
 		Diese Installation nutzt
 		<strong>DBF v<%= stash('version') // '???' %></strong> mit folgenden Backends:
 		<ul>
-		<li> Innerdeutscher Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
+		<li>Innerdeutscher Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		<strong>v<%= $Travel::Status::DE::IRIS::VERSION %></strong></li>
-		<li> Außerdeutsche Fahrten, Nahverkehr, Details, Karten: HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		<li>Außerdeutsche Fahrten, Nahverkehr, Details, Karten: HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 		<strong>v<%= $Travel::Status::DE::HAFAS::VERSION %></strong></li>
+		<li>Nahverkehr: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
+		<strong>v<%= $Travel::Status::DE::EFA::VERSION %></strong></li>
 		<li>Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		<strong>v<%= $Travel::Status::DE::DBWagenreihung::VERSION %></strong></li>
 		<li>Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a></li>
@@ -33,6 +35,14 @@
 		Unterstützte HAFAS-Instanzen („hafas=…“):
 		<ul>
 		% for my $service (Travel::Status::DE::HAFAS::get_services()) {
+			<li><%= $service->{shortname} %> (<%= $service->{name} %>)</li>
+		% }
+		</ul>
+	</p>
+	<p>
+		Unterstützte EFA-Instanzen („efa=…“, unfertig/experimentell):
+		<ul>
+		% for my $service (Travel::Status::DE::EFA::get_efa_urls()) {
 			<li><%= $service->{shortname} %> (<%= $service->{name} %>)</li>
 		% }
 		</ul>
