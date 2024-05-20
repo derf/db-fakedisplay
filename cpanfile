@@ -11,7 +11,7 @@ requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'Mojolicious';
 requires 'Travel::Status::DE::DBWagenreihung', '== 0.14';
-requires 'Travel::Status::DE::EFA', '>= 2.01';
+requires 'Travel::Status::DE::EFA', '>= 2.02';
 requires 'Travel::Status::DE::HAFAS', '>= 5.06';
 requires 'Travel::Status::DE::IRIS';
 requires 'XML::LibXML';
