@@ -53,9 +53,9 @@
       >
 %   }
 %   if (param('hafas')) {
-      <a href="/z/<%= Mojo::Util::url_escape($departure->{journey_id}) . '?hafas=1&highlight=' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
+      <a href="/z/<%= Mojo::Util::url_escape($departure->{journey_id}) . '?hafas=' . Mojo::Util::url_escape(param('hafas')) . '&highlight=' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
 %   }
-%   else {
+%   elsif (not param('efa')) {
       <a href="/z/<%= Mojo::Util::url_escape(($departure->{train_type} // q{}) . ' ' . ($departure->{train_no} // $departure->{train} // q{})) . '/' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
 %   }
     <div class="anchor" id="<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>"></div>
@@ -177,7 +177,9 @@
 %=    $route_str
       </span>
 %   }
-    </a>
+%   if (not param('efa')) {
+      </a>
+%   }
     </li>
 
 % }

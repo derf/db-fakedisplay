@@ -1999,7 +1999,7 @@ sub handle_result {
 		my $station_name = $data->{station_name} // $self->stash('station');
 		my ( $api_link, $api_text, $api_icon );
 		my $params = $self->req->params->clone;
-		$params->param( hafas => not $params->param('hafas') );
+		$params->param( hafas => $params->param('hafas') ? q{} : 'DB' );
 		if ( $params->param('hafas') ) {
 			if (    $data->{station_eva} >= 8100000
 				and $data->{station_eva} < 8200000 )
