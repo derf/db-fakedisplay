@@ -1514,6 +1514,7 @@ sub handle_efa {
 				train_line      => $result->line,
 				train_no        => $result->train_no,
 				via             => [],
+				origin          => $result->origin,
 				destination     => $result->destination,
 				platform        => $result->platform,
 				is_cancelled    => $result->is_cancelled,
