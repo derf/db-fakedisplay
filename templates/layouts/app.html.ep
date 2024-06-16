@@ -302,7 +302,7 @@ Bitte eine Station aus der Liste auswählen</div>
 <div class="container">
 <div class="config">
 Farbschema:
-<a onClick="javascript:setTheme('light')">light</a>
+<a onClick="javascript:setTheme('light')">hell</a>
 ·
 <a onClick="javascript:setTheme('dark')">dunkel</a>
 ·
