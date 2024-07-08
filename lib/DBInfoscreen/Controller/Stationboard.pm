@@ -511,6 +511,7 @@ sub handle_request {
 	$self->param( mode => $template );
 
 	if ( not $station ) {
+		$self->param( rt => 1 );
 		$self->render( 'landingpage', show_intro => 1 );
 		return;
 	}
