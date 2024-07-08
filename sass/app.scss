@@ -418,6 +418,16 @@ div.app {
 					background-color: transparent;
 				}
 
+				&.a-bit-delayed {
+					color: $smalldelay-color;
+					background-color: transparent;
+				}
+
+				&.on-time {
+					color: $ontime-color;
+					background-color: transparent;
+				}
+
 				.no-realtime {
 					background-color: transparent;
 					padding-right: 1ex;

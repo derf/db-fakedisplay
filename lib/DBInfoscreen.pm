@@ -273,6 +273,25 @@ sub startup {
 		}
 	);
 
+	$self->helper(
+		'get_rt_time_class' => sub {
+			my ( $self, $train ) = @_;
+			if (    $train->{has_realtime}
+				and not $train->{is_bit_delayed}
+				and not $train->{is_delayed} )
+			{
+				return 'on-time';
+			}
+			if ( $train->{is_bit_delayed} ) {
+				return 'a-bit-delayed';
+			}
+			if ( $train->{is_delayed} ) {
+				return 'delayed';
+			}
+			return q{};
+		}
+	);
+
 	my $r = $self->routes;
 
 	$r->get('/_redirect')->to('stationboard#redirect_to_station');

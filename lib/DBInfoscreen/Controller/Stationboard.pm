@@ -1875,11 +1875,15 @@ sub handle_result {
 								} $result->qos_messages
 							],
 						},
-						station          => $result->station,
-						moreinfo         => $moreinfo,
-						delay            => $delay,
+						station        => $result->station,
+						moreinfo       => $moreinfo,
+						delay          => $delay,
+						is_bit_delayed =>
+						  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
+						is_delayed       => ( $delay and $delay >= 5 ? 1 : 0 ),
 						arrival_delay    => $result->arrival_delay,
 						departure_delay  => $result->departure_delay,
+						has_realtime     => $result->has_realtime,
 						missing_realtime => (
 							not $result->has_realtime
 							  and $result->start < $now ? 1 : 0
@@ -1939,9 +1943,13 @@ sub handle_result {
 						station            => $result->station,
 						moreinfo           => $moreinfo,
 						delay              => $delay,
-						replaced_by        => [],
-						replacement_for    => [],
-						route_pre          => $admode eq 'arr'
+						is_bit_delayed     =>
+						  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
+						is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
+						has_realtime    => defined $delay ? 1 : 0,
+						replaced_by     => [],
+						replacement_for => [],
+						route_pre       => $admode eq 'arr'
 						? [ map { $_->loc->name } $result->route ]
 						: [],
 						route_post => $admode eq 'arr' ? []

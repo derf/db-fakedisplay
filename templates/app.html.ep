@@ -100,8 +100,7 @@
 %=      $departure->{origin}
       </span>
 %   }
-    <span class="time <%= ($show_realtime and $departure->{delay} and not
-      $departure->{is_cancelled}) ? 'delayed' : q{} %>">
+    <span class="time <%= $show_realtime ? get_rt_time_class($departure) : q{} %>">
 %     if ($departure->{delay} and not $departure->{is_cancelled}) {
 %       if ($show_realtime) {
 %         if ($departure->{delay} > ($hide_low_delay ? 4 : 0)) {
