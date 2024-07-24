@@ -1,0 +1,10 @@
+<div class="container">
+	<p>
+		Die folgenden Backends werden derzeit unterstützt:
+	</p>
+	<p>
+		% for my $backend (@{$backends}) {
+			<a class="button" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{name} %> (<%= $backend->{type} %>)</a>
+		% }
+	</p>
+</div>

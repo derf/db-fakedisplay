@@ -301,6 +301,8 @@ sub startup {
 
 	$r->get('/_autostop')->to('static#geostop');
 
+	$r->get('/_backend')->to('stationboard#backend_list');
+
 	$r->get('/_datenschutz')->to('static#privacy');
 
 	$r->post('/_geolocation')->to('stationboard#stations_by_coordinates');

@@ -2141,6 +2141,35 @@ sub stations_by_coordinates {
 	)->wait;
 }
 
+sub backend_list {
+	my ($self) = @_;
+
+	my @backends = (
+		{
+			name => 'Deutsche Bahn',
+			type => 'IRIS-TTS',
+		}
+	);
+
+	for my $backend ( Travel::Status::DE::HAFAS::get_services() ) {
+		push(
+			@backends,
+			{
+				name      => $backend->{name},
+				shortname => $backend->{shortname},
+				type      => 'HAFAS',
+				hafas     => 1,
+			}
+		);
+	}
+
+	$self->render(
+		'_backend',
+		backends  => \@backends,
+		hide_opts => 1
+	);
+}
+
 sub autocomplete {
 	my ($self) = @_;
 

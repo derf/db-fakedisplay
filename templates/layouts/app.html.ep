@@ -141,6 +141,9 @@ Bitte eine Station aus der Liste auswählen</div>
       <a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https')->query({hafas => param('hafas')}) %>">Stationen in der Umgebung suchen</a>
     </div>
   % }
+  <div class="backendlink">
+    <a class="button button-light" href="<%= url_for('_backend')->query({hafas => param('hafas')}) %>">Backend: <%= param('hafas') ? param('hafas') . ' (HAFAS)' : 'DB (IRIS-TTS)' %></a>
+  </div>
   <div class="break"></div>
   <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
   <div class="moresettings moresettings-collapsed">
