@@ -155,7 +155,7 @@
         <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
 %     }
-%     if ($departure->{train_type} and $departure->{train_no}) {
+%     if ($departure->{train_type} and $departure->{train_no} and (not param('hafas') or param('hafas') eq 'DB')) {
         <a class="smallbutton" href="https://bahn.expert/details/<%= $departure->{train_type} %>%20<%= $departure->{train_no} %>/<%= ($departure->{date} // DateTime->now(time_zone => 'Europe/Berlin'))->iso8601 %>?evaNumberAlongRoute=<%= $departure->{eva} %>"><img src="/static/icons/bahn-expert.svg">Details</a>
 %     }
 %     for my $link (@{$departure->{links}}) {
