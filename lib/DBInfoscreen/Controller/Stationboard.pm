@@ -2015,6 +2015,11 @@ sub handle_result {
 			{
 				$params->param( hafas => 'ÖBB' );
 			}
+			elsif ( $data->{station_eva} >= 8500000
+				and $data->{station_eva} < 8600000 )
+			{
+				$params->param( hafas => 'BLS' );
+			}
 			$api_link = '/' . $data->{station_eva} . '?' . $params->to_string;
 			$api_text = 'Auf Nahverkehr wechseln';
 			$api_icon = 'train';
