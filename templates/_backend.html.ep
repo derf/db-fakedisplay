@@ -1,10 +1,28 @@
 <div class="container">
 	<p>
-		Die folgenden Backends werden derzeit unterstützt:
+		Das Backend bestimmt die Datenquelle für Stations- und Zuginformationen.
+		Innerhalb Deutschlands ist <strong>Deutsche Bahn</strong> meist eine gute Wahl: IRIS-TTS kennt ausschließlich Schienenverkehr im Bahnnetz, während HAFAS auch Nahverkehr unterstützt.
+		Die anderen Backends bieten sich für Fahrten im Ausland oder im zugehörigen Verkehrsverbund an und sind werden teils nicht perfekt unterstützt.
 	</p>
 	<p>
+		% my $prev_type = 'IRIS-TTS';
 		% for my $backend (@{$backends}) {
-			<a class="button" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{name} %> (<%= $backend->{type} %>)</a>
+			% if ($backend->{type} ne $prev_type) {
+				% $prev_type = $backend->{type};
+				</p><p>
+			% }
+			% my $class = 'button';
+			% if (param('hafas')) {
+				% if ($backend->{hafas} and $backend->{shortname} eq param('hafas')) {
+					% $class .= ' button-active';
+				% }
+			% }
+			% else {
+				% if (not $backend->{hafas}) {
+					% $class .= ' button-active';
+				% }
+			% }
+			<a class="<%= $class %>" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{name} %> (<%= $backend->{type} %>)</a>
 		% }
 	</p>
 </div>
