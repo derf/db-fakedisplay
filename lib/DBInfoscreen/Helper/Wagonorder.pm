@@ -25,10 +25,28 @@ sub new {
 }
 
 sub get_p {
-	my ( $self, $train_no, $api_ts ) = @_;
+	my ( $self, %opt ) = @_;
 
-	my $url
-	  = "https://ist-wr.noncd.db.de/wagenreihung/1.0/${train_no}/${api_ts}";
+	my %param;
+
+	if ( $opt{param} ) {
+		%param = %{ $opt{param} };
+	}
+	else {
+		my $datetime = $opt{datetime}->clone->set_time_zone('UTC');
+		%param = (
+			administrationId => 80,
+			category         => $opt{train_type},
+			date             => $datetime->strftime('%Y-%m-%d'),
+			evaNumber        => $opt{eva},
+			number           => $opt{train_number},
+			time             => $datetime->rfc3339 =~ s{(?=Z)}{.000}r
+		);
+	}
+
+	my $url = sprintf( '%s?%s',
+'https://www.bahn.de/web/api/reisebegleitung/wagenreihung/vehicle-sequence',
+		join( '&', map { $_ . '=' . $param{$_} } keys %param ) );
 
 	my $cache = $self->{realtime_cache};
 
@@ -39,7 +57,7 @@ sub get_p {
 		if ( $content->{error} ) {
 			return $promise->reject($content);
 		}
-		return $promise->resolve($content);
+		return $promise->resolve( $content, \%param );
 	}
 
 	$self->{user_agent}->request_timeout(10)->get_p( $url => $self->{header} )
@@ -66,7 +84,7 @@ sub get_p {
 			my $json = $tx->res->json;
 
 			$cache->freeze( $url, $json );
-			$promise->resolve($json);
+			$promise->resolve( $json, \%param );
 			return;
 		}
 	)->catch(

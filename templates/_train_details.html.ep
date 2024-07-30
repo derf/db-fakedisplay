@@ -128,7 +128,7 @@
 %       $left = q{};
 %       $right = '▶';
 %     }
-      <a href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>">
+      <a href="/carriage-formation?<%= $departure->{wr_link} %>&amp;e=<%= $departure->{wr_direction} // '' %>">
       %= $left
       % for my $entry ((defined $departure->{wr_direction_num} and $departure->{wr_direction_num} != $wr->direction) ? reverse @{$departure->{wr_preview} // []} : @{$departure->{wr_preview} // []}) {
         % if ($entry->[1]) {
@@ -152,7 +152,7 @@
 %       }
 %     }
 %     if ($departure->{wr_link}) {
-        <a class="smallbutton" href="/_wr/<%= $departure->{train_no} %>/<%= $departure->{wr_link} %>?e=<%= $departure->{wr_direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
+        <a class="smallbutton" href="/carriage-formation?<%= $departure->{wr_link} %>&amp;e=<%= $departure->{wr_direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
 %     }
 %     if ($departure->{train_type} and $departure->{train_no} and (not param('hafas') or param('hafas') eq 'DB')) {

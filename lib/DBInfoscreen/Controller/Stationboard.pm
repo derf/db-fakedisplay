@@ -773,23 +773,29 @@ sub render_train {
 	my @requests
 	  = ( $wagonorder_req, $occupancy_req, $stationinfo_req, $route_req );
 
-	if ( $departure->{wr_link} ) {
-		$self->wagonorder->get_p( $result->train_no, $departure->{wr_link} )
-		  ->then(
+	if ( $departure->{wr_dt} ) {
+		$self->wagonorder->get_p(
+			train_type   => $result->type,
+			train_number => $result->train_no,
+			datetime     => $departure->{wr_dt},
+			eva          => $departure->{eva}
+		)->then(
 			sub {
-				my ($wr_json) = @_;
+				my ( $wr_json, $wr_param ) = @_;
 				eval {
 					my $wr
 					  = Travel::Status::DE::DBWagenreihung->new(
 						from_json => $wr_json );
 					$departure->{wr}      = $wr;
+					$departure->{wr_link} = join( '&',
+						map { $_ . '=' . $wr_param->{$_} } keys %{$wr_param} );
 					$departure->{wr_text} = join( q{ • },
 						map { $_->desc_short }
 						grep { $_->desc_short } $wr->groups );
 					my $first = 0;
 					for my $group ( $wr->groups ) {
 						my $had_entry = 0;
-						for my $wagon ( $group->wagons ) {
+						for my $wagon ( $group->carriages ) {
 							if (
 								not(   $wagon->is_locomotive
 									or $wagon->is_powercar )
@@ -808,14 +814,23 @@ sub render_train {
 									$entry = 'X';
 									$class = 'closed';
 								}
+								elsif ( $wagon->number ) {
+									$entry = $wagon->number;
+								}
 								else {
-									$entry = $wagon->number
-									  || (
-										  $wagon->type =~ m{AB} ? '½'
-										: $wagon->type =~ m{A}  ? '1.'
-										: $wagon->type =~ m{B}  ? '2.'
-										:                         $wagon->type
-									  );
+									$entry = $wagon->type;
+
+									#if ($wagon->has_first_class) {
+									#	if ($wagon->has_second_class) {
+									#		$entry = '½';
+									#	}
+									#	else {
+									#		$entry = '1.';
+									#	}
+									#}
+									#else {
+									#	$entry = '2.';
+									#}
 								}
 								if (
 									$group->train_no ne $departure->{train_no} )
@@ -838,7 +853,7 @@ sub render_train {
 				return;
 			},
 			sub {
-				$departure->{wr_link} = undef;
+				$departure->{wr_dt} = undef;
 				return;
 			}
 		)->finally(
@@ -1160,9 +1175,7 @@ sub station_train_details {
 					map { $_->type . q{ } . $_->train_no }
 					  $result->replacement_for
 				],
-				wr_link => $result->sched_departure
-				? $result->sched_departure->strftime('%Y%m%d%H%M')
-				: undef,
+				wr_dt => $result->sched_departure,
 				eva   => $result->station_uic,
 				start => $result->start,
 			};
@@ -1526,7 +1539,7 @@ sub handle_efa {
 				replacement_for => [],
 				route_pre       => [],
 				route_post      => [],
-				wr_link         => undef,
+				wr_dt           => undef,
 			}
 		);
 	}
@@ -1901,9 +1914,8 @@ sub handle_result {
 							map { $_->type . q{ } . $_->train_no }
 							  $result->replacement_for
 						],
-						wr_link => $result->sched_departure
-						? $result->sched_departure->strftime('%Y%m%d%H%M')
-						: undef,
+						wr_dt => $result->sched_departure,
+						eva   => $result->station_uic,
 					}
 				);
 			}
@@ -1955,9 +1967,8 @@ sub handle_result {
 						: [],
 						route_post => $admode eq 'arr' ? []
 						: [ map { $_->loc->name } $result->route ],
-						wr_link => $result->sched_datetime
-						? $result->sched_datetime->strftime('%Y%m%d%H%M')
-						: undef,
+						wr_dt => $result->sched_datetime,
+						eva   => $result->station_uic,
 					}
 				);
 			}

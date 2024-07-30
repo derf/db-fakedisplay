@@ -9,42 +9,39 @@
 % else {
   <div class="container">
     <div style="text-align: center;">
-      <%= $wr->station->{name} %> Gleis <%= $wr->platform %><br/>
+      Gleis <%= $wr->platform %><br/>
     </div>
   </div>
   <div class="container">
     <div class="wagonorder exit-<%= stash('exit_dir') // 'unknown'%>">
-%     if (not $wr->has_bad_wagons) {
-%       for my $section ($wr->sections) {
-          <div class="section" style="
-          top: <%= $section->{start_percent} %>%; bottom: <%= 100 - $section->{end_percent} %>%;">
-%=          $section->{name}
-          </div>
-%       }
+%     for my $sector ($wr->sectors) {
+        <div class="section" style="
+        top: <%= $sector->start_percent %>%; bottom: <%= 100 - $sector->end_percent %>%;">
+%=        $sector->name
+        </div>
 %     }
 %     for my $group ($wr->groups) {
 %       my $first = 1;
-%       for my $wagon ($group->wagons) {
-%=        include '_wagon', wr => $wr, wagon => $wagon, first => $first, multi => (scalar $wr->destinations) - 1 + (scalar $wr->train_nos) - 1, wref => $wref, exit_dir => stash('exit_dir');
+%       for my $wagon ($group->carriages) {
+%=        include '_wagon', wr => $wr, group => $group, wagon => $wagon, first => $first, multi => (scalar $wr->destinations) - 1 + (scalar $wr->train_numbers) - 1, wref => $wref, exit_dir => stash('exit_dir'), train_no => param('number');
 %         $first = 0;
 %       }
 %     }
-      </div>
-      <div style="text-align: center;">
-%=      join( ' / ', map { $_->{name} } $wr->origins )
-        →
-%=      join( ' / ', map { $_->{name} } $wr->destinations )
       </div>
     % for my $group ($wr->groups) {
       % if ($group->description) {
         <div style="text-align: center;">
           %= $group->description
-          % if (scalar $wr->groups > 1 and $group->has_sections) {
-            in Abschnitt <%= join(q{}, sort $group->sections) %>
+          % if (scalar $wr->groups > 1 and $group->has_sectors) {
+            in Abschnitt <%= join(q{}, sort $group->sectors) %>
           % }
         </div>
       % }
     % }
+      <div style="text-align: center;">
+        nach
+%=      join( ' / ', map { $_->{name} } $wr->destinations )
+      </div>
 <!--  <div>
       Legende: ♿ Behindertengerechte Ausstattung / 🍴 Bistro/Restaurant / 🚪 Abteile vorhanden
     </div>

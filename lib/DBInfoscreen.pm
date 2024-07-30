@@ -313,7 +313,7 @@ sub startup {
 
 	$r->get('/dyn/:av/autocomplete.js')->to('stationboard#autocomplete');
 
-	$r->get('/_wr/:train/:departure')->to('wagenreihung#wagenreihung');
+	$r->get('/carriage-formation')->to('wagenreihung#wagenreihung');
 	$r->get('/w/*wagon')->to('wagenreihung#wagen');
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');

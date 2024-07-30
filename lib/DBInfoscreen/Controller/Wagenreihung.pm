@@ -14,28 +14,31 @@ use Travel::Status::DE::DBWagenreihung;
 use Travel::Status::DE::DBWagenreihung::Wagon;
 
 sub handle_wagenreihung_error {
-	my ( $self, $train_no, $err ) = @_;
+	my ( $self, $train, $err ) = @_;
 
 	$self->render(
 		'wagenreihung',
-		title     => "Zug $train_no",
+		title     => $train,
 		wr_error  => $err,
-		train_no  => $train_no,
 		wr        => undef,
 		wref      => undef,
 		hide_opts => 1,
+		status    => 500,
 	);
 }
 
 sub wagenreihung {
-	my ($self)    = @_;
-	my $train     = $self->stash('train');
-	my $departure = $self->stash('departure');
+	my ($self) = @_;
 	my $exit_side = $self->param('e');
+
+	my $train_type = $self->param('category');
+	my $train_no   = $self->param('number');
+	my $train      = "${train_type} ${train_no}";
 
 	$self->render_later;
 
-	$self->wagonorder->get_p( $train, $departure )->then(
+	$self->wagonorder->get_p( param => $self->req->query_params->to_hash )
+	  ->then(
 		sub {
 			my ($json) = @_;
 			my $wr;
@@ -50,8 +53,8 @@ sub wagenreihung {
 			}
 
 			if ( $exit_side and $exit_side =~ m{^a} ) {
-				if ( $wr->sections and defined $wr->direction ) {
-					my $section_0 = ( $wr->sections )[0];
+				if ( $wr->sectors and defined $wr->direction ) {
+					my $section_0 = ( $wr->sectors )[0];
 					my $direction = $wr->direction;
 					if ( $section_0->name eq 'A' and $direction == 0 ) {
 						$exit_side =~ s{^a}{};
@@ -71,22 +74,21 @@ sub wagenreihung {
 			my $wref = {
 				e  => $exit_side ? substr( $exit_side, 0, 1 ) : '',
 				tt => $wr->train_type,
-				tn => $train,
-				s  => $wr->station->{name},
+				tn => $train_no,
 				p  => $wr->platform
 			};
 
-			if ( $wr->has_bad_wagons ) {
+			#if ( $wr->has_bad_wagons ) {
 
-				# create fake positions as the correct ones are not available
-				my $pos = 0;
-				for my $wagon ( $wr->wagons ) {
-					$wagon->{position}{start_percent} = $pos;
-					$wagon->{position}{end_percent}   = $pos + 4;
-					$pos += 4;
-				}
-			}
-			elsif ( defined $wr->direction and scalar $wr->wagons > 2 ) {
+			#	# create fake positions as the correct ones are not available
+			#	my $pos = 0;
+			#	for my $wagon ( $wr->wagons ) {
+			#		$wagon->{position}{start_percent} = $pos;
+			#		$wagon->{position}{end_percent}   = $pos + 4;
+			#		$pos += 4;
+			#	}
+			#}
+			if ( defined $wr->direction and scalar $wr->carriages > 2 ) {
 
 				# wagenlexikon images only know one orientation. They assume
 				# that the second class (i.e., the wagon with the lowest
@@ -100,17 +102,17 @@ sub wagenreihung {
 				# order differs, we do not show a direction, as we do not
 				# handle that case yet.
 
-				my @wagons = $wr->wagons;
+				my @wagons = $wr->carriages;
 
 				# skip first/last wagon as it may be a locomotive
 				my $wna1 = $wagons[1]->number;
 				my $wna2 = $wagons[2]->number;
 				my $wnb1 = $wagons[-3]->number;
 				my $wnb2 = $wagons[-2]->number;
-				my $wpa1 = $wagons[1]{position}{start_percent};
-				my $wpa2 = $wagons[2]{position}{start_percent};
-				my $wpb1 = $wagons[-3]{position}{start_percent};
-				my $wpb2 = $wagons[-2]{position}{start_percent};
+				my $wpa1 = $wagons[1]->start_percent;
+				my $wpa2 = $wagons[2]->start_percent;
+				my $wpb1 = $wagons[-3]->start_percent;
+				my $wpb2 = $wagons[-2]->start_percent;
 
 				if (    $wna1 =~ m{^\d+$}
 					and $wna2 =~ m{^\d+$}
@@ -161,22 +163,17 @@ sub wagenreihung {
 
 			$wref = b64_encode( encode_json($wref) );
 
-			my $title = join( ' / ',
-				map { $wr->train_type . ' ' . $_ } $wr->train_numbers );
+			my $title = join( ' / ', map { $_->{name} } $wr->trains );
 
 			$self->render(
 				'wagenreihung',
-				description => sprintf(
-					'Ist-Wagenreihung %s in %s',
-					$title, $wr->station->{name}
-				),
-				wr_error  => undef,
-				title     => $title,
-				train_no  => $train,
-				wr        => $wr,
-				wref      => $wref,
-				exit_dir  => $exit_dir,
-				hide_opts => 1,
+				description => sprintf( 'Ist-Wagenreihung %s', $title ),
+				wr_error    => undef,
+				title       => $title,
+				wr          => $wr,
+				wref        => $wref,
+				exit_dir    => $exit_dir,
+				hide_opts   => 1,
 			);
 		}
 	)->catch(
@@ -184,7 +181,7 @@ sub wagenreihung {
 			my ($err) = @_;
 
 			$self->handle_wagenreihung_error( $train,
-				$err->{error}->{msg} // $err // "Unbekannter Fehler" );
+				$err // "Unbekannter Fehler" );
 			return;
 		}
 	)->wait;
