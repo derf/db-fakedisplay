@@ -31,6 +31,7 @@ sub get_p {
 
 	if ( $opt{param} ) {
 		%param = %{ $opt{param} };
+		delete $param{e};
 	}
 	else {
 		my $datetime = $opt{datetime}->clone->set_time_zone('UTC');

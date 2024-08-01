@@ -11,7 +11,6 @@ use Mojo::Util qw(b64_encode b64_decode);
 use utf8;
 
 use Travel::Status::DE::DBWagenreihung;
-use Travel::Status::DE::DBWagenreihung::Wagon;
 
 sub handle_wagenreihung_error {
 	my ( $self, $train, $err ) = @_;

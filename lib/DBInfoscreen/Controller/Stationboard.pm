@@ -818,19 +818,20 @@ sub render_train {
 									$entry = $wagon->number;
 								}
 								else {
-									$entry = $wagon->type;
-
-									#if ($wagon->has_first_class) {
-									#	if ($wagon->has_second_class) {
-									#		$entry = '½';
-									#	}
-									#	else {
-									#		$entry = '1.';
-									#	}
-									#}
-									#else {
-									#	$entry = '2.';
-									#}
+									if ( $wagon->has_first_class ) {
+										if ( $wagon->has_second_class ) {
+											$entry = '½';
+										}
+										else {
+											$entry = '1.';
+										}
+									}
+									elsif ( $wagon->has_second_class ) {
+										$entry = '2.';
+									}
+									else {
+										$entry = $wagon->type;
+									}
 								}
 								if (
 									$group->train_no ne $departure->{train_no} )

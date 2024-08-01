@@ -1,8 +1,8 @@
 % my $bg = '';
 % my $extra_class = '';
-% #if ($wagon->has_first_class) {
-% #  $extra_class .= ' firstclass';
-% #}
+% if ($wagon->has_first_class) {
+%   $extra_class .= ' firstclass';
+% }
 % if ($wagon->is_locomotive or $wagon->is_powercar) {
 %   $extra_class .= ' powercar';
 % }
@@ -21,19 +21,19 @@
 %   }
 %   else {
 %=    $wagon->number // '?'
-%     if(0){ #if ($wagon->has_wheelchair_space) {
+%     if ($wagon->has_wheelchair_space) {
         <i class="material-icons" style="font-size: 20px;">accessible</i>
 %     }
-%     if(0){ #if ($wagon->has_bistro) {
+%     if ($wagon->has_bistro) {
         <i class="material-icons">restaurant</i>
 %     }
-%     if(0){ #if ($wagon->has_quiet_zone) {
+%     if ($wagon->has_quiet_zone) {
         <i class="tiny material-icons">volume_off</i>
 %     }
-%     if(0){ #if ($wagon->has_family_zone) {
+%     if ($wagon->has_family_zone) {
         <i class="material-icons">people</i>
 %     }
-%     if(0){ #if ($wagon->has_bahn_comfort) {
+%     if ($wagon->has_bahn_comfort) {
         <i class="material-icons">star</i>
 %     }
 %   }
