@@ -68,10 +68,10 @@
 %   else {
 %     my $left = '';
 %     my $right = '';
-%     if ($departure->{wr_direction} and $departure->{wr_direction} eq 'l') {
+%     if ($departure->{wr_direction} and $departure->{wr_direction} =~ m{l}) {
 %       $left = '◀ ';
 %     }
-%     elsif ($departure->{wr_direction} and $departure->{wr_direction} eq 'r') {
+%     elsif ($departure->{wr_direction} and $departure->{wr_direction} =~ m{r}) {
 %       $right = ' ▶';
 %     }
 %     if ($departure->{scheduled_platform} and $departure->{platform}
@@ -120,11 +120,11 @@
       <div class="wagonorder-preview">
 %     my $left = defined $wr->direction ? $wr->direction == 100 ? q{} : '←' : q{};
 %     my $right = defined $wr->direction ? $wr->direction == 100 ? '→' : q{} : q{};
-%     if ($departure->{wr_direction} and $departure->{wr_direction} eq 'l') {
+%     if ($departure->{wr_direction} and $departure->{wr_direction} =~ m{l}) {
 %       $left = '◀';
 %       $right = q{};
 %     }
-%     elsif ($departure->{wr_direction} and $departure->{wr_direction} eq 'r') {
+%     elsif ($departure->{wr_direction} and $departure->{wr_direction} =~ m{r}) {
 %       $left = q{};
 %       $right = '▶';
 %     }
