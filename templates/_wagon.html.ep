@@ -20,7 +20,7 @@
       X
 %   }
 %   else {
-%=    $wagon->number // '?'
+%=    $wagon->number // q{}
 %     if ($wagon->has_wheelchair_space) {
         <i class="material-icons" style="font-size: 20px;">accessible</i>
 %     }
