@@ -280,7 +280,9 @@
           <%= $stop->{name} %></a>
 %         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
 %           my ($text, $icon1, $icon2) = utilization_icon([$stop->{load}{FIRST}, $stop->{load}{SECOND}]);
-            <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % if ($icon1 ne 'help_outline') {
+              <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % }
             <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
 %         }
           </li>
@@ -323,7 +325,9 @@
             <strong><%= stash('station_name') %></strong>
 %           if (my $u = $departure->{utilization}) {
 %             my ($text, $icon1, $icon2) = utilization_icon($u);
-              <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % if ($icon1 ne 'help_outline') {
+                <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % }
               <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
 %           }
           </li>
@@ -371,7 +375,9 @@
           <%= $stop->{name} %></a>
 %         if ($stop->{load}{FIRST} or $stop->{load}{SECOND}) {
 %           my ($text, $icon1, $icon2) = utilization_icon([$stop->{load}{FIRST}, $stop->{load}{SECOND}]);
-            <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % if ($icon1 ne 'help_outline') {
+              <i class="material-icons" aria-hidden="true"><%= $icon1 %></i>
+            % }
             <i class="material-icons" aria-hidden="true"><%= $icon2 %></i>
 %         }
           </li>
