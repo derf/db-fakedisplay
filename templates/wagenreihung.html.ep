@@ -32,6 +32,9 @@
       % if ($group->description) {
         <div style="text-align: center;">
           %= $group->description
+          % if ($group->designation) {
+            „<%= $group->designation %>“
+          % }
           % if (scalar $wr->groups > 1 and $group->has_sectors) {
             in Abschnitt <%= join(q{}, sort $group->sectors) %>
           % }
