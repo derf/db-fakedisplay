@@ -434,7 +434,7 @@ sub route {
 					ts   => ( $journey->route )[-1]->arr,
 				},
 				train_no => $journey->number
-				? ( $journey->type . ' ' . $journey->number )
+				? ( $journey->type // q{} . ' ' . $journey->number )
 				: undef,
 				operator        => $journey->operator,
 				next_stop       => $next_stop,
