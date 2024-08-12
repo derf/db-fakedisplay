@@ -1316,19 +1316,19 @@ sub train_details {
 				my $prod
 				  = $self->class_to_product($hafas_obj)->{ $product->class }
 				  // q{};
-				if ( $prod eq 'ice' or $prod eq 'ic_ec' ) {
+				if ( $prod =~ m{ ^ ice? | inter-?cit }ix ) {
 					$linetype = 'fern';
 				}
-				elsif ( $prod eq 's' ) {
+				elsif ( $prod =~ m{ s-bahn | urban | rapid }ix ) {
 					$linetype = 'sbahn';
 				}
-				elsif ( $prod eq 'bus' ) {
+				elsif ( $prod =~ m{ bus }ix ) {
 					$linetype = 'bus';
 				}
-				elsif ( $prod eq 'u' ) {
+				elsif ( $prod =~ m{ metro | u-bahn | subway }ix ) {
 					$linetype = 'ubahn';
 				}
-				elsif ( $prod eq 'tram' ) {
+				elsif ( $prod =~ m{ tram }ix ) {
 					$linetype = 'tram';
 				}
 			}
@@ -1501,17 +1501,20 @@ sub handle_efa {
 		}
 
 		my $linetype = $result->mot_name // 'bahn';
-		if ( $linetype eq 's-bahn' ) {
+		if ( $linetype =~ m{ s-bahn | urban | rapid }ix ) {
 			$linetype = 'sbahn';
 		}
-		elsif ( $linetype eq 'u-bahn' ) {
+		elsif ( $linetype =~ m{ metro | u-bahn | subway }ix ) {
 			$linetype = 'ubahn';
 		}
-		elsif ( $linetype =~ m{bus} ) {
+		elsif ( $linetype =~ m{ bus }ix ) {
 			$linetype = 'bus';
 		}
-		elsif ( $linetype eq 'zug' ) {
-			$linetype = 'bahn';
+		elsif ( $linetype =~ m{ tram }ix ) {
+			$linetype = 'tram';
+		}
+		elsif ( $linetype =~ m{ ^ ice? | inter-?cit }ix ) {
+			$linetype = 'fern';
 		}
 		elsif ( $linetype eq 'sonstige' ) {
 			$linetype = 'ext';
@@ -1673,19 +1676,19 @@ sub handle_result {
 		}
 		elsif ( $result->can('class') ) {
 			my $prod = $class_to_product->{ $result->class } // q{};
-			if ( $prod eq 'ice' or $prod eq 'ic_ec' ) {
+			if ( $prod =~ m{ ^ ice? | inter-?cit }ix ) {
 				$linetype = 'fern';
 			}
-			elsif ( $prod eq 's' ) {
+			elsif ( $prod =~ m{ s-bahn | urban | rapid }ix ) {
 				$linetype = 'sbahn';
 			}
-			elsif ( $prod eq 'bus' ) {
+			elsif ( $prod =~ m{ bus }ix ) {
 				$linetype = 'bus';
 			}
-			elsif ( $prod eq 'u' ) {
+			elsif ( $prod =~ m{ metro | u-bahn | subway }ix ) {
 				$linetype = 'ubahn';
 			}
-			elsif ( $prod eq 'tram' ) {
+			elsif ( $prod =~ m{ tram }ix ) {
 				$linetype = 'tram';
 			}
 		}
