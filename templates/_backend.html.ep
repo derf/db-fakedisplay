@@ -10,6 +10,7 @@
 			% if ($backend->{type} ne $prev_type) {
 				% $prev_type = $backend->{type};
 				</p><p>
+				<%= $prev_type %>:<br/>
 			% }
 			% my $class = 'button';
 			% if (param('hafas')) {
@@ -22,7 +23,7 @@
 					% $class .= ' button-active';
 				% }
 			% }
-			<a class="<%= $class %>" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{name} %> (<%= $backend->{type} %>)</a>
+			<a class="<%= $class %>" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{shortname} // 'IRIS-TTS' %> – <%= $backend->{name} %></a>
 		% }
 	</p>
 </div>
