@@ -32,24 +32,9 @@
 		</ul>
 	</p>
 	<p>
-		Unterstützte HAFAS-Instanzen („hafas=…“):
+		Verwendete Ressourcen:
 		<ul>
-		% for my $service (Travel::Status::DE::HAFAS::get_services()) {
-			<li><%= $service->{shortname} %> (<%= $service->{name} %>)</li>
-		% }
-		</ul>
-	</p>
-	<p>
-		Unterstützte EFA-Instanzen („efa=…“, unfertig/experimentell):
-		<ul>
-		% for my $service (Travel::Status::DE::EFA::get_efa_urls()) {
-			<li><%= $service->{shortname} %> (<%= $service->{name} %>)</li>
-		% }
-		</ul>
-	</p>
-	<p>
-		Verwendete Open Data-Ressourcen:
-		<ul>
+		<li><a href="/_backend">HAFAS-Backends</a> via <a href="https://github.com/public-transport/transport-apis">transport-apis</a>, CC0</li>
 		<li><a href="https://data.deutschebahn.com/dataset/zugbildungsplanzugbildungsplan-zpar">Zugbildungsplan</a> © DB Fernverkehr AG, lizensiert unter CC-BY 4.0</li>
 		<li><a href="http://data.deutschebahn.com/dataset/data-haltestellen">Haltestellenliste</a>
 		© DB Station&amp;Service AG,
