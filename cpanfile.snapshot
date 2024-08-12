@@ -1867,13 +1867,13 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.17
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.17.tar.gz
+  Travel-Status-DE-DBWagenreihung-0.18
+    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.18.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.17
-      Travel::Status::DE::DBWagenreihung::Carriage 0.17
-      Travel::Status::DE::DBWagenreihung::Group 0.17
-      Travel::Status::DE::DBWagenreihung::Sector 0.17
+      Travel::Status::DE::DBWagenreihung 0.18
+      Travel::Status::DE::DBWagenreihung::Carriage 0.18
+      Travel::Status::DE::DBWagenreihung::Group 0.18
+      Travel::Status::DE::DBWagenreihung::Sector 0.18
     requirements:
       Carp 0
       Class::Accessor 0
