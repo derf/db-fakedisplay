@@ -929,6 +929,8 @@ sub render_train {
 			}
 			elsif ( $platform_info->{direction} ) {
 				$departure->{wr_direction} = 'a' . $platform_info->{direction};
+				$departure->{wr_direction_num}
+				  = $platform_info->{direction} eq 'l' ? 0 : 100;
 			}
 
 			return;
