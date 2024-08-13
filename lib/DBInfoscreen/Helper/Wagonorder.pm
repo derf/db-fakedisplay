@@ -56,7 +56,9 @@ sub get_p {
 	if ( my $content = $cache->thaw($url) ) {
 		$self->{log}->debug("wagonorder->get_p($url): cached");
 		if ( $content->{error} ) {
-			return $promise->reject($content);
+			return $promise->reject(
+"GET $url: HTTP $content->{error}{code} $content->{error}{message} (cachd)"
+			);
 		}
 		return $promise->resolve( $content, \%param );
 	}
@@ -77,7 +79,7 @@ sub get_p {
 					"wagonorder->get_p($url): HTTP $err->{code} $err->{message}"
 				);
 				$cache->freeze( $url, $json );
-				$promise->reject($json);
+				$promise->reject("GET $url: HTTP $err->{code} $err->{message}");
 				return;
 			}
 
