@@ -173,6 +173,7 @@ sub wagenreihung {
 				wref        => $wref,
 				exit_dir    => $exit_dir,
 				hide_opts   => 1,
+				ts          => $json->{ts},
 			);
 		}
 	)->catch(

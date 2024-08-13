@@ -8,6 +8,7 @@ use strict;
 use warnings;
 use 5.020;
 
+use DateTime;
 use Mojo::Promise;
 
 sub new {
@@ -93,6 +94,8 @@ sub get_p {
 
 			$self->{log}->debug("wagonorder->get_p($url): OK");
 			my $json = $tx->res->json;
+			$json->{ts} = DateTime->now( time_zone => 'Europe/Berlin' )
+			  ->strftime('%d.%m.%Y %H:%M');
 
 			$self->{main_cache}->freeze( $url, $json );
 			$promise->resolve( $json, \%param );

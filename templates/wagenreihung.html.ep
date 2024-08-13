@@ -50,7 +50,7 @@
     </div>
 -->
     <p class="copyright">
-      Quelle: DB Wagenreihungs-API. Angaben ohne Gewähr.
+      Quelle: DB Wagenreihungs-API (<%= stash('ts') // q{} %>). Angaben ohne Gewähr.
     </p>
 
   </div>
