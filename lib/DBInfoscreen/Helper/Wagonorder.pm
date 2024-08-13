@@ -49,11 +49,19 @@ sub get_p {
 'https://www.bahn.de/web/api/reisebegleitung/wagenreihung/vehicle-sequence',
 		join( '&', map { $_ . '=' . $param{$_} } keys %param ) );
 
-	my $cache = $self->{realtime_cache};
-
 	my $promise = Mojo::Promise->new;
 
-	if ( my $content = $cache->thaw($url) ) {
+	if ( my $content = $self->{main_cache}->thaw($url) ) {
+		$self->{log}->debug("wagonorder->get_p($url): cached");
+		if ( $content->{error} ) {
+			return $promise->reject(
+"GET $url: HTTP $content->{error}{code} $content->{error}{message} (cachd)"
+			);
+		}
+		return $promise->resolve( $content, \%param );
+	}
+
+	if ( my $content = $self->{realtime_cache}->thaw($url) ) {
 		$self->{log}->debug("wagonorder->get_p($url): cached");
 		if ( $content->{error} ) {
 			return $promise->reject(
@@ -78,7 +86,7 @@ sub get_p {
 				$self->{log}->debug(
 					"wagonorder->get_p($url): HTTP $err->{code} $err->{message}"
 				);
-				$cache->freeze( $url, $json );
+				$self->{realtime_cache}->freeze( $url, $json );
 				$promise->reject("GET $url: HTTP $err->{code} $err->{message}");
 				return;
 			}
@@ -86,7 +94,7 @@ sub get_p {
 			$self->{log}->debug("wagonorder->get_p($url): OK");
 			my $json = $tx->res->json;
 
-			$cache->freeze( $url, $json );
+			$self->{main_cache}->freeze( $url, $json );
 			$promise->resolve( $json, \%param );
 			return;
 		}
