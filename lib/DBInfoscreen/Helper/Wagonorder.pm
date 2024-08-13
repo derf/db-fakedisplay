@@ -48,7 +48,7 @@ sub get_p {
 
 	my $url = sprintf( '%s?%s',
 'https://www.bahn.de/web/api/reisebegleitung/wagenreihung/vehicle-sequence',
-		join( '&', map { $_ . '=' . $param{$_} } keys %param ) );
+		join( '&', map { $_ . '=' . $param{$_} } sort keys %param ) );
 
 	my $promise = Mojo::Promise->new;
 
