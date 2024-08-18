@@ -3,7 +3,7 @@
 % }
 
 <div class="container">
-		<div id="map" style="height: 500px;">
+		<div id="map" style="height: 70vh;">
 		</div>
 	</div>
 
