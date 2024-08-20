@@ -5,7 +5,7 @@ package DBInfoscreen::Controller::Map;
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw(decode_json);
+use Mojo::JSON qw(decode_json encode_json);
 use Mojo::Promise;
 
 use DateTime;
@@ -533,6 +533,26 @@ sub ajax_route {
 			);
 		}
 	)->wait;
+}
+
+sub coverage {
+	my ($self)  = @_;
+	my $backend = $self->stash('backend');
+	my $service = $self->stash('service');
+
+	my $coverage = {};
+
+	if ( $backend eq 'HAFAS' ) {
+		$coverage = $self->hafas->get_coverage($service);
+	}
+
+	$self->render(
+		'coverage_map',
+		title     => "Abdeckung $service",
+		hide_opts => 1,
+		with_map  => 1,
+		coverage  => encode_json($coverage),
+	);
 }
 
 1;

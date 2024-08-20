@@ -318,6 +318,7 @@ sub startup {
 
 	$r->get('/_ajax_mapinfo/:tripid/:lineno')->to('map#ajax_route');
 	$r->get('/map/:tripid/:lineno')->to('map#route');
+	$r->get('/coverage/:backend/:service')->to('map#coverage');
 	$r->get( '/z/:train/*station' => [ format => [ 'html', 'json' ] ] )
 	  ->to( 'stationboard#station_train_details', format => undef )
 	  ->name('train_at_station');

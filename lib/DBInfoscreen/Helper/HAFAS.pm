@@ -28,6 +28,18 @@ sub new {
 
 }
 
+sub get_coverage {
+	my ( $self, $service ) = @_;
+
+	my $service_definition = Travel::Status::DE::HAFAS::get_service($service);
+
+	if ( not $service_definition ) {
+		return {};
+	}
+
+	return $service_definition->{coverage}{area} // {};
+}
+
 sub get_route_p {
 	my ( $self, %opt ) = @_;
 

@@ -2166,6 +2166,36 @@ sub stations_by_coordinates {
 sub backend_list {
 	my ($self) = @_;
 
+	my %place_map = (
+		AT       => 'Österreich',
+		CH       => 'Schweiz',
+		'CH-BE'  => 'Kanton Bern',
+		'CH-GE'  => 'Kanton Genf',
+		'CH-LU'  => 'Kanton Luzern',
+		'CH-ZH'  => 'Kanton Zürich',
+		DE       => 'Deutschland',
+		'DE-BB'  => 'Brandenburg',
+		'DE-BW'  => 'Baden-Württemberg',
+		'DE-BE'  => 'Berlin',
+		'DE-BY'  => 'Bayern',
+		'DE-HB'  => 'Bremen',
+		'DE-HE'  => 'Hessen',
+		'DE-MV'  => 'Mecklenburg-Vorpommern',
+		'DE-NI'  => 'Niedersachsen',
+		'DE-NW'  => 'Nordrhein-Westfalen',
+		'DE-RP'  => 'Rheinland-Pfalz',
+		'DE-SH'  => 'Schleswig-Holstein',
+		'DE-ST'  => 'Sachsen-Anhalt',
+		'DE-TH'  => 'Thüringen',
+		DK       => 'Dänemark',
+		'GB-NIR' => 'Nordirland',
+		LI       => 'Litauen',
+		LU       => 'Luxembourg',
+		IE       => 'Irland',
+		'US-CA'  => 'California',
+		'US-TX'  => 'Texas',
+	);
+
 	my @backends = (
 		{
 			name => 'Deutsche Bahn',
@@ -2179,14 +2209,20 @@ sub backend_list {
 			{
 				name      => $backend->{name},
 				shortname => $backend->{shortname},
-				type      => 'HAFAS',
-				hafas     => 1,
+				homepage  => $backend->{homepage},
+				regions   => [
+					map { $place_map{$_} // $_ }
+					  @{ $backend->{coverage}{regions} }
+				],
+				has_area => $backend->{coverage}{area} ? 1 : 0,
+				type     => 'HAFAS',
+				hafas    => 1,
 			}
 		);
 	}
 
 	$self->render(
-		'_backend',
+		'select_backend',
 		backends  => \@backends,
 		hide_opts => 1
 	);
