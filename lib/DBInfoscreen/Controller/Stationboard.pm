@@ -2189,7 +2189,7 @@ sub backend_list {
 		'DE-TH'  => 'Thüringen',
 		DK       => 'Dänemark',
 		'GB-NIR' => 'Nordirland',
-		LI       => 'Litauen',
+		LI       => 'Liechtenstein',
 		LU       => 'Luxembourg',
 		IE       => 'Irland',
 		'US-CA'  => 'California',
