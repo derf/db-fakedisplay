@@ -1,0 +1,22 @@
+<div class="container">
+	Das <%= $backend %>-Backend „<%= $service %>“ liefert ungefähr innerhalb
+	der folgenden grob umrissenen Region voraussichtlich nützliche Echtzeitdaten.
+</div>
+
+<div class="container">
+	<div id="map" style="height: 70vh;">
+	</div>
+</div>
+
+<script>
+const map = L.map('map').setView([51.306, 9.712], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+const coverage = L.geoJSON(<%== $coverage %>);
+
+coverage.addTo(map);
+map.fitBounds(coverage.getBounds());
+</script>
