@@ -284,6 +284,9 @@ div.app {
 
 			&.cancelled {
 				background-color: $cancelled-bg-color;
+				.time {
+					color: $fg !important;
+				}
 			}
 
 			&.past {
