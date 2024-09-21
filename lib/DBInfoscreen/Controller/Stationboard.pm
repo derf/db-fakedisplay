@@ -242,8 +242,9 @@ sub result_has_via {
 	my ( $result, $via ) = @_;
 
 	my @route
-	  = $result->can('route_post') ? $result->route_post : map { $_->loc->name }
-	  $result->route;
+	  = $result->can('route_post')
+	  ? ( $result->route_post, $result->sched_route_post )
+	  : map { $_->loc->name } $result->route;
 
 	my $eq_result = List::MoreUtils::any { lc eq lc($via) } @route;
 
