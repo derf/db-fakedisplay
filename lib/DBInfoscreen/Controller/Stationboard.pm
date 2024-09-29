@@ -364,6 +364,7 @@ sub get_results_p {
 		return Travel::Status::DE::EFA->new_p(
 			service     => $service,
 			name        => $station,
+			full_routes => 1,
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {
 				timeout => 10,
@@ -1531,23 +1532,23 @@ sub handle_efa {
 				departure       => $result->rt_datetime
 				? $result->rt_datetime->strftime('%H:%M')
 				: undef,
-				train           => $result->line,
-				train_type      => q{},
-				train_line      => $result->line,
-				train_no        => $result->train_no,
-				via             => [],
-				origin          => $result->origin,
-				destination     => $result->destination,
-				platform        => $result->platform,
-				is_cancelled    => $result->is_cancelled,
-				linetype        => $linetype,
-				delay           => $result->delay,
-				occupancy       => $result->occupancy,
-				replaced_by     => [],
+				train        => $result->line,
+				train_type   => q{},
+				train_line   => $result->line,
+				train_no     => $result->train_no,
+				via          => [ map { $_->name } $result->route_interesting ],
+				origin       => $result->origin,
+				destination  => $result->destination,
+				platform     => $result->platform,
+				is_cancelled => $result->is_cancelled,
+				linetype     => $linetype,
+				delay        => $result->delay,
+				occupancy    => $result->occupancy,
+				replaced_by  => [],
 				replacement_for => [],
-				route_pre       => [],
-				route_post      => [],
-				wr_dt           => undef,
+				route_pre       => [ map { $_->full_name } $result->route_pre ],
+				route_post => [ map { $_->full_name } $result->route_post ],
+				wr_dt      => undef,
 			}
 		);
 	}
