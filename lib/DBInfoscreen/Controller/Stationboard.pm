@@ -364,6 +364,7 @@ sub get_results_p {
 		return Travel::Status::DE::EFA->new_p(
 			service     => $service,
 			name        => $station,
+			cache       => $opt{cache_iris_rt},
 			lwp_options => {
 				timeout => 10,
 				agent   => 'dbf.finalrewind.org/2'
