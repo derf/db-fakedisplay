@@ -30,7 +30,7 @@
 %     $route_str .= $stop . ($via_cur < $via_max ? ' - ' : q{});
 %   }
     <li
-% if (param('hafas')) {
+% if (param('hafas') or param('efa')) {
       data-jid="<%= $departure->{journey_id} =~ s{#}{%23}gr %>"
 % }
       data-train="<%= ($departure->{train_type} // q{}) %> <%= ($departure->{train_no} // $departure->{train} // q{}) %>"
@@ -55,7 +55,10 @@
 %   if (param('hafas')) {
       <a href="/z/<%= Mojo::Util::url_escape($departure->{journey_id}) . '?hafas=' . Mojo::Util::url_escape(param('hafas')) . '&highlight=' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
 %   }
-%   elsif (not param('efa')) {
+%   elsif (param('efa')) {
+      <a href="/z/<%= Mojo::Util::url_escape($departure->{journey_id}) . '?efa=' . Mojo::Util::url_escape(param('efa')) . '&highlight=' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
+%   }
+%   else {
       <a href="/z/<%= Mojo::Util::url_escape(($departure->{train_type} // q{}) . ' ' . ($departure->{train_no} // $departure->{train} // q{})) . '/' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
 %   }
     <div class="anchor" id="<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>"></div>

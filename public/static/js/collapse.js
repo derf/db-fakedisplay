@@ -124,6 +124,8 @@ function dbf_reg_handlers() {
 		}
 		if (param.get('hafas') && param.get('hafas') != '0') {
 			history.pushState({'page':'traindetail','jid':trainElem.data('jid')}, 'test', '/z/' + trainElem.data('jid') + suffix);
+		} else if (param.get('efa') && param.get('efa') != '0') {
+			history.pushState({'page':'traindetail','jid':trainElem.data('jid')}, 'test', '/z/' + trainElem.data('jid') + suffix);
 		} else {
 			history.pushState({'page':'traindetail','station':station,'train':trainElem.data('no')}, 'test', '/z/' + trainElem.data('train') + '/' + trainElem.data('station') + suffix);
 		}

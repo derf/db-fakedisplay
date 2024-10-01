@@ -1532,10 +1532,16 @@ sub handle_efa {
 				departure       => $result->rt_datetime
 				? $result->rt_datetime->strftime('%H:%M')
 				: undef,
-				train        => $result->line,
-				train_type   => q{},
-				train_line   => $result->line,
-				train_no     => $result->train_no,
+				train      => $result->line,
+				train_type => q{},
+				train_line => $result->line,
+				train_no   => $result->train_no,
+				journey_id => sprintf( '%s@%d(%s)%d',
+					$result->stateless,
+					scalar $result->route_pre ? ( $result->route_pre )[0]->id
+					: $result->stop_id,
+					$result->sched_datetime->strftime('%Y%m%d'),
+					$result->key ),
 				via          => [ map { $_->name } $result->route_interesting ],
 				origin       => $result->origin,
 				destination  => $result->destination,
