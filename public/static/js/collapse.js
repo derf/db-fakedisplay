@@ -113,6 +113,9 @@ function dbf_reg_handlers() {
 		if (param.get('detailed')) {
 			suffix += '&detailed=1';
 		}
+		if (param.get('efa') && param.get('efa') != '0') {
+			suffix += '&efa=' + param.get('efa') + '&highlight=' + trainElem.data('station');
+		}
 		if (param.get('hafas') && param.get('hafas') != '0') {
 			suffix += '&hafas=' + param.get('hafas') + '&highlight=' + trainElem.data('station');
 		}
