@@ -179,9 +179,7 @@
 %=    $route_str
       </span>
 %   }
-%   if (not param('efa')) {
-      </a>
-%   }
+    </a>
     </li>
 
 % }
