@@ -1524,6 +1524,9 @@ sub handle_efa {
 		elsif ( $linetype eq 'sonstige' ) {
 			$linetype = 'ext';
 		}
+
+		my $delay = $result->delay;
+
 		push(
 			@departures,
 			{
@@ -1548,9 +1551,12 @@ sub handle_efa {
 				platform     => $result->platform,
 				is_cancelled => $result->is_cancelled,
 				linetype     => $linetype,
-				delay        => $result->delay,
-				occupancy    => $result->occupancy,
-				replaced_by  => [],
+				delay        => $delay,
+				is_bit_delayed =>
+				  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
+				is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
+				occupancy       => $result->occupancy,
+				replaced_by     => [],
 				replacement_for => [],
 				route_pre       => [ map { $_->full_name } $result->route_pre ],
 				route_post => [ map { $_->full_name } $result->route_post ],
