@@ -178,6 +178,11 @@ sub startup {
 			{
 				return 1;
 			}
+			if ( ( $self->param('hafas') or $self->param('efa') )
+				and $stop =~ m{ [Bb]ahnhof | Bf }x )
+			{
+				return 1;
+			}
 			return;
 		}
 	);
