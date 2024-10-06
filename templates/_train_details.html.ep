@@ -252,7 +252,7 @@
             </li>
 %         }
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
-          <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), efa => param('efa'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }
@@ -347,7 +347,7 @@
             </li>
 %         }
           <li class="<%= $stop->{isPast} ? 'past-stop' : 'future-stop' %>">
-          <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
+          <a href="<%= url_for('station', station => $stop->{eva} // $stop->{name})->query({detailed => param('detailed'), past => param('past'), rt => param('rt'), efa => param('efa'), hafas => param('hafas')}) %>#<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>" class="
 %         if ($stop->{isAdditional}) {
             additional-stop
 %         }
