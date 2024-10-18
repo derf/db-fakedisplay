@@ -21,7 +21,7 @@
   </p>
 % }
 <p class="geolink">
-<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https')->query({hafas => param('hafas')}) %>">Stationen in der Umgebung suchen</a>
+<a class="button" href="<%= url_for('_autostop')->to_abs->scheme('https')->query({efa => param('efa'), hafas => param('hafas')}) %>">Stationen in der Umgebung suchen</a>
 </p>
 <p>
 Oder hier angeben:
