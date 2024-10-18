@@ -1220,11 +1220,202 @@ sub station_train_details {
 	)->wait;
 }
 
+sub train_details_efa {
+	my ($self) = @_;
+	my $trip_id = $self->stash('train');
+
+	my $stopseq;
+	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+		$stopseq = {
+			stateless => $1,
+			stop_id   => $2,
+			date      => $3,
+			key       => $4
+		};
+	}
+	else {
+		$self->render( 'not_found', status => 404 );
+		return;
+	}
+
+	$self->render_later;
+
+	Travel::Status::DE::EFA->new_p(
+		service     => $self->param('efa'),
+		stopseq     => $stopseq,
+		cache       => $self->app->cache_iris_rt,
+		lwp_options => {
+			timeout => 10,
+			agent   => 'dbf.finalrewind.org/2'
+		},
+		promise    => 'Mojo::Promise',
+		user_agent => Mojo::UserAgent->new,
+	)->then(
+		sub {
+			my ($efa) = @_;
+			my $trip = $efa->result;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+			my $res = {
+				trip_id         => $trip_id,
+				train_type      => $trip->type,
+				train_line      => $trip->line,
+				train_no        => $trip->number,
+				origin          => ( $trip->route )[0]->full_name,
+				destination     => ( $trip->route )[-1]->full_name,
+				operators       => [ $trip->operator ],
+				linetype        => lc( $trip->product ) =~ tr{a-z}{}cdr,
+				route_pre_diff  => [],
+				route_post_diff => [],
+				moreinfo        => [],
+				replaced_by     => [],
+				replacement_for => [],
+			};
+
+			if ( $res->{linetype} =~ m{strab|stra.?enbahn} ) {
+				$res->{linetype} = 'tram';
+			}
+			elsif ( $res->{linetype} =~ m{bus} ) {
+				$res->{linetype} = 'bus';
+			}
+
+			my $station_is_past = 1;
+			for my $stop ( $trip->route ) {
+
+				push(
+					@{ $res->{route_post_diff} },
+					{
+						name      => $stop->full_name,
+						id        => $stop->stop_id,
+						sched_arr => $stop->sched_arr,
+						sched_dep => $stop->sched_dep,
+						rt_arr    => $stop->rt_arr,
+						rt_dep    => $stop->rt_dep,
+						platform  => $stop->platform,
+					}
+				);
+				if (
+					$station_is_past
+					and $now->epoch < (
+						$res->{route_post_diff}[-1]{rt_arr}
+						  // $res->{route_post_diff}[-1]{rt_dep}
+						  // $res->{route_post_diff}[-1]{sched_arr}
+						  // $res->{route_post_diff}[-1]{sched_dep} // $now
+					)->epoch
+				  )
+				{
+					$station_is_past = 0;
+				}
+				$res->{route_post_diff}[-1]{isPast} = $station_is_past;
+			}
+
+			if ( my $req_id = $self->param('highlight') ) {
+				my $split;
+				for my $i ( 0 .. $#{ $res->{route_post_diff} } ) {
+					if ( $res->{route_post_diff}[$i]{id} eq $req_id ) {
+						$split = $i;
+						last;
+					}
+				}
+				if ( defined $split ) {
+					$self->stash(
+						station_name => $res->{route_post_diff}[$split]{name} );
+					for my $i ( 0 .. $split - 1 ) {
+						push(
+							@{ $res->{route_pre_diff} },
+							shift( @{ $res->{route_post_diff} } )
+						);
+					}
+					my $station_info = shift( @{ $res->{route_post_diff} } );
+					$res->{eva} = $station_info->{eva};
+					if ( $station_info->{sched_arr} ) {
+						$res->{sched_arrival}
+						  = $station_info->{sched_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_arr} ) {
+						$res->{arrival}
+						  = $station_info->{rt_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{sched_dep} ) {
+						$res->{sched_departure}
+						  = $station_info->{sched_dep}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_dep} ) {
+						$res->{departure}
+						  = $station_info->{rt_dep}->strftime('%H:%M');
+					}
+					$res->{arrival_is_cancelled}
+					  = $station_info->{arr_cancelled};
+					$res->{departure_is_cancelled}
+					  = $station_info->{dep_cancelled};
+					$res->{is_cancelled} = $res->{arrival_is_cancelled}
+					  || $res->{arrival_is_cancelled};
+					$res->{tz_offset}       = $station_info->{tz_offset};
+					$res->{local_dt_da}     = $station_info->{local_dt_da};
+					$res->{local_sched_arr} = $station_info->{local_sched_arr};
+					$res->{local_sched_dep} = $station_info->{local_sched_dep};
+					$res->{is_annotated}    = $station_info->{is_annotated};
+					$res->{prod_name}       = $station_info->{prod_name};
+					$res->{direction}       = $station_info->{direction};
+					$res->{operator}        = $station_info->{operator};
+					$res->{platform}        = $station_info->{platform};
+					$res->{scheduled_platform}
+					  = $station_info->{sched_platform};
+				}
+			}
+
+			$self->respond_to(
+				json => {
+					json => {
+						journey => $trip,
+					},
+				},
+				any => {
+					template => $self->param('ajax')
+					? '_train_details'
+					: 'train_details',
+					description => sprintf(
+						'%s %s%s%s nach %s',
+						$res->{train_type},
+						$res->{train_line} // $res->{train_no},
+						$res->{origin} ? ' von ' : q{},
+						$res->{origin}      // q{},
+						$res->{destination} // 'unbekannt'
+					),
+					departure => $res,
+					linetype  => $res->{linetype},
+					dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+				},
+			);
+		}
+	)->catch(
+		sub {
+			my ($e) = @_;
+			$self->respond_to(
+				json => {
+					json => {
+						error => $e,
+					},
+					status => 500,
+				},
+				any => {
+					template  => 'exception',
+					message   => $e,
+					exception => undef,
+					snapshot  => {},
+					status    => 500,
+				},
+			);
+		}
+	)->wait;
+}
+
 # /z/:train
 sub train_details {
 	my ($self) = @_;
 	my $train  = $self->stash('train');
 	my $hafas  = $self->param('hafas');
+	my $efa    = $self->param('efa');
 
 	# TODO error handling
 
@@ -1234,6 +1425,10 @@ sub train_details {
 
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
+
+	if ($efa) {
+		return $self->train_details_efa;
+	}
 
 	my $res = {
 		train_type      => undef,
@@ -1570,7 +1765,7 @@ sub handle_efa {
 		$template,
 		description      => "Abfahrtstafel $station_name",
 		departures       => \@departures,
-		station          => $efa->stop->name,,
+		station          => $efa->stop->name,
 		version          => $self->config->{version},
 		title            => $efa->stop->name // $station_name,
 		refresh_interval => $template eq 'app' ? 0 : 120,
@@ -2103,6 +2298,7 @@ sub stations_by_coordinates {
 
 	my $lon   = $self->param('lon');
 	my $lat   = $self->param('lat');
+	my $efa   = $self->param('efa');
 	my $hafas = $self->param('hafas');
 
 	if ( not $lon or not $lat ) {
@@ -2119,6 +2315,46 @@ sub stations_by_coordinates {
 	}
 
 	$self->render_later;
+
+	if ($efa) {
+		Travel::Status::DE::EFA->new_p(
+			promise    => 'Mojo::Promise',
+			user_agent => $self->ua,
+			service    => $efa,
+			coord      => {
+				lat => $lat,
+				lon => $lon
+			}
+		)->then(
+			sub {
+				my ($efa) = @_;
+				my @efa = map {
+					{
+						name     => $_->full_name,
+						eva      => $_->id,
+						distance => $_->distance_m / 1000,
+						efa      => $efa,
+					}
+				} $efa->results;
+				$self->render(
+					json => {
+						candidates => [@efa],
+					}
+				);
+			}
+		)->catch(
+			sub {
+				my ($err) = @_;
+				$self->render(
+					json => {
+						candidates => [],
+						warning    => $err,
+					}
+				);
+			}
+		)->wait;
+		return;
+	}
 
 	my @iris = map {
 		{
@@ -2219,6 +2455,24 @@ sub backend_list {
 		}
 	);
 
+	for my $backend ( Travel::Status::DE::EFA::get_services() ) {
+		push(
+			@backends,
+			{
+				name      => $backend->{name},
+				shortname => $backend->{shortname},
+				homepage  => $backend->{homepage},
+				regions   => [
+					map { $place_map{$_} // $_ }
+					  @{ $backend->{coverage}{regions} }
+				],
+				has_area => $backend->{coverage}{area} ? 1 : 0,
+				type     => 'EFA',
+				efa      => 1,
+			}
+		);
+	}
+
 	for my $backend ( Travel::Status::DE::HAFAS::get_services() ) {
 		push(
 			@backends,
@@ -2291,6 +2545,10 @@ sub redirect_to_station {
 		}
 		$params = $params->to_string;
 		$self->redirect_to("/z/${input}?${params}");
+	}
+	elsif ( $params->param('efa') ) {
+		$params = $params->to_string;
+		$self->redirect_to("/${input}?${params}");
 	}
 	elsif ( $params->param('hafas') and $params->param('hafas') ne '1' ) {
 		$params = $params->to_string;

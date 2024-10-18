@@ -2,8 +2,8 @@
     <div>
 %   if ($departure->{train_no} or $departure->{train_line}) {
       <span class="train-line <%= $linetype %>"><%= $departure->{train_type} %>
-
-      <%= $departure->{train_line} // $departure->{train_no} %></span>
+        %= $departure->{train_line} // $departure->{train_no}
+      </span>
       <span class="train-no"><%= $departure->{train_line} ? $departure->{train_no} : q{} %></span>
 %   }
     </div>
@@ -145,10 +145,10 @@
     <div class="verbose">
 %     if ($departure->{trip_id}) {
 %       if (stash('station_name')) {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} || 0 %>?from=<%= stash('station_name') %>&amp;hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} || 0 %>?from=<%= stash('station_name') %>&amp;efa=<%= param('efa') // q{} %>&amp;hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %       }
 %       else {
-          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} || 0 %>?hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
+          <a class="smallbutton" href="/map/<%= $departure->{trip_id} =~ s{#}{%23}gr %>/<%= $departure->{train_line} || 0 %>?efa=<%= param('efa') // q{} %>&amp;hafas=<%= param('hafas') // q{} %>"><i class="material-icons" aria-hidden="true">map</i> Karte</a>
 %       }
 %     }
 %     if ($departure->{wr_link}) {

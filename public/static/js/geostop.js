@@ -39,10 +39,13 @@ $(function() {
 				const eva = candidate.eva,
 					name = candidate.name,
 					distance = candidate.distance.toFixed(1),
+					efa = candidate.efa,
 					hafas = candidate.hafas;
 
 				const stationlink = $(document.createElement('a'));
-				if (hafas) {
+				if (efa) {
+					stationlink.attr('href', eva + '?efa=' + efa);
+				} else if (hafas) {
 					stationlink.attr('href', eva + '?hafas=' + hafas);
 				} else {
 					stationlink.attr('href', eva);
@@ -55,7 +58,7 @@ $(function() {
 
 				const icon = $(document.createElement('i'));
 				icon.attr('class', 'material-icons');
-				icon.text(hafas ? 'directions' : 'train');
+				icon.text((hafas || efa) ? 'directions' : 'train');
 
 				stationlink.append(icon);
 				stationlink.append(distancenode);
@@ -66,7 +69,7 @@ $(function() {
 
 	const processLocation = function(loc) {
 		const param = new URLSearchParams(window.location.search);
-		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude, hafas: param.get('hafas')}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
+		$.post('/_geolocation', {lon: loc.coords.longitude, lat: loc.coords.latitude, efa: param.get('efa'), hafas: param.get('hafas')}, processResult).fail(function(jqXHR, textStatus, errorThrown) {
 			removeStatus();
 			showError("Netzwerkfehler: ", textStatus, errorThrown);
 		});

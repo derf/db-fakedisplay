@@ -14,17 +14,22 @@
 				<%= $prev_type %>:<br/>
 			% }
 			% my $class = 'button';
-			% if (param('hafas')) {
+			% if (param('efa')) {
+				% if ($backend->{efa} and $backend->{shortname} eq param('efa')) {
+					% $class .= ' button-active';
+				% }
+			% }
+			% elsif (param('hafas')) {
 				% if ($backend->{hafas} and $backend->{shortname} eq param('hafas')) {
 					% $class .= ' button-active';
 				% }
 			% }
 			% else {
-				% if (not $backend->{hafas}) {
+				% if (not ($backend->{efa} or $backend->{hafas})) {
 					% $class .= ' button-active';
 				% }
 			% }
-			<a class="<%= $class %>" href="<%= url_for(q{/})->query({ hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{shortname} // 'IRIS-TTS' %> – <%= $backend->{name} %></a>
+			<a class="<%= $class %>" href="<%= url_for(q{/})->query({ efa => $backend->{efa} ? $backend->{shortname} : q{}, hafas => $backend->{hafas} ? $backend->{shortname} : q{} }) %>"><%= $backend->{shortname} // 'IRIS-TTS' %> – <%= $backend->{name} %></a>
 			% if ($backend->{has_area}) {
 				<a href="/coverage/<%= $backend->{type} %>/<%= $backend->{shortname} %>"><%= join(q{, }, @{$backend->{regions}}) || '[Karte]' %></a>
 			% }

@@ -12,6 +12,7 @@ use DateTime;
 use DateTime::Format::Strptime;
 use GIS::Distance;
 use List::Util qw();
+use Travel::Status::DE::EFA;
 
 my $strp = DateTime::Format::Strptime->new(
 	pattern   => '%Y-%m-%dT%H:%M:%S%z',
@@ -537,12 +538,15 @@ sub ajax_route {
 
 sub coverage {
 	my ($self)  = @_;
-	my $backend = $self->stash('backend');
+	my $backend = lc( $self->stash('backend') );
 	my $service = $self->stash('service');
 
 	my $coverage = {};
 
-	if ( $backend eq 'HAFAS' ) {
+	if ( $backend eq 'efa' ) {
+		$coverage = $self->efa->get_coverage($service);
+	}
+	elsif ( $backend eq 'hafas' ) {
 		$coverage = $self->hafas->get_coverage($service);
 	}
 

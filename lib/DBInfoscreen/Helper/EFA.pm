@@ -13,6 +13,7 @@ use Encode     qw(decode encode);
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 use Mojo::Util qw(url_escape);
+use Travel::Status::DE::EFA;
 
 sub new {
 	my ( $class, %opt ) = @_;
@@ -26,6 +27,18 @@ sub new {
 
 	return bless( \%opt, $class );
 
+}
+
+sub get_coverage {
+	my ( $self, $service ) = @_;
+
+	my $service_definition = Travel::Status::DE::EFA::get_service($service);
+
+	if ( not $service_definition ) {
+		return {};
+	}
+
+	return $service_definition->{coverage}{area} // {};
 }
 
 sub get_json_p {

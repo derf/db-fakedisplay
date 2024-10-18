@@ -117,6 +117,7 @@ Bitte eine Station aus der Liste auswählen</div>
 
 
 %= form_for _redirect => begin
+%= hidden_field efa => param('efa')
 %= hidden_field hafas => param('hafas')
 <div>
   <div class="field">
@@ -142,7 +143,7 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
   % }
   <div class="backendlink">
-    <a class="button button-light" href="<%= url_for('_backend')->query({hafas => param('hafas')}) %>">Backend: <%= param('hafas') ? param('hafas') . ' (HAFAS)' : 'DB (IRIS-TTS)' %></a>
+    <a class="button button-light" href="<%= url_for('_backend')->query({efa => param('efa'), hafas => param('hafas')}) %>">Backend: <%= param('efa') ? param('efa') . ' (EFA)' : param('hafas') ? param('hafas') . ' (HAFAS)' : 'DB (IRIS-TTS)' %></a>
   </div>
   <div class="break"></div>
   <div class="moresettings-header moresettings-header-collapsed button button-light">Weitere Einstellungen</div>
