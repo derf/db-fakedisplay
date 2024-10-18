@@ -2331,7 +2331,7 @@ sub stations_by_coordinates {
 				my @efa = map {
 					{
 						name     => $_->full_name,
-						eva      => $_->id,
+						eva      => $_->id =~ s{:}{%3A}gr,
 						distance => $_->distance_m / 1000,
 						efa      => $efa_service,
 					}
