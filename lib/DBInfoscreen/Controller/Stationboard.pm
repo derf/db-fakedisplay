@@ -2296,10 +2296,10 @@ sub handle_result {
 sub stations_by_coordinates {
 	my $self = shift;
 
-	my $lon   = $self->param('lon');
-	my $lat   = $self->param('lat');
-	my $efa   = $self->param('efa');
-	my $hafas = $self->param('hafas');
+	my $lon         = $self->param('lon');
+	my $lat         = $self->param('lat');
+	my $efa_service = $self->param('efa');
+	my $hafas       = $self->param('hafas');
 
 	if ( not $lon or not $lat ) {
 		$self->render( json => { error => 'Invalid lon/lat received' } );
@@ -2316,11 +2316,11 @@ sub stations_by_coordinates {
 
 	$self->render_later;
 
-	if ($efa) {
+	if ($efa_service) {
 		Travel::Status::DE::EFA->new_p(
 			promise    => 'Mojo::Promise',
 			user_agent => $self->ua,
-			service    => $efa,
+			service    => $efa_service,
 			coord      => {
 				lat => $lat,
 				lon => $lon
@@ -2333,7 +2333,7 @@ sub stations_by_coordinates {
 						name     => $_->full_name,
 						eva      => $_->id,
 						distance => $_->distance_m / 1000,
-						efa      => $efa,
+						efa      => $efa_service,
 					}
 				} $efa->results;
 				$self->render(
