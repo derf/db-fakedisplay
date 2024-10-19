@@ -1750,6 +1750,7 @@ sub handle_efa {
 				is_bit_delayed =>
 				  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
 				is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
+				has_realtime    => defined $delay ? 1 : 0,
 				occupancy       => $result->occupancy,
 				station         => $efa->stop->id,
 				replaced_by     => [],
