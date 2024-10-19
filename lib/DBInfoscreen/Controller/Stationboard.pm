@@ -1291,6 +1291,8 @@ sub train_details_efa {
 						sched_dep => $stop->sched_dep,
 						rt_arr    => $stop->rt_arr,
 						rt_dep    => $stop->rt_dep,
+						arr_delay => $stop->arr_delay,
+						dep_delay => $stop->dep_delay,
 						platform  => $stop->platform,
 					}
 				);
