@@ -311,6 +311,116 @@ sub backpropagate_delay {
 	}
 }
 
+sub route_efa {
+	my ($self)  = @_;
+	my $trip_id = $self->stash('tripid');
+	my $backend = $self->param('efa');
+
+	my $stopseq;
+	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+		$stopseq = {
+			stateless => $1,
+			stop_id   => $2,
+			date      => $3,
+			key       => $4
+		};
+	}
+	else {
+		$self->render(
+			'route_map',
+			title     => "DBF",
+			hide_opts => 1,
+			with_map  => 1,
+			error     => "cannot parse trip ID: $trip_id",
+		);
+		return;
+	}
+
+	$self->efa->get_polyline_p(
+		stopseq => $stopseq,
+		service => $backend
+	)->then(
+		sub {
+			my ($trip) = @_;
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+			my @polyline
+			  = map { { lat => $_->[0], lon => $_->[1] } } $trip->polyline;
+			my @line_pairs = polyline_to_line_pairs(@polyline);
+			my @route      = $trip->route;
+
+			my @station_coordinates;
+			for my $stop (@route) {
+				my @stop_lines = ( $stop->full_name );
+				if ( $stop->platform ) {
+					push( @stop_lines, 'Gleis ' . $stop->platform );
+				}
+				if ( $stop->arr ) {
+					my $arr_line = $stop->arr->strftime('Ankunft: %H:%M');
+					if ( $stop->arr_delay ) {
+						$arr_line .= sprintf( ' (%+d)', $stop->arr_delay );
+					}
+					push( @stop_lines, $arr_line );
+				}
+				if ( $stop->dep ) {
+					my $dep_line = $stop->dep->strftime('Abfahrt: %H:%M');
+					if ( $stop->dep_delay ) {
+						$dep_line .= sprintf( ' (%+d)', $stop->dep_delay );
+					}
+					push( @stop_lines, $dep_line );
+				}
+
+				push( @station_coordinates, [ $stop->latlon, [@stop_lines], ] );
+			}
+
+			$self->render(
+				'route_map',
+				description   => "Karte für " . $trip->name,
+				title         => $trip->name,
+				hide_opts     => 1,
+				with_map      => 1,
+				ajax_req      => "${trip_id}/0",
+				ajax_route    => q{},
+				ajax_polyline => q{},
+				origin        => {
+					name => ( $trip->route )[0]->full_name,
+					ts   => ( $trip->route )[0]->dep,
+				},
+				destination => {
+					name => ( $trip->route )[-1]->full_name,
+					ts   => ( $trip->route )[-1]->arr,
+				},
+				train_no => $trip->number
+				? ( $trip->type // q{} . ' ' . $trip->number )
+				: undef,
+				operator        => $trip->operator,
+				next_stop       => q{},
+				polyline_groups => [
+					{
+						polylines  => \@line_pairs,
+						color      => '#00838f',
+						opacity    => 0.6,
+						fit_bounds => 1,
+					}
+				],
+				station_coordinates => \@station_coordinates,
+				station_radius      => 100,
+				markers             => [],
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'route_map',
+				title     => "DBF",
+				hide_opts => 1,
+				with_map  => 1,
+				error     => $err,
+			);
+		}
+	)->wait;
+}
+
 sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -321,6 +431,10 @@ sub route {
 	my $to_name   = $self->param('to');
 
 	$self->render_later;
+
+	if ( $self->param('efa') ) {
+		return $self->route_efa;
+	}
 
 	my $service = 'DB';
 	if (    $hafas
@@ -468,15 +582,32 @@ sub route {
 	)->wait;
 }
 
-sub ajax_route {
+sub ajax_route_efa {
 	my ($self)  = @_;
+	my $efa     = $self->param('efa');
 	my $trip_id = $self->stash('tripid');
-	my $line_no = $self->stash('lineno');
-	my $hafas   = $self->param('hafas');
+
+	my ($err) = @_;
+	$self->render(
+		'_error',
+		error => 'not implemented yet',
+	);
+}
+
+sub ajax_route {
+	my ($self) = @_;
 
 	delete $self->stash->{layout};
 
 	$self->render_later;
+
+	if ( $self->param('efa') ) {
+		return $self->ajax_route_efa;
+	}
+
+	my $trip_id = $self->stash('tripid');
+	my $line_no = $self->stash('lineno');
+	my $hafas   = $self->param('hafas');
 
 	my $service = 'DB';
 	if (    $hafas

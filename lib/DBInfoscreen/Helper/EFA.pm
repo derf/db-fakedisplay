@@ -29,6 +29,39 @@ sub new {
 
 }
 
+sub get_polyline_p {
+	my ( $self, %opt ) = @_;
+
+	my $stopseq = $opt{stopseq};
+	my $service = $opt{service};
+	my $promise = Mojo::Promise->new;
+
+	Travel::Status::DE::EFA->new_p(
+		service    => $service,
+		stopseq    => $stopseq,
+		cache      => $self->{realtime_cache},
+		promise    => 'Mojo::Promise',
+		user_agent => $self->{user_agent}->request_timeout(10)
+	)->then(
+		sub {
+			my ($efa) = @_;
+			my $journey = $efa->result;
+
+			$promise->resolve($journey);
+			return;
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->{log}->debug("EFA->new_p($stopseq) error: $err");
+			$promise->reject($err);
+			return;
+		}
+	)->wait;
+
+	return $promise;
+}
+
 sub get_coverage {
 	my ( $self, $service ) = @_;
 
