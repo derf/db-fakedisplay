@@ -14,7 +14,7 @@ data-poly="<%= stash('ajax_polyline') %>"
 % if (my $next = stash('next_stop')) {
 	<div class="nextstop">
 	% if ($next->{type} eq 'present' and $next->{station}{dep} and $next->{station}{arr}) {
-		Aufenthalt in <strong><%= $next->{station}->loc->name %></strong>
+		Aufenthalt in <strong><%= $next->{station}{name} %></strong>
 		% if ($next->{station}{platform}) {
 			an Gleis <strong><%= $next->{station}{platform} %></strong>
 		% }
@@ -24,7 +24,7 @@ data-poly="<%= stash('ajax_polyline') %>"
 		% }
 	% }
 	% elsif ($next->{type} eq 'present' and $next->{station}{dep}) {
-		Abfahrt in <strong><%= $next->{station}->loc->name %></strong>
+		Abfahrt in <strong><%= $next->{station}{name} %></strong>
 		% if ($next->{station}{platform}) {
 			von Gleis <strong><%= $next->{station}{platform} %></strong>
 		% }
@@ -52,7 +52,7 @@ data-poly="<%= stash('ajax_polyline') %>"
 	% }
 	% elsif ($next->{type} eq 'next' and $next->{station}{arr}) {
 		Nächster Halt:
-		<strong><%= $next->{station}->loc->name %></strong>
+		<strong><%= $next->{station}{name} %></strong>
 		um <strong><%= $next->{station}{arr}->strftime('%H:%M') %></strong>
 		% if ($next->{station}{arr_delay}) {
 			%= sprintf('(%+d)', $next->{station}{arr_delay})
@@ -63,7 +63,7 @@ data-poly="<%= stash('ajax_polyline') %>"
 	% }
 	% elsif ($next->{type} eq 'next') {
 		Nächster Halt:
-		<strong><%= $next->{station}->loc->name %></strong>
+		<strong><%= $next->{station}{name} %></strong>
 		% if ($next->{station}{platform}) {
 			auf Gleis <strong><%= $next->{station}{platform} %></strong>
 		% }
