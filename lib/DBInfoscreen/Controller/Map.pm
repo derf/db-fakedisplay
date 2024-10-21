@@ -242,18 +242,23 @@ sub estimate_train_positions2 {
 	};
 }
 
+# input: [{
+#   name, platform,
+#   arr, arr_cancelled, arr_delay,
+#   dep, dep_cancelled, dep_delay
+# }]
 sub route_to_ajax {
 	my (@stopovers) = @_;
 
 	my @route_entries;
 
 	for my $stop (@stopovers) {
-		my @stop_entries = ( $stop->loc->name );
+		my @stop_entries = ( $stop->{name} );
 		my $platform;
 
-		if ( my $arr = $stop->arr and not $stop->arr_cancelled ) {
-			my $delay = $stop->arr_delay // 0;
-			$platform = $stop->platform;
+		if ( my $arr = $stop->{arr} and not $stop->{arr_cancelled} ) {
+			my $delay = $stop->{arr_delay} // 0;
+			$platform = $stop->{platform};
 
 			push( @stop_entries, $arr->epoch, $delay );
 		}
@@ -261,9 +266,9 @@ sub route_to_ajax {
 			push( @stop_entries, q{}, q{} );
 		}
 
-		if ( my $dep = $stop->dep and not $stop->dep_cancelled ) {
-			my $delay = $stop->dep_delay // 0;
-			$platform //= $stop->platform // q{};
+		if ( my $dep = $stop->{dep} and not $stop->{dep_cancelled} ) {
+			my $delay = $stop->{dep_delay} // 0;
+			$platform //= $stop->{platform} // q{};
 
 			push( @stop_entries, $dep->epoch, $delay, $platform );
 		}
@@ -311,6 +316,38 @@ sub backpropagate_delay {
 	}
 }
 
+sub estimate_polyline_stops {
+	my ( $self, $polyline, $route ) = @_;
+
+	my $distance = GIS::Distance->new;
+
+	my %min_dist;
+	for my $stop ( @{$route} ) {
+		for my $polyline_index ( 0 .. $#{$polyline} ) {
+			my $pl   = $polyline->[$polyline_index];
+			my $dist = $distance->distance_metal( $stop->{lat}, $stop->{lon},
+				$pl->{lat}, $pl->{lon} );
+			if ( not $min_dist{ $stop->{name} }
+				or $min_dist{ $stop->{name} }{dist} > $dist )
+			{
+				$min_dist{ $stop->{name} } = {
+					dist => $distance->distance_metal(
+						$stop->{lat}, $stop->{lon}, $pl->{lat}, $pl->{lon}
+					),
+					index => $polyline_index,
+				};
+			}
+		}
+	}
+
+	for my $stop ( @{$route} ) {
+		if ( $min_dist{ $stop->{name} } ) {
+			$polyline->[ $min_dist{ $stop->{name} }{index} ]{name}
+			  = $stop->{name};
+		}
+	}
+}
+
 sub route_efa {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -338,15 +375,39 @@ sub route_efa {
 
 	$self->efa->get_polyline_p(
 		stopseq => $stopseq,
-		service => $backend
+		service => $backend,
 	)->then(
 		sub {
 			my ($trip) = @_;
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+			my @markers;
 			my @polyline
-			  = map { { lat => $_->[0], lon => $_->[1] } } $trip->polyline;
+			  = map { { lat => $_->[0], lon => $_->[1] } }
+			  $trip->polyline( fallback => 1 );
 			my @line_pairs = polyline_to_line_pairs(@polyline);
 			my @route      = $trip->route;
+
+			my $ref_route = [
+				map {
+					{
+						name      => $_->full_name,
+						platform  => $_->platform,
+						arr       => $_->arr,
+						dep       => $_->dep,
+						arr_delay => $_->arr_delay,
+						dep_delay => $_->dep_delay,
+						lat       => $_->latlon->[0],
+						lon       => $_->latlon->[1]
+					}
+				} @route
+			];
+			$self->estimate_polyline_stops( \@polyline, $ref_route );
+
+			my $train_pos = $self->estimate_train_positions2(
+				now      => $now,
+				route    => $ref_route,
+				polyline => \@polyline,
+			);
 
 			my @station_coordinates;
 			for my $stop (@route) {
@@ -372,6 +433,15 @@ sub route_efa {
 				push( @station_coordinates, [ $stop->latlon, [@stop_lines], ] );
 			}
 
+			push(
+				@markers,
+				{
+					lat   => $train_pos->{position_now}[0],
+					lon   => $train_pos->{position_now}[1],
+					title => $trip->name,
+				}
+			);
+
 			$self->render(
 				'route_map',
 				description   => "Karte für " . $trip->name,
@@ -379,9 +449,11 @@ sub route_efa {
 				hide_opts     => 1,
 				with_map      => 1,
 				ajax_req      => "${trip_id}/0",
-				ajax_route    => q{},
-				ajax_polyline => q{},
-				origin        => {
+				ajax_route    => route_to_ajax( @{$ref_route} ),
+				ajax_polyline => join( '|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
+				,
+				origin => {
 					name => ( $trip->route )[0]->full_name,
 					ts   => ( $trip->route )[0]->dep,
 				},
@@ -393,7 +465,7 @@ sub route_efa {
 				? ( $trip->type // q{} . ' ' . $trip->number )
 				: undef,
 				operator        => $trip->operator,
-				next_stop       => q{},
+				next_stop       => $train_pos->{next_stop},
 				polyline_groups => [
 					{
 						polylines  => \@line_pairs,
@@ -404,7 +476,7 @@ sub route_efa {
 				],
 				station_coordinates => \@station_coordinates,
 				station_radius      => 100,
-				markers             => [],
+				markers             => \@markers,
 			);
 		}
 	)->catch(
@@ -456,7 +528,6 @@ sub route {
 			my @station_coordinates;
 
 			my @markers;
-			my $next_stop;
 
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
@@ -540,18 +611,32 @@ sub route {
 					title => $journey->name
 				}
 			);
-			$next_stop = $train_pos->{next_stop};
 
 			$self->render(
 				'route_map',
-				description   => "Karte für " . $journey->name,
-				title         => $journey->name,
-				hide_opts     => 1,
-				with_map      => 1,
-				ajax_req      => "${trip_id}/${line_no}",
-				ajax_route    => route_to_ajax( $journey->route ),
-				ajax_polyline => join( '|',
-					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
+				description => "Karte für " . $journey->name,
+				title       => $journey->name,
+				hide_opts   => 1,
+				with_map    => 1,
+				ajax_req    => "${trip_id}/${line_no}",
+				ajax_route  => route_to_ajax(
+					map {
+						{
+							name          => $_->loc->name,
+							platform      => $_->platform,
+							arr           => $_->arr,
+							arr_cancelled => $_->arr_cancelled,
+							arr_delay     => $_->arr_delay,
+							dep           => $_->dep,
+							dep_cancelled => $_->dep_cancelled,
+							dep_delay     => $_->dep_delay,
+						}
+					} $journey->route
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
 				origin => {
 					name => ( $journey->route )[0]->loc->name,
 					ts   => ( $journey->route )[0]->dep,
@@ -564,7 +649,7 @@ sub route {
 				? ( $journey->type // q{} . ' ' . $journey->number )
 				: undef,
 				operator        => $journey->operator,
-				next_stop       => $next_stop,
+				next_stop       => $train_pos->{next_stop},
 				polyline_groups => [
 					{
 						polylines  => [@line_pairs],
@@ -596,14 +681,93 @@ sub route {
 
 sub ajax_route_efa {
 	my ($self)  = @_;
-	my $efa     = $self->param('efa');
+	my $backend = $self->param('efa');
 	my $trip_id = $self->stash('tripid');
 
-	my ($err) = @_;
-	$self->render(
-		'_error',
-		error => 'not implemented yet',
-	);
+	my $stopseq;
+	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+		$stopseq = {
+			stateless => $1,
+			stop_id   => $2,
+			date      => $3,
+			key       => $4
+		};
+	}
+	else {
+		$self->render(
+			'_error',
+			error => "cannot parse trip ID: $trip_id",
+		);
+		return;
+	}
+
+	$self->efa->get_polyline_p(
+		stopseq => $stopseq,
+		service => $backend
+	)->then(
+		sub {
+			my ($trip) = @_;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
+			my @polyline
+			  = map { { lat => $_->[0], lon => $_->[1] } }
+			  $trip->polyline( fallback => 1 );
+			my @route = $trip->route;
+
+			my $ref_route = [
+				map {
+					{
+						name      => $_->full_name,
+						platform  => $_->platform,
+						arr       => $_->arr,
+						dep       => $_->dep,
+						arr_delay => $_->arr_delay,
+						dep_delay => $_->dep_delay,
+						lat       => $_->latlon->[0],
+						lon       => $_->latlon->[1]
+					}
+				} @route
+			];
+			$self->estimate_polyline_stops( \@polyline, $ref_route );
+
+			my $train_pos = $self->estimate_train_positions2(
+				now      => $now,
+				route    => $ref_route,
+				polyline => \@polyline,
+			);
+
+			$self->render(
+				'_map_infobox',
+				ajax_req      => "${trip_id}/0",
+				ajax_route    => route_to_ajax( @{$ref_route} ),
+				ajax_polyline => join( '|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
+				origin => {
+					name => ( $trip->route )[0]->full_name,
+					ts   => ( $trip->route )[0]->dep,
+				},
+				destination => {
+					name => ( $trip->route )[-1]->full_name,
+					ts   => ( $trip->route )[-1]->arr,
+				},
+				train_no => $trip->number
+				? ( $trip->type // q{} . ' ' . $trip->number )
+				: undef,
+				next_stop => $train_pos->{next_stop},
+			);
+		}
+	)->catch(
+		sub {
+			sub {
+				my ($err) = @_;
+				$self->render(
+					'_error',
+					error => $err,
+				);
+			}
+		}
+	)->wait;
 }
 
 sub ajax_route {
@@ -662,10 +826,25 @@ sub ajax_route {
 
 			$self->render(
 				'_map_infobox',
-				ajax_req      => "${trip_id}/${line_no}",
-				ajax_route    => route_to_ajax(@route),
-				ajax_polyline => join( '|',
-					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
+				ajax_req   => "${trip_id}/${line_no}",
+				ajax_route => route_to_ajax(
+					map {
+						{
+							name          => $_->loc->name,
+							platform      => $_->platform,
+							arr           => $_->arr,
+							arr_cancelled => $_->arr_cancelled,
+							arr_delay     => $_->arr_delay,
+							dep           => $_->dep,
+							dep_cancelled => $_->dep_cancelled,
+							dep_delay     => $_->dep_delay,
+						}
+					} @route
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
 				origin => {
 					name => ( $journey->route )[0]->loc->name,
 					ts   => ( $journey->route )[0]->dep,
