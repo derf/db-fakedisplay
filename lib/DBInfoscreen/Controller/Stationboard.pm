@@ -1695,6 +1695,11 @@ sub handle_efa {
 	for my $result ( $efa->results ) {
 		my $time;
 
+		if ( $template eq 'json' ) {
+			push( @departures, $result );
+			next;
+		}
+
 		if ( $show_realtime and $result->rt_datetime ) {
 			$time = $result->rt_datetime->strftime('%H:%M');
 		}
@@ -1764,23 +1769,34 @@ sub handle_efa {
 		);
 	}
 
-	$self->render(
-		$template,
-		description      => "Abfahrtstafel $station_name",
-		departures       => \@departures,
-		station          => $efa->stop->name,
-		version          => $self->config->{version},
-		title            => $efa->stop->name // $station_name,
-		refresh_interval => $template eq 'app' ? 0 : 120,
-		hide_opts        => $hide_opts,
-		hide_low_delay   => $hide_low_delay,
-		show_realtime    => $show_realtime,
-		load_marquee     => (
-			     $template eq 'single'
-			  or $template eq 'multi'
-		),
-		force_mobile => ( $template eq 'app' ),
-	);
+	if ( $template eq 'json' ) {
+		$self->res->headers->access_control_allow_origin(q{*});
+		my $json = {
+			departures => \@departures,
+		};
+		$self->render(
+			json => $json,
+		);
+	}
+	else {
+		$self->render(
+			$template,
+			description      => "Abfahrtstafel $station_name",
+			departures       => \@departures,
+			station          => $efa->stop->name,
+			version          => $self->config->{version},
+			title            => $efa->stop->name // $station_name,
+			refresh_interval => $template eq 'app' ? 0 : 120,
+			hide_opts        => $hide_opts,
+			hide_low_delay   => $hide_low_delay,
+			show_realtime    => $show_realtime,
+			load_marquee     => (
+				     $template eq 'single'
+				  or $template eq 'multi'
+			),
+			force_mobile => ( $template eq 'app' ),
+		);
+	}
 }
 
 sub handle_result {
