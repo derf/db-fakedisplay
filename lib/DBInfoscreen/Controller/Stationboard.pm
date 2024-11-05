@@ -1977,6 +1977,9 @@ sub handle_result {
 				);
 				return;
 			}
+			elsif ( $apiver eq 'raw' ) {
+				push( @departures, $result );
+			}
 			else {    # apiver == 3
 				if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
 					my ( $delay_arr, $delay_dep, $sched_arr, $sched_dep );
