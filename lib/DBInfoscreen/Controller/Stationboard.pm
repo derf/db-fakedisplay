@@ -241,11 +241,17 @@ sub result_has_train_type {
 sub result_has_via {
 	my ( $result, $via ) = @_;
 
-	my @route
-	  = $result->can('route_post')
-	  ? ( $result->route_post, $result->sched_route_post )
-	  : map { $_->loc->name } $result->route;
+	my @route;
 
+	if ( $result->isa('Travel::Status::DE::IRIS::Result') ) {
+		@route = ( $result->route_post, $result->sched_route_post );
+	}
+	elsif ( $result->isa('Travel::Status::DE::HAFAS::Journey') ) {
+		@route = map { $_->loc->name } $result->route;
+	}
+	elsif ( $result->isa('Travel::Status::DE::EFA::Departure') ) {
+		@route = map { $_->full_name } $result->route_post;
+	}
 	my $eq_result = List::MoreUtils::any { lc eq lc($via) } @route;
 
 	if ($eq_result) {
@@ -1692,7 +1698,9 @@ sub handle_efa {
 		delete $self->stash->{layout};
 	}
 
-	for my $result ( $efa->results ) {
+	my @results = $self->filter_results( $efa->results );
+
+	for my $result (@results) {
 		my $time;
 
 		if ( $template eq 'json' ) {
