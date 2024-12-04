@@ -1330,8 +1330,8 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojolicious-9.38
-    pathname: S/SR/SRI/Mojolicious-9.38.tar.gz
+  Mojolicious-9.39
+    pathname: S/SR/SRI/Mojolicious-9.39.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1400,7 +1400,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.38
+      Mojolicious 9.39
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -1828,19 +1828,19 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-6.11
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-6.11.tar.gz
+  Travel-Status-DE-DeutscheBahn-6.13
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-6.13.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 6.11
-      Travel::Status::DE::HAFAS 6.11
-      Travel::Status::DE::HAFAS::Journey 6.11
-      Travel::Status::DE::HAFAS::Location 6.11
-      Travel::Status::DE::HAFAS::Message 6.11
-      Travel::Status::DE::HAFAS::Polyline 6.11
-      Travel::Status::DE::HAFAS::Product 6.11
-      Travel::Status::DE::HAFAS::Services 6.11
-      Travel::Status::DE::HAFAS::Stop 6.11
-      Travel::Status::DE::HAFAS::StopFinder 6.11
+      Travel::Status::DE::DeutscheBahn 6.13
+      Travel::Status::DE::HAFAS 6.13
+      Travel::Status::DE::HAFAS::Journey 6.13
+      Travel::Status::DE::HAFAS::Location 6.13
+      Travel::Status::DE::HAFAS::Message 6.13
+      Travel::Status::DE::HAFAS::Polyline 6.13
+      Travel::Status::DE::HAFAS::Product 6.13
+      Travel::Status::DE::HAFAS::Services 6.13
+      Travel::Status::DE::HAFAS::Stop 6.13
+      Travel::Status::DE::HAFAS::StopFinder 6.13
     requirements:
       Carp 0
       Class::Accessor 0.16
