@@ -1690,7 +1690,7 @@ sub handle_efa {
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
 	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
-	  // 0;
+	  // 1;
 
 	my @departures;
 
@@ -1818,7 +1818,7 @@ sub handle_result {
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
 	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
-	  // 0;
+	  // 1;
 	my $show_details = $self->param('detailed') // 0;
 	my $admode       = $self->param('admode')   // 'deparr';
 	my $apiver       = $self->param('version')  // 0;

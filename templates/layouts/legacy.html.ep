@@ -161,14 +161,6 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        %= check_box 'rt' => 1, id => 'id_show_realtime'
-        <label for="id_show_realtime">
-          Echtzeitangaben statt Fahrplandaten anzeigen
-        </label>
-      </div>
-    </div>
-    <div class="field">
-      <div class="desc">
         %= check_box 'no_related' => 1, id => 'id_no_related'
         <label for="id_no_related">
         Betriebliche Bahnhofstrennungen berücksichtigen (z.B. "Hbf (Fern+Regio)" vs. "Hbf (S)")
