@@ -656,7 +656,7 @@ sub format_iris_result_info {
 			$info .= ": ${delaymsg}";
 		}
 	}
-	elsif ( $result->delay and $result->delay > 0 ) {
+	elsif ( $result->delay and $result->delay >= 20 ) {
 		if ( $template eq 'app' or $template eq 'infoscreen' ) {
 			$info = $delaymsg;
 		}
