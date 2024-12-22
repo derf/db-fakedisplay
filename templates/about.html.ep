@@ -10,12 +10,7 @@
 			Fehlermeldungen bitte via
 			<a href="<%= $issue_url %>">Issue Tracker</a>.
 		% }
-	</p>
-	<p>
-		Das Projekt begann als „db-fakedisplay“ (kurz dbf) zur <a href="/Dortmund
-		Hbf?mode=multi">Nachahmung von Bahnhofs-Abfahrtstafeln</a>. Inzwischen
-		liegt der Fokus auf dem <a href="/Dortmund Hbf">App/Infoscreen-Modus</a>
-		und die Bezeichnung DBF wurde zum Eigennamen ohne weitere Bedeutung.
+		Alle von DBF referenzierten Informationen können auch direkt per CLI im Text- oder JSON-Format abgerufen werden – die unten verlinkten Backends beinhalten entsprechende Anwendungen.
 	</p>
 	<p>
 		Diese Installation nutzt
