@@ -17,7 +17,8 @@ sub geostop {
 	$self->render(
 		'geostop',
 		with_geostop => 1,
-		hide_opts    => 1
+		hide_opts    => 1,
+		hide_footer  => 1,
 	);
 }
 
@@ -27,19 +28,20 @@ sub about {
 	$self->render(
 		'about',
 		hide_opts => 1,
+		hide_footer => 1,
 	);
 }
 
 sub privacy {
 	my ($self) = @_;
 
-	$self->render( 'privacy', hide_opts => 1 );
+	$self->render( 'privacy', hide_opts => 1, hide_footer => 1 );
 }
 
 sub imprint {
 	my ($self) = @_;
 
-	$self->render( 'imprint', hide_opts => 1 );
+	$self->render( 'imprint', hide_opts => 1, hide_footer => 1 );
 }
 
 1;

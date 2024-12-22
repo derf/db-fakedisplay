@@ -304,7 +304,11 @@ Farbschema:
 ·
 <a onClick="javascript:setLang('default')">system language</a>
 -->
-</div>
+</div> <!-- config -->
+</div> <!-- container -->
+% }
+% if (not stash('hide_footer')) {
+<div class="container">
 <div class="about">
 <a href="_about">DBF</a> v<%= stash('version') // '???' %>
 ·

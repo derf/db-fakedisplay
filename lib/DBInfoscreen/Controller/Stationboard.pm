@@ -1796,6 +1796,7 @@ sub handle_efa {
 			title            => $efa->stop->name // $station_name,
 			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,
+			hide_footer      => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
 			load_marquee     => (
@@ -2304,6 +2305,7 @@ sub handle_result {
 			title            => $via ? "$station_name → $via" : $station_name,
 			refresh_interval => $template eq 'app' ? 0        : 120,
 			hide_opts        => $hide_opts,
+			hide_footer      => $hide_opts,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
 			load_marquee     => (
@@ -2524,7 +2526,8 @@ sub backend_list {
 	$self->render(
 		'select_backend',
 		backends  => \@backends,
-		hide_opts => 1
+		hide_opts => 1,
+		hide_footer => 1
 	);
 }
 
