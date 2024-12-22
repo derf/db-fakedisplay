@@ -4,8 +4,8 @@
 	<title><%= stash('title') // 'DBF' %></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="Abfahrtsmonitor, Bahnhofstafel, Abfahrten, Abfahrtstafel, ICE, IC, RE, RB, S-Bahn">
-	<meta name="description" content="<%= stash('description') // 'Inoffizieller Abfahrtsmonitor für innerdeutsche Zugfahrten' %>">
+	<meta name="keywords" content="Abfahrtsmonitor, Bahnhofstafel, Abfahrten, Abfahrtstafel, Nahverkehr, Regionalverkehr, Fernverkehr, ICE, IC, RE, RB, S-Bahn">
+	<meta name="description" content="<%= stash('description') // 'Inoffizieller Abfahrtsmonitor für Nah-, Reginol- und Fernverkehr' %>">
 	<meta name="theme-color" content="#00838f">
 	<link rel="icon" type="image/png" href="/static/icons/icon-16x16.png" sizes="16x16">
 	<link rel="icon" type="image/png" href="/static/icons/icon-32x32.png" sizes="32x32">
@@ -121,16 +121,16 @@ Bitte eine Station aus der Liste auswählen</div>
 %= hidden_field hafas => param('hafas')
 <div>
   <div class="field">
-    <div class="desc">Zug / Station</div>
+    <div class="desc">Stationsname oder Fahrtnummer:</div>
     <div>
 % if (stash('stationlist')) {
       %= select_field input => stash('stationlist')
 % }
 % elsif (stash('input')) {
-      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput'
+      %= text_field 'input', class => 'station', placeholder => 'Stationsname oder Fahrtnummer', id => 'stationinput'
 % }
 % else {
-      %= text_field 'input', class => 'station', placeholder => 'Zug, Stationsname oder Ril100-Kürzel', id => 'stationinput', autofocus => 'autofocus'
+      %= text_field 'input', class => 'station', placeholder => 'Stationsname oder Fahrtnummer', id => 'stationinput', autofocus => 'autofocus'
 % }
     </div>
   </div>
@@ -176,7 +176,7 @@ Bitte eine Station aus der Liste auswählen</div>
       <div class="desc">
         %= check_box 'past' => 1, id => 'past'
         <label for="past">
-          Bereits abgefahrene Züge anzeigen
+          Fahrten der vergangenen 60 Minuten zeigen
         </label>
       </div>
     </div>
@@ -190,7 +190,7 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        Nur Züge über
+        Nur Fahrten über
       </div>
       <div>
         %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
@@ -270,10 +270,10 @@ Bitte eine Station aus der Liste auswählen</div>
           sortiert. Mit dem Parameter
           <span style="font-family: monospace;">rt=0</span> wwerden stattdessen
           Plandaten angegeben und zur Sortierung genutzt.</li>
-        <li>Zugdetails können optional für spezifische Abfahrtsdaten im
+        <li>Bei HAFAS-Backends können optional Details für spezifische Fahrten im
           DD.MM.[YYYY]-Format abgefragt werden, z.B. "ICE 921 (1.1.)" oder
           "ICE 921 @ 1.1.". Das Datum bezieht sich auf die geplante
-          Abfahrtszeit am Startbahnhof der Zugfahrt.</li>
+          Abfahrtszeit am Startbahnhof der Fahrt.</li>
         <li>Viele Seiten sind auch als JSON verfügbar, wahlweise mittels
           <span style="font-family: monospace;">Accept: application/json</span> oder
           durch <span style="font-family: monospace;">.json</span> in der URL.
