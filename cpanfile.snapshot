@@ -199,10 +199,10 @@ DISTRIBUTIONS
       Canary::Stability 2013
     requirements:
       ExtUtils::MakeMaker 0
-  Capture-Tiny-0.48
-    pathname: D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz
+  Capture-Tiny-0.50
+    pathname: D/DA/DAGOLDEN/Capture-Tiny-0.50.tar.gz
     provides:
-      Capture::Tiny 0.48
+      Capture::Tiny 0.50
     requirements:
       Carp 0
       Exporter 0
@@ -1828,19 +1828,19 @@ DISTRIBUTIONS
       Test::Pod 0
       Travel::Status::DE::IRIS 1.2
       perl v5.20.0
-  Travel-Status-DE-DeutscheBahn-6.14
-    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-6.14.tar.gz
+  Travel-Status-DE-DeutscheBahn-6.15
+    pathname: D/DE/DERF/Travel-Status-DE-DeutscheBahn-6.15.tar.gz
     provides:
-      Travel::Status::DE::DeutscheBahn 6.14
-      Travel::Status::DE::HAFAS 6.14
-      Travel::Status::DE::HAFAS::Journey 6.14
-      Travel::Status::DE::HAFAS::Location 6.14
-      Travel::Status::DE::HAFAS::Message 6.14
-      Travel::Status::DE::HAFAS::Polyline 6.14
-      Travel::Status::DE::HAFAS::Product 6.14
-      Travel::Status::DE::HAFAS::Services 6.14
-      Travel::Status::DE::HAFAS::Stop 6.14
-      Travel::Status::DE::HAFAS::StopFinder 6.14
+      Travel::Status::DE::DeutscheBahn 6.15
+      Travel::Status::DE::HAFAS 6.15
+      Travel::Status::DE::HAFAS::Journey 6.15
+      Travel::Status::DE::HAFAS::Location 6.15
+      Travel::Status::DE::HAFAS::Message 6.15
+      Travel::Status::DE::HAFAS::Polyline 6.15
+      Travel::Status::DE::HAFAS::Product 6.15
+      Travel::Status::DE::HAFAS::Services 6.15
+      Travel::Status::DE::HAFAS::Stop 6.15
+      Travel::Status::DE::HAFAS::StopFinder 6.15
     requirements:
       Carp 0
       Class::Accessor 0.16
@@ -1890,17 +1890,17 @@ DISTRIBUTIONS
       Text::LevenshteinXS 0
       XML::LibXML 0
       perl v5.14.2
-  Travel-Status-DE-VRR-3.03
-    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.03.tar.gz
+  Travel-Status-DE-VRR-3.04
+    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.04.tar.gz
     provides:
-      Travel::Status::DE::EFA 3.03
-      Travel::Status::DE::EFA::Departure 3.03
-      Travel::Status::DE::EFA::Info 3.03
-      Travel::Status::DE::EFA::Line 3.03
-      Travel::Status::DE::EFA::Services 3.03
-      Travel::Status::DE::EFA::Stop 3.03
-      Travel::Status::DE::EFA::Trip 3.03
-      Travel::Status::DE::VRR 3.03
+      Travel::Status::DE::EFA 3.04
+      Travel::Status::DE::EFA::Departure 3.04
+      Travel::Status::DE::EFA::Info 3.04
+      Travel::Status::DE::EFA::Line 3.04
+      Travel::Status::DE::EFA::Services 3.04
+      Travel::Status::DE::EFA::Stop 3.04
+      Travel::Status::DE::EFA::Trip 3.04
+      Travel::Status::DE::VRR 3.04
     requirements:
       Carp 0
       Class::Accessor 0
