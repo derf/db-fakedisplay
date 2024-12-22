@@ -12,8 +12,9 @@
 % }
 % else {
   <p>
-    DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
-    Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
+    DBF ist ein inoffizieller Abfahrtsmonitor für Nah-, Regional- und Fernverkehr in Deutschland und Umgebung mit dem Ziel, Daten aus verschiedenen Quellen zusammenzutragen.
+    Es unterstützt neben Fahrten im Netz der DB InfraGO diverse Nah- und Fernverkehrsunternehmen mit EFA- und HAFAS-Backends.
+    Die Fahrten in der Übersicht verlinken je eine Detailseite mit Unterwegshalten, Meldungen und Kartendarstellung.
   </p>
   <p>
     Diese Seite ist ein kostenfreies, privat betriebenes Projekt ohne Verfügbarkeitsgarantie.
