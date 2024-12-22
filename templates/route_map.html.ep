@@ -79,18 +79,20 @@ var marker;
 </script>
 
 <div class="container" style="margin-top: 1ex; margin-bottom: 1ex; color: #555;">
+<p>
 Die eingezeichnete Route stammt aus dem angefragten Backend und stimmt nicht
-notwendigerweise mit der Realität überein.<br/>
+notwendigerweise mit der Realität überein.
 Die Fahrzeugposition auf der Karte ist eine DBF-eigene Schätzung und kann
 erheblich von den tatsächlichen Gegebenheiten abweichen.
 % if (stash('intersection')) {
 <br/>In dieser Ansicht sind Live-Updates der Zug- und Begegnungspositionen noch
 nicht implementiert.
 % }
+</p>
 </div>
 
 % if (my $op = stash('operator')) {
 <div class="container" style="margin-top: 1ex; margin-bottom: 1ex; color: #555;">
-Betrieb: <%= $op %>
+<p>Betrieb: <%= $op %></p>
 </div>
 % }
