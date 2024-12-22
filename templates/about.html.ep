@@ -1,7 +1,8 @@
 <div class="container">
 	<p>
-		DBF ist ein inoffizieller Abfahrtsmonitor für den Regional- und Fernverkehr mit dem Ziel, Daten aus verschiedenen Quellen übersichtlich zusammenzutragen.
-		Der Fokus liegt auf Zügen im Netz der Deutschen Bahn; eingeschränkte Unterstützung für Nahverkehr und Züge in anderen Netzen lässt sich optional zuschalten.
+		DBF ist ein inoffizieller Abfahrtsmonitor für Nah-, Regional- und Fernverkehr in Deutschland und Umgebung.
+		Die Fahrten in der Übersicht verlinken je eine Detailseite mit Unterwegshalten, Meldungen und Kartendarstellung.
+		Bei HAFAS-Backends ist zusätzlich die Suche nach spezifischen Fahrten möglich.
 	</p>
 	<p>
 		Der <a href="<%= app->config->{'source_url'} %>">Quelltext</a> steht unter der <a href="https://git.finalrewind.org/db-fakedisplay/tree/COPYING">GNU AGPL v3</a> als Open Source zur Verfügung. © 2011 – 2024 <a href="https://finalrewind.org">derf</a>.
@@ -22,13 +23,12 @@
 		<ul>
 		<li>Innerdeutscher Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		<strong>v<%= $Travel::Status::DE::IRIS::VERSION %></strong></li>
-		<li>Außerdeutsche Fahrten, Nahverkehr, Details, Karten: HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+		<li>Nah-, Regional- und Fernverkehr im In- und Ausland: HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 		<strong>v<%= $Travel::Status::DE::HAFAS::VERSION %></strong></li>
-		<li>Nahverkehr: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
+		<li>Nah- und Regionalverkehr im In- und Ausland: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 		<strong>v<%= $Travel::Status::DE::EFA::VERSION %></strong></li>
-		<li>Wagenreihung: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
+		<li>Wagenreihung im Netz der DB InfraGO: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
 		<strong>v<%= $Travel::Status::DE::DBWagenreihung::VERSION %></strong></li>
-		<li>Zugauslastung Regionalverkehr: VRR EFA via <a href="https://github.com/derf/eva-to-efa-gw">eva-to-efa-gw</a></li>
 		</ul>
 	</p>
 	<p>
@@ -43,6 +43,12 @@
 		<li><a href="https://data.deutschebahn.com/dataset/fahrzeuglexikon">Fahrzeuglexikon</a>
 		© DB Fernverkehr AG, lizensiert unter CC-BY 4.0; Abbildungen © Seemanngrafik d.i.p. im Auftrag der Deutschen Bahn AG, lizensiert unter CC-BY-SA 4.0</li>
 		</ul>
+	</p>
+	<p>
+		Trivia: Das Projekt begann als „db-fakedisplay“ (kurz dbf) zur
+		Nachahmung von Bahnhofs-Abfahrtstafeln. Inzwischen liegt der Fokus auf
+		der Bereitstellung von Informationen für mobile und Desktop-Anwendungen
+		und die Bezeichnung DBF wurde zum Eigennamen ohne weitere Bedeutung.
 	</p>
 </div>
 
