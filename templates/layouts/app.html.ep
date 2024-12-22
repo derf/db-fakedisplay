@@ -258,8 +258,8 @@ Bitte eine Station aus der Liste auswählen</div>
           (z.B. als alleinstehender Infoscreen) gibt es den "Infoscreen"-Modus.</li>
         <li>Die Abfahrtstafel unterstützt Namen, EVA-IDs, und (im IRIS-Backend)
           DS100/Ril100-Codes zur Identifikation von Stationen.</li>
-        <li>Abfahrten mit Echtzeitdaten bzw. Prognosen angegeben und danach
-          sortiert. Mit dem Parameter
+        <li>Abfahrten werden mit Echtzeitdaten bzw. Prognosen angegeben und
+          danach sortiert. Mit dem Parameter
           <span style="font-family: monospace;">rt=0</span> wwerden stattdessen
           Plandaten angegeben und zur Sortierung genutzt.</li>
         <li>Bei HAFAS-Backends können optional Details für spezifische Fahrten im
