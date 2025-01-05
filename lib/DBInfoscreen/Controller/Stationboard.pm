@@ -1292,7 +1292,7 @@ sub train_details_efa {
 					@{ $res->{route_post_diff} },
 					{
 						name      => $stop->full_name,
-						id        => $stop->stop_id,
+						id        => $stop->id_code,
 						sched_arr => $stop->sched_arr,
 						sched_dep => $stop->sched_dep,
 						rt_arr    => $stop->rt_arr,
@@ -1750,9 +1750,10 @@ sub handle_efa {
 				train_line => $result->line,
 				train_no   => $result->train_no,
 				journey_id => sprintf( '%s@%d(%s)%d',
-					$result->stateless,
-					scalar $result->route_pre ? ( $result->route_pre )[0]->id
-					: $result->stop_id,
+					$result->stateless =~ s{ }{}gr,
+					scalar $result->route_pre
+					? ( $result->route_pre )[0]->id_num
+					: $result->stop_id_num,
 					$result->sched_datetime->strftime('%Y%m%d'),
 					$result->key ),
 				via          => [ map { $_->name } $result->route_interesting ],
@@ -1767,7 +1768,7 @@ sub handle_efa {
 				is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
 				has_realtime    => defined $delay ? 1 : 0,
 				occupancy       => $result->occupancy,
-				station         => $efa->stop->id,
+				station         => $efa->stop->id_code,
 				replaced_by     => [],
 				replacement_for => [],
 				route_pre       => [ map { $_->full_name } $result->route_pre ],
