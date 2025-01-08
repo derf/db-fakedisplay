@@ -1,9 +1,10 @@
 <div class="container">
 	<p>
 		Das Backend bestimmt die Datenquelle für Stations- und Zuginformationen.
-		Innerhalb Deutschlands ist <strong>Deutsche Bahn</strong> meist eine gute Wahl: IRIS-TTS kennt ausschließlich Schienenverkehr im Bahnnetz, während HAFAS auch Nahverkehr unterstützt.
-		Die anderen Backends bieten sich für Fahrten im Ausland oder im zugehörigen Verkehrsverbund an.
+		Innerhalb Deutschlands ist <strong>Deutsche Bahn</strong> via IRIS-TTS eine gute Wahl für Schienenverkehr im Bahnnetz.
+		Die anderen Backends bieten sich für Fahrten im zugehörigen Verkehrsverbund (inklusive Nahverkehr) sowie im Ausland an.
 		Sofern bekannt sind unterhalb der Backend-Namen Karten verlinkt, die die ungefähre Abdeckung aufzeigen.
+		Ein Backend, welches Nah- und Fernverkehr in ganz Deutschland abdeckt, ist aktuell leider nicht verfügbar.
 	</p>
 	<p>
 		% my $prev_type = 'IRIS-TTS';

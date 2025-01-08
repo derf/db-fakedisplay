@@ -121,18 +121,15 @@ Bitte eine Station aus der Liste auswählen</div>
 %= hidden_field hafas => param('hafas')
 <div>
   <div class="field">
-    <div class="desc">Stationsname oder Fahrtnummer:</div>
-    <div>
-% if (stash('stationlist')) {
+%   if (stash('stationlist')) {
       %= select_field input => stash('stationlist')
-% }
-% elsif (stash('input')) {
+%   }
+%   elsif (stash('input')) {
       %= text_field 'input', class => 'station', placeholder => 'Stationsname oder Fahrtnummer', id => 'stationinput'
-% }
-% else {
+%   }
+%   else {
       %= text_field 'input', class => 'station', placeholder => 'Stationsname oder Fahrtnummer', id => 'stationinput', autofocus => 'autofocus'
-% }
-    </div>
+%   }
   </div>
   <div class="field">
     %= submit_button 'Abfahrtstafel'
