@@ -2268,8 +2268,7 @@ sub handle_result {
 		my $station_name = $data->{station_name} // $self->stash('station');
 		my ( $api_link, $api_text, $api_icon );
 		my $params = $self->req->params->clone;
-		$params->param( hafas => $params->param('hafas') ? q{} : 'DB' );
-		if ( $params->param('hafas') ) {
+		if ( not $hafas ) {
 			if (    $data->{station_eva} >= 8100000
 				and $data->{station_eva} < 8200000 )
 			{
@@ -2280,17 +2279,11 @@ sub handle_result {
 			{
 				$params->param( hafas => 'BLS' );
 			}
-			$api_link = '/' . $data->{station_eva} . '?' . $params->to_string;
-			$api_text = 'Auf Nahverkehr wechseln';
-			$api_icon = 'train';
-		}
-		else {
-			my $iris_eva = List::Util::min grep { $_ >= 1000000 }
-			  @{ $data->{station_evas} // [] };
-			if ($iris_eva) {
-				$api_link = '/' . $iris_eva . '?' . $params->to_string;
-				$api_text = 'Auf Bahnverkehr wechseln';
-				$api_icon = 'directions';
+			if ( $params->param('hafas') ) {
+				$api_link
+				  = '/' . $data->{station_eva} . '?' . $params->to_string;
+				$api_text = 'Auf Nahverkehr wechseln';
+				$api_icon = 'train';
 			}
 		}
 		$self->render(
@@ -2507,6 +2500,12 @@ sub backend_list {
 	}
 
 	for my $backend ( Travel::Status::DE::HAFAS::get_services() ) {
+		if ( $backend->{shortname} eq 'DB' ) {
+
+			# HTTP 503 Service Temporarily Unavailable as of 2025-01-08 ~10:30 UTC
+			# (I bet it's actually Permanently Unavailable)
+			next;
+		}
 		push(
 			@backends,
 			{
@@ -2526,8 +2525,8 @@ sub backend_list {
 
 	$self->render(
 		'select_backend',
-		backends  => \@backends,
-		hide_opts => 1,
+		backends    => \@backends,
+		hide_opts   => 1,
 		hide_footer => 1
 	);
 }
