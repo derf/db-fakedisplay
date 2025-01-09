@@ -96,7 +96,8 @@ function dbf_show_moreinfo(trainElem, keep_old) {
 		$.get(window.location.href, {train: trainElem.data('train'), jid: trainElem.data('jid'), ajax: 1}, function(data) {
 			$('.moreinfo').html(data);
 		}).fail(function() {
-			$('.moreinfo .mfooter').append('Der Zug ist abgefahren (Zug nicht gefunden)');
+			$('.moreinfo .mfooter').append('Keine weiteren Details verfügbar');
+			$('.moreinfo .loading').remove();
 		});
 		infoElem.removeClass('collapsed-moreinfo');
 		infoElem.addClass('expanded-moreinfo');
