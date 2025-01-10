@@ -60,7 +60,7 @@ sub handle_no_results {
 	}
 	elsif ($hafas) {
 		$self->render_later;
-		my $service = 'DB';
+		my $service = 'VRN';
 		if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) )
 		{
 			$service = $hafas;
@@ -381,7 +381,7 @@ sub get_results_p {
 		);
 	}
 	if ( $opt{hafas} ) {
-		my $service = 'DB';
+		my $service = 'VRN';
 		if ( $opt{hafas} ne '1'
 			and Travel::Status::DE::HAFAS::get_service( $opt{hafas} ) )
 		{
@@ -2332,7 +2332,7 @@ sub stations_by_coordinates {
 		return;
 	}
 
-	my $service = 'DB';
+	my $service = 'VRN';
 	if (    $hafas
 		and $hafas ne '1'
 		and Travel::Status::DE::HAFAS::get_service($hafas) )

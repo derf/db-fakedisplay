@@ -50,7 +50,7 @@ sub get_route_p {
 
 	if ( $opt{trip_id} ) {
 		$hafas_promise = Travel::Status::DE::HAFAS->new_p(
-			service => $opt{service},
+			service => $opt{service} // 'VRN',
 			journey => {
 				id => $opt{trip_id},
 			},
@@ -69,6 +69,7 @@ sub get_route_p {
 	}
 
 	$hafas_promise //= Travel::Status::DE::HAFAS->new_p(
+		service      => $opt{service} // 'VRN',
 		journeyMatch => $opt{train_req} =~ s{^- }{}r,
 		datetime     => ( $opt{train} ? $opt{train}->start : $opt{datetime} ),
 		language     => $opt{language},
@@ -99,6 +100,7 @@ sub get_route_p {
 			}
 
 			return Travel::Status::DE::HAFAS->new_p(
+				service => $opt{service} // 'VRN',
 				journey => {
 					id => $result->id,
 				},
@@ -264,7 +266,7 @@ sub get_polyline_p {
 
 	my $trip_id = $opt{id};
 	my $line    = $opt{line};
-	my $service = $opt{service};
+	my $service = $opt{service} // 'VRN';
 	my $promise = Mojo::Promise->new;
 
 	Travel::Status::DE::HAFAS->new_p(
