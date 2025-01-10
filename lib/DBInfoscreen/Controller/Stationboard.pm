@@ -777,7 +777,7 @@ sub render_train {
 	my $wagonorder_req  = Mojo::Promise->new;
 	my $occupancy_req   = Mojo::Promise->new;
 	my $stationinfo_req = Mojo::Promise->new;
-	my $route_req       = Mojo::Promise->resolve;
+	my $route_req       = Mojo::Promise->new;
 
 	my @requests
 	  = ( $wagonorder_req, $occupancy_req, $stationinfo_req, $route_req );
@@ -961,93 +961,93 @@ sub render_train {
 	#	$opt{language} = 'en';
 	#}
 
-	#$self->hafas->get_route_p(%opt)->then(
-	#	sub {
-	#		my ( $route, $journey ) = @_;
+	$self->hafas->get_route_p(%opt)->then(
+		sub {
+			my ( $route, $journey ) = @_;
 
-	#		$departure->{trip_id}   = $journey->id;
-	#		$departure->{operators} = [ $journey->operators ];
-	#		$departure->{date} = $route->[0]{sched_dep} // $route->[0]{dep};
+			$departure->{trip_id}   = $journey->id;
+			$departure->{operators} = [ $journey->operators ];
+			$departure->{date} = $route->[0]{sched_dep} // $route->[0]{dep};
 
-	#		# Use HAFAS route as source of truth; ignore IRIS data
-	#		$departure->{route_pre_diff}  = [];
-	#		$departure->{route_post_diff} = $route;
-	#		my $split;
-	#		for my $i ( 0 .. $#{ $departure->{route_post_diff} } ) {
-	#			if ( $departure->{route_post_diff}[$i]{name} eq $station_name )
-	#			{
-	#				$split = $i;
-	#				if ( my $load = $route->[$i]{load} ) {
-	#					if ( %{$load} ) {
-	#						$departure->{utilization}
-	#						  = [ $load->{FIRST}, $load->{SECOND} ];
-	#					}
-	#				}
-	#				$departure->{tz_offset}   = $route->[$i]{tz_offset};
-	#				$departure->{local_dt_da} = $route->[$i]{local_dt_da};
-	#				$departure->{local_sched_arr}
-	#				  = $route->[$i]{local_sched_arr};
-	#				$departure->{local_sched_dep}
-	#				  = $route->[$i]{local_sched_dep};
-	#				$departure->{is_annotated} = $route->[$i]{is_annotated};
-	#				$departure->{prod_name}    = $route->[$i]{prod_name};
-	#				$departure->{direction}    = $route->[$i]{direction};
-	#				$departure->{operator}     = $route->[$i]{operator};
-	#				last;
-	#			}
-	#		}
+			# Use HAFAS route as source of truth; ignore IRIS data
+			$departure->{route_pre_diff}  = [];
+			$departure->{route_post_diff} = $route;
+			my $split;
+			for my $i ( 0 .. $#{ $departure->{route_post_diff} } ) {
+				if ( $departure->{route_post_diff}[$i]{name} eq $station_name )
+				{
+					$split = $i;
+					if ( my $load = $route->[$i]{load} ) {
+						if ( %{$load} ) {
+							$departure->{utilization}
+							  = [ $load->{FIRST}, $load->{SECOND} ];
+						}
+					}
+					$departure->{tz_offset}   = $route->[$i]{tz_offset};
+					$departure->{local_dt_da} = $route->[$i]{local_dt_da};
+					$departure->{local_sched_arr}
+					  = $route->[$i]{local_sched_arr};
+					$departure->{local_sched_dep}
+					  = $route->[$i]{local_sched_dep};
+					$departure->{is_annotated} = $route->[$i]{is_annotated};
+					$departure->{prod_name}    = $route->[$i]{prod_name};
+					$departure->{direction}    = $route->[$i]{direction};
+					$departure->{operator}     = $route->[$i]{operator};
+					last;
+				}
+			}
 
-	#		if ( defined $split ) {
-	#			for my $i ( 0 .. $split - 1 ) {
-	#				push(
-	#					@{ $departure->{route_pre_diff} },
-	#					shift( @{ $departure->{route_post_diff} } )
-	#				);
-	#			}
+			if ( defined $split ) {
+				for my $i ( 0 .. $split - 1 ) {
+					push(
+						@{ $departure->{route_pre_diff} },
+						shift( @{ $departure->{route_post_diff} } )
+					);
+				}
 
-	#			# remove entry for $station_name
-	#			shift( @{ $departure->{route_post_diff} } );
-	#		}
+				# remove entry for $station_name
+				shift( @{ $departure->{route_post_diff} } );
+			}
 
-	#		my @him_messages;
-	#		my @him_details;
-	#		for my $message ( $journey->messages ) {
-	#			if ( $message->code ) {
-	#				push( @him_details,
-	#					[ $message->short // q{}, { text => $message->text } ]
-	#				);
-	#			}
-	#			else {
-	#				push( @him_messages,
-	#					[ $message->short // q{}, { text => $message->text } ]
-	#				);
-	#			}
-	#		}
-	#		for my $m (@him_messages) {
-	#			if ( $m->[0] =~ s{: Information.}{:} ) {
-	#				$m->[1]{icon} = 'info_outline';
-	#			}
-	#			elsif ( $m->[0] =~ s{: Störung.}{: } ) {
-	#				$m->[1]{icon} = 'warning';
-	#			}
-	#			elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
-	#				$m->[1]{icon} = 'build';
-	#			}
-	#			$m->[0] =~ s{(?!<)->}{ → };
-	#		}
-	#		unshift( @{ $departure->{moreinfo} }, @him_messages );
-	#		unshift( @{ $departure->{details} },  @him_details );
-	#	}
-	#)->catch(
-	#	sub {
-	#		# nop
-	#	}
-	#)->finally(
-	#	sub {
-	#		$route_req->resolve;
-	#		return;
-	#	}
-	#)->wait;
+			my @him_messages;
+			my @him_details;
+			for my $message ( $journey->messages ) {
+				if ( $message->code ) {
+					push( @him_details,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
+				}
+				else {
+					push( @him_messages,
+						[ $message->short // q{}, { text => $message->text } ]
+					);
+				}
+			}
+			for my $m (@him_messages) {
+				if ( $m->[0] =~ s{: Information.}{:} ) {
+					$m->[1]{icon} = 'info_outline';
+				}
+				elsif ( $m->[0] =~ s{: Störung.}{: } ) {
+					$m->[1]{icon} = 'warning';
+				}
+				elsif ( $m->[0] =~ s{: Bauarbeiten.}{: } ) {
+					$m->[1]{icon} = 'build';
+				}
+				$m->[0] =~ s{(?!<)->}{ → };
+			}
+			unshift( @{ $departure->{moreinfo} }, @him_messages );
+			unshift( @{ $departure->{details} },  @him_details );
+		}
+	)->catch(
+		sub {
+			# nop
+		}
+	)->finally(
+		sub {
+			$route_req->resolve;
+			return;
+		}
+	)->wait;
 
 	# Defer rendering until all requests have completed
 	Mojo::Promise->all(@requests)->then(
