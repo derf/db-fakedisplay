@@ -1862,16 +1862,28 @@ sub handle_result {
 			@results = sort { $a->datetime <=> $b->datetime } @results;
 		}
 		elsif ( $admode eq 'arr' ) {
-			@results = sort {
-				( $a->arrival // $a->departure )
-				  <=> ( $b->arrival // $b->departure )
-			} @results;
+			@results = map { $_->[1] }
+			  sort { $a->[0] <=> $b->[0] }
+			  map {
+				[
+					$_->arrival_is_cancelled
+					? ( $_->sched_arrival // $_->sched_departure )
+					: ( $_->arrival // $_->departure ),
+					$_
+				]
+			  } @results;
 		}
 		else {
-			@results = sort {
-				( $a->departure // $a->arrival )
-				  <=> ( $b->departure // $b->arrival )
-			} @results;
+			@results = map { $_->[1] }
+			  sort { $a->[0] <=> $b->[0] }
+			  map {
+				[
+					$_->departure_is_cancelled
+					? ( $_->sched_departure // $_->sched_arrival )
+					: ( $_->departure // $_->arrival ),
+					$_
+				]
+			  } @results;
 		}
 	}
 

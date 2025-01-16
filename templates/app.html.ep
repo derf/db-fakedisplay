@@ -104,7 +104,7 @@
       </span>
 %   }
     <span class="time <%= $show_realtime ? get_rt_time_class($departure) : q{} %>">
-%     if ($departure->{delay} and not $departure->{is_cancelled}) {
+%     if ($departure->{delay} and not $departure->{is_cancelled} and not $departure->{departure_is_cancelled}) {
 %       if ($show_realtime and ($departure->{sched_arrival} or $departure->{sched_departure})) {
 %         if ($departure->{delay} > ($hide_low_delay ? 4 : 0)) {
             <span class="delaynorm" aria-hidden="true"><%= $departure->{sched_departure} // $departure->{sched_arrival} %> ⇒</span>
@@ -142,7 +142,12 @@
 %       }
 %     }
 %     else {
-%=      $departure->{time}
+%       if ($departure->{is_cancelled} or $departure->{departure_is_cancelled}) {
+%=        $departure->{sched_departure} // $departure->{sched_arrival} // $departure->{time}
+%       }
+%       else {
+%=        $departure->{time}
+%       }
 %     }
     </span>
 %   if (($departure->{scheduled_platform} and $departure->{platform} and
