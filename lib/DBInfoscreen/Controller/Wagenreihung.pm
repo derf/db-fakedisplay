@@ -10,7 +10,7 @@ use Mojo::Util qw(b64_encode b64_decode);
 
 use utf8;
 
-use Travel::Status::DE::DBWagenreihung;
+use Travel::Status::DE::DBRIS::Formation;
 
 sub handle_wagenreihung_error {
 	my ( $self, $train, $err ) = @_;
@@ -43,8 +43,7 @@ sub wagenreihung {
 			my $wr;
 			eval {
 				$wr
-				  = Travel::Status::DE::DBWagenreihung->new(
-					from_json => $json );
+				  = Travel::Status::DE::DBRIS::Formation->new( json => $json );
 			};
 			if ($@) {
 				$self->handle_wagenreihung_error( $train, scalar $@ );
@@ -176,7 +175,7 @@ sub wagenreihung {
 				ts          => $json->{ts},
 			);
 		}
-	)->catch(
+	  )->catch(
 		sub {
 			my ($err) = @_;
 
@@ -184,7 +183,7 @@ sub wagenreihung {
 				$err // "Unbekannter Fehler" );
 			return;
 		}
-	)->wait;
+	  )->wait;
 
 }
 

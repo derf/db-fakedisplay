@@ -16,7 +16,7 @@ use List::MoreUtils qw();
 use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
-use Travel::Status::DE::DBWagenreihung;
+use Travel::Status::DE::DBRIS::Formation;
 use Travel::Status::DE::EFA;
 use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::IRIS;
@@ -793,8 +793,8 @@ sub render_train {
 				my ( $wr_json, $wr_param ) = @_;
 				eval {
 					my $wr
-					  = Travel::Status::DE::DBWagenreihung->new(
-						from_json => $wr_json );
+					  = Travel::Status::DE::DBRIS::Formation->new(
+						json => $wr_json );
 					$departure->{wr}      = $wr;
 					$departure->{wr_link} = join( '&',
 						map { $_ . '=' . $wr_param->{$_} } keys %{$wr_param} );

@@ -22,8 +22,8 @@
 		<strong>v<%= $Travel::Status::DE::HAFAS::VERSION %></strong></li>
 		<li>Nah- und Regionalverkehr im In- und Ausland: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 		<strong>v<%= $Travel::Status::DE::EFA::VERSION %></strong></li>
-		<li>Wagenreihung im Netz der DB InfraGO: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBWagenreihung/">Travel::Status::DE::DBWagenreihung</a>
-		<strong>v<%= $Travel::Status::DE::DBWagenreihung::VERSION %></strong></li>
+		<li>Wagenreihung im Netz der DB InfraGO: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBRIS/">Travel::Status::DE::DBRIS::Formation</a>
+		<strong>v<%= $Travel::Status::DE::DBRIS::Formation::VERSION %></strong></li>
 		</ul>
 	</p>
 	<p>
