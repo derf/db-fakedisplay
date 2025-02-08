@@ -1808,25 +1808,31 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBWagenreihung-0.18
-    pathname: D/DE/DERF/Travel-Status-DE-DBWagenreihung-0.18.tar.gz
+  Travel-Status-DE-DBRIS-0.05
+    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.05.tar.gz
     provides:
-      Travel::Status::DE::DBWagenreihung 0.18
-      Travel::Status::DE::DBWagenreihung::Carriage 0.18
-      Travel::Status::DE::DBWagenreihung::Group 0.18
-      Travel::Status::DE::DBWagenreihung::Sector 0.18
+      Travel::Status::DE::DBRIS 0.05
+      Travel::Status::DE::DBRIS::Formation 0.05
+      Travel::Status::DE::DBRIS::Formation::Carriage 0.05
+      Travel::Status::DE::DBRIS::Formation::Group 0.05
+      Travel::Status::DE::DBRIS::Formation::Sector 0.05
+      Travel::Status::DE::DBRIS::Journey 0.05
+      Travel::Status::DE::DBRIS::JourneyAtStop 0.05
+      Travel::Status::DE::DBRIS::Location 0.05
     requirements:
       Carp 0
-      Class::Accessor 0
+      Class::Accessor 0.16
+      DateTime 0
+      DateTime::Format::Strptime 0
       Getopt::Long 0
       JSON 0
+      LWP::Protocol::https 0
       LWP::UserAgent 0
       List::Util 0
       Module::Build 0.4
       Test::Compile 0
       Test::More 0
       Test::Pod 0
-      Travel::Status::DE::IRIS 1.2
       perl v5.20.0
   Travel-Status-DE-HAFAS-6.17
     pathname: D/DE/DERF/Travel-Status-DE-HAFAS-6.17.tar.gz
@@ -1889,17 +1895,17 @@ DISTRIBUTIONS
       Text::LevenshteinXS 0
       XML::LibXML 0
       perl v5.14.2
-  Travel-Status-DE-VRR-3.06
-    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.06.tar.gz
+  Travel-Status-DE-VRR-3.08
+    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.08.tar.gz
     provides:
-      Travel::Status::DE::EFA 3.06
-      Travel::Status::DE::EFA::Departure 3.06
-      Travel::Status::DE::EFA::Info 3.06
-      Travel::Status::DE::EFA::Line 3.06
-      Travel::Status::DE::EFA::Services 3.06
-      Travel::Status::DE::EFA::Stop 3.06
-      Travel::Status::DE::EFA::Trip 3.06
-      Travel::Status::DE::VRR 3.06
+      Travel::Status::DE::EFA 3.08
+      Travel::Status::DE::EFA::Departure 3.08
+      Travel::Status::DE::EFA::Info 3.08
+      Travel::Status::DE::EFA::Line 3.08
+      Travel::Status::DE::EFA::Services 3.08
+      Travel::Status::DE::EFA::Stop 3.08
+      Travel::Status::DE::EFA::Trip 3.08
+      Travel::Status::DE::VRR 3.08
     requirements:
       Carp 0
       Class::Accessor 0
