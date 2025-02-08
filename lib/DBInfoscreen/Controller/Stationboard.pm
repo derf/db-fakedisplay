@@ -50,12 +50,22 @@ sub handle_no_results {
 	my $errstr = $data->{errstr};
 
 	if ($efa) {
-		$self->render(
-			'landingpage',
-			error     => ( $errstr // "Keine Abfahrten an '$station'" ),
-			hide_opts => 0,
-			status    => $data->{status} // 404,
-		);
+		if ( $errstr =~ m{ambiguous} and $efa->name_candidates ) {
+			$self->render(
+				'landingpage',
+				stationlist => [ $efa->name_candidates ],
+				hide_opts   => 0,
+				status      => $data->{status} // 300,
+			);
+		}
+		else {
+			$self->render(
+				'landingpage',
+				error     => ( $errstr // "Keine Abfahrten an '$station'" ),
+				hide_opts => 0,
+				status    => $data->{status} // 404,
+			);
+		}
 		return;
 	}
 	elsif ($hafas) {
@@ -579,13 +589,14 @@ sub handle_request {
 		}
 	)->catch(
 		sub {
-			my ($err) = @_;
+			my ( $err, $status ) = @_;
 			if ( $template eq 'json' ) {
 				$self->handle_no_results_json(
 					$station,
 					{
 						errstr => $err,
-						status => ( $err =~ m{Ambiguous|LOCATION} ? 300 : 500 ),
+						status =>
+						  ( $err =~ m{[Aa]mbiguous|LOCATION} ? 300 : 500 ),
 					},
 					$api_version
 				);
@@ -595,9 +606,10 @@ sub handle_request {
 				$station,
 				{
 					errstr => $err,
-					status => ( $err =~ m{Ambiguous|LOCATION} ? 300 : 500 ),
+					status => ( $err =~ m{[Aa]mbiguous|LOCATION} ? 300 : 500 ),
 				},
-				$hafas, $efa
+				$hafas,
+				$efa ? $status : undef
 			);
 			return;
 		}
