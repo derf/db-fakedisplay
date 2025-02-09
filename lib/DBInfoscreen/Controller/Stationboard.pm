@@ -79,7 +79,7 @@ sub handle_no_results {
 			locationSearch => $station,
 			service        => $service,
 			promise        => 'Mojo::Promise',
-			user_agent     => $self->ua,
+			user_agent => $service eq 'PKP' ? Mojo::UserAgent->new : $self->ua,
 		)->then(
 			sub {
 				my ($status) = @_;
@@ -407,7 +407,7 @@ sub get_results_p {
 				agent   => 'dbf.finalrewind.org/2'
 			},
 			promise    => 'Mojo::Promise',
-			user_agent => $self->ua,
+			user_agent => $service eq 'PKP' ? Mojo::UserAgent->new : $self->ua,
 		);
 	}
 
@@ -2424,7 +2424,7 @@ sub stations_by_coordinates {
 
 	Travel::Status::DE::HAFAS->new_p(
 		promise    => 'Mojo::Promise',
-		user_agent => $self->ua,
+		user_agent => $service eq 'PKP' ? Mojo::UserAgent->new : $self->ua,
 		service    => $service,
 		geoSearch  => {
 			lat => $lat,

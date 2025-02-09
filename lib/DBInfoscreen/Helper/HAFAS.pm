@@ -13,6 +13,7 @@ use Encode qw(decode encode);
 use Travel::Status::DE::HAFAS;
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
+use Mojo::UserAgent;
 
 sub new {
 	my ( $class, %opt ) = @_;
@@ -48,6 +49,13 @@ sub get_route_p {
 
 	my $hafas_promise;
 
+	my $agent = $self->{user_agent};
+	if ( $opt{service} and $opt{service} eq 'PKP' ) {
+
+		# PKP needs proxying
+		$agent = Mojo::UserAgent->new;
+	}
+
 	if ( $opt{trip_id} ) {
 		$hafas_promise = Travel::Status::DE::HAFAS->new_p(
 			service => $opt{service} // 'VRN',
@@ -57,7 +65,7 @@ sub get_route_p {
 			language   => $opt{language},
 			cache      => $self->{realtime_cache},
 			promise    => 'Mojo::Promise',
-			user_agent => $self->{user_agent}->request_timeout(10)
+			user_agent => $agent->request_timeout(10)
 		);
 	}
 	elsif ( $opt{train} ) {
@@ -75,7 +83,7 @@ sub get_route_p {
 		language     => $opt{language},
 		cache        => $self->{realtime_cache},
 		promise      => 'Mojo::Promise',
-		user_agent   => $self->{user_agent}->request_timeout(10)
+		user_agent   => $agent->request_timeout(10)
 	)->then(
 		sub {
 			my ($hafas) = @_;
@@ -107,7 +115,7 @@ sub get_route_p {
 				language   => $opt{language},
 				cache      => $self->{realtime_cache},
 				promise    => 'Mojo::Promise',
-				user_agent => $self->{user_agent}->request_timeout(10)
+				user_agent => $agent->request_timeout(10)
 			);
 		}
 	);
@@ -269,6 +277,13 @@ sub get_polyline_p {
 	my $service = $opt{service} // 'VRN';
 	my $promise = Mojo::Promise->new;
 
+	my $agent = $self->{user_agent};
+	if ( $opt{service} and $opt{service} eq 'PKP' ) {
+
+		# PKP needs proxying
+		$agent = Mojo::UserAgent->new;
+	}
+
 	Travel::Status::DE::HAFAS->new_p(
 		service => $service,
 		journey => {
@@ -278,7 +293,7 @@ sub get_polyline_p {
 		with_polyline => 1,
 		cache         => $self->{realtime_cache},
 		promise       => 'Mojo::Promise',
-		user_agent    => $self->{user_agent}->request_timeout(10)
+		user_agent    => $agent->request_timeout(10)
 	)->then(
 		sub {
 			my ($hafas) = @_;
