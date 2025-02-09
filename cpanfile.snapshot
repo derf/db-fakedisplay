@@ -1132,6 +1132,20 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
+  IO-Socket-Socks-0.74
+    pathname: O/OL/OLEG/IO-Socket-Socks-0.74.tar.gz
+    provides:
+      IO::Socket::Socks 0.74
+      IO::Socket::Socks::Debug 0.74
+      IO::Socket::Socks::Error 0.74
+      IO::Socket::Socks::ReadOnlyVar 0.74
+      IO::Socket::Socks::SocketClassVar 0.74
+    requirements:
+      ExtUtils::MakeMaker 6.52
+      IO::Select 0
+      Socket 1.94
+      Test::More 0.88
+      constant 1.03
   IO-String-1.08
     pathname: G/GA/GAAS/IO-String-1.08.tar.gz
     provides:
@@ -1834,18 +1848,18 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.20.0
-  Travel-Status-DE-HAFAS-6.17
-    pathname: D/DE/DERF/Travel-Status-DE-HAFAS-6.17.tar.gz
+  Travel-Status-DE-HAFAS-6.18
+    pathname: D/DE/DERF/Travel-Status-DE-HAFAS-6.18.tar.gz
     provides:
-      Travel::Status::DE::HAFAS 6.17
-      Travel::Status::DE::HAFAS::Journey 6.17
-      Travel::Status::DE::HAFAS::Location 6.17
-      Travel::Status::DE::HAFAS::Message 6.17
-      Travel::Status::DE::HAFAS::Polyline 6.17
-      Travel::Status::DE::HAFAS::Product 6.17
-      Travel::Status::DE::HAFAS::Services 6.17
-      Travel::Status::DE::HAFAS::Stop 6.17
-      Travel::Status::DE::HAFAS::StopFinder 6.17
+      Travel::Status::DE::HAFAS 6.18
+      Travel::Status::DE::HAFAS::Journey 6.18
+      Travel::Status::DE::HAFAS::Location 6.18
+      Travel::Status::DE::HAFAS::Message 6.18
+      Travel::Status::DE::HAFAS::Polyline 6.18
+      Travel::Status::DE::HAFAS::Product 6.18
+      Travel::Status::DE::HAFAS::Services 6.18
+      Travel::Status::DE::HAFAS::Stop 6.18
+      Travel::Status::DE::HAFAS::StopFinder 6.18
     requirements:
       Carp 0
       Class::Accessor 0.16
