@@ -4,6 +4,8 @@ requires 'DateTime::Format::Strptime';
 requires 'File::Slurp';
 requires 'GIS::Distance';
 requires 'GIS::Distance::Fast';
+requires 'IO::Socket::Socks', '>= 0.64';
+requires 'IO::Socket::SSL', '>= 2.009';
 requires 'JSON';
 requires 'JSON::XS';
 requires 'List::UtilsBy';
