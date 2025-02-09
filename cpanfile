@@ -7,8 +7,6 @@ requires 'GIS::Distance::Fast';
 requires 'JSON';
 requires 'JSON::XS';
 requires 'List::UtilsBy';
-requires 'LWP::UserAgent';
-requires 'LWP::Protocol::https';
 requires 'Mojolicious';
 requires 'Travel::Status::DE::DBRIS::Formation', '>= 0.04';
 requires 'Travel::Status::DE::EFA',              '>= 3.08';
