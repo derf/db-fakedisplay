@@ -452,7 +452,6 @@ sub route_efa {
 				ajax_route    => route_to_ajax( @{$ref_route} ),
 				ajax_polyline => join( '|',
 					map { join( ';', @{$_} ) } @{ $train_pos->{positions} } ),
-				,
 				origin => {
 					name => ( $trip->route )[0]->full_name,
 					ts   => ( $trip->route )[0]->dep,

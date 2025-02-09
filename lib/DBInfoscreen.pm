@@ -328,14 +328,15 @@ sub startup {
 	  ->to( 'stationboard#station_train_details', format => undef )
 	  ->name('train_at_station');
 	$r->get( '/z/:train' => [ format => [ 'html', 'json' ] ] )
-	  ->to( 'stationboard#train_details', format => undef )->name('train');
+	  ->to( 'stationboard#train_details', format => undef )
+	  ->name('train');
 
 	$self->defaults( layout => 'app' );
 
-	$r->get('/')->to('stationboard#handle_request');
-	$r->get('/multi/*station')->to('stationboard#handle_request');
+	$r->get('/')->to('stationboard#handle_board_request');
+	$r->get('/multi/*station')->to('stationboard#handle_board_request');
 	$r->get( '/*station' => [ format => [ 'html', 'json' ] ] )
-	  ->to( 'stationboard#handle_request', format => undef );
+	  ->to( 'stationboard#handle_board_request', format => undef );
 
 	$self->types->type( json => 'application/json; charset=utf-8' );
 

@@ -454,7 +454,7 @@ sub get_results_p {
 	}
 }
 
-sub handle_request {
+sub handle_board_request {
 	my ($self) = @_;
 	my $station = $self->stash('station');
 
@@ -558,7 +558,7 @@ sub handle_request {
 		sub {
 			my ($status) = @_;
 			if ($efa) {
-				$self->handle_efa( $station, $status );
+				$self->render_board_efa( $station, $status );
 				return;
 			}
 			my $data = {
@@ -585,7 +585,7 @@ sub handle_request {
 				$self->handle_no_results( $station, $data, $hafas );
 				return;
 			}
-			$self->handle_result($data);
+			$self->render_board_hafas($data);
 		}
 	)->catch(
 		sub {
@@ -1696,7 +1696,7 @@ sub train_details {
 	)->wait;
 }
 
-sub handle_efa {
+sub render_board_efa {
 	my ( $self, $station_name, $efa ) = @_;
 	my $template       = $self->param('mode')         // 'app';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
@@ -1821,7 +1821,8 @@ sub handle_efa {
 	}
 }
 
-sub handle_result {
+# For HAFAS and IRIS departure elements
+sub render_board_hafas {
 	my ( $self, $data ) = @_;
 
 	my @results = @{ $data->{results} };
