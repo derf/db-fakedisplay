@@ -16,6 +16,7 @@ use List::MoreUtils qw();
 use Mojo::JSON      qw(decode_json encode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
+use Travel::Status::DE::DBRIS;
 use Travel::Status::DE::DBRIS::Formation;
 use Travel::Status::DE::EFA;
 use Travel::Status::DE::HAFAS;
@@ -370,6 +371,25 @@ sub get_results_p {
 	my ( $self, $station, %opt ) = @_;
 	my $data;
 
+	if ( $opt{dbris} ) {
+		if ( $station =~ m{ [@] L = (?<eva> \d+ ) [@] }x ) {
+			return Travel::Status::DE::DBRIS->new_p(
+				station => {
+					eva => $+{eva},
+					id  => $station,
+				},
+				cache       => $opt{cache_iris_rt},
+				lwp_options => {
+					timeout => 10,
+					agent   => 'dbf.finalrewind.org/2'
+				},
+				promise        => 'Mojo::Promise',
+				user_agent     => Mojo::UserAgent->new,
+				developer_mode => 1,
+			);
+		}
+		return Mojo::Promise->reject("Invalid station: '$station'");
+	}
 	if ( $opt{efa} ) {
 		my $service = 'VRR';
 		if ( $opt{efa} ne '1'
@@ -459,6 +479,7 @@ sub handle_board_request {
 	my $station = $self->stash('station');
 
 	my $template     = $self->param('mode') // 'app';
+	my $dbris        = $self->param('dbris');
 	my $efa          = $self->param('efa');
 	my $hafas        = $self->param('hafas');
 	my $with_related = !$self->param('no_related');
@@ -466,6 +487,7 @@ sub handle_board_request {
 		cache_iris_main => $self->app->cache_iris_main,
 		cache_iris_rt   => $self->app->cache_iris_rt,
 		lookahead       => $self->config->{lookahead},
+		dbris           => $dbris,
 		efa             => $efa,
 		hafas           => $hafas,
 	);
@@ -557,6 +579,10 @@ sub handle_board_request {
 	$self->get_results_p( $station, %opt )->then(
 		sub {
 			my ($status) = @_;
+			if ($dbris) {
+				$self->render_board_dbris( $station, $status );
+				return;
+			}
 			if ($efa) {
 				$self->render_board_efa( $station, $status );
 				return;
@@ -1694,6 +1720,133 @@ sub train_details {
 			}
 		}
 	)->wait;
+}
+
+sub render_board_dbris {
+	my ( $self, $station_id, $dbris ) = @_;
+	my $template       = $self->param('mode')         // 'app';
+	my $hide_low_delay = $self->param('hidelowdelay') // 0;
+	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
+	  // 1;
+
+	my $station_name;
+	if ( $station_id =~ m{ [@] O = (?<name> [^@]+) [@] }x ) {
+		$station_name = $+{name};
+	}
+
+	my @departures;
+
+	if ( $self->param('ajax') ) {
+		delete $self->stash->{layout};
+	}
+
+	my @results = $self->filter_results( $dbris->results );
+
+	for my $result (@results) {
+		my $time;
+
+		if ( $template eq 'json' ) {
+			push( @departures, $result );
+			next;
+		}
+
+		if ( $show_realtime and $result->rt_dep ) {
+			$time = $result->rt_dep->strftime('%H:%M');
+		}
+		else {
+			$time = $result->sched_dep->strftime('%H:%M');
+		}
+
+		my $linetype = $result->line;
+		if ( $linetype =~ m{ STR }x ) {
+			$linetype = 'tram';
+		}
+		elsif ( $linetype =~ m{ ^ S }x ) {
+			$linetype = 'sbahn';
+		}
+		elsif ( $linetype =~ m{ U }x ) {
+			$linetype = 'ubahn';
+		}
+		elsif ( $linetype =~ m{ Bus }x ) {
+			$linetype = 'bus';
+		}
+		elsif ( $linetype =~ m{ ^ [EI]CE? }x ) {
+			$linetype = 'fern';
+		}
+		elsif ( $linetype =~ m{ EST | FLX }x ) {
+			$linetype = 'ext';
+		}
+		else {
+			$linetype = 'bahn';
+		}
+
+		my $delay = $result->delay;
+
+		push(
+			@departures,
+			{
+				time            => $time,
+				sched_departure => $result->sched_dep->strftime('%H:%M'),
+				departure       => $result->rt_dep
+				? $result->rt_dep->strftime('%H:%M')
+				: undef,
+				train              => $result->train_mid,
+				train_type         => q{},
+				train_line         => $result->line,
+				train_no           => $result->maybe_train_no,
+				journey_id         => $result->id,
+				via                => $result->via,
+				origin             => q{},
+				destination        => $result->destination,
+				platform           => $result->rt_platform // $result->platform,
+				scheduled_platform => $result->platform,
+				is_cancelled       => $result->is_cancelled,
+				linetype           => $linetype,
+				delay              => $delay,
+				is_bit_delayed     =>
+				  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
+				is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
+				has_realtime    => defined $delay ? 1 : 0,
+				station         => $station_id,
+				replaced_by     => [],
+				replacement_for => [],
+				route_pre       => [],
+				route_post      => [ $result->via ],
+				wr_dt           => undef,
+			}
+		);
+	}
+
+	if ( $template eq 'json' ) {
+		$self->res->headers->access_control_allow_origin(q{*});
+		my $json = {
+			departures => \@departures,
+		};
+		$self->render(
+			json => $json,
+		);
+	}
+	else {
+		$self->render(
+			$template,
+			description      => "Abfahrtstafel $station_name",
+			departures       => \@departures,
+			station          => $station_name,
+			version          => $self->config->{version},
+			title            => $station_name,
+			refresh_interval => $template eq 'app' ? 0 : 120,
+			hide_opts        => $hide_opts,
+			hide_footer      => $hide_opts,
+			hide_low_delay   => $hide_low_delay,
+			show_realtime    => $show_realtime,
+			load_marquee     => (
+				     $template eq 'single'
+				  or $template eq 'multi'
+			),
+			force_mobile => ( $template eq 'app' ),
+		);
+	}
 }
 
 sub render_board_efa {

@@ -10,6 +10,7 @@ requires 'JSON';
 requires 'JSON::XS';
 requires 'List::UtilsBy';
 requires 'Mojolicious';
+requires 'Travel::Status::DE::DBRIS',            '>= 0.05';
 requires 'Travel::Status::DE::DBRIS::Formation', '>= 0.04';
 requires 'Travel::Status::DE::EFA',              '>= 3.08';
 requires 'Travel::Status::DE::HAFAS',            '>= 5.06';
