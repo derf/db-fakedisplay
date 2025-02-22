@@ -1808,7 +1808,7 @@ sub render_board_dbris {
 				  ( $delay and $delay > 0 and $delay < 5 ? 1 : 0 ),
 				is_delayed      => ( $delay and $delay >= 5 ? 1 : 0 ),
 				has_realtime    => defined $delay ? 1 : 0,
-				station         => $station_id,
+				station         => $result->stop_eva,
 				replaced_by     => [],
 				replacement_for => [],
 				route_pre       => [],
