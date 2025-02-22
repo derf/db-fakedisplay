@@ -1264,6 +1264,176 @@ sub station_train_details {
 	)->wait;
 }
 
+sub train_details_dbris {
+	my ($self) = @_;
+	my $trip_id = $self->stash('train');
+
+	$self->render_later;
+
+	Travel::Status::DE::DBRIS->new_p(
+		journey     => $trip_id,
+		cache       => $self->app->cache_iris_rt,
+		lwp_options => {
+			timeout => 10,
+			agent   => 'dbf.finalrewind.org/2'
+		},
+		promise        => 'Mojo::Promise',
+		user_agent     => Mojo::UserAgent->new,
+		developer_mode => 1,
+	)->then(
+		sub {
+			my ($dbris) = @_;
+			my $trip = $dbris->result;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+			my $res = {
+				trip_id         => $trip_id,
+				train_type      => $trip->train,
+				origin          => ( $trip->route )[0]->name,
+				destination     => ( $trip->route )[-1]->name,
+				operators       => [],
+				linetype        => 'bahn',
+				route_pre_diff  => [],
+				route_post_diff => [],
+				moreinfo        => [],
+				replaced_by     => [],
+				replacement_for => [],
+			};
+
+			my $station_is_past = 1;
+			for my $stop ( $trip->route ) {
+
+				push(
+					@{ $res->{route_post_diff} },
+					{
+						name      => $stop->name,
+						eva       => $stop->eva,
+						id        => $stop->id,
+						sched_arr => $stop->sched_arr,
+						sched_dep => $stop->sched_dep,
+						rt_arr    => $stop->rt_arr,
+						rt_dep    => $stop->rt_dep,
+						arr_delay => $stop->arr_delay,
+						dep_delay => $stop->dep_delay,
+						platform  => $stop->platform,
+					}
+				);
+				if (
+					$station_is_past
+					and $now->epoch < (
+						$res->{route_post_diff}[-1]{rt_arr}
+						  // $res->{route_post_diff}[-1]{rt_dep}
+						  // $res->{route_post_diff}[-1]{sched_arr}
+						  // $res->{route_post_diff}[-1]{sched_dep} // $now
+					)->epoch
+				  )
+				{
+					$station_is_past = 0;
+				}
+				$res->{route_post_diff}[-1]{isPast} = $station_is_past;
+			}
+
+			if ( my $req_id = $self->param('highlight') ) {
+				my $split;
+				for my $i ( 0 .. $#{ $res->{route_post_diff} } ) {
+					if ( $res->{route_post_diff}[$i]{eva} eq $req_id ) {
+						$split = $i;
+						last;
+					}
+				}
+				if ( defined $split ) {
+					$self->stash(
+						station_name => $res->{route_post_diff}[$split]{name} );
+					for my $i ( 0 .. $split - 1 ) {
+						push(
+							@{ $res->{route_pre_diff} },
+							shift( @{ $res->{route_post_diff} } )
+						);
+					}
+					my $station_info = shift( @{ $res->{route_post_diff} } );
+					$res->{eva} = $station_info->{eva};
+					if ( $station_info->{sched_arr} ) {
+						$res->{sched_arrival}
+						  = $station_info->{sched_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_arr} ) {
+						$res->{arrival}
+						  = $station_info->{rt_arr}->strftime('%H:%M');
+					}
+					if ( $station_info->{sched_dep} ) {
+						$res->{sched_departure}
+						  = $station_info->{sched_dep}->strftime('%H:%M');
+					}
+					if ( $station_info->{rt_dep} ) {
+						$res->{departure}
+						  = $station_info->{rt_dep}->strftime('%H:%M');
+					}
+					$res->{arrival_is_cancelled}
+					  = $station_info->{arr_cancelled};
+					$res->{departure_is_cancelled}
+					  = $station_info->{dep_cancelled};
+					$res->{is_cancelled} = $res->{arrival_is_cancelled}
+					  || $res->{arrival_is_cancelled};
+					$res->{tz_offset}       = $station_info->{tz_offset};
+					$res->{local_dt_da}     = $station_info->{local_dt_da};
+					$res->{local_sched_arr} = $station_info->{local_sched_arr};
+					$res->{local_sched_dep} = $station_info->{local_sched_dep};
+					$res->{is_annotated}    = $station_info->{is_annotated};
+					$res->{prod_name}       = $station_info->{prod_name};
+					$res->{direction}       = $station_info->{direction};
+					$res->{operator}        = $station_info->{operator};
+					$res->{platform}        = $station_info->{platform};
+					$res->{scheduled_platform}
+					  = $station_info->{sched_platform};
+				}
+			}
+
+			$self->respond_to(
+				json => {
+					json => {
+						journey => $trip,
+					},
+				},
+				any => {
+					template => $self->param('ajax')
+					? '_train_details'
+					: 'train_details',
+					description => sprintf(
+						'%s %s%s%s nach %s',
+						$res->{train_type},
+						$res->{train_line} // $res->{train_no},
+						$res->{origin} ? ' von ' : q{},
+						$res->{origin}      // q{},
+						$res->{destination} // 'unbekannt'
+					),
+					departure => $res,
+					linetype  => $res->{linetype},
+					dt_now    => DateTime->now( time_zone => 'Europe/Berlin' ),
+				},
+			);
+		}
+	)->catch(
+		sub {
+			my ($e) = @_;
+			$self->respond_to(
+				json => {
+					json => {
+						error => $e,
+					},
+					status => 500,
+				},
+				any => {
+					template  => 'exception',
+					message   => $e,
+					exception => undef,
+					snapshot  => {},
+					status    => 500,
+				},
+			);
+		}
+	)->wait;
+}
+
 sub train_details_efa {
 	my ($self) = @_;
 	my $trip_id = $self->stash('train');
@@ -1460,8 +1630,9 @@ sub train_details_efa {
 sub train_details {
 	my ($self) = @_;
 	my $train  = $self->stash('train');
-	my $hafas  = $self->param('hafas');
+	my $dbris  = $self->param('dbris');
 	my $efa    = $self->param('efa');
+	my $hafas  = $self->param('hafas');
 
 	# TODO error handling
 
@@ -1472,6 +1643,9 @@ sub train_details {
 	$self->stash( departures => [] );
 	$self->stash( title      => 'DBF' );
 
+	if ($dbris) {
+		return $self->train_details_dbris;
+	}
 	if ($efa) {
 		return $self->train_details_efa;
 	}
