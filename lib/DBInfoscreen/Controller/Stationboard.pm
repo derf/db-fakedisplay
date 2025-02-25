@@ -383,12 +383,34 @@ sub get_results_p {
 					timeout => 10,
 					agent   => 'dbf.finalrewind.org/2'
 				},
-				promise        => 'Mojo::Promise',
-				user_agent     => Mojo::UserAgent->new,
-				developer_mode => 1,
+				promise    => 'Mojo::Promise',
+				user_agent => Mojo::UserAgent->new,
 			);
 		}
-		return Mojo::Promise->reject("Invalid station: '$station'");
+		my $promise = Mojo::Promise->new;
+		Travel::Status::DE::DBRIS->new_p(
+			locationSearch => $station,
+			cache          => $opt{cache_iris_main},
+			lwp_options    => {
+				timeout => 10,
+				agent   => 'dbf.finalrewind.org/2'
+			},
+			promise    => 'Mojo::Promise',
+			user_agent => Mojo::UserAgent->new,
+		)->then(
+			sub {
+				my ($dbris) = @_;
+				$promise->reject( 'station disambiguation', $dbris );
+				return;
+			}
+		)->catch(
+			sub {
+				my ($err) = @_;
+				$promise->reject("'$err' while trying to look up '$station'");
+				return;
+			}
+		)->wait;
+		return $promise;
 	}
 	if ( $opt{efa} ) {
 		my $service = 'VRR';
@@ -616,6 +638,14 @@ sub handle_board_request {
 	)->catch(
 		sub {
 			my ( $err, $status ) = @_;
+			if ( $dbris and $err eq 'station disambiguation' ) {
+				for my $result ( $status->results ) {
+					if ( defined $result->eva ) {
+						$self->redirect_to( '/' . $result->id . '?dbris=1' );
+						return;
+					}
+				}
+			}
 			if ( $template eq 'json' ) {
 				$self->handle_no_results_json(
 					$station,
@@ -1288,7 +1318,7 @@ sub train_details_dbris {
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 			my $res = {
 				trip_id         => $trip_id,
-				train_type      => $trip->train,
+				train_line      => $trip->train,
 				origin          => ( $trip->route )[0]->name,
 				destination     => ( $trip->route )[-1]->name,
 				operators       => [],
@@ -1299,6 +1329,26 @@ sub train_details_dbris {
 				replaced_by     => [],
 				replacement_for => [],
 			};
+
+			my $line = $trip->train;
+			if ( $line =~ m{ STR }x ) {
+				$res->{linetype} = 'tram';
+			}
+			elsif ( $line =~ m{ ^ S }x ) {
+				$res->{linetype} = 'sbahn';
+			}
+			elsif ( $line =~ m{ U }x ) {
+				$res->{linetype} = 'ubahn';
+			}
+			elsif ( $line =~ m{ Bus }x ) {
+				$res->{linetype} = 'bus';
+			}
+			elsif ( $line =~ m{ ^ [EI]CE? }x ) {
+				$res->{linetype} = 'fern';
+			}
+			elsif ( $line =~ m{ EST | FLX }x ) {
+				$res->{linetype} = 'ext';
+			}
 
 			my $station_is_past = 1;
 			for my $stop ( $trip->route ) {
