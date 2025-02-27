@@ -2020,7 +2020,7 @@ sub render_board_dbris {
 				train_line         => $result->line,
 				train_no           => $result->maybe_train_no,
 				journey_id         => $result->id,
-				via                => $result->via,
+				via                => [ $result->via ],
 				origin             => q{},
 				destination        => $result->destination,
 				platform           => $result->rt_platform // $result->platform,
