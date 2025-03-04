@@ -507,7 +507,7 @@ sub route {
 		return $self->route_efa;
 	}
 
-	my $service = 'VRN';
+	my $service = 'ÖBB';
 	if (    $hafas
 		and $hafas ne '1'
 		and Travel::Status::DE::HAFAS::get_service($hafas) )
@@ -784,7 +784,7 @@ sub ajax_route {
 	my $line_no = $self->stash('lineno');
 	my $hafas   = $self->param('hafas');
 
-	my $service = 'VRN';
+	my $service = 'ÖBB';
 	if (    $hafas
 		and $hafas ne '1'
 		and Travel::Status::DE::HAFAS::get_service($hafas) )

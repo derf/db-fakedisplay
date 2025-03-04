@@ -71,7 +71,7 @@ sub handle_no_results {
 	}
 	elsif ($hafas) {
 		$self->render_later;
-		my $service = 'VRN';
+		my $service = 'ÖBB';
 		if ( $hafas ne '1' and Travel::Status::DE::HAFAS::get_service($hafas) )
 		{
 			$service = $hafas;
@@ -433,7 +433,7 @@ sub get_results_p {
 		);
 	}
 	if ( $opt{hafas} ) {
-		my $service = 'VRN';
+		my $service = 'ÖBB';
 		if ( $opt{hafas} ne '1'
 			and Travel::Status::DE::HAFAS::get_service( $opt{hafas} ) )
 		{
@@ -2734,7 +2734,7 @@ sub stations_by_coordinates {
 		return;
 	}
 
-	my $service = 'VRN';
+	my $service = 'ÖBB';
 	if (    $hafas
 		and $hafas ne '1'
 		and Travel::Status::DE::HAFAS::get_service($hafas) )
@@ -2906,6 +2906,11 @@ sub backend_list {
 
 			# HTTP 503 Service Temporarily Unavailable as of 2025-01-08 ~10:30 UTC
 			# (I bet it's actually Permanently Unavailable)
+			next;
+		}
+		if ( $backend->{shortname} eq 'VRN' ) {
+
+			# HTTP 403 Forbidden as of 2025-03-03
 			next;
 		}
 		push(

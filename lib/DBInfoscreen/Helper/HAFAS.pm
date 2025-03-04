@@ -7,6 +7,7 @@ package DBInfoscreen::Helper::HAFAS;
 use strict;
 use warnings;
 use 5.020;
+use utf8;
 
 use DateTime;
 use Encode qw(decode encode);
@@ -58,7 +59,7 @@ sub get_route_p {
 
 	if ( $opt{trip_id} ) {
 		$hafas_promise = Travel::Status::DE::HAFAS->new_p(
-			service => $opt{service} // 'VRN',
+			service => $opt{service} // 'ÖBB',
 			journey => {
 				id => $opt{trip_id},
 			},
@@ -77,7 +78,7 @@ sub get_route_p {
 	}
 
 	$hafas_promise //= Travel::Status::DE::HAFAS->new_p(
-		service      => $opt{service} // 'VRN',
+		service      => $opt{service} // 'ÖBB',
 		journeyMatch => $opt{train_req} =~ s{^- }{}r,
 		datetime     => ( $opt{train} ? $opt{train}->start : $opt{datetime} ),
 		language     => $opt{language},
@@ -108,7 +109,7 @@ sub get_route_p {
 			}
 
 			return Travel::Status::DE::HAFAS->new_p(
-				service => $opt{service} // 'VRN',
+				service => $opt{service} // 'ÖBB',
 				journey => {
 					id => $result->id,
 				},
@@ -274,7 +275,7 @@ sub get_polyline_p {
 
 	my $trip_id = $opt{id};
 	my $line    = $opt{line};
-	my $service = $opt{service} // 'VRN';
+	my $service = $opt{service} // 'ÖBB';
 	my $promise = Mojo::Promise->new;
 
 	my $agent = $self->{user_agent};
