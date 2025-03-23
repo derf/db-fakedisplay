@@ -111,10 +111,10 @@ DISTRIBUTIONS
       URI 0
       URI::Escape 0
       perl 5.008004
-  Alien-Libxml2-0.19
-    pathname: P/PL/PLICEASE/Alien-Libxml2-0.19.tar.gz
+  Alien-Libxml2-0.20
+    pathname: P/PL/PLICEASE/Alien-Libxml2-0.20.tar.gz
     provides:
-      Alien::Libxml2 0.19
+      Alien::Libxml2 0.20
     requirements:
       Alien::Base 2.37
       Alien::Build 2.37
@@ -811,10 +811,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-Depends-0.8001
-    pathname: X/XA/XAOC/ExtUtils-Depends-0.8001.tar.gz
+  ExtUtils-Depends-0.8002
+    pathname: E/ET/ETJ/ExtUtils-Depends-0.8002.tar.gz
     provides:
-      ExtUtils::Depends 0.8001
+      ExtUtils::Depends 0.8002
     requirements:
       Data::Dumper 0
       ExtUtils::MakeMaker 7.44
@@ -1558,11 +1558,11 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Path-Tiny-0.146
-    pathname: D/DA/DAGOLDEN/Path-Tiny-0.146.tar.gz
+  Path-Tiny-0.148
+    pathname: D/DA/DAGOLDEN/Path-Tiny-0.148.tar.gz
     provides:
-      Path::Tiny 0.146
-      Path::Tiny::Error 0.146
+      Path::Tiny 0.148
+      Path::Tiny::Error 0.148
     requirements:
       Carp 0
       Cwd 0
@@ -1909,17 +1909,17 @@ DISTRIBUTIONS
       Text::LevenshteinXS 0
       XML::LibXML 0
       perl v5.14.2
-  Travel-Status-DE-VRR-3.08
-    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.08.tar.gz
+  Travel-Status-DE-VRR-3.09
+    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.09.tar.gz
     provides:
-      Travel::Status::DE::EFA 3.08
-      Travel::Status::DE::EFA::Departure 3.08
-      Travel::Status::DE::EFA::Info 3.08
-      Travel::Status::DE::EFA::Line 3.08
-      Travel::Status::DE::EFA::Services 3.08
-      Travel::Status::DE::EFA::Stop 3.08
-      Travel::Status::DE::EFA::Trip 3.08
-      Travel::Status::DE::VRR 3.08
+      Travel::Status::DE::EFA 3.09
+      Travel::Status::DE::EFA::Departure 3.09
+      Travel::Status::DE::EFA::Info 3.09
+      Travel::Status::DE::EFA::Line 3.09
+      Travel::Status::DE::EFA::Services 3.09
+      Travel::Status::DE::EFA::Stop 3.09
+      Travel::Status::DE::EFA::Trip 3.09
+      Travel::Status::DE::VRR 3.09
     requirements:
       Carp 0
       Class::Accessor 0
