@@ -316,38 +316,6 @@ sub backpropagate_delay {
 	}
 }
 
-sub estimate_polyline_stops {
-	my ( $self, $polyline, $route ) = @_;
-
-	my $distance = GIS::Distance->new;
-
-	my %min_dist;
-	for my $stop ( @{$route} ) {
-		for my $polyline_index ( 0 .. $#{$polyline} ) {
-			my $pl   = $polyline->[$polyline_index];
-			my $dist = $distance->distance_metal( $stop->{lat}, $stop->{lon},
-				$pl->{lat}, $pl->{lon} );
-			if ( not $min_dist{ $stop->{name} }
-				or $min_dist{ $stop->{name} }{dist} > $dist )
-			{
-				$min_dist{ $stop->{name} } = {
-					dist => $distance->distance_metal(
-						$stop->{lat}, $stop->{lon}, $pl->{lat}, $pl->{lon}
-					),
-					index => $polyline_index,
-				};
-			}
-		}
-	}
-
-	for my $stop ( @{$route} ) {
-		if ( $min_dist{ $stop->{name} } ) {
-			$polyline->[ $min_dist{ $stop->{name} }{index} ]{name}
-			  = $stop->{name};
-		}
-	}
-}
-
 sub route_efa {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -381,9 +349,7 @@ sub route_efa {
 			my ($trip) = @_;
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 			my @markers;
-			my @polyline
-			  = map { { lat => $_->[0], lon => $_->[1] } }
-			  $trip->polyline( fallback => 1 );
+			my @polyline   = $trip->polyline( fallback => 1 );
 			my @line_pairs = polyline_to_line_pairs(@polyline);
 			my @route      = $trip->route;
 
@@ -401,7 +367,12 @@ sub route_efa {
 					}
 				} @route
 			];
-			$self->estimate_polyline_stops( \@polyline, $ref_route );
+
+			for my $pl (@polyline) {
+				if ( $pl->{stop} ) {
+					$pl->{name} = $pl->{stop}->full_name;
+				}
+			}
 
 			my $train_pos = $self->estimate_train_positions2(
 				now      => $now,
@@ -728,7 +699,12 @@ sub ajax_route_efa {
 					}
 				} @route
 			];
-			$self->estimate_polyline_stops( \@polyline, $ref_route );
+
+			for my $pl (@polyline) {
+				if ( $pl->{stop} ) {
+					$pl->{name} = $pl->{stop}->full_name;
+				}
+			}
 
 			my $train_pos = $self->estimate_train_positions2(
 				now      => $now,
