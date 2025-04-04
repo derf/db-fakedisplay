@@ -12,7 +12,6 @@ use DateTime;
 use DateTime::Format::Strptime;
 use GIS::Distance;
 use List::Util qw();
-use Travel::Status::DE::EFA;
 
 my $strp = DateTime::Format::Strptime->new(
 	pattern   => '%Y-%m-%dT%H:%M:%S%z',
@@ -463,6 +462,171 @@ sub route_efa {
 	)->wait;
 }
 
+sub route_dbris {
+	my ($self) = @_;
+	my $trip_id = $self->stash('tripid');
+
+	my $from_name = $self->param('from');
+	my $to_name   = $self->param('to');
+
+	$self->dbris->get_polyline_p( id => $trip_id )->then(
+		sub {
+			my ($journey) = @_;
+
+			my @polyline = $journey->polyline;
+			my @station_coordinates;
+
+			my @markers;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
+			# used to draw the train's journey on the map
+			my @line_pairs = polyline_to_line_pairs(@polyline);
+
+			my @route = $journey->route;
+
+			my $train_pos = $self->estimate_train_positions2(
+				now   => $now,
+				route => [
+					map {
+						{
+							name      => $_->name,
+							arr       => $_->arr,
+							dep       => $_->dep,
+							arr_delay => $_->arr_delay,
+							dep_delay => $_->dep_delay,
+							lat       => $_->lat,
+							lon       => $_->lon
+						}
+					} @route
+				],
+				polyline => \@polyline,
+			);
+
+			# Prepare from/to markers and name/time/delay overlays for stations
+			for my $stop (@route) {
+				my @stop_lines = ( $stop->name );
+
+				if ( $from_name and $stop->name eq $from_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->lon,
+							lat   => $stop->lat,
+							title => $stop->name,
+							icon  => 'goldIcon',
+						}
+					);
+				}
+				if ( $to_name and $stop->name eq $to_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->lon,
+							lat   => $stop->lat,
+							title => $stop->name,
+							icon  => 'greenIcon',
+						}
+					);
+				}
+
+				if ( $stop->platform ) {
+					push( @stop_lines, 'Gleis ' . $stop->platform );
+				}
+				if ( $stop->arr ) {
+					my $arr_line = $stop->arr->strftime('Ankunft: %H:%M');
+					if ( $stop->arr_delay ) {
+						$arr_line .= sprintf( ' (%+d)', $stop->arr_delay );
+					}
+					push( @stop_lines, $arr_line );
+				}
+				if ( $stop->dep ) {
+					my $dep_line = $stop->dep->strftime('Abfahrt: %H:%M');
+					if ( $stop->dep_delay ) {
+						$dep_line .= sprintf( ' (%+d)', $stop->dep_delay );
+					}
+					push( @stop_lines, $dep_line );
+				}
+
+				push( @station_coordinates,
+					[ [ $stop->lat, $stop->lon ], [@stop_lines], ] );
+			}
+
+			push(
+				@markers,
+				{
+					lat   => $train_pos->{position_now}[0],
+					lon   => $train_pos->{position_now}[1],
+					title => $journey->train,
+				}
+			);
+
+			$self->render(
+				'route_map',
+				description => "Karte für " . $journey->train,
+				title       => $journey->train,
+				hide_opts   => 1,
+				with_map    => 1,
+				ajax_req    => $trip_id,
+				ajax_route  => route_to_ajax(
+					map {
+						{
+							name          => $_->name,
+							platform      => $_->platform,
+							arr           => $_->arr,
+							arr_cancelled => $_->is_cancelled,
+							arr_delay     => $_->arr_delay,
+							dep           => $_->dep,
+							dep_cancelled => $_->is_cancelled,
+							dep_delay     => $_->dep_delay,
+						}
+					} $journey->route
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
+				origin => {
+					name => ( $journey->route )[0]->name,
+					ts   => ( $journey->route )[0]->dep,
+				},
+				destination => {
+					name => ( $journey->route )[-1]->name,
+					ts   => ( $journey->route )[-1]->arr,
+				},
+				train_no => $journey->number
+				? ( $journey->type // q{} . ' ' . $journey->number )
+				: undef,
+				next_stop       => $train_pos->{next_stop},
+				polyline_groups => [
+					{
+						polylines  => [@line_pairs],
+						color      => '#00838f',
+						opacity    => 0.6,
+						fit_bounds => 1,
+					}
+				],
+				station_coordinates => [@station_coordinates],
+				station_radius      =>
+				  ( $train_pos->{avg_inter_stop_beeline} > 500 ? 250 : 100 ),
+				markers => [@markers],
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'route_map',
+				title     => "DBF",
+				hide_opts => 1,
+				with_map  => 1,
+				error     => $err,
+			);
+
+		}
+	)->wait;
+}
+
 sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -474,6 +638,9 @@ sub route {
 
 	$self->render_later;
 
+	if ( $self->param('dbris') ) {
+		return $self->route_dbris;
+	}
 	if ( $self->param('efa') ) {
 		return $self->route_efa;
 	}

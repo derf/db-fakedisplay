@@ -7,6 +7,7 @@ package DBInfoscreen;
 use Mojo::Base 'Mojolicious';
 
 use Cache::File;
+use DBInfoscreen::Helper::DBRIS;
 use DBInfoscreen::Helper::EFA;
 use DBInfoscreen::Helper::HAFAS;
 use DBInfoscreen::Helper::Wagonorder;
@@ -88,6 +89,20 @@ sub startup {
 		dbdb_wagon => sub {
 			return JSON->new->utf8->decode(
 				scalar read_file('share/dbdb_wagen.json') );
+		}
+	);
+
+	$self->helper(
+		dbris => sub {
+			my ($self) = @_;
+			state $efa = DBInfoscreen::Helper::DBRIS->new(
+				log            => $self->app->log,
+				main_cache     => $self->app->cache_iris_main,
+				realtime_cache => $self->app->cache_iris_rt,
+				root_url       => $self->url_for('/')->to_abs,
+				user_agent     => $self->ua,
+				version        => $self->config->{version},
+			);
 		}
 	);
 
