@@ -567,7 +567,7 @@ sub route_dbris {
 				title       => $journey->train,
 				hide_opts   => 1,
 				with_map    => 1,
-				ajax_req    => $trip_id,
+				ajax_req    => "${trip_id}/0",
 				ajax_route  => route_to_ajax(
 					map {
 						{
@@ -912,6 +912,84 @@ sub ajax_route_efa {
 	)->wait;
 }
 
+sub ajax_route_dbris {
+	my ($self) = @_;
+	my $trip_id = $self->stash('tripid');
+
+	$self->dbris->get_polyline_p( id => $trip_id )->then(
+		sub {
+			my ($journey) = @_;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
+			my @route    = $journey->route;
+			my @polyline = $journey->polyline;
+
+			my $train_pos = $self->estimate_train_positions2(
+				now   => $now,
+				route => [
+					map {
+						{
+							name      => $_->name,
+							arr       => $_->arr,
+							dep       => $_->dep,
+							arr_delay => $_->arr_delay,
+							dep_delay => $_->dep_delay,
+							lat       => $_->lat,
+							lon       => $_->lon
+						}
+					} @route
+				],
+				polyline => \@polyline,
+			);
+
+			$self->render(
+				'_map_infobox',
+				ajax_req   => "${trip_id}/0",
+				ajax_route => route_to_ajax(
+					map {
+						{
+							name          => $_->name,
+							platform      => $_->platform,
+							arr           => $_->arr,
+							arr_cancelled => $_->is_cancelled,
+							arr_delay     => $_->arr_delay,
+							dep           => $_->dep,
+							dep_cancelled => $_->is_cancelled,
+							dep_delay     => $_->dep_delay,
+						}
+					} @route
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
+				origin => {
+					name => ( $journey->route )[0]->name,
+					ts   => ( $journey->route )[0]->dep,
+				},
+				destination => {
+					name => ( $journey->route )[-1]->name,
+					ts   => ( $journey->route )[-1]->arr,
+				},
+				train_no => $journey->number
+				? ( $journey->type . ' ' . $journey->number )
+				: undef,
+				next_stop     => $train_pos->{next_stop},
+				platform_type => q{},
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'_error',
+				error => $err,
+			);
+		}
+	)->wait;
+}
+
 sub ajax_route {
 	my ($self) = @_;
 
@@ -919,6 +997,9 @@ sub ajax_route {
 
 	$self->render_later;
 
+	if ( $self->param('dbris') ) {
+		return $self->ajax_route_dbris;
+	}
 	if ( $self->param('efa') ) {
 		return $self->ajax_route_efa;
 	}
