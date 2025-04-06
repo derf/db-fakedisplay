@@ -31,14 +31,16 @@ sub get_route_indexes {
 
 	for my $i ( 0 .. $#{$polyline} ) {
 		my $this_point = $polyline->[$i];
+		my $name = $this_point->{name} // $this_point->{stop}->{name};
+
 		if (    not defined $from_index
-			and $this_point->{name}
-			and $this_point->{name} eq $from_name )
+			and $name
+			and $name eq $from_name )
 		{
 			$from_index = $i;
 		}
-		elsif ( $this_point->{name}
-			and $this_point->{name} eq $to_name )
+		elsif ( $name
+			and $name eq $to_name )
 		{
 			$to_index = $i;
 			last;
