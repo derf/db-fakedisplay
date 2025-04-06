@@ -69,7 +69,13 @@ function dbf_anim_fine() {
 
 function dbf_map_reload() {
 	const param = new URLSearchParams(window.location.search);
-	$.get('/_ajax_mapinfo/' + j_reqid + '?dbris=' + (param.get('dbris') || '') + '&amp;efa=' + (param.get('efa') || '') + '&amp;hafas=' + (param.get('hafas') || ''), function(data) {
+
+	const new_params = new URLSearchParams();
+	new_params.set('dbris', param.get('dbris') ?? '');
+	new_params.set('efa', param.get('efa') ?? '');
+	new_params.set('hafas', param.get('hafas') ?? '');
+
+	$.get('/_ajax_mapinfo/' + j_reqid + '?' + new_params.toString(), function(data) {
 		$('#infobox').html(data);
 		dbf_map_parse();
 		setTimeout(dbf_map_reload, 61000);
