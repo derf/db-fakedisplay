@@ -13,6 +13,7 @@ use Encode qw(decode encode);
 use Travel::Status::DE::DBRIS;
 use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
+use Mojo::UserAgent;
 
 sub new {
 	my ( $class, %opt ) = @_;
@@ -37,6 +38,13 @@ sub get_polyline_p {
 	my $promise = Mojo::Promise->new;
 
 	my $agent = $self->{user_agent};
+
+	if ( my $proxy = $ENV{DBFAKEDISPLAY_DBRIS_PROXY} ) {
+		say "set up proxy $proxy";
+		$agent = Mojo::UserAgent->new;
+		$agent->proxy->http($proxy);
+		$agent->proxy->https($proxy);
+	}
 
 	Travel::Status::DE::DBRIS->new_p(
 		journey       => $trip_id,
