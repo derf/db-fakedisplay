@@ -1305,17 +1305,54 @@ sub train_details_dbris {
 			my ($dbris) = @_;
 			my $trip = $dbris->result;
 
+			my ( @him_messages, @him_details );
+			for my $message ( $trip->messages ) {
+				if ( not $message->{ueberschrift} ) {
+					push(
+						@him_messages,
+						[
+							q{},
+							{
+								icon => $message->{prioritaet} eq 'HOCH'
+								? 'warning'
+								: 'info',
+								text => $message->{text}
+							}
+						]
+					);
+				}
+			}
+
+			for my $attribute ( $trip->attributes ) {
+				push(
+					@him_details,
+					[
+						q{},
+						{
+							text => $attribute->{value}
+							  . (
+								$attribute->{teilstreckenHinweis}
+								? q { } . $attribute->{teilstreckenHinweis}
+								: q{}
+							  )
+						}
+					]
+				);
+			}
+
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 			my $res = {
 				trip_id         => $trip_id,
 				train_line      => $trip->train,
+				train_no        => $trip->number,
 				origin          => ( $trip->route )[0]->name,
 				destination     => ( $trip->route )[-1]->name,
 				operators       => [],
 				linetype        => 'bahn',
 				route_pre_diff  => [],
 				route_post_diff => [],
-				moreinfo        => [],
+				moreinfo        => [@him_messages],
+				details         => [@him_details],
 				replaced_by     => [],
 				replacement_for => [],
 			};
