@@ -29,6 +29,25 @@ sub new {
 
 }
 
+sub get_journey_p {
+	my ( $self, %opt ) = @_;
+
+	my $agent = $self->{user_agent};
+
+	if ( my $proxy = $ENV{DBFAKEDISPLAY_DBRIS_PROXY} ) {
+		$agent = Mojo::UserAgent->new;
+		$agent->proxy->http($proxy);
+		$agent->proxy->https($proxy);
+	}
+
+	return Travel::Status::DE::DBRIS->new_p(
+		journey    => $opt{id},
+		cache      => $self->{realtime_cache},
+		promise    => 'Mojo::Promise',
+		user_agent => $agent->request_timeout(10)
+	);
+}
+
 # Input: TripID
 # Output: Promise returning a Travel::Status::DE::DBRIS::Journey instance on success
 sub get_polyline_p {
@@ -40,7 +59,6 @@ sub get_polyline_p {
 	my $agent = $self->{user_agent};
 
 	if ( my $proxy = $ENV{DBFAKEDISPLAY_DBRIS_PROXY} ) {
-		say "set up proxy $proxy";
 		$agent = Mojo::UserAgent->new;
 		$agent->proxy->http($proxy);
 		$agent->proxy->https($proxy);

@@ -1300,17 +1300,7 @@ sub train_details_dbris {
 
 	$self->render_later;
 
-	Travel::Status::DE::DBRIS->new_p(
-		journey     => $trip_id,
-		cache       => $self->app->cache_iris_rt,
-		lwp_options => {
-			timeout => 10,
-			agent   => 'dbf.finalrewind.org/2'
-		},
-		promise        => 'Mojo::Promise',
-		user_agent     => Mojo::UserAgent->new,
-		developer_mode => 1,
-	)->then(
+	$self->dbris->get_journey_p( id => $trip_id )->then(
 		sub {
 			my ($dbris) = @_;
 			my $trip = $dbris->result;
