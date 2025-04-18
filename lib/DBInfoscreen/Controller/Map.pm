@@ -1,6 +1,7 @@
 package DBInfoscreen::Controller::Map;
 
 # Copyright (C) 2011-2020 Birte Kristina Friesel
+# Copyright (C) 2025 networkException <git@nwex.de>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -629,6 +630,175 @@ sub route_dbris {
 	)->wait;
 }
 
+sub route_motis {
+	my ($self) = @_;
+
+	my $service = $self->param('motis') // 'transitous';
+	my $trip_id = $self->stash('tripid');
+
+	my $from_name = $self->param('from');
+	my $to_name   = $self->param('to');
+
+	$self->motis->get_polyline_p(
+		service => $service,
+		id      => $trip_id,
+	)->then(
+		sub {
+			my ($trip) = @_;
+
+			my @polyline = $trip->polyline;
+			my @station_coordinates;
+
+			my @markers;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
+			# used to draw the train's journey on the map
+			my @line_pairs = polyline_to_line_pairs(@polyline);
+
+			my @stopovers = $trip->stopovers;
+
+			my $train_pos = $self->estimate_train_positions2(
+				now   => $now,
+				route => [
+					map {
+						{
+							name      => $_->stop->name,
+							arr       => $_->arrival,
+							dep       => $_->departure,
+							arr_delay => $_->arrival_delay,
+							dep_delay => $_->departure_delay,
+							lat       => $_->stop->lat,
+							lon       => $_->stop->lon,
+						}
+					} @stopovers
+				],
+				polyline => \@polyline,
+			);
+
+			# Prepare from/to markers and name/time/delay overlays for stations
+			for my $stopover (@stopovers) {
+				my $stop = $stopover->stop;
+				my @stop_lines = ( $stop->name );
+
+				if ( $from_name and $stop->name eq $from_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->lon,
+							lat   => $stop->lat,
+							title => $stop->name,
+							icon  => 'goldIcon',
+						}
+					);
+				}
+				if ( $to_name and $stop->name eq $to_name ) {
+					push(
+						@markers,
+						{
+							lon   => $stop->lon,
+							lat   => $stop->lat,
+							title => $stop->name,
+							icon  => 'greenIcon',
+						}
+					);
+				}
+
+				if ( $stopover->track ) {
+					push( @stop_lines, 'Gleis ' . $stop->track );
+				}
+				if ( $stopover->arrival ) {
+					my $arr_line = $stopover->arrival->strftime('Ankunft: %H:%M');
+					if ( $stopover->arrival_delay ) {
+						$arr_line .= sprintf( ' (%+d)', $stopover->arrival_delay );
+					}
+					push( @stop_lines, $arr_line );
+				}
+				if ( $stopover->departure ) {
+					my $dep_line = $stopover->departure->strftime('Abfahrt: %H:%M');
+					if ( $stopover->departure_delay ) {
+						$dep_line .= sprintf( ' (%+d)', $stopover->departure_delay );
+					}
+					push( @stop_lines, $dep_line );
+				}
+
+				push( @station_coordinates,
+					[ [ $stop->lat, $stop->lon ], [@stop_lines], ] );
+			}
+
+			push(
+				@markers,
+				{
+					lat   => $train_pos->{position_now}[0],
+					lon   => $train_pos->{position_now}[1],
+					title => $trip->route_name,
+				}
+			);
+
+			$self->render(
+				'route_map',
+				description => "Karte für " . $trip->route_name,
+				title       => $trip->route_name,
+				hide_opts   => 1,
+				with_map    => 1,
+				ajax_req    => "${trip_id}/0",
+				ajax_route  => route_to_ajax(
+					map {
+						{
+							name          => $_->stop->name,
+							platform      => $_->track,
+							arr           => $_->arrival,
+							arr_cancelled => $_->is_cancelled,
+							arr_delay     => $_->arrival_delay,
+							dep           => $_->departure,
+							dep_cancelled => $_->is_cancelled,
+							dep_delay     => $_->departure_delay,
+						}
+					} $trip->stopovers
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
+				origin => {
+					name => ( $trip->stopovers )[0]->stop->name,
+					ts   => ( $trip->stopovers )[0]->departure,
+				},
+				destination => {
+					name => ( $trip->stopovers )[-1]->stop->name,
+					ts   => ( $trip->stopovers )[-1]->arrival,
+				},
+				train_no => undef, # FIXME: Better value?
+				next_stop       => $train_pos->{next_stop},
+				polyline_groups => [
+					{
+						polylines  => [@line_pairs],
+						color      => '#00838f',
+						opacity    => 0.6,
+						fit_bounds => 1,
+					}
+				],
+				station_coordinates => [@station_coordinates],
+				station_radius      =>
+				  ( $train_pos->{avg_inter_stop_beeline} > 500 ? 250 : 100 ),
+				markers => [@markers],
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'route_map',
+				title     => "DBF",
+				hide_opts => 1,
+				with_map  => 1,
+				error     => $err,
+			);
+
+		}
+	)->wait;
+}
+
 sub route {
 	my ($self)  = @_;
 	my $trip_id = $self->stash('tripid');
@@ -642,6 +812,9 @@ sub route {
 
 	if ( $self->param('dbris') ) {
 		return $self->route_dbris;
+	}
+	if ( $self->param('motis') ) {
+		return $self->route_motis;
 	}
 	if ( $self->param('efa') ) {
 		return $self->route_efa;
@@ -992,6 +1165,87 @@ sub ajax_route_dbris {
 	)->wait;
 }
 
+sub ajax_route_motis {
+	my ($self) = @_;
+
+	my $service = $self->param('motis') // 'transitous';
+	my $trip_id = $self->stash('tripid');
+
+	$self->motis->get_polyline_p(
+		service => $service,
+		id      => $trip_id,
+	)->then(
+		sub {
+			my ($trip) = @_;
+
+			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
+
+			my @stopovers = $trip->stopovers;
+			my @polyline  = $trip->polyline;
+
+			my $train_pos = $self->estimate_train_positions2(
+				now   => $now,
+				route => [
+					map {
+						{
+							name      => $_->stop->name,
+							arr       => $_->arrival,
+							dep       => $_->departure,
+							arr_delay => $_->arrival_delay,
+							dep_delay => $_->departure_delay,
+							lat       => $_->stop->lat,
+							lon       => $_->stop->lon,
+						}
+					} @stopovers
+				],
+				polyline => \@polyline,
+			);
+
+			$self->render(
+				'_map_infobox',
+				ajax_req   => "${trip_id}/0",
+				ajax_route => route_to_ajax(
+					map {
+						{
+							name          => $_->stop->name,
+							platform      => $_->track,
+							arr           => $_->arrival,
+							arr_cancelled => $_->is_cancelled,
+							arr_delay     => $_->arrival_delay,
+							dep           => $_->departure,
+							dep_cancelled => $_->is_cancelled,
+							dep_delay     => $_->departure_delay,
+						}
+					} @stopovers
+				),
+				ajax_polyline => join(
+					'|',
+					map { join( ';', @{$_} ) } @{ $train_pos->{positions} }
+				),
+				origin => {
+					name => ( $trip->stopovers )[0]->stop->name,
+					ts   => ( $trip->stopovers )[0]->departure,
+				},
+				destination => {
+					name => ( $trip->stopovers )[-1]->stop->name,
+					ts   => ( $trip->stopovers )[-1]->arrival,
+				},
+				train_no => undef, # FIXME
+				next_stop     => $train_pos->{next_stop},
+				platform_type => q{},
+			);
+		}
+	)->catch(
+		sub {
+			my ($err) = @_;
+			$self->render(
+				'_error',
+				error => $err,
+			);
+		}
+	)->wait;
+}
+
 sub ajax_route {
 	my ($self) = @_;
 
@@ -1001,6 +1255,9 @@ sub ajax_route {
 
 	if ( $self->param('dbris') ) {
 		return $self->ajax_route_dbris;
+	}
+	if ( $self->param('motis') ) {
+		return $self->ajax_route_motis;
 	}
 	if ( $self->param('efa') ) {
 		return $self->ajax_route_efa;
@@ -1107,6 +1364,9 @@ sub coverage {
 	}
 	elsif ( $backend eq 'hafas' ) {
 		$coverage = $self->hafas->get_coverage($service);
+	}
+	elsif ( $backend eq 'motis' ) {
+		$coverage = $self->motis->get_coverage($service);
 	}
 
 	$self->render(

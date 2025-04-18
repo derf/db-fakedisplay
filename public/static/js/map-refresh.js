@@ -72,6 +72,7 @@ function dbf_map_reload() {
 
 	const new_params = new URLSearchParams();
 	new_params.set('dbris', param.get('dbris') ?? '');
+	new_params.set('motis', param.get('motis') ?? '');
 	new_params.set('efa', param.get('efa') ?? '');
 	new_params.set('hafas', param.get('hafas') ?? '');
 
