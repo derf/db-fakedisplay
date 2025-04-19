@@ -1994,6 +1994,9 @@ sub render_board_dbris {
 
 	my @results = $self->filter_results( $dbris->results );
 
+	@results = map { $_->[1] } sort { $a->[0] <=> $b->[0] }
+	  map { [ $_->dep, $_ ] } @results;
+
 	for my $result (@results) {
 		my $time;
 
