@@ -18,12 +18,14 @@
 		<ul>
 		<li>Innerdeutscher Regional- und Fernverkehr: DB IRIS via <a href="https://finalrewind.org/projects/Travel-Status-DE-IRIS/">Travel::Status::DE::IRIS</a>
 		<strong>v<%= $Travel::Status::DE::IRIS::VERSION %></strong></li>
+		<li>Nah-, Regional- und Fernverkehr im In- und Ausland: bahn.de via <a href="https://finalrewind.org/projects/Travel-Status-DE-DBRIS/">Travel::Status::DE::DBRIS</a>
+		<strong>v<%= $Travel::Status::DE::DBRIS::VERSION %></strong></li>
+		<li>Nah-, Regional- und Fernverkehr im In- und Ausland: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
+		<strong>v<%= $Travel::Status::DE::EFA::VERSION %></strong></li>
 		<li>Nah-, Regional- und Fernverkehr im In- und Ausland: HAFAS via <a href="https://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 		<strong>v<%= $Travel::Status::DE::HAFAS::VERSION %></strong></li>
-		<li>Nah- und Regionalverkehr im In- und Ausland: EFA via <a href="https://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
-		<strong>v<%= $Travel::Status::DE::EFA::VERSION %></strong></li>
-		<li>Wagenreihung im Netz der DB InfraGO: <a href="https://finalrewind.org/projects/Travel-Status-DE-DBRIS/">Travel::Status::DE::DBRIS::Formation</a>
-		<strong>v<%= $Travel::Status::DE::DBRIS::Formation::VERSION %></strong></li>
+		<li>Nah-, Regional- und Fernverkehr im In- und Ausland: MOTIS via <a href="https://finalrewind.org/projects/Travel-Status-MOTIS/">Travel::Status::MOTIS</a>
+		<strong>v<%= $Travel::Status::MOTIS::VERSION %></strong></li>
 		</ul>
 	</p>
 	<p>
