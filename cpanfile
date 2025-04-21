@@ -14,4 +14,5 @@ requires 'Travel::Status::DE::DBRIS',            '>= 0.06';
 requires 'Travel::Status::DE::EFA',              '>= 3.09';
 requires 'Travel::Status::DE::HAFAS',            '>= 5.06';
 requires 'Travel::Status::DE::IRIS';
+requires 'Travel::Status::MOTIS';
 requires 'XML::LibXML';
