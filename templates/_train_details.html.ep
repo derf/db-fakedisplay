@@ -155,7 +155,9 @@
         <a class="smallbutton" href="/carriage-formation?<%= $departure->{wr_link} %>&amp;e=<%= $departure->{wr_direction} // '' %>"><i class="material-icons" aria-hidden="true">train</i> <%= $departure->{wr_text} || 'Wagen' %>
         </a>
 %     }
-%     if ($departure->{train_type} and $departure->{train_no} and (not param('hafas') or param('hafas') eq 'DB')) {
+%     if ($departure->{trip_id} and param('dbris') eq 'bahn.de') {
+        <a class="smallbutton" href="https://bahn.expert/details/x/h/<%= URI::Escape::uri_escape( $departure->{trip_id} ) %>"><img src="/static/icons/bahn-expert.svg">Details</a>
+%     } elsif ($departure->{train_type} and $departure->{train_no} and (not param('hafas') or param('hafas') eq 'DB')) {
         <a class="smallbutton" href="https://bahn.expert/details/<%= $departure->{train_type} %>%20<%= $departure->{train_no} %>/<%= ($departure->{date} // DateTime->now(time_zone => 'Europe/Berlin'))->iso8601 %>?evaNumberAlongRoute=<%= $departure->{eva} %>"><img src="/static/icons/bahn-expert.svg">Details</a>
 %     }
 %     for my $link (@{$departure->{links}}) {
