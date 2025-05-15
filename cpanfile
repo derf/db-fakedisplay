@@ -15,5 +15,4 @@ requires 'Travel::Status::DE::EFA',              '>= 3.09';
 requires 'Travel::Status::DE::HAFAS',            '>= 5.06';
 requires 'Travel::Status::DE::IRIS';
 requires 'Travel::Status::MOTIS';
-requires 'URI::Escape';
 requires 'XML::LibXML';
