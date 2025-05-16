@@ -641,7 +641,8 @@ sub handle_board_request {
 			if ( $dbris and $err eq 'station disambiguation' ) {
 				for my $result ( $status->results ) {
 					if ( defined $result->eva ) {
-						$self->redirect_to( '/' . $result->id . '?dbris=1' );
+						$self->redirect_to(
+							'/' . $result->id . '?dbris=bahn.de' );
 						return;
 					}
 				}
