@@ -64,7 +64,12 @@
 %   else {
       <a href="/z/<%= Mojo::Util::url_escape(($departure->{train_type} // q{}) . ' ' . ($departure->{train_no} // $departure->{train} // q{})) . '/' .  Mojo::Util::url_escape($departure->{station} // $station) %>">
 %   }
-    <div class="anchor" id="<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>"></div>
+%   if (param('dbris') or param('hafas')) {
+      <div class="anchor" id="<%= $departure->{journey_id} =~ s{[ #|]}{x}gr %>"></div>
+%   }
+%   else {
+      <div class="anchor" id="<%= ($departure->{train_type} // q{x}) . ($departure->{train_no} // q{x}) %>"></div>
+%   }
     <div class="line <%= $departure->{linetype} %>">
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}
