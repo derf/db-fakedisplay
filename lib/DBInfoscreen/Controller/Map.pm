@@ -1022,10 +1022,8 @@ sub ajax_route_efa {
 
 			my $now = DateTime->now( time_zone => 'Europe/Berlin' );
 
-			my @polyline
-			  = map { { lat => $_->[0], lon => $_->[1] } }
-			  $trip->polyline( fallback => 1 );
-			my @route = $trip->route;
+			my @polyline = $trip->polyline( fallback => 1 );
+			my @route    = $trip->route;
 
 			my $ref_route = [
 				map {
