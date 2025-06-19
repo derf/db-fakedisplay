@@ -1517,12 +1517,15 @@ sub train_details_efa {
 	my $trip_id = $self->stash('train');
 
 	my $stopseq;
-	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+	if ( $trip_id
+		=~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^T]*) T ([^)]*) [)] (.*)  $ }x )
+	{
 		$stopseq = {
 			stateless => $1,
 			stop_id   => $2,
 			date      => $3,
-			key       => $4
+			time      => $4,
+			key       => $5
 		};
 	}
 	else {
@@ -2165,17 +2168,11 @@ sub render_board_efa {
 				departure       => $result->rt_datetime
 				? $result->rt_datetime->strftime('%H:%M')
 				: undef,
-				train      => $result->line,
-				train_type => q{},
-				train_line => $result->line,
-				train_no   => $result->train_no,
-				journey_id => sprintf( '%s@%d(%s)%d',
-					$result->stateless =~ s{ }{}gr,
-					scalar $result->route_pre
-					? ( $result->route_pre )[0]->id_num
-					: $result->stop_id_num,
-					$result->sched_datetime->strftime('%Y%m%d'),
-					$result->key ),
+				train        => $result->line,
+				train_type   => q{},
+				train_line   => $result->line,
+				train_no     => $result->train_no,
+				journey_id   => $result->id,
 				via          => [ map { $_->name } $result->route_interesting ],
 				origin       => $result->origin,
 				destination  => $result->destination,

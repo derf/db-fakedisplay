@@ -32,7 +32,7 @@ sub get_route_indexes {
 
 	for my $i ( 0 .. $#{$polyline} ) {
 		my $this_point = $polyline->[$i];
-		my $name = $this_point->{name} // $this_point->{stop}->{name};
+		my $name       = $this_point->{name} // $this_point->{stop}->{name};
 
 		if (    not defined $from_index
 			and $name
@@ -324,12 +324,15 @@ sub route_efa {
 	my $backend = $self->param('efa');
 
 	my $stopseq;
-	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+	if ( $trip_id
+		=~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^T]*) T ([^)]*) [)] (.*)  $ }x )
+	{
 		$stopseq = {
 			stateless => $1,
 			stop_id   => $2,
 			date      => $3,
-			key       => $4
+			time      => $4,
+			key       => $5
 		};
 	}
 	else {
@@ -678,7 +681,7 @@ sub route_motis {
 
 			# Prepare from/to markers and name/time/delay overlays for stations
 			for my $stopover (@stopovers) {
-				my $stop = $stopover->stop;
+				my $stop       = $stopover->stop;
 				my @stop_lines = ( $stop->name );
 
 				if ( $from_name and $stop->name eq $from_name ) {
@@ -708,16 +711,20 @@ sub route_motis {
 					push( @stop_lines, 'Gleis ' . $stop->track );
 				}
 				if ( $stopover->arrival ) {
-					my $arr_line = $stopover->arrival->strftime('Ankunft: %H:%M');
+					my $arr_line
+					  = $stopover->arrival->strftime('Ankunft: %H:%M');
 					if ( $stopover->arrival_delay ) {
-						$arr_line .= sprintf( ' (%+d)', $stopover->arrival_delay );
+						$arr_line
+						  .= sprintf( ' (%+d)', $stopover->arrival_delay );
 					}
 					push( @stop_lines, $arr_line );
 				}
 				if ( $stopover->departure ) {
-					my $dep_line = $stopover->departure->strftime('Abfahrt: %H:%M');
+					my $dep_line
+					  = $stopover->departure->strftime('Abfahrt: %H:%M');
 					if ( $stopover->departure_delay ) {
-						$dep_line .= sprintf( ' (%+d)', $stopover->departure_delay );
+						$dep_line
+						  .= sprintf( ' (%+d)', $stopover->departure_delay );
 					}
 					push( @stop_lines, $dep_line );
 				}
@@ -997,12 +1004,15 @@ sub ajax_route_efa {
 	my $trip_id = $self->stash('tripid');
 
 	my $stopseq;
-	if ( $trip_id =~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^)]*) [)] (.*)  $ }x ) {
+	if ( $trip_id
+		=~ m{ ^ ([^@]*) @ ([^@]*) [(] ([^T]*) T ([^)]*) [)] (.*)  $ }x )
+	{
 		$stopseq = {
 			stateless => $1,
 			stop_id   => $2,
 			date      => $3,
-			key       => $4
+			time      => $4,
+			key       => $5
 		};
 	}
 	else {
