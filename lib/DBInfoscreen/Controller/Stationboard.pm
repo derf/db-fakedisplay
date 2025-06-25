@@ -2284,8 +2284,10 @@ sub render_board_hafas {
 			  sort { $a->[0] <=> $b->[0] }
 			  map {
 				[
-					$_->arrival_is_cancelled
-					? ( $_->sched_arrival // $_->sched_departure )
+					(
+						  $_->sched_arrival ? $_->arrival_is_cancelled
+						: $_->is_cancelled
+					) ? ( $_->sched_arrival // $_->sched_departure )
 					: ( $_->arrival // $_->departure ),
 					$_
 				]
@@ -2296,8 +2298,10 @@ sub render_board_hafas {
 			  sort { $a->[0] <=> $b->[0] }
 			  map {
 				[
-					$_->departure_is_cancelled
-					? ( $_->sched_departure // $_->sched_arrival )
+					(
+						  $_->sched_departure ? $_->departure_is_cancelled
+						: $_->is_cancelled
+					) ? ( $_->sched_departure // $_->sched_arrival )
 					: ( $_->departure // $_->arrival ),
 					$_
 				]
