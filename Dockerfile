@@ -21,7 +21,7 @@ RUN ln -sf ../ext-templates/imprint.html.ep templates/imprint.html.ep \
 
 RUN sed -i "s/version *=> *\$ENV{DBFAKEDISPLAY_VERSION}/version => '${dbf_version}'/" lib/DBInfoscreen.pm
 
-FROM perl:5.30-slim
+FROM perl:5.40-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_LISTCHANGES_FRONTEND=none
@@ -37,7 +37,7 @@ RUN apt-get update \
 		libc6-dev \
 		libdb5.3 \
 		libdb5.3-dev \
-		libssl1.1 \
+		libssl3 \
 		libssl-dev \
 		libxml2 \
 		libxml2-dev \
