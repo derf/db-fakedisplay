@@ -1211,10 +1211,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  JSON-XS-4.03
-    pathname: M/ML/MLEHMANN/JSON-XS-4.03.tar.gz
+  JSON-XS-4.04
+    pathname: M/ML/MLEHMANN/JSON-XS-4.04.tar.gz
     provides:
-      JSON::XS 4.03
+      JSON::XS 4.04
     requirements:
       Canary::Stability 0
       ExtUtils::MakeMaker 6.52
@@ -1512,13 +1512,13 @@ DISTRIBUTIONS
       IO::Socket::IP 0.37
       Sub::Util 1.41
       perl 5.016
-  Net-HTTP-6.23
-    pathname: O/OA/OALDERS/Net-HTTP-6.23.tar.gz
+  Net-HTTP-6.24
+    pathname: O/OA/OALDERS/Net-HTTP-6.24.tar.gz
     provides:
-      Net::HTTP 6.23
-      Net::HTTP::Methods 6.23
-      Net::HTTP::NB 6.23
-      Net::HTTPS 6.23
+      Net::HTTP 6.24
+      Net::HTTP::Methods 6.24
+      Net::HTTP::NB 6.24
+      Net::HTTPS 6.24
     requirements:
       Carp 0
       Compress::Raw::Zlib 0
@@ -1920,18 +1920,18 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.20.0
-  Travel-Status-DE-HAFAS-6.22
-    pathname: D/DE/DERF/Travel-Status-DE-HAFAS-6.22.tar.gz
+  Travel-Status-DE-HAFAS-6.23
+    pathname: D/DE/DERF/Travel-Status-DE-HAFAS-6.23.tar.gz
     provides:
-      Travel::Status::DE::HAFAS 6.22
-      Travel::Status::DE::HAFAS::Journey 6.22
-      Travel::Status::DE::HAFAS::Location 6.22
-      Travel::Status::DE::HAFAS::Message 6.22
-      Travel::Status::DE::HAFAS::Polyline 6.22
-      Travel::Status::DE::HAFAS::Product 6.22
-      Travel::Status::DE::HAFAS::Services 6.22
-      Travel::Status::DE::HAFAS::Stop 6.22
-      Travel::Status::DE::HAFAS::StopFinder 6.22
+      Travel::Status::DE::HAFAS 6.23
+      Travel::Status::DE::HAFAS::Journey 6.23
+      Travel::Status::DE::HAFAS::Location 6.23
+      Travel::Status::DE::HAFAS::Message 6.23
+      Travel::Status::DE::HAFAS::Polyline 6.23
+      Travel::Status::DE::HAFAS::Product 6.23
+      Travel::Status::DE::HAFAS::Services 6.23
+      Travel::Status::DE::HAFAS::Stop 6.23
+      Travel::Status::DE::HAFAS::StopFinder 6.23
     requirements:
       Carp 0
       Class::Accessor 0.16
@@ -1949,12 +1949,12 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.14.0
-  Travel-Status-DE-IRIS-1.98
-    pathname: D/DE/DERF/Travel-Status-DE-IRIS-1.98.tar.gz
+  Travel-Status-DE-IRIS-2.00
+    pathname: D/DE/DERF/Travel-Status-DE-IRIS-2.00.tar.gz
     provides:
-      Travel::Status::DE::IRIS 1.98
-      Travel::Status::DE::IRIS::Result 1.98
-      Travel::Status::DE::IRIS::Stations 1.98
+      Travel::Status::DE::IRIS 2.00
+      Travel::Status::DE::IRIS::Result 2.00
+      Travel::Status::DE::IRIS::Stations 2.00
     requirements:
       Carp 0
       Class::Accessor 0
@@ -1981,17 +1981,17 @@ DISTRIBUTIONS
       Text::LevenshteinXS 0
       XML::LibXML 0
       perl v5.14.2
-  Travel-Status-DE-VRR-3.14
-    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.14.tar.gz
+  Travel-Status-DE-VRR-3.15
+    pathname: D/DE/DERF/Travel-Status-DE-VRR-3.15.tar.gz
     provides:
-      Travel::Status::DE::EFA 3.14
-      Travel::Status::DE::EFA::Departure 3.14
-      Travel::Status::DE::EFA::Info 3.14
-      Travel::Status::DE::EFA::Line 3.14
-      Travel::Status::DE::EFA::Services 3.14
-      Travel::Status::DE::EFA::Stop 3.14
-      Travel::Status::DE::EFA::Trip 3.14
-      Travel::Status::DE::VRR 3.14
+      Travel::Status::DE::EFA 3.15
+      Travel::Status::DE::EFA::Departure 3.15
+      Travel::Status::DE::EFA::Info 3.15
+      Travel::Status::DE::EFA::Line 3.15
+      Travel::Status::DE::EFA::Services 3.15
+      Travel::Status::DE::EFA::Stop 3.15
+      Travel::Status::DE::EFA::Trip 3.15
+      Travel::Status::DE::VRR 3.15
     requirements:
       Carp 0
       Class::Accessor 0
@@ -2054,63 +2054,66 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       common::sense 0
-  URI-5.32
-    pathname: O/OA/OALDERS/URI-5.32.tar.gz
+  URI-5.34
+    pathname: O/OA/OALDERS/URI-5.34.tar.gz
     provides:
-      URI 5.32
-      URI::Escape 5.32
-      URI::Heuristic 5.32
-      URI::IRI 5.32
-      URI::QueryParam 5.32
-      URI::Split 5.32
-      URI::URL 5.32
-      URI::WithBase 5.32
-      URI::data 5.32
-      URI::file 5.32
-      URI::file::Base 5.32
-      URI::file::FAT 5.32
-      URI::file::Mac 5.32
-      URI::file::OS2 5.32
-      URI::file::QNX 5.32
-      URI::file::Unix 5.32
-      URI::file::Win32 5.32
-      URI::ftp 5.32
-      URI::ftpes 5.32
-      URI::ftps 5.32
-      URI::geo 5.32
-      URI::gopher 5.32
-      URI::http 5.32
-      URI::https 5.32
-      URI::icap 5.32
-      URI::icaps 5.32
-      URI::irc 5.32
-      URI::ircs 5.32
-      URI::ldap 5.32
-      URI::ldapi 5.32
-      URI::ldaps 5.32
-      URI::mailto 5.32
-      URI::mms 5.32
-      URI::news 5.32
-      URI::nntp 5.32
-      URI::nntps 5.32
-      URI::otpauth 5.32
-      URI::pop 5.32
-      URI::rlogin 5.32
-      URI::rsync 5.32
-      URI::rtsp 5.32
-      URI::rtspu 5.32
-      URI::scp 5.32
-      URI::sftp 5.32
-      URI::sip 5.32
-      URI::sips 5.32
-      URI::smb 5.32
-      URI::snews 5.32
-      URI::ssh 5.32
-      URI::telnet 5.32
-      URI::tn3270 5.32
-      URI::urn 5.32
-      URI::urn::isbn 5.32
-      URI::urn::oid 5.32
+      URI 5.34
+      URI::Escape 5.34
+      URI::Heuristic 5.34
+      URI::IRI 5.34
+      URI::QueryParam 5.34
+      URI::Split 5.34
+      URI::URL 5.34
+      URI::WithBase 5.34
+      URI::data 5.34
+      URI::file 5.34
+      URI::file::Base 5.34
+      URI::file::FAT 5.34
+      URI::file::Mac 5.34
+      URI::file::OS2 5.34
+      URI::file::QNX 5.34
+      URI::file::Unix 5.34
+      URI::file::Win32 5.34
+      URI::ftp 5.34
+      URI::ftpes 5.34
+      URI::ftps 5.34
+      URI::geo 5.34
+      URI::gopher 5.34
+      URI::http 5.34
+      URI::https 5.34
+      URI::icap 5.34
+      URI::icaps 5.34
+      URI::irc 5.34
+      URI::ircs 5.34
+      URI::ldap 5.34
+      URI::ldapi 5.34
+      URI::ldaps 5.34
+      URI::mailto 5.34
+      URI::mms 5.34
+      URI::news 5.34
+      URI::nntp 5.34
+      URI::nntps 5.34
+      URI::otpauth 5.34
+      URI::pop 5.34
+      URI::rlogin 5.34
+      URI::rsync 5.34
+      URI::rtsp 5.34
+      URI::rtspu 5.34
+      URI::scp 5.34
+      URI::sftp 5.34
+      URI::sip 5.34
+      URI::sips 5.34
+      URI::smb 5.34
+      URI::smtp 5.34
+      URI::snews 5.34
+      URI::ssh 5.34
+      URI::telnet 5.34
+      URI::tn3270 5.34
+      URI::urn 5.34
+      URI::urn::isbn 5.34
+      URI::urn::oid 5.34
+      URI::ws 5.34
+      URI::wss 5.34
     requirements:
       Carp 0
       Cwd 0
@@ -2309,32 +2312,32 @@ DISTRIBUTIONS
       XSLoader 0
       lib 0
       perl 5.008001
-  libwww-perl-6.79
-    pathname: O/OA/OALDERS/libwww-perl-6.79.tar.gz
+  libwww-perl-6.80
+    pathname: O/OA/OALDERS/libwww-perl-6.80.tar.gz
     provides:
-      LWP 6.79
-      LWP::Authen::Basic 6.79
-      LWP::Authen::Digest 6.79
-      LWP::Authen::Ntlm 6.79
-      LWP::ConnCache 6.79
-      LWP::Debug 6.79
-      LWP::Debug::TraceHTTP 6.79
-      LWP::DebugFile 6.79
-      LWP::MemberMixin 6.79
-      LWP::Protocol 6.79
-      LWP::Protocol::cpan 6.79
-      LWP::Protocol::data 6.79
-      LWP::Protocol::file 6.79
-      LWP::Protocol::ftp 6.79
-      LWP::Protocol::gopher 6.79
-      LWP::Protocol::http 6.79
-      LWP::Protocol::loopback 6.79
-      LWP::Protocol::mailto 6.79
-      LWP::Protocol::nntp 6.79
-      LWP::Protocol::nogo 6.79
-      LWP::RobotUA 6.79
-      LWP::Simple 6.79
-      LWP::UserAgent 6.79
+      LWP 6.80
+      LWP::Authen::Basic 6.80
+      LWP::Authen::Digest 6.80
+      LWP::Authen::Ntlm 6.80
+      LWP::ConnCache 6.80
+      LWP::Debug 6.80
+      LWP::Debug::TraceHTTP 6.80
+      LWP::DebugFile 6.80
+      LWP::MemberMixin 6.80
+      LWP::Protocol 6.80
+      LWP::Protocol::cpan 6.80
+      LWP::Protocol::data 6.80
+      LWP::Protocol::file 6.80
+      LWP::Protocol::ftp 6.80
+      LWP::Protocol::gopher 6.80
+      LWP::Protocol::http 6.80
+      LWP::Protocol::loopback 6.80
+      LWP::Protocol::mailto 6.80
+      LWP::Protocol::nntp 6.80
+      LWP::Protocol::nogo 6.80
+      LWP::RobotUA 6.80
+      LWP::Simple 6.80
+      LWP::UserAgent 6.80
     requirements:
       Digest::MD5 0
       Encode 2.12
