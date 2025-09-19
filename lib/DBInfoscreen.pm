@@ -171,9 +171,14 @@ sub startup {
 				and $wagon_type
 				=~ m{ ^ [AB] R? k? [ipv] m m? b? d? s? z f? $ }x )
 			{
+				# TODO this is never reached, as train_type is always ?
+				# (DBRIS $status->train_type is undef)
 				$ret = $wagon_type;
 			}
-			elsif ( $train_type =~ m{IC2.TWIN} ) {
+			elsif ($train_type =~ m{IC2.TWIN}
+				or $wagon_type =~ m{ ^ D [AB] p b? z f? a $ }x )
+			{
+				# See above -- trian_type does not have an effect
 				$ret = $wagon_type;
 			}
 			elsif ( not $uic ) {
