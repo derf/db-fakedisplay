@@ -54,9 +54,11 @@ sub handle_no_results {
 		if ( $errstr =~ m{ambiguous} and $efa->name_candidates ) {
 			$self->render(
 				'landingpage',
-				stationlist => [ $efa->name_candidates ],
-				hide_opts   => 0,
-				status      => $data->{status} // 300,
+				stationlist => [
+					map { [ $_->full_name, $_->id_num ] } $efa->name_candidates
+				],
+				hide_opts => 0,
+				status    => $data->{status} // 300,
 			);
 		}
 		else {
