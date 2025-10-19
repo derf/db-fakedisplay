@@ -51,7 +51,7 @@ sub handle_no_results {
 	my $errstr = $data->{errstr};
 
 	if ($efa) {
-		if ( $errstr =~ m{ambiguous} and $efa->name_candidates ) {
+		if ( $errstr =~ m{ambiguous|name list} and $efa->name_candidates ) {
 			$self->render(
 				'landingpage',
 				stationlist => [
