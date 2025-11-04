@@ -854,21 +854,24 @@ sub render_train {
 	  = ( $wagonorder_req, $occupancy_req, $stationinfo_req, $route_req );
 
 	if ( $departure->{wr_dt} ) {
-		$self->wagonorder->get_p(
-			train_type   => $result->type,
-			train_number => $result->train_no,
-			datetime     => $departure->{wr_dt},
-			eva          => $departure->{eva}
+		$self->dbris->get_wagonorder_p(
+			train_type => $result->type,
+			train_no   => $result->train_no,
+			datetime   => $departure->{wr_dt},
+			eva        => $departure->{eva}
 		)->then(
 			sub {
-				my ( $wr_json, $wr_param ) = @_;
+				my ($wr) = @_;
 				eval {
-					my $wr
-					  = Travel::Status::DE::DBRIS::Formation->new(
-						json => $wr_json );
+					$wr                   = $wr->result;
 					$departure->{wr}      = $wr;
-					$departure->{wr_link} = join( '&',
-						map { $_ . '=' . $wr_param->{$_} } keys %{$wr_param} );
+					$departure->{wr_link} = sprintf(
+						'tt=%s&tn=%s&dt=%d&eva=%d',
+						$result->type,
+						$result->train_no,
+						$departure->{wr_dt}->clone->set_time_zone('UTC')->epoch,
+						$departure->{eva}
+					);
 					$departure->{wr_text} = join( q{ • },
 						map { $_->desc_short }
 						grep { $_->desc_short } $wr->groups );

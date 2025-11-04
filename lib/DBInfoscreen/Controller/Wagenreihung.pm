@@ -10,6 +10,7 @@ use Mojo::Util qw(b64_encode b64_decode);
 
 use utf8;
 
+use DateTime;
 use Travel::Status::DE::DBRIS::Formation;
 
 sub handle_wagenreihung_error {
@@ -30,25 +31,27 @@ sub wagenreihung {
 	my ($self) = @_;
 	my $exit_side = $self->param('e');
 
-	my $train_type = $self->param('category');
-	my $train_no   = $self->param('number');
-	my $train      = "${train_type} ${train_no}";
+	my $train_type = $self->param('tt');
+	my $train_no   = $self->param('tn');
+	my $eva        = $self->param('eva');
+	my $dt         = DateTime->from_epoch(
+		epoch     => $self->param('dt'),
+		time_zone => 'UTC'
+	);
+
+	my $train = "${train_type} ${train_no}";
 
 	$self->render_later;
 
-	$self->wagonorder->get_p( param => $self->req->query_params->to_hash )
-	  ->then(
+	$self->dbris->get_wagonorder_p(
+		train_type => $train_type,
+		train_no   => $train_no,
+		datetime   => $dt,
+		eva        => $eva,
+	)->then(
 		sub {
-			my ($json) = @_;
-			my $wr;
-			eval {
-				$wr
-				  = Travel::Status::DE::DBRIS::Formation->new( json => $json );
-			};
-			if ($@) {
-				$self->handle_wagenreihung_error( $train, scalar $@ );
-				return;
-			}
+			my ($status) = @_;
+			my $wr = $status->result;
 
 			if ( $exit_side and $exit_side =~ m{^a} ) {
 				if ( $wr->sectors and defined $wr->direction ) {
@@ -172,10 +175,11 @@ sub wagenreihung {
 				wref        => $wref,
 				exit_dir    => $exit_dir,
 				hide_opts   => 1,
-				ts          => $json->{ts},
+
+				#ts          => $json->{ts},
 			);
 		}
-	  )->catch(
+	)->catch(
 		sub {
 			my ($err) = @_;
 
@@ -183,7 +187,7 @@ sub wagenreihung {
 				$err // "Unbekannter Fehler" );
 			return;
 		}
-	  )->wait;
+	)->wait;
 
 }
 

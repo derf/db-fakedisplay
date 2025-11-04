@@ -29,8 +29,8 @@ sub new {
 
 }
 
-sub get_journey_p {
-	my ( $self, %opt ) = @_;
+sub get_agent {
+	my ($self) = @_;
 
 	my $agent = $self->{user_agent};
 
@@ -40,11 +40,17 @@ sub get_journey_p {
 		$agent->proxy->https($proxy);
 	}
 
+	return $agent;
+}
+
+sub get_journey_p {
+	my ( $self, %opt ) = @_;
+
 	return Travel::Status::DE::DBRIS->new_p(
 		journey    => $opt{id},
 		cache      => $self->{realtime_cache},
 		promise    => 'Mojo::Promise',
-		user_agent => $agent->request_timeout(10)
+		user_agent => $self->get_agent->request_timeout(10)
 	);
 }
 
@@ -56,20 +62,12 @@ sub get_polyline_p {
 	my $trip_id = $opt{id};
 	my $promise = Mojo::Promise->new;
 
-	my $agent = $self->{user_agent};
-
-	if ( my $proxy = $ENV{DBFAKEDISPLAY_DBRIS_PROXY} ) {
-		$agent = Mojo::UserAgent->new;
-		$agent->proxy->http($proxy);
-		$agent->proxy->https($proxy);
-	}
-
 	Travel::Status::DE::DBRIS->new_p(
 		journey       => $trip_id,
 		with_polyline => 1,
 		cache         => $self->{realtime_cache},
 		promise       => 'Mojo::Promise',
-		user_agent    => $agent->request_timeout(10)
+		user_agent    => $self->get_agent->request_timeout(10)
 	)->then(
 		sub {
 			my ($dbris) = @_;
@@ -88,6 +86,27 @@ sub get_polyline_p {
 	)->wait;
 
 	return $promise;
+}
+
+sub get_wagonorder_p {
+	my ( $self, %opt ) = @_;
+
+	$self->{log}
+	  ->debug("get_wagonorder_p($opt{train_type} $opt{train_no} @ $opt{eva})");
+
+	return Travel::Status::DE::DBRIS->new_p(
+		cache         => $self->{main_cache},
+		failure_cache => $self->{realtime_cache},
+		promise       => 'Mojo::Promise',
+		user_agent    => $self->get_agent->request_timeout(10),
+		formation     => {
+			departure    => $opt{datetime},
+			eva          => $opt{eva},
+			train_type   => $opt{train_type},
+			train_number => $opt{train_no}
+		},
+		developer_mode => $self->{log}->is_level('debug') ? 1 : 0,
+	);
 }
 
 1;
