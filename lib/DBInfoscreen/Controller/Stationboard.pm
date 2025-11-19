@@ -1350,7 +1350,7 @@ sub train_details_dbris {
 			my $res = {
 				trip_id         => $trip_id,
 				train_line      => $trip->train,
-				train_no        => $trip->number,
+				train_no        => $trip->train_no,
 				origin          => ( $trip->route )[0]->name,
 				destination     => ( $trip->route )[-1]->name,
 				operators       => [],
@@ -1361,6 +1361,7 @@ sub train_details_dbris {
 				details         => [@him_details],
 				replaced_by     => [],
 				replacement_for => [],
+				operators       => [ $trip->operators ],
 			};
 
 			my $line = $trip->train;
@@ -1384,6 +1385,16 @@ sub train_details_dbris {
 			}
 
 			my $station_is_past = 1;
+
+			my $prev_trip_no;
+			if ( scalar $trip->trip_numbers > 1 ) {
+				$prev_trip_no = q{};
+			}
+
+			my $prev_operator;
+			if ( scalar $trip->operators > 1 ) {
+				$prev_operator = q{};
+			}
 			for my $stop ( $trip->route ) {
 
 				push(
@@ -1414,6 +1425,28 @@ sub train_details_dbris {
 					$station_is_past = 0;
 				}
 				$res->{route_post_diff}[-1]{isPast} = $station_is_past;
+
+				if (    defined $prev_trip_no
+					and defined $stop->trip_no
+					and $stop->trip_no ne $prev_trip_no )
+				{
+					$res->{route_post_diff}[-1]{is_annotated} = 1;
+					$res->{route_post_diff}[-1]{prod_name}
+					  = sprintf( '%s %s', $trip->type // q{}, $stop->trip_no );
+					$prev_trip_no = $stop->trip_no;
+				}
+
+				if (    defined $prev_operator
+					and defined $stop->operator
+					and $stop->operator ne $prev_operator )
+				{
+					$res->{route_post_diff}[-1]{is_annotated} = 1;
+					$res->{route_post_diff}[-1]{prod_name} = sprintf( '%s %s',
+						$trip->type    // q{},
+						$stop->trip_no // q{} );
+					$res->{route_post_diff}[-1]{operator} = $stop->operator;
+					$prev_operator = $stop->operator;
+				}
 			}
 
 			if ( my $req_id = $self->param('highlight') ) {
