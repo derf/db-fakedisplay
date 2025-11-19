@@ -1794,17 +1794,17 @@ DISTRIBUTIONS
       Module::Build 0.38
       parent 0.225
       perl v5.10.0
-  Test-Fatal-0.017
-    pathname: R/RJ/RJBS/Test-Fatal-0.017.tar.gz
+  Test-Fatal-0.018
+    pathname: R/RJ/RJBS/Test-Fatal-0.018.tar.gz
     provides:
-      Test::Fatal 0.017
+      Test::Fatal 0.018
     requirements:
       Carp 0
       Exporter 5.57
       ExtUtils::MakeMaker 6.78
       Test::Builder 0
       Try::Tiny 0.07
-      strict 0
+      perl 5.012
       warnings 0
   Test-Number-Delta-1.06
     pathname: D/DA/DAGOLDEN/Test-Number-Delta-1.06.tar.gz
@@ -1894,22 +1894,24 @@ DISTRIBUTIONS
       TimeDate 1.21
     requirements:
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBRIS-0.15
-    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.15.tar.gz
+  Travel-Status-DE-DBRIS-0.18
+    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.18.tar.gz
     provides:
-      Travel::Status::DE::DBRIS 0.15
-      Travel::Status::DE::DBRIS::Formation 0.15
-      Travel::Status::DE::DBRIS::Formation::Carriage 0.15
-      Travel::Status::DE::DBRIS::Formation::Group 0.15
-      Travel::Status::DE::DBRIS::Formation::Sector 0.15
-      Travel::Status::DE::DBRIS::Journey 0.15
-      Travel::Status::DE::DBRIS::JourneyAtStop 0.15
-      Travel::Status::DE::DBRIS::Location 0.15
+      Travel::Status::DE::DBRIS 0.18
+      Travel::Status::DE::DBRIS::Formation 0.18
+      Travel::Status::DE::DBRIS::Formation::Carriage 0.18
+      Travel::Status::DE::DBRIS::Formation::Group 0.18
+      Travel::Status::DE::DBRIS::Formation::Sector 0.18
+      Travel::Status::DE::DBRIS::Journey 0.18
+      Travel::Status::DE::DBRIS::JourneyAtStop 0.18
+      Travel::Status::DE::DBRIS::Location 0.18
+      Travel::Status::DE::DBRIS::Operators 0.18
     requirements:
       Carp 0
       Class::Accessor 0.16
       DateTime 0
       DateTime::Format::Strptime 0
+      File::Slurp 9999.19
       Getopt::Long 0
       JSON 0
       LWP::Protocol::https 0
