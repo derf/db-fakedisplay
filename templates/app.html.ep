@@ -74,6 +74,9 @@
     % if ($departure->{train_type} and $departure->{train_no}) {
 %=    $departure->{train_type}
 %   }
+%   if ($departure->{train_type} and $departure->{train_type}) {
+%     $departure->{train_line} =~ s{ \Q$departure->{train_type}\E (?= \d ) }{}x;
+%   }
 %   if ($departure->{train_line} ) {
 %=    $departure->{train_line}
 %   }
