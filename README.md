@@ -174,5 +174,6 @@ Resources
 Mirrors of the db-infoscreen repository are available at
 
 * [Chaosdorf](https://chaosdorf.de/git/derf/db-infoscreen)
-* [git.finalrewind.org](https://git.finalrewind.org/db-fakedisplay/)
+* [Codeberg](https://codeberg.org/derf/db-infoscreen)
+* [Finalrewind](https://git.finalrewind.org/derf/db-infoscreen)
 * [GitHub](https://github.com/derf/db-fakedisplay)
