@@ -68,10 +68,22 @@ sub get_route_p {
 			promise    => 'Mojo::Promise',
 			user_agent => $agent->request_timeout(10)
 		);
+		$self->{log}->debug("HAFAS->get_route_p(trip_id => $opt{trip_id})");
 	}
 	elsif ( $opt{train} ) {
-		$opt{train_req}    = $opt{train}->type . ' ' . $opt{train}->train_no;
+		if ( grep { $_ eq 'S' } $opt{train}->classes ) {
+			$opt{train_req} = 'DB ' . $opt{train}->train_no;
+		}
+		elsif ( grep { $_ eq 'N' } $opt{train}->classes
+			or not scalar $opt{train}->classes )
+		{
+			$opt{train_req} = $opt{train}->train_no;
+		}
+		else {
+			$opt{train_req} = $opt{train}->type . ' ' . $opt{train}->train_no;
+		}
 		$opt{train_origin} = $opt{train}->origin;
+		$self->{log}->debug("HAFAS->get_route_p(train => $opt{train_req})");
 	}
 	else {
 		$opt{train_req} = $opt{train_type} . ' ' . $opt{train_no};
