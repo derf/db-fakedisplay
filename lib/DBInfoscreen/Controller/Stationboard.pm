@@ -380,6 +380,9 @@ sub get_results_p {
 					eva => $+{eva},
 					id  => $station,
 				},
+				datetime    => $opt{datetime},
+				lookahead   => $opt{lookahead},
+				arrivals    => $opt{arrivals},
 				cache       => $opt{cache_iris_rt},
 				lwp_options => {
 					timeout => 10,
@@ -424,6 +427,9 @@ sub get_results_p {
 		return Travel::Status::DE::EFA->new_p(
 			service     => $service,
 			name        => $station,
+			datetime    => $opt{datetime},
+			lookahead   => $opt{lookahead},
+			arrivals    => $opt{arrivals},
 			full_routes => 1,
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {
@@ -444,6 +450,8 @@ sub get_results_p {
 		return Travel::Status::DE::HAFAS->new_p(
 			service     => $service,
 			station     => $station,
+			datetime    => $opt{datetime},
+			lookahead   => $opt{lookahead},
 			arrivals    => $opt{arrivals},
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {
