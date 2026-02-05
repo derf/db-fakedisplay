@@ -60,8 +60,7 @@ my $lookahead  = 123;
 		cache_iris_rt => '/tmp/rt',
 	);
 
-	ok( exists $seen{lookahead}, 'lookahead passed to EFA' );
-	is( $seen{lookahead}, $lookahead, 'EFA lookahead value' );
+	ok( !exists $seen{lookahead}, 'lookahead not passed to EFA. It does not support it' );
 }
 
 {
@@ -80,8 +79,7 @@ my $lookahead  = 123;
 		cache_iris_rt => '/tmp/rt',
 	);
 
-	ok( exists $seen{lookahead}, 'lookahead passed to DBRIS' );
-	is( $seen{lookahead}, $lookahead, 'DBRIS lookahead value' );
+	ok( !exists $seen{lookahead}, 'lookahead not passed to DBRIS. It does not support it' );
 }
 
 {
