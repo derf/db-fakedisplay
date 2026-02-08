@@ -71,11 +71,27 @@ sub get_route_p {
 		$self->{log}->debug("HAFAS->get_route_p(trip_id => $opt{trip_id})");
 	}
 	elsif ( $opt{train} ) {
-		if ( grep { $_ eq 'S' } $opt{train}->classes ) {
+		my $old_req
+		  = ( $opt{train}->type // q{-} ) . ' ' . $opt{train}->train_no;
+		if ( $opt{train}->type eq 'ECE' ) {
+			$opt{train_req} = 'EC ' . $opt{train}->train_no;
+		}
+		elsif ( $opt{train}->type
+			=~ m{ ^ (?: ABR | ag | ALX | EB | MRB | NBE | STB | TLX | OE ) $ }x
+		  )
+		{
+			$opt{train_req} = $opt{train}->train_no;
+		}
+		elsif ( grep { $_ eq 'S' } $opt{train}->classes ) {
 			$opt{train_req} = 'DB ' . $opt{train}->train_no;
 		}
-		elsif ( grep { $_ eq 'N' } $opt{train}->classes
-			or not scalar $opt{train}->classes )
+		elsif (
+			(
+				grep { $_ eq 'N' } $opt{train}->classes
+				or not scalar $opt{train}->classes
+			)
+			and $opt{train}->type ne 'FLX'
+		  )
 		{
 			$opt{train_req} = $opt{train}->train_no;
 		}
@@ -83,7 +99,8 @@ sub get_route_p {
 			$opt{train_req} = $opt{train}->type . ' ' . $opt{train}->train_no;
 		}
 		$opt{train_origin} = $opt{train}->origin;
-		$self->{log}->debug("HAFAS->get_route_p(train => $opt{train_req})");
+		$self->{log}
+		  ->debug("HAFAS->get_route_p(train => $old_req -> $opt{train_req})");
 	}
 	else {
 		$opt{train_req} = $opt{train_type} . ' ' . $opt{train_no};
