@@ -94,7 +94,6 @@ DISTRIBUTIONS
       JSON::PP 0
       List::Util 1.33
       Path::Tiny 0.077
-      PkgConfig 0.14026
       Test2::API 1.302096
       Text::ParseWords 3.26
       parent 0
@@ -1663,14 +1662,6 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
-  PkgConfig-0.26026
-    pathname: P/PL/PLICEASE/PkgConfig-0.26026.tar.gz
-    provides:
-      PkgConfig 0.26026
-    requirements:
-      ExtUtils::MakeMaker 6.56
-      Test::More 0.94
-      perl 5.006000
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -1962,12 +1953,12 @@ DISTRIBUTIONS
       Test::More 0
       Test::Pod 0
       perl v5.14.0
-  Travel-Status-DE-IRIS-2.03
-    pathname: D/DE/DERF/Travel-Status-DE-IRIS-2.03.tar.gz
+  Travel-Status-DE-IRIS-2.04
+    pathname: D/DE/DERF/Travel-Status-DE-IRIS-2.04.tar.gz
     provides:
-      Travel::Status::DE::IRIS 2.03
-      Travel::Status::DE::IRIS::Result 2.03
-      Travel::Status::DE::IRIS::Stations 2.03
+      Travel::Status::DE::IRIS 2.04
+      Travel::Status::DE::IRIS::Result 2.04
+      Travel::Status::DE::IRIS::Stations 2.04
     requirements:
       Carp 0
       Class::Accessor 0
