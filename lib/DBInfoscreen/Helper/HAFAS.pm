@@ -77,7 +77,7 @@ sub get_route_p {
 			$opt{train_req} = 'EC ' . $opt{train}->train_no;
 		}
 		elsif ( $opt{train}->type
-			=~ m{ ^ (?: ABR | ag | ALX | EB | MRB | NBE | STB | TLX | OE ) $ }x
+			=~ m{ ^ (?: ABR | ag | ALX | AVG | BRB | EB | ERB | HLB | MRB | NBE | STB | TLX | OE | VIA ) $ }x
 		  )
 		{
 			$opt{train_req} = $opt{train}->train_no;
