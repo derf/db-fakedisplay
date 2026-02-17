@@ -72,7 +72,7 @@ as follows:
 
 ```
 docker pull derfnull/db-fakedisplay:latest
-docker run --rm -p 8000:8092 -v "$(pwd)/templates:/app/ext-templates:ro" db-fakedisplay:latest
+docker run --rm -p 8000:8092 -v "$(pwd)/templates:/app/ext-templates:ro" derfnull/db-fakedisplay
 ```
 
 This will make the web service available on port 8000.  Note that you should
