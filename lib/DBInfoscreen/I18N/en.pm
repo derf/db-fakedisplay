@@ -27,6 +27,7 @@ our %Lexicon = (
 	  => 'Respect split stations; do not join them',
 	'Bereits abgefahrene Züge anzeigen'              => 'Include past trains',
 	'Formular verstecken'                            => 'Hide form',
+	'Header verstecken'                            => 'Hide header',
 	'Nur Züge über'                                  => 'Only show trains via',
 	'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)' =>
 	  'Station 1, 2, ... (or regular expression)',
