@@ -444,6 +444,7 @@ sub get_results_p {
 		return Travel::Status::DE::HAFAS->new_p(
 			service     => $service,
 			station     => $station,
+			arrivals    => $opt{arrivals},
 			lookahead   => $opt{lookahead},
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {

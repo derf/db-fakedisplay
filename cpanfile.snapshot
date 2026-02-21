@@ -94,6 +94,7 @@ DISTRIBUTIONS
       JSON::PP 0
       List::Util 1.33
       Path::Tiny 0.077
+      PkgConfig 0.14026
       Test2::API 1.302096
       Text::ParseWords 3.26
       parent 0
@@ -1652,6 +1653,14 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
+  PkgConfig-0.26026
+    pathname: P/PL/PLICEASE/PkgConfig-0.26026.tar.gz
+    provides:
+      PkgConfig 0.26026
+    requirements:
+      ExtUtils::MakeMaker 6.56
+      Test::More 0.94
+      perl 5.006000
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
