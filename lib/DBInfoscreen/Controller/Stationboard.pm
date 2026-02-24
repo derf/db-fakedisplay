@@ -445,6 +445,7 @@ sub get_results_p {
 			service     => $service,
 			station     => $station,
 			arrivals    => $opt{arrivals},
+			lookahead   => $opt{lookahead},
 			cache       => $opt{cache_iris_rt},
 			lwp_options => {
 				timeout => 10,
