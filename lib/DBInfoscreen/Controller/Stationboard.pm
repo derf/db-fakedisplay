@@ -2151,6 +2151,7 @@ sub render_board_efa {
 	my $template       = $self->param('mode')         // 'app';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $hide_navbar    = $self->param('hide_navbar')    // 0;
 	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
 	  // 1;
 
@@ -2254,6 +2255,7 @@ sub render_board_efa {
 			refresh_interval => $template eq 'app' ? 0 : 120,
 			hide_opts        => $hide_opts,
 			hide_footer      => $hide_opts,
+			hide_navbar      => $hide_navbar,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
 			load_marquee     => (
@@ -2276,6 +2278,7 @@ sub render_board_hafas {
 	my $template       = $self->param('mode')         // 'app';
 	my $hide_low_delay = $self->param('hidelowdelay') // 0;
 	my $hide_opts      = $self->param('hide_opts')    // 0;
+	my $hide_navbar    = $self->param('hide_navbar')    // 0;
 	my $show_realtime  = $self->param('rt') // $self->param('show_realtime')
 	  // 1;
 	my $show_details = $self->param('detailed') // 0;
@@ -2773,6 +2776,7 @@ sub render_board_hafas {
 			refresh_interval => $template eq 'app' ? 0        : 120,
 			hide_opts        => $hide_opts,
 			hide_footer      => $hide_opts,
+			hide_navbar      => $hide_navbar,
 			hide_low_delay   => $hide_low_delay,
 			show_realtime    => $show_realtime,
 			load_marquee     => (
