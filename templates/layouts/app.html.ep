@@ -237,13 +237,13 @@ Bitte eine Station aus der Liste auswählen</div>
           <span style="font-family: monospace;">mode=json&amp;version=3</span>
           (or just <span style="font-family: monospace;">https://dbf.finalrewind.org/Station.json?version=3</span>).
           Route elements may contain "isAdditional" and "isCancelled"; the rest
-          should be self-explanatory. Please do not send more than 30 requests
+          should be self-explanatory. Please do not send more than 10 requests
           per minute and only one request per station per minute.</li>
         <li>There is no JSON API for train details yet.</li>
         <li>The optional <span style="font-family: monospace;">limit</span>
           parameter limits the number of returnd departures; e.g.
           <span style="font-family: monospace;">limit=10</span> will result in no more than ten.</li>
-        <li>DBF is available as Open Source software
+        <li>DBF is available as Open Source software, including a ready-to-use Docker image
           (<a href="https://github.com/derf/db-fakedisplay/blob/master/README.md">installation instructions</a>).
           Please use your own installation for automated crawlers that request dozens of stations per minute.</li>
       % }
@@ -268,13 +268,13 @@ Bitte eine Station aus der Liste auswählen</div>
           durch <span style="font-family: monospace;">.json</span> in der URL.
           HAFAS- und IRIS-Abfahrtstafeln liefern mit dem GET-Parameter <span style="font-family: monospace;">version=3</span> eine stabile JSON-API.
           Alle anderen Endpunkte (sowie Abfahrtstafeln mit <span style="font-family: monospace;">version=raw</span>) erlauben direkten Zugriff auf die serialisierten Travel::Status::DE::{EFA,HAFAS,IRIS}-Objekte ohne stabile API.</li>
-        <li>Bitte maximal 30 Anfragen pro Minute und insbesondere nur eine Anfrage
+        <li>Bitte maximal 10 Anfragen pro Minute und insbesondere nur eine Anfrage
           pro Station und Minute – eine höhere Auflösung haben die Backenddaten
           ohnehin nicht.</li>
         <li>Mit <span style="font-family: monospace;">limit</span> kann die Anzahl der
           angezeigten / im JSON enthaltenen Abfahrten eingeschränkt werden, z.B.
           <span style="font-family: monospace;">limit=10</span> für die ersten zehn.</li>
-        <li>Dieser Dienst ist Open Source-Software und kann leicht auf eigenen Servern
+        <li>Dieser Dienst ist Open Source-Software und kann leicht (z.B. mittelS Docker) auf eigenen Servern
           <a href="https://github.com/derf/db-fakedisplay/blob/master/README.md">installiert</a>
           werden. Automatisierte Crawler, die mehrere Dutzend Stationen pro Minute
           abfragen, bitte nur auf eigenen Instanzen betreiben.</li>
