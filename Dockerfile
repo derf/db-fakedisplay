@@ -50,6 +50,7 @@ RUN apt-get update \
 	&& rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
 COPY --from=files /app/ /app/
+RUN chmod -R a+rX /app
 
 EXPOSE 8092
 
