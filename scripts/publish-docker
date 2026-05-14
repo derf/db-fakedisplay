@@ -5,9 +5,26 @@ set -e
 VERSION="$1"
 test -n "${VERSION}"
 
+mosquitto_pub -h mqtt -t dmap/set/structure/0003 -m usbc_voice=1
+
 git checkout main
 git pull
 git checkout "${VERSION}"
 git submodule update --init
 
-docker buildx build --push --no-cache --platform linux/amd64,linux/arm64 --tag derfnull/db-fakedisplay:${VERSION} --tag derfnull/db-fakedisplay:latest --build-arg=dbf_version=${VERSION} .
+echo -n 'Waiting for ARM64 build host to become ready '
+while ! test "$(docker buildx inspect mybuild | fgrep -c running)" = 2; do
+	echo -n .
+	sleep 5
+done
+echo
+
+docker buildx build --push --no-cache --platform linux/amd64,linux/arm64 \
+	--tag derfnull/db-fakedisplay:${VERSION} --tag derfnull/db-fakedisplay:latest \
+	--build-arg=dbf_version=${VERSION} \
+	.
+
+echo 'Turning off ARM64 build host ...'
+ssh voice 'sudo poweroff'
+sleep 30
+mosquitto_pub -h mqtt -t dmap/set/structure/0003 -m usbc_voice=0
