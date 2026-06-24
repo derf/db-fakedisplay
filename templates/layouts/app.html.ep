@@ -63,6 +63,7 @@
 </head>
 <body>
 
+% if (not stash('hide_navbar')) {
 <div class="navbar-fixed">
 	<nav style="color: #ffffff; background-color: #00838f;">
 		<div class="nav-wrapper container">
@@ -92,6 +93,7 @@
 		</div>
 	</nav>
 </div>
+% }
 
 <div class="container">
 % if (my $error = stash 'error') {
@@ -166,6 +168,14 @@ Bitte eine Station aus der Liste auswählen</div>
         %= check_box 'past' => 1, id => 'past'
         <label for="past">
           Fahrten der vergangenen 60 Minuten zeigen
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="desc">
+        %= check_box 'hide_navbar' => 1, id => 'id_hide_navbar'
+        <label for="id_hide_navbar">
+          Header verstecken
         </label>
       </div>
     </div>
