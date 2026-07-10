@@ -207,6 +207,16 @@
           <span class="reason">
 %=        $pair->[1]
           </span>
+%         if (@{$pair} >= 5 and $pair->[2] and $pair->[3] and $pair->[4]) {
+            <%= $pair->[2] %>
+%           if ($pair->[3]->day_of_year != $dt_now->day_of_year or $pair->[4]->day_of_year != $dt_now->day_of_year) {
+              (<%= $pair->[3]->strftime('%d.%m. %H:%M') %> → <%= $pair->[4]->strftime('%d.%m. %H:%M') %>)
+%           }
+%           else {
+              (<%= $pair->[3]->strftime('%H:%M') %> → <%= $pair->[4]->strftime('%H:%M') %>)
+%           }
+            – Details unbekannt
+%         }
 %       }
 %       else {
 %         if ($pair->[1]{icon}) {
