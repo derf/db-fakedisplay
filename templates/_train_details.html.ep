@@ -197,7 +197,9 @@
 %     for my $pair (@{$departure->{moreinfo}}) {
         <li>
 %       if (ref($pair->[0]) eq 'DateTime') {
-%         if ($pair->[0]->day != $dt_now->day) {
+%         if (@{$pair} >= 5 and $pair->[2] and $pair->[3] and $pair->[4]) {
+%         }
+%         elsif ($pair->[0]->day != $dt_now->day ) {
 %           $pair->[0]->set_locale('de_DE');
 %=          $pair->[0]->strftime('%a %H:%M')
 %         }
