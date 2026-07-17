@@ -1450,8 +1450,8 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006000
-  Mojolicious-9.47
-    pathname: S/SR/SRI/Mojolicious-9.47.tar.gz
+  Mojolicious-9.48
+    pathname: S/SR/SRI/Mojolicious-9.48.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1521,7 +1521,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.47
+      Mojolicious 9.48
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -1963,18 +1963,18 @@ DISTRIBUTIONS
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBRIS-0.31
-    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.31.tar.gz
+  Travel-Status-DE-DBRIS-0.32
+    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.32.tar.gz
     provides:
-      Travel::Status::DE::DBRIS 0.31
-      Travel::Status::DE::DBRIS::Formation 0.31
-      Travel::Status::DE::DBRIS::Formation::Carriage 0.31
-      Travel::Status::DE::DBRIS::Formation::Group 0.31
-      Travel::Status::DE::DBRIS::Formation::Sector 0.31
-      Travel::Status::DE::DBRIS::Journey 0.31
-      Travel::Status::DE::DBRIS::JourneyAtStop 0.31
-      Travel::Status::DE::DBRIS::Location 0.31
-      Travel::Status::DE::DBRIS::Operators 0.31
+      Travel::Status::DE::DBRIS 0.32
+      Travel::Status::DE::DBRIS::Formation 0.32
+      Travel::Status::DE::DBRIS::Formation::Carriage 0.32
+      Travel::Status::DE::DBRIS::Formation::Group 0.32
+      Travel::Status::DE::DBRIS::Formation::Sector 0.32
+      Travel::Status::DE::DBRIS::Journey 0.32
+      Travel::Status::DE::DBRIS::JourneyAtStop 0.32
+      Travel::Status::DE::DBRIS::Location 0.32
+      Travel::Status::DE::DBRIS::Operators 0.32
     requirements:
       Carp 0
       Class::Accessor 0.16
