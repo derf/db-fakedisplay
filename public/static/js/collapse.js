@@ -77,7 +77,7 @@ function dbf_show_moreinfo(trainElem, keep_old) {
 				for (var key in moreinfo) {
 					ibuf += '<li>' + moreinfo[key] + '</li>';
 				}
-				$('.moreinfo .mfooter').append('Meldungen: <ul>' + ibuf + '</ul>');
+				$('.moreinfo .mfooter').append('Meldungen <ul>' + ibuf + '</ul>');
 			}
 			var routebuf = '';
 			if (trainElem.data('routeprev') != '') {
