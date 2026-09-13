@@ -171,6 +171,24 @@ the Git repository. A tarball is also acceptable. Please change `source_url` in
 `lib/DBInfoscreen.pm` to point to your Git repository / source archive if you
 are using a version with custom changes.
 
+Contributing
+---
+
+You may report issues and contribute bugfixes at
+<https://codeberg.org/derf/db-infoscreen> or
+<https://github.com/derf/db-fakedisplay> – use whichever platform works best
+for you.
+Please get in touch before starting work on more invasive changes.
+
+Keep in mind that this is a hobby project, and I take care to ensure that it
+remains that way.  As such, while I appreciate suggestions, bug reports,
+patches and similar, please do not expect a timely response to anything you
+submit.  I typically only address issues and merge requests when I have the
+capacity for them *and* when doing so does not feel like a chore.
+
+"AI" (as in, Large Language Models / LLMs such as ChatGPT, Claude, Copilot,
+Cursor, Grok, etc.) may not be used for contributions to this project.
+
 Resources
 ---
 
