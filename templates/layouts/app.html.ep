@@ -189,7 +189,7 @@ Bitte eine Station aus der Liste auswählen</div>
     </div>
     <div class="field">
       <div class="desc">
-        Nur Fahrten über
+        Nur Fahrten über (wird bei HAFAS-Backends nicht unterstützt)
       </div>
       <div>
         %= text_field 'via', placeholder => 'Bahnhof 1, Bhf2, ... (oder regulärer Ausdruck)', class => 'station'
