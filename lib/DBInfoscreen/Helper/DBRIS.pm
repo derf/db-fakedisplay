@@ -15,6 +15,8 @@ use Mojo::JSON qw(decode_json);
 use Mojo::Promise;
 use Mojo::UserAgent;
 
+my $is_enabled = $ENV{DBFAKEDISPLAY_ENABLE_DBRIS};
+
 sub new {
 	my ( $class, %opt ) = @_;
 
@@ -55,6 +57,10 @@ sub get_agent {
 sub get_journey_p {
 	my ( $self, %opt ) = @_;
 
+	if ( not $is_enabled ) {
+		return Mojo::Promise->reject('DBRIS backend is disabled');
+	}
+
 	return Travel::Status::DE::DBRIS->new_p(
 		journey    => $opt{id},
 		cache      => $self->{realtime_cache},
@@ -70,6 +76,10 @@ sub get_polyline_p {
 
 	my $trip_id = $opt{id};
 	my $promise = Mojo::Promise->new;
+
+	if ( not $is_enabled ) {
+		return $promise->reject('DBRIS backend is disabled');
+	}
 
 	Travel::Status::DE::DBRIS->new_p(
 		journey       => $trip_id,
@@ -99,6 +109,10 @@ sub get_polyline_p {
 
 sub get_wagonorder_p {
 	my ( $self, %opt ) = @_;
+
+	if ( not $is_enabled ) {
+		return Mojo::Promise->reject('DBRIS backend is disabled');
+	}
 
 	$self->{log}
 	  ->debug("get_wagonorder_p($opt{train_type} $opt{train_no} @ $opt{eva})");
