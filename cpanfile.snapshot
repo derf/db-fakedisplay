@@ -137,10 +137,11 @@ DISTRIBUTIONS
       Capture::Tiny 0
       ExtUtils::MakeMaker 6.52
       File::Which 0
-      HTML::LinkExtor 0
       HTTP::Tiny 0.044
       IO::Socket::SSL 1.56
       IO::Zlib 0
+      Mojo::DOM 0
+      Mojolicious 7.00
       Mozilla::CA 0
       Net::SSLeay 1.49
       Path::Tiny 0
@@ -1452,8 +1453,8 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006000
-  Mojolicious-9.53
-    pathname: S/SR/SRI/Mojolicious-9.53.tar.gz
+  Mojolicious-9.54
+    pathname: S/SR/SRI/Mojolicious-9.54.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1523,7 +1524,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.53
+      Mojolicious 9.54
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -1572,10 +1573,10 @@ DISTRIBUTIONS
       IO::Socket::IP 0.37
       Sub::Util 1.41
       perl 5.016
-  Mozilla-CA-20261020
-    pathname: L/LW/LWP/Mozilla-CA-20261020.tar.gz
+  Mozilla-CA-20261105
+    pathname: L/LW/LWP/Mozilla-CA-20261105.tar.gz
     provides:
-      Mozilla::CA 20261020
+      Mozilla::CA 20261105
     requirements:
       ExtUtils::MakeMaker 0
   Net-HTTP-6.24
@@ -1960,18 +1961,18 @@ DISTRIBUTIONS
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
-  Travel-Status-DE-DBRIS-0.38
-    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.38.tar.gz
+  Travel-Status-DE-DBRIS-0.39
+    pathname: D/DE/DERF/Travel-Status-DE-DBRIS-0.39.tar.gz
     provides:
-      Travel::Status::DE::DBRIS 0.38
-      Travel::Status::DE::DBRIS::Formation 0.38
-      Travel::Status::DE::DBRIS::Formation::Carriage 0.38
-      Travel::Status::DE::DBRIS::Formation::Group 0.38
-      Travel::Status::DE::DBRIS::Formation::Sector 0.38
-      Travel::Status::DE::DBRIS::Journey 0.38
-      Travel::Status::DE::DBRIS::JourneyAtStop 0.38
-      Travel::Status::DE::DBRIS::Location 0.38
-      Travel::Status::DE::DBRIS::Operators 0.38
+      Travel::Status::DE::DBRIS 0.39
+      Travel::Status::DE::DBRIS::Formation 0.39
+      Travel::Status::DE::DBRIS::Formation::Carriage 0.39
+      Travel::Status::DE::DBRIS::Formation::Group 0.39
+      Travel::Status::DE::DBRIS::Formation::Sector 0.39
+      Travel::Status::DE::DBRIS::Journey 0.39
+      Travel::Status::DE::DBRIS::JourneyAtStop 0.39
+      Travel::Status::DE::DBRIS::Location 0.39
+      Travel::Status::DE::DBRIS::Operators 0.39
     requirements:
       Carp 0
       Class::Accessor 0.16
