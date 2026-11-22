@@ -25,8 +25,6 @@ FROM perl:5.40-slim-trixie
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_LISTCHANGES_FRONTEND=none
-ARG USER=1000
-ARG GROUP=1000
 
 COPY cpanfile* /app/
 WORKDIR /app
@@ -50,6 +48,9 @@ RUN apt-get update \
 	&& apt-get -y purge curl gcc libc6-dev libdb5.3-dev libssl-dev libxml2-dev make zlib1g-dev \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+ARG USER=1000
+ARG GROUP=1000
 
 RUN groupadd --gid "${GROUP}" db-fakedisplay \
 	&& useradd --uid "${USER}" --gid db-fakedisplay --home-dir /app \
