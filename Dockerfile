@@ -4,7 +4,7 @@
 
 # docker build -t db-fakedisplay:latest --build-arg=dbf_version=$(git describe --dirty) .
 
-FROM debian:buster-slim AS files
+FROM debian:trixie-slim AS files
 
 ARG dbf_version=git
 
@@ -21,7 +21,7 @@ RUN ln -sf ../ext-templates/imprint.html.ep templates/imprint.html.ep \
 
 RUN sed -i "s/version *=> *\$ENV{DBFAKEDISPLAY_VERSION}/version => '${dbf_version}'/" lib/DBInfoscreen.pm
 
-FROM perl:5.40-slim
+FROM perl:5.40-slim-trixie
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_LISTCHANGES_FRONTEND=none
@@ -35,9 +35,9 @@ RUN apt-get update \
 		curl \
 		gcc \
 		libc6-dev \
-		libdb5.3 \
+		libdb5.3t64 \
 		libdb5.3-dev \
-		libssl3 \
+		libssl3t64 \
 		libssl-dev \
 		libxml2 \
 		libxml2-dev \
@@ -49,8 +49,17 @@ RUN apt-get update \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
+ARG USER=1000
+ARG GROUP=1000
+
+RUN groupadd --gid "${GROUP}" db-fakedisplay \
+	&& useradd --uid "${USER}" --gid db-fakedisplay --home-dir /app \
+		--no-create-home --shell /usr/sbin/nologin db-fakedisplay
+
 COPY --from=files /app/ /app/
 RUN chmod -R a+rX /app
+
+USER db-fakedisplay:db-fakedisplay
 
 EXPOSE 8092
 
